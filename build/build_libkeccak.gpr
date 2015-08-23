@@ -1,0 +1,29 @@
+project Build_Libkeccak
+is
+   for Library_Kind use "static";
+   for Library_Name use "keccak";
+   for Object_Dir      use "../out/build";
+   for Library_Dir     use "../out/build/adalib";
+   for Library_Src_Dir use "../out/build/adainclude";
+   
+   for Source_Dirs use ("../src");
+   
+   package Builder is
+      for Default_Switches ("Ada") use ("-j4");
+   end Builder;
+
+   package Prove is
+      for Switches use ("-j4", "--timeout=10");
+   end Prove;
+
+   package Compiler is
+      for Default_Switches ("ada") use 
+         ("-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnatp");
+   end Compiler;
+   
+   package Ide is
+      for Documentation_Dir use "../out/doc";
+   end Ide;
+
+end Build_Libkeccak;
+

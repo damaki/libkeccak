@@ -1,0 +1,8 @@
+project Libkeccak
+is
+   for Source_Dirs      use ("adainclude");
+   for Library_Dir      use "adalib";
+   for Library_Kind     use "static";
+   for Library_Name     use "keccak";
+   for Externally_Built use "true";
+end Libkeccak;
