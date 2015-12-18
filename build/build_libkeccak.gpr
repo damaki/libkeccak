@@ -13,7 +13,7 @@ is
    end Builder;
 
    package Prove is
-      for Switches use ("-j4", "--timeout=10");
+      for Switches use ("-j4", "--timeout=20");
    end Prove;
 
    package Compiler is
