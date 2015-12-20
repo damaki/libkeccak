@@ -4,7 +4,8 @@ BUILD_DIR    = $(OUTPUT_DIR)/build
 GENERIC_BODIES = src/keccak-duplex.adb \
                  src/keccak-hash.adb \
                  src/keccak-sponge.adb \
-                 src/keccak-xof.adb
+                 src/keccak-xof.adb \
+                 src/keccak-keccakf.adb
 
 ################################################################################
 
