@@ -152,6 +152,7 @@ is
              and then In_Queue_Bit_Length(Ctx) mod 8 = 0
              and then In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)),
      Post => (State_Of(Ctx) = Absorbing
+              and Rate_Of(Ctx) = Rate_Of(Ctx'Old)
               and (In_Queue_Bit_Length(Ctx) mod 8) = (Bit_Length mod 8)
               and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
    -- Absorb (input) bits into the sponge.
@@ -182,6 +183,7 @@ is
                   and then In_Queue_Bit_Length(Ctx) mod 8 = 0
                   and then In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)),
      Post => (State_Of(Ctx) = Absorbing
+              and Rate_Of(Ctx) = Rate_Of(Ctx'Old)
               and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
               and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
    -- Concatenate up to 8 suffix bits to a message, then absorb the resulting
@@ -219,7 +221,8 @@ is
    procedure Squeeze(Ctx    : in out Context;
                      Digest :    out Keccak.Types.Byte_Array)
      with Depends => ((Ctx, Digest) => (Ctx, Digest)),
-     Post => State_Of(Ctx) = Squeezing;
+     Post => (State_Of(Ctx) = Squeezing
+              and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Squeeze (output) bits from the sponge.
    --
    -- Squeeze can be called multiple times to extract an arbitrary amount of

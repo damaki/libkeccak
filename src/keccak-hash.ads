@@ -108,9 +108,10 @@ is
                     Message    : in     Byte_Array;
                     Bit_Length : in     Natural)
      with Depends => (Ctx => + (Message, Bit_Length)),
-     Pre => ((State_Of(Ctx) = Updating)
+     Pre => (State_Of(Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
+     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old)),
      Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
                         others               => State_Of(Ctx) = Ready_To_Finish);
    -- Add message bytes to the hash computation
@@ -133,7 +134,8 @@ is
                    Digest :    out Digest_Type)
      with Depends => ((Digest, Ctx) => Ctx),
      Pre => State_Of(Ctx) in Updating | Ready_To_Finish,
-     Post => State_Of(Ctx) = Finished;
+     Post => (State_Of(Ctx) = Finished
+              and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Finish the hash context and get the digest (hash).
    --
    -- Note that after Final is called the context cannot be used

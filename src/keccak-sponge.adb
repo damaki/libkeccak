@@ -60,6 +60,8 @@ is
       
       Data_Last           : Keccak.Types.Index_Number;
       
+      Initial_Rate        : Positive := Rate_Of(Ctx) with Ghost;
+      
    begin
       if Initial_Data_Len > 0 then
          Data_Last := Data'First + (Initial_Data_Len - 1);
@@ -108,7 +110,8 @@ is
                pragma Loop_Invariant(Offset + Remaining_Bytes = Initial_Data_Len
                                      and Remaining_Bytes = (Remaining_Bits + 7) / 8
                                      and (Bit_Length mod 8) = (Remaining_Bits mod 8)
-                                     and State_Of(Ctx) = Absorbing);
+                                     and State_Of(Ctx) = Absorbing
+                                     and Rate_Of(Ctx) = Initial_Rate);
 
                XOR_Bits_Into_State(Ctx.State,
                                    Data(Data'First + Offset ..
@@ -131,7 +134,8 @@ is
             -- Prove postcondition
             pragma Assert((Remaining_Bits mod 8) = (Bit_Length mod 8)
                           and State_Of(Ctx) = Absorbing
-                          and Remaining_Bits < Rate_Of(Ctx));
+                          and Remaining_Bits < Rate_Of(Ctx)
+                          and Rate_Of(Ctx) = Initial_Rate);
             
             Ctx.Bits_Absorbed := Remaining_Bits;
 
@@ -154,6 +158,8 @@ is
       
       Message_Byte_Length : Natural := (Bit_Length + 7) / 8;
       Message_Last        : Keccak.Types.Index_Number;
+      
+      Initial_Rate        : Positive := Rate_Of(Ctx) with Ghost;
       
    begin
       if Bit_Length = 0 and Suffix_Len > 0 then
@@ -213,7 +219,8 @@ is
             -- Prove postcondition
             pragma Assert_And_Cut(State_Of(Ctx) = Absorbing
                                   and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
-                                  and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
+                                  and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)
+                                  and Rate_Of(Ctx) = Initial_Rate);
          
          else
             -- In this case the suffix is too large to fit entirely in the
@@ -235,7 +242,8 @@ is
             
             pragma Assert_And_Cut(State_Of(Ctx) = Absorbing
                                   and In_Queue_Bit_Length(Ctx) mod 8 = 0
-                                  and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
+                                  and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)
+                                  and Rate_Of(Ctx) = Initial_Rate);
             
             -- Now absorb the remaining suffix bits.
             Suffix_Array(0) := Interfaces.Shift_Right(Suffix, 8 - (Bit_Length mod 8));
@@ -244,14 +252,16 @@ is
             -- Prove Postcondition
             pragma Assert_And_Cut(State_Of(Ctx) = Absorbing
                                   and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
-                                  and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
+                                  and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)
+                                  and Rate_Of(Ctx) = Initial_Rate);
             
          end if;
       end if;
       
       pragma Assert(State_Of(Ctx) = Absorbing
                     and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
-                    and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
+                    and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)
+                    and Rate_Of(Ctx) = Initial_Rate);
    end Absorb_With_Suffix;
          
 
@@ -262,7 +272,8 @@ is
    -- rule is applied and the first bytes are extracted for squeezing.
    procedure Finalize(Ctx : in out Context)
      with Depends => (Ctx => Ctx),
-     Post => State_Of(Ctx) = Squeezing
+     Post => (State_Of(Ctx) = Squeezing
+              and Rate_Of(Ctx) = Rate_Of(Ctx'Old))
    is
       Next_Block : Keccak.Types.Byte_Array(0 .. (State_Size / 8) - 1) := (others => 0);
       Spilled    : Boolean;
@@ -318,6 +329,8 @@ is
    is
       Remaining : Natural := Digest'Length;
       Offset    : Natural := 0;
+      
+      Initial_Rate : Positive := Rate_Of(Ctx) with Ghost;
    begin
       Digest := (others => 0); -- workaround for flow analysis
 
@@ -368,13 +381,15 @@ is
       
       pragma Assert(if Remaining > 0 then Ctx.Bytes_Squeezed = 0);
       pragma Assert(Offset + Remaining = Digest'Length);
+      pragma Assert(Rate_Of(Ctx) = Initial_Rate);
       
       -- Process full blocks
       while Remaining >= Ctx.Rate loop
          pragma Loop_Variant(Increases => Offset,
                              Decreases => Remaining);
          pragma Loop_Invariant((Offset + Remaining = Digest'Length)
-                               and State_Of(Ctx) = Squeezing);
+                               and State_Of(Ctx) = Squeezing
+                               and Rate_Of(Ctx) = Initial_Rate);
       
          Digest(Digest'First + Offset ..
                   Digest'First + ((Offset + Ctx.Rate) - 1))

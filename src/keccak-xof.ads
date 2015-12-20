@@ -94,6 +94,7 @@ is
      Pre => (State_Of(Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
+     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old)),
      Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
                         others               => State_Of(Ctx) = Ready_To_Extract);
    -- Input data into the XOF.
@@ -122,7 +123,8 @@ is
    procedure Extract(Ctx    : in out Context;
                      Digest :    out Byte_Array)
      with Depends => ((Digest, Ctx) => (Ctx, Digest)),
-     Post => State_Of(Ctx) = Extracting;
+     Post => (State_Of(Ctx) = Extracting
+              and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Extract bytes from the XOF.
    --
    -- Each call to Extract can read an arbitrary number of bytes from the XOF.

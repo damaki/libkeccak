@@ -118,7 +118,8 @@ is
                       Out_Data => (Ctx, In_Data, In_Data_Bit_Length, Out_Data)),
      Pre => (In_Data_Bit_Length <= Max_Input_Length(Ctx)
              and then In_Data'Length >= (In_Data_Bit_Length + 7) / 8
-             and then Out_Data'Length <= (Rate_Of(Ctx) + 7) / 8);
+             and then Out_Data'Length <= (Rate_Of(Ctx) + 7) / 8),
+     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Run a single duplex block.
    --
    -- @param Ctx The duplex context.
@@ -133,7 +134,8 @@ is
                           Out_Data :    out Keccak.Types.Byte_Array)
      with Depends => (Ctx      => Ctx,
                       Out_Data => (Ctx, Out_Data)),
-     Pre => (Out_Data'Length <= (Rate_Of(Ctx) + 7)/8);
+     Pre => (Out_Data'Length <= (Rate_Of(Ctx) + 7)/8),
+     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Perform a duplex call without input.
    --
    -- This procedure is equivalent to a call to the Duplex procedure where
@@ -149,7 +151,8 @@ is
                          In_Data_Bit_Length : in     Natural)
      with Depends => (Ctx => + (In_Data, In_Data_Bit_Length)),
      Pre => (In_Data_Bit_Length <= Max_Input_Length(Ctx)
-             and then In_Data'Length >= (In_Data_Bit_Length + 7) / 8);
+             and then In_Data'Length >= (In_Data_Bit_Length + 7) / 8),
+     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Perform a duplex call without output.
    --
    -- This procedure is equivalent to a call to the Duplex procedure where
