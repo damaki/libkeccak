@@ -27,6 +27,14 @@
 
 with Ada.Real_Time;
 with Ada.Text_IO;
+with Keccak.KeccakF;
+with Keccak.Keccak_25;
+with Keccak.Keccak_50;
+with Keccak.Keccak_100;
+with Keccak.Keccak_200;
+with Keccak.Keccak_400;
+with Keccak.Keccak_800;
+with Keccak.Keccak_1600;
 with Keccak.Types;
 with Keccak.XOF;
 with Keccak.Hash;
@@ -257,6 +265,57 @@ is
    
    end Duplex_Benchmark;
    
+   -------------------------------------------------------------------------		---
+   -- KeccakF_Benchmark
+   --
+   -- Generic procedure to run a benchmark for a KeccakF permutation.
+   ----------------------------------------------------------------------------
+   generic
+      Name : String;
+      with package KeccakF is new Keccak.KeccakF(<>);
+   procedure KeccakF_Benchmark;
+   
+   procedure KeccakF_Benchmark
+   is
+      use type Ada.Real_Time.Time;
+      
+      package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
+      package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
+      
+      State : KeccakF.State;
+      
+      Start_Time : Ada.Real_Time.Time;
+      End_Time   : Ada.Real_Time.Time;
+      
+      Num_Iterations : Natural := 1_000_000;
+      
+   begin
+      KeccakF.Init(State);
+      
+      for I in Positive range 1 .. Repeat loop
+         Start_Time := Ada.Real_Time.Clock;
+         
+         for J in Positive range 1 .. Num_Iterations loop
+            KeccakF.Permute(State);
+         end loop;
+         
+         End_Time := Ada.Real_Time.Clock;
+         
+         Ada.Text_IO.Put(Name & ", ");
+         
+         Duration_IO.Put(Ada.Real_Time.To_Duration(End_Time - Start_Time), Fore => 0, Aft => 6);
+         Ada.Text_IO.Put("s, ");
+         
+         Integer_IO.Put(Item => Num_Iterations, Width => 0);
+         Ada.Text_IO.Put(" calls, ");
+         
+         Duration_IO.Put((Ada.Real_Time.To_Duration(End_Time - Start_Time) * 1_000_000) / Num_Iterations, Fore => 0);
+         Ada.Text_IO.Put_Line(" us/call");
+      end loop;
+      
+      
+   end KeccakF_Benchmark;
+   
    ----------------------------------------------------------------------------
    -- Benchmark procedure instantiations.
    ----------------------------------------------------------------------------
@@ -296,7 +355,22 @@ is
    procedure Benchmark_Duplex_r832c768 is new Duplex_Benchmark
       ("Duplex r832c768", 768, Keccak.Keccak_1600.Duplex);
    procedure Benchmark_Duplex_r576c1024 is new Duplex_Benchmark
-      ("Duplex r576c1024", 1024, Keccak.Keccak_1600.Duplex);
+     ("Duplex r576c1024", 1024, Keccak.Keccak_1600.Duplex);
+   
+   procedure Benchmark_KeccakF_25 is new KeccakF_Benchmark
+     ("KeccakF[25]", Keccak.Keccak_25.KeccakF_25);
+   procedure Benchmark_KeccakF_50 is new KeccakF_Benchmark
+     ("KeccakF[50]", Keccak.Keccak_50.KeccakF_50);
+   procedure Benchmark_KeccakF_100 is new KeccakF_Benchmark
+     ("KeccakF[100]", Keccak.Keccak_100.KeccakF_100);
+   procedure Benchmark_KeccakF_200 is new KeccakF_Benchmark
+     ("KeccakF[200]", Keccak.Keccak_200.KeccakF_200);
+   procedure Benchmark_KeccakF_400 is new KeccakF_Benchmark
+     ("KeccakF[400]", Keccak.Keccak_400.KeccakF_400);
+   procedure Benchmark_KeccakF_800 is new KeccakF_Benchmark
+     ("KeccakF[800]", Keccak.Keccak_800.KeccakF_800);
+   procedure Benchmark_KeccakF_1600 is new KeccakF_Benchmark
+     ("KeccakF[1600]", Keccak.Keccak_1600.KeccakF_1600);
 
 begin
    Ada.Text_IO.Put_Line("Algorithm,Time,Data Length,Performance");
@@ -347,6 +421,27 @@ begin
    Ada.Text_IO.New_Line;
    
    Benchmark_Duplex_r576c1024;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_1600;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_800;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_400;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_200;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_100;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_50;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_25;
    Ada.Text_IO.New_Line;
 
 end Benchmark;
