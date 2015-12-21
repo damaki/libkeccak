@@ -84,7 +84,8 @@ is
             Duplex.Duplex(Ctx,
                           Duplex_KAT_Vectors.Element(C).In_Data.all,
                           Duplex_KAT_Vectors.Element(C).In_Len,
-                          Out_Data(0 .. Out_Last));
+                          Out_Data(0 .. Out_Last),
+                          Out_Data'Length * 8);
             
             -- Mask any unused bits from the output.
             Out_Data(Out_Last) := Out_Data(Out_Last) and Keccak.Types.Byte((2**(Out_Len mod 8)) - 1);

@@ -39,10 +39,11 @@ is
    
    
    
-   procedure Duplex(Ctx                : in out Context;
-                    In_Data            : in     Keccak.Types.Byte_Array;
-                    In_Data_Bit_Length : in     Natural;
-                    Out_Data           :    out Keccak.Types.Byte_Array)
+   procedure Duplex(Ctx                 : in out Context;
+                    In_Data             : in     Keccak.Types.Byte_Array;
+                    In_Data_Bit_Length  : in     Natural;
+                    Out_Data            :    out Keccak.Types.Byte_Array;
+                    Out_Data_Bit_Length : in     Natural)
    is
       use type Keccak.Types.Byte;
       
@@ -66,22 +67,14 @@ is
       
       F(Ctx.State);
       
-      Extract_Data(Ctx.State, Out_Data);
-      
-      if Out_Data'Length > 0 and Rate_Of(Ctx) mod 8 /= 0 then
-         -- Mask the higher bits of the last byte 
-         -- to avoid exposing part of the capacity bits.
-         -- This is necessary because this Duplex implementation
-         -- allows capacities/rates that are not a multiple of 8 bits.
-         Out_Data(Out_Data'Last) := Out_Data(Out_Data'Last) and (2**(Rate_Of(Ctx) mod 8) - 1);
-      end if;
-      
+      Extract_Bits(Ctx.State, Out_Data, Out_Data_Bit_Length);
    end Duplex;
    
    
    
-   procedure Duplex_Blank(Ctx      : in out Context;
-                          Out_Data :    out Keccak.Types.Byte_Array)
+   procedure Duplex_Blank(Ctx                 : in out Context;
+                          Out_Data            :    out Keccak.Types.Byte_Array;
+                          Out_Data_Bit_Length : in     Natural)
    is
       use type Keccak.Types.Byte;
       
@@ -98,15 +91,7 @@ is
       
       F(Ctx.State);
       
-      Extract_Data(Ctx.State, Out_Data);
-      
-      if Out_Data'Length > 0 and Rate_Of(Ctx) mod 8 /= 0 then
-         -- Mask the higher bits of the last byte 
-         -- to avoid exposing part of the capacity bits.
-         -- This is necessary because this Duplex implementation
-         -- allows capacities/rates that are not a multiple of 8 bits.
-         Out_Data(Out_Data'Last) := Out_Data(Out_Data'Last) and (2**(Rate_Of(Ctx) mod 8) - 1);
-      end if;
+      Extract_Bits(Ctx.State, Out_Data, Out_Data_Bit_Length);
    end Duplex_Blank;
    
    

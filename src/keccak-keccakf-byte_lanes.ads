@@ -63,4 +63,11 @@ is
    --   Note that the buffer can be smaller than the state size if fewer bytes
    --   are needed.
 
+   procedure Extract_Bits(A       : in     State;
+                          Data    :    out Keccak.Types.Byte_Array;
+                          Bit_Len : in     Natural)
+     with Depends => (Data => + (A, Bit_Len)),
+     Pre => (Bit_Len <= B
+             and then Data'Length = (Bit_Len + 7) / 8);
+
 end Keccak.KeccakF.Byte_Lanes;

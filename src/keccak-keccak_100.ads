@@ -65,7 +65,7 @@ is
       Init_State          => KeccakF_100.Init,
       F                   => KeccakF_100.Permute,
       XOR_Bits_Into_State => KeccakF_100_Lanes.XOR_Bits_Into_State,
-      Extract_Data        => KeccakF_100_Lanes.Extract_Bytes,
+      Extract_Bits        => KeccakF_100_Lanes.Extract_Bits,
       Pad                 => Keccak.Padding.Pad101_Single_Block,
       Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
 

@@ -46,8 +46,9 @@ generic
                                       Bit_Len : in     Natural);
 
    -- Procedure to copy bytes from the generic state.
-   with procedure Extract_Data(A     : in     State_Type;
-                               Data  :    out Keccak.Types.Byte_Array);
+   with procedure Extract_Bits(A       : in     State_Type;
+                               Data    :    out Keccak.Types.Byte_Array;
+                               Bit_Len : in     Natural);
 
    -- Procedure to apply the padding rule to a block of bytes.
    with procedure Pad(Block          : in out Keccak.Types.Byte_Array;
@@ -110,15 +111,17 @@ is
    
    
    
-   procedure Duplex(Ctx                : in out Context;
-                    In_Data            : in     Keccak.Types.Byte_Array;
-                    In_Data_Bit_Length : in     Natural;
-                    Out_Data           :    out Keccak.Types.Byte_Array)
+   procedure Duplex(Ctx                 : in out Context;
+                    In_Data             : in     Keccak.Types.Byte_Array;
+                    In_Data_Bit_Length  : in     Natural;
+                    Out_Data            :    out Keccak.Types.Byte_Array;
+                    Out_Data_Bit_Length : in     Natural)
      with Depends => (Ctx      => (Ctx, In_Data, In_Data_Bit_Length),
-                      Out_Data => (Ctx, In_Data, In_Data_Bit_Length, Out_Data)),
+                      Out_Data => (Ctx, In_Data, In_Data_Bit_Length, Out_Data, Out_Data_Bit_Length)),
      Pre => (In_Data_Bit_Length <= Max_Input_Length(Ctx)
              and then In_Data'Length >= (In_Data_Bit_Length + 7) / 8
-             and then Out_Data'Length <= (Rate_Of(Ctx) + 7) / 8),
+             and then Out_Data_Bit_Length <= Rate_Of(Ctx)
+             and then Out_Data'Length = (Out_Data_Bit_Length + 7) / 8),
      Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Run a single duplex block.
    --
@@ -130,11 +133,13 @@ is
    -- In_Data array. This length must be smaller than the rate, and must leave
    -- enough space for the padding bits.
    
-   procedure Duplex_Blank(Ctx      : in out Context;
-                          Out_Data :    out Keccak.Types.Byte_Array)
+   procedure Duplex_Blank(Ctx                 : in out Context;
+                          Out_Data            :    out Keccak.Types.Byte_Array;
+                          Out_Data_Bit_Length : in     Natural)
      with Depends => (Ctx      => Ctx,
-                      Out_Data => (Ctx, Out_Data)),
-     Pre => (Out_Data'Length <= (Rate_Of(Ctx) + 7)/8),
+                      Out_Data => (Ctx, Out_Data, Out_Data_Bit_Length)),
+     Pre => (Out_Data_Bit_Length <= Rate_Of(Ctx)
+             and then Out_Data'Length = (Out_Data_Bit_Length + 7)/8),
      Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Perform a duplex call without input.
    --

@@ -44,4 +44,13 @@ is
      with Depends => (Data => + A),
      Pre => Data'Length <= ((B + 7)/8);
 
+
+
+   procedure Extract_Bits(A       : in     State;
+                          Data    :    out Keccak.Types.Byte_Array;
+                          Bit_Len : in     Natural)
+     with Depends => (Data => + (A, Bit_Len)),
+     Pre => (Bit_Len <= B
+             and then Data'Length = (Bit_Len + 7) / 8);
+
 end Keccak.KeccakF.Bit_Lanes;

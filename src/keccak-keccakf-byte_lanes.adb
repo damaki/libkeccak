@@ -155,4 +155,20 @@ is
 
    end Extract_Bytes;
 
+   procedure Extract_Bits(A       : in     State;
+                          Data    :    out Keccak.Types.Byte_Array;
+                          Bit_Len : in     Natural)
+   is
+      use type Keccak.Types.Byte;
+
+   begin
+      Extract_Bytes(A, Data);
+
+      -- Avoid exposing more bits than requested by masking away higher bits
+      -- in the last byte.
+      if Bit_Len > 0 and Bit_Len mod 8 /= 0 then
+         Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
+      end if;
+   end Extract_Bits;
+
 end Keccak.KeccakF.Byte_Lanes;
