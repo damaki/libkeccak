@@ -157,38 +157,16 @@ is
             );
    end Pi;
 
-   -- Keccak Chi operation
+   -- Keccak Chi and Iota operations
    --
-   -- See Algorithm 4 in Section 3.2.4 of NIST FIPS-202.
+   -- See Algorithms 4 and 5 in Sections 3.2.4 and 3.2.5 of NIST FIPS-202.
    --
-   -- @param A The Keccak input state.
-   -- @param AR The Keccak output state after the Chi operation.
-   procedure Chi(A  : in     State;
-                 AR :    out State)
-   is
-   begin
-      for Y in Y_Coord loop
-         AR(0, Y) := A(0, Y) xor ( (not A(1, Y)) and A(2, Y) );
-
-         pragma Annotate(GNATprove, False_Positive,
-                         """AR"" might not be initialized",
-                         "AR is initialized after full loop");
-
-         AR(1, Y) := A(1, Y) xor ( (not A(2, Y)) and A(3, Y) );
-         AR(2, Y) := A(2, Y) xor ( (not A(3, Y)) and A(4, Y) );
-         AR(3, Y) := A(3, Y) xor ( (not A(4, Y)) and A(0, Y) );
-         AR(4, Y) := A(4, Y) xor ( (not A(0, Y)) and A(1, Y) );
-      end loop;
-   end Chi;
-
-   -- Keccak Iota operation
-   --
-   -- See Algorithm 5 in Section 3.2.5 of NIST FIPS-202.
-   --
-   -- @param A The Keccak state
+   -- @param A The Keccak input state
+   -- @param AR The Keccak output state after the Chi and Iota operations.
    -- @param RI The current round number/index
-   procedure Iota(A  : in out State;
-                  RI : in     Round_Index)
+   procedure Chi_Iota(A  : in     State;
+                      AR :    out State;
+                      RI : in     Round_Index)
    is
       use type Interfaces.Unsigned_64;
 
@@ -222,8 +200,28 @@ is
               16#8000_0000_8000_8008#
              );
    begin
-      A(0, 0) := A(0, 0) xor Lane_Type(RC(RI) and (2**W - 1));
-   end Iota;
+      -- Process the first set of Y separately to XOR the round constant
+      -- with the first lane (this is the Iota part).
+      AR(0, 0) := A(0, 0) xor ( (not A(1, 0)) and A(2, 0) ) xor Lane_Type(RC(RI) and (2**W - 1));
+
+      pragma Annotate(GNATprove, False_Positive,
+                      """AR"" might not be initialized",
+                      "AR is initialized by the end of this procedure");
+
+      AR(1, 0) := A(1, 0) xor ( (not A(2, 0)) and A(3, 0) );
+      AR(2, 0) := A(2, 0) xor ( (not A(3, 0)) and A(4, 0) );
+      AR(3, 0) := A(3, 0) xor ( (not A(4, 0)) and A(0, 0) );
+      AR(4, 0) := A(4, 0) xor ( (not A(0, 0)) and A(1, 0) );
+
+      for Y in Y_Coord range 1 .. Y_Coord'Last loop
+         AR(0, Y) := A(0, Y) xor ( (not A(1, Y)) and A(2, Y) );
+         AR(1, Y) := A(1, Y) xor ( (not A(2, Y)) and A(3, Y) );
+         AR(2, Y) := A(2, Y) xor ( (not A(3, Y)) and A(4, Y) );
+         AR(3, Y) := A(3, Y) xor ( (not A(4, Y)) and A(0, Y) );
+         AR(4, Y) := A(4, Y) xor ( (not A(0, Y)) and A(1, Y) );
+      end loop;
+   end Chi_Iota;
+
 
    procedure Init(A : out State)
    is

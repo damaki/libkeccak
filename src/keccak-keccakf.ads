@@ -99,14 +99,10 @@ private
      with Depends => (AR => A),
      Inline;
 
-   procedure Chi(A  : in     State;
-                 AR :    out State)
-     with Depends => (AR => A),
-     Inline;
-
-   procedure Iota(A  : in out State;
-                  RI : in     Round_Index)
-     with Depends => (A => + RI),
+   procedure Chi_Iota(A  : in     State;
+                      AR :    out State;
+                      RI : in     Round_Index)
+     with Depends => (AR => (A, RI)),
      Inline;
 
 end Keccak.KeccakF;

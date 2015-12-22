@@ -36,8 +36,7 @@ is
          Theta(A, Temp);
          Rho(Temp, A);
          Pi(A, Temp);
-         Chi(Temp, A);
-         Iota(A, I);
+         Chi_Iota(Temp, A, I);
       end loop;
    end Permute;
 
