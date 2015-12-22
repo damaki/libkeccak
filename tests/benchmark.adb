@@ -28,6 +28,7 @@
 with Ada.Real_Time;
 with Ada.Text_IO;
 with Keccak.KeccakF;
+with Keccak.KeccakF.Permutation;
 with Keccak.Keccak_25;
 with Keccak.Keccak_50;
 with Keccak.Keccak_100;
@@ -252,7 +253,8 @@ is
             Duplex.Duplex(Ctx,
                           Data_Chunk(1 .. Duplex.Rate_Of(Ctx)/8),
                           Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits,
-                          Out_Data(1 .. Duplex.Rate_Of(Ctx)/8));
+                          Out_Data(1 .. Duplex.Rate_Of(Ctx)/8),
+                          Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits);
          end loop;
          
          End_Time := Ada.Real_Time.Clock;
@@ -272,7 +274,7 @@ is
    ----------------------------------------------------------------------------
    generic
       Name : String;
-      with package KeccakF is new Keccak.KeccakF(<>);
+      with package Keccak_F is new Keccak.KeccakF(<>);
    procedure KeccakF_Benchmark;
    
    procedure KeccakF_Benchmark
@@ -282,7 +284,9 @@ is
       package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
       package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
       
-      State : KeccakF.State;
+      package KeccakF_Permutation is new Keccak_F.Permutation;
+      
+      State : Keccak_F.State;
       
       Start_Time : Ada.Real_Time.Time;
       End_Time   : Ada.Real_Time.Time;
@@ -290,13 +294,13 @@ is
       Num_Iterations : Natural := 1_000_000;
       
    begin
-      KeccakF.Init(State);
+      Keccak_F.Init(State);
       
       for I in Positive range 1 .. Repeat loop
          Start_Time := Ada.Real_Time.Clock;
          
          for J in Positive range 1 .. Num_Iterations loop
-            KeccakF.Permute(State);
+            KeccakF_Permutation.Permute(State);
          end loop;
          
          End_Time := Ada.Real_Time.Clock;

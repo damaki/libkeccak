@@ -57,11 +57,6 @@ generic
    with function Rotate_Left(Value  : in Lane_Type;
                              Amount : in Natural) return Lane_Type;
 
-   -- Number of rounds.
-   --
-   -- By default, the definition from The Keccak Reference is used.
-   Num_Rounds : Positive := 12 + (2*L);
-
    -- @summary
    -- Generic implementation of the Keccak-f permutations.
    --
@@ -70,26 +65,16 @@ generic
    -- 25, 50, 100, 200, 400, 800, and 1600 bits.
 package Keccak.KeccakF
 is
-   W : constant Positive := 2**L;
-   B : constant Positive := W*25;
+   W : constant Positive := 2**L; -- Lane size in bits
+   B : constant Positive := W*25; -- State size in bits (1600, 800, etc...)
 
    type State is private;
-
 
    procedure Init(A : out State)
      with Depends => (A => null);
    -- Initialize the Keccak-f state.
    --
    -- Initially, the Keccak state is set to 0.
-
-
-   procedure Permute(A : in out State)
-     with Depends => (A => A);
-   -- Permute the Keccak state.
-   --
-   -- @param A The Keccak state to permute.
-
-
 
 private
    type X_Coord is mod 5;
@@ -98,5 +83,30 @@ private
    type State is array(X_Coord, Y_Coord) of Lane_Type;
 
    type Round_Index is new Natural range 0 .. 23;
+
+   procedure Theta(A  : in     State;
+                   AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Rho(A  : in     State;
+                 AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Pi(A  : in     State;
+                AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Chi(A  : in     State;
+                 AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Iota(A  : in out State;
+                  RI : in     Round_Index)
+     with Depends => (A => + RI),
+     Inline;
 
 end Keccak.KeccakF;

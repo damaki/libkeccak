@@ -28,6 +28,7 @@ with Interfaces;
 with Keccak.Duplex;
 with Keccak.KeccakF;
 with Keccak.KeccakF.Bit_Lanes;
+with Keccak.KeccakF.Permutation;
 with Keccak.Padding;
 with Keccak.Sponge;
 with Keccak.Types;
@@ -35,6 +36,7 @@ with Keccak.Types;
 pragma Elaborate_All(Keccak.Duplex);
 pragma Elaborate_All(Keccak.KeccakF);
 pragma Elaborate_All(Keccak.KeccakF.Bit_Lanes);
+pragma Elaborate_All(Keccak.KeccakF.Permutation);
 pragma Elaborate_All(Keccak.Sponge);
 
 package Keccak.Keccak_25
@@ -48,13 +50,16 @@ is
       Shift_Right => Keccak.Types.Shift_Right_1,
       Rotate_Left => Keccak.Types.Rotate_Left_1);
 
+   -- Keccak-f[25] permutation with the default number of rounds.
+   package KeccakF_25_Permutation is new KeccakF_25.Permutation;
+
    package KeccakF_25_Lanes is new KeccakF_25.Bit_Lanes;
 
    package Sponge is new Keccak.Sponge
      (State_Size          => KeccakF_25.B,
       State_Type          => KeccakF_25.State,
       Init_State          => KeccakF_25.Init,
-      F                   => KeccakF_25.Permute,
+      F                   => KeccakF_25_Permutation.Permute,
       XOR_Bits_Into_State => KeccakF_25_Lanes.XOR_Bits_Into_State,
       Extract_Data        => KeccakF_25_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
@@ -63,7 +68,7 @@ is
      (State_Size          => KeccakF_25.B,
       State_Type          => KeccakF_25.State,
       Init_State          => KeccakF_25.Init,
-      F                   => KeccakF_25.Permute,
+      F                   => KeccakF_25_Permutation.Permute,
       XOR_Bits_Into_State => KeccakF_25_Lanes.XOR_Bits_Into_State,
       Extract_Bits        => KeccakF_25_Lanes.Extract_Bits,
       Pad                 => Keccak.Padding.Pad101_Single_Block,

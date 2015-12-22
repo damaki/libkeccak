@@ -36,8 +36,6 @@ is
    -- @param AR The Keccak output state after the Theta operation.
    procedure Theta(A  : in     State;
                    AR :    out State)
-     with Depends => (AR => A),
-     Inline
    is
       C_L : Lane_Type;
       C_R : Lane_Type;
@@ -81,8 +79,6 @@ is
    -- @param AR The Keccak output state after the Rho operation.
    procedure Rho(A  : in     State;
                  AR :    out State)
-     with Depends => (AR => A),
-     Inline
    is
    begin
       AR := (0 => (0 => A(0, 0),
@@ -126,8 +122,6 @@ is
    -- @param AR The Keccak output state after the Pi operation.
    procedure Pi(A  : in     State;
                 AR :    out State)
-     with Depends => (AR => A),
-     Inline
    is
    begin
       AR := (0 => (0 => A(0, 0),
@@ -171,8 +165,6 @@ is
    -- @param AR The Keccak output state after the Chi operation.
    procedure Chi(A  : in     State;
                  AR :    out State)
-     with Depends => (AR => A),
-     Inline
    is
    begin
       for Y in Y_Coord loop
@@ -197,8 +189,6 @@ is
    -- @param RI The current round number/index
    procedure Iota(A  : in out State;
                   RI : in     Round_Index)
-     with Depends => (A => + RI),
-     Inline
    is
       use type Interfaces.Unsigned_64;
 
@@ -235,26 +225,10 @@ is
       A(0, 0) := A(0, 0) xor Lane_Type(RC(RI) and (2**W - 1));
    end Iota;
 
-
    procedure Init(A : out State)
    is
    begin
       A := (others => (others => 0));
    end Init;
-
-
-   procedure Permute(A : in out State)
-   is
-      Temp : State;
-
-   begin
-      for I in Round_Index range 0 .. Round_Index(Num_Rounds - 1) loop
-         Theta(A, Temp);
-         Rho(Temp, A);
-         Pi(A, Temp);
-         Chi(Temp, A);
-         Iota(A, I);
-      end loop;
-   end Permute;
 
 end Keccak.KeccakF;
