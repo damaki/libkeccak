@@ -69,33 +69,33 @@ GNAT GPL 2015 (20150428-49).
 
 | Algorithm               | Performance |  Cycles Estimate  |
 | ----------------------- | ----------- | ----------------- |
-| SHA3-224                | 155 MiB/s   | 16.00 cycles/byte |
-| SHA3-256                | 146 MiB/s   | 16.98 cycles/byte |
-| SHA3-384                | 114 MiB/s   | 21.75 cycles/byte |
-| SHA3-512                | 80 MiB/s    | 30.99 cycles/byte |
-| Keccak-224              | 155 MiB/s   | 16.00 cycles/byte |
-| Keccak-256              | 146 MiB/s   | 16.99 cycles/byte |
-| Keccak-384              | 114 MiB/s   | 21.75 cycles/byte |
-| Keccak-512              | 80 MiB/s    | 30.99 cycles/byte |
-| SHAKE128 (Absorbing)    | 177 MiB/s   | 14.00 cycles/byte |
-| SHAKE128 (Squeezing)    | 165 MiB/s   | 15.03 cycles/byte |
-| SHAKE256 (Absorbing)    | 147 MiB/s   | 16.87 cycles/byte |
-| SHAKE256 (Squeezing)    | 141 MiB/s   | 17.59 cycles/byte |
-| RawSHAKE128 (Absorbing) | 177 MiB/s   | 14.00 cycles/byte |
-| RawSHAKE128 (Squeezing) | 165 MiB/s   | 15.03 cycles/byte |
-| RawSHAKE256 (Absorbing) | 147 MiB/s   | 16.87 cycles/byte |
-| RawSHAKE256 (Squeezing) | 141 MiB/s   | 17.59 cycles/byte |
-| Duplex (c448)           | 130 MiB/s   | 19.07 cycles/byte |
-| Duplex (c512)           | 125 MiB/s   | 19.83 cycles/byte |
-| Duplex (c768)           | 101 MiB/s   | 24.55 cycles/byte |
-| Duplex (c1024)          | 72 MiB/s    | 34.43 cycles/byte |
-| Keccak-f\[1600\]        | 808 ns/call | 2100 cycles/call  |
-| Keccak-f\[800\]         | 699 ns/call | 1817 cycles/call  |
-| Keccak-f\[400\]         | 663 ns/call | 1724 cycles/call  |
-| Keccak-f\[200\]         | 603 ns/call | 1568 cycles/call  |
-| Keccak-f\[100\]         | 766 ns/call | 1992 cycles/call  |
-| Keccak-f\[50\]          | 670 ns/call | 1742 cycles/call  |
-| Keccak-f\[25\]          | 373 ns/call | 970 cycles/call   |
+| SHA3-224                | 158 MiB/s   | 15.69 cycles/byte |
+| SHA3-256                | 151 MiB/s   | 16.42 cycles/byte |
+| SHA3-384                | 118 MiB/s   | 21.01 cycles/byte |
+| SHA3-512                | 83 MiB/s    | 29.87 cycles/byte |
+| Keccak-224              | 158 MiB/s   | 15.69 cycles/byte |
+| Keccak-256              | 151 MiB/s   | 16.42 cycles/byte |
+| Keccak-384              | 118 MiB/s   | 21.01 cycles/byte |
+| Keccak-512              | 83 MiB/s    | 29.87 cycles/byte |
+| SHAKE128 (Absorbing)    | 183 MiB/s   | 13.54 cycles/byte |
+| SHAKE128 (Squeezing)    | 174 MiB/s   | 14.25 cycles/byte |
+| SHAKE256 (Absorbing)    | 151 MiB/s   | 16.42 cycles/byte |
+| SHAKE256 (Squeezing)    | 145 MiB/s   | 17.10 cycles/byte |
+| RawSHAKE128 (Absorbing) | 183 MiB/s   | 13.54 cycles/byte |
+| RawSHAKE128 (Squeezing) | 174 MiB/s   | 14.25 cycles/byte |
+| RawSHAKE256 (Absorbing) | 151 MiB/s   | 16.42 cycles/byte |
+| RawSHAKE256 (Squeezing) | 145 MiB/s   | 17.10 cycles/byte |
+| Duplex (c448)           | 135 MiB/s   | 18.37 cycles/byte |
+| Duplex (c512)           | 130 MiB/s   | 19.07 cycles/byte |
+| Duplex (c768)           | 104 MiB/s   | 23.84 cycles/byte |
+| Duplex (c1024)          | 73 MiB/s    | 33.97 cycles/byte |
+| Keccak-f\[1600\]        | 783 ns/call | 2035 cycles/call  |
+| Keccak-f\[800\]         | 687 ns/call | 1786 cycles/call  |
+| Keccak-f\[400\]         | 656 ns/call | 1706 cycles/call  |
+| Keccak-f\[200\]         | 586 ns/call | 1524 cycles/call  |
+| Keccak-f\[100\]         | 768 ns/call | 1997 cycles/call  |
+| Keccak-f\[50\]          | 671 ns/call | 1745 cycles/call  |
+| Keccak-f\[25\]          | 362 ns/call | 941 cycles/call   |
 
 # Formal Verification
 

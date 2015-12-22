@@ -275,6 +275,7 @@ is
    generic
       Name : String;
       with package Keccak_F is new Keccak.KeccakF(<>);
+      with package KeccakF_Permutation is new Keccak_F.Permutation(<>);
    procedure KeccakF_Benchmark;
    
    procedure KeccakF_Benchmark
@@ -283,9 +284,7 @@ is
       
       package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
       package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
-      
-      package KeccakF_Permutation is new Keccak_F.Permutation;
-      
+            
       State : Keccak_F.State;
       
       Start_Time : Ada.Real_Time.Time;
@@ -362,19 +361,33 @@ is
      ("Duplex r576c1024", 1024, Keccak.Keccak_1600.Duplex);
    
    procedure Benchmark_KeccakF_25 is new KeccakF_Benchmark
-     ("KeccakF[25]", Keccak.Keccak_25.KeccakF_25);
+     ("KeccakF[25]", 
+      Keccak.Keccak_25.KeccakF_25, 
+      Keccak.Keccak_25.KeccakF_25_Permutation);
    procedure Benchmark_KeccakF_50 is new KeccakF_Benchmark
-     ("KeccakF[50]", Keccak.Keccak_50.KeccakF_50);
+     ("KeccakF[50]", 
+      Keccak.Keccak_50.KeccakF_50, 
+      Keccak.Keccak_50.KeccakF_50_Permutation);
    procedure Benchmark_KeccakF_100 is new KeccakF_Benchmark
-     ("KeccakF[100]", Keccak.Keccak_100.KeccakF_100);
+     ("KeccakF[100]", 
+      Keccak.Keccak_100.KeccakF_100, 
+      Keccak.Keccak_100.KeccakF_100_Permutation);
    procedure Benchmark_KeccakF_200 is new KeccakF_Benchmark
-     ("KeccakF[200]", Keccak.Keccak_200.KeccakF_200);
+     ("KeccakF[200]", 
+      Keccak.Keccak_200.KeccakF_200, 
+      Keccak.Keccak_200.KeccakF_200_Permutation);
    procedure Benchmark_KeccakF_400 is new KeccakF_Benchmark
-     ("KeccakF[400]", Keccak.Keccak_400.KeccakF_400);
+     ("KeccakF[400]", 
+      Keccak.Keccak_400.KeccakF_400, 
+      Keccak.Keccak_400.KeccakF_400_Permutation);
    procedure Benchmark_KeccakF_800 is new KeccakF_Benchmark
-     ("KeccakF[800]", Keccak.Keccak_800.KeccakF_800);
+     ("KeccakF[800]", 
+      Keccak.Keccak_800.KeccakF_800, 
+      Keccak.Keccak_800.KeccakF_800_Permutation);
    procedure Benchmark_KeccakF_1600 is new KeccakF_Benchmark
-     ("KeccakF[1600]", Keccak.Keccak_1600.KeccakF_1600);
+     ("KeccakF[1600]", 
+      Keccak.Keccak_1600.KeccakF_1600, 
+      Keccak.Keccak_1600.KeccakF_1600_Permutation);
 
 begin
    Ada.Text_IO.Put_Line("Algorithm,Time,Data Length,Performance");

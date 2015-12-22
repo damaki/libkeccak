@@ -60,7 +60,7 @@ is
       
       Data_Last           : Keccak.Types.Index_Number;
       
-      Initial_Rate        : Positive := Rate_Of(Ctx) with Ghost;
+      Initial_Bit_Rate    : Positive := Rate_Of(Ctx);
       
    begin
       if Initial_Data_Len > 0 then
@@ -96,14 +96,14 @@ is
 
             XOR_Bits_Into_State(Ctx.State, 
                                 Ctx.Block(0 .. Ctx.Rate - 1),
-                                Rate_Of(Ctx));
+                                Initial_Bit_Rate);
             F(Ctx.State);
             
             pragma Assert(Offset + Remaining_Bytes = Initial_Data_Len);
             pragma Assert(Remaining_Bytes = (Remaining_Bits + 7) / 8);
 
             -- Process complete blocks
-            while Remaining_Bits >= Rate_Of(Ctx) loop
+            while Remaining_Bits >= Initial_Bit_Rate loop
                pragma Loop_Variant(Decreases => Remaining_Bytes,
                                    Decreases => Remaining_Bits,
                                    Increases => Offset);
@@ -111,17 +111,17 @@ is
                                      and Remaining_Bytes = (Remaining_Bits + 7) / 8
                                      and (Bit_Length mod 8) = (Remaining_Bits mod 8)
                                      and State_Of(Ctx) = Absorbing
-                                     and Rate_Of(Ctx) = Initial_Rate);
+                                     and Rate_Of(Ctx) = Initial_Bit_Rate);
 
                XOR_Bits_Into_State(Ctx.State,
                                    Data(Data'First + Offset ..
                                        Data'First + (Offset + (Ctx.Rate - 1))),
-                                   Rate_Of(Ctx));
+                                   Initial_Bit_Rate);
                F(Ctx.State);
 
                Offset          := Offset          + Ctx.Rate;
                Remaining_Bytes := Remaining_Bytes - Ctx.Rate;
-               Remaining_Bits  := Remaining_Bits  - Rate_Of(Ctx);
+               Remaining_Bits  := Remaining_Bits  - Initial_Bit_Rate;
             end loop;
             
             -- No more complete blocks. Store the leftovers
@@ -135,7 +135,7 @@ is
             pragma Assert((Remaining_Bits mod 8) = (Bit_Length mod 8)
                           and State_Of(Ctx) = Absorbing
                           and Remaining_Bits < Rate_Of(Ctx)
-                          and Rate_Of(Ctx) = Initial_Rate);
+                          and Rate_Of(Ctx) = Initial_Bit_Rate);
             
             Ctx.Bits_Absorbed := Remaining_Bits;
 
