@@ -31,7 +31,7 @@ is
    procedure Init(Ctx : out Context)
    is
    begin
-      Hash_Sponge.Init(Ctx.Sponge_Ctx, Digest_Size * 2);
+      Hash_Sponge.Init(Ctx.Sponge_Ctx, Capacity);
       Ctx.Update_Complete := False;
    end Init;
 
