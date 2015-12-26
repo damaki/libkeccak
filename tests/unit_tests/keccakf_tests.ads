@@ -36,6 +36,9 @@ generic
                                       Bit_Len : in     Natural);
    with procedure Extract_Bytes(A    : in     KeccakF.State;
                                 Data :    out Keccak.Types.Byte_Array);
+   with procedure Extract_Bits(A       : in     KeccakF.State;
+                               Data    :    out Keccak.Types.Byte_Array;
+                               Bit_Len : in     Natural);
 package KeccakF_Tests
 is
 
@@ -50,6 +53,7 @@ is
    procedure Test_XOR_No_Data(T : in out Test);
    procedure Test_XOR_Entire_State(T : in out Test);
    procedure Test_XOR_Bit_Length(T : in out Test);
+   procedure Test_Extract_Bits_Same_As_Extract_Bytes(T : in out Test);
 
 end KeccakF_Tests;
 

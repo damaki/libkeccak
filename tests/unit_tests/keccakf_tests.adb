@@ -206,5 +206,42 @@ is
       end loop;
    
    end Test_Extract_Bytes;
+   
+   -- Test that Extract_Bits and Extract_Bytes have the same output for 
+   -- all possible byte lengths.
+   --
+   -- Extract_Bits should behave exactly the same as Extract_Bytes when
+   -- the bit length is a multiple of 8.
+   procedure Test_Extract_Bits_Same_As_Extract_Bytes(T : in out Test)
+   is
+      use type Keccak.Types.Byte;
+   
+      Data         : Keccak.Types.Byte_Array(1 .. (KeccakF.B + 7) / 8);
+      Bytes_Result : Keccak.Types.Byte_Array(1 .. (KeccakF.B + 7) / 8);
+      Bits_Result  : Keccak.Types.Byte_Array(1 .. (KeccakF.B + 7) / 8);
+   
+   begin
+      -- Initialize each value in 'Data' with a unique value
+      -- and setup the keccak state with the data
+      for I in Positive range 1 .. (KeccakF.B + 7) / 8 loop
+         Data(I) := Keccak.Types.Byte(I);
+      end loop;
+      XOR_Bits_Into_State(T.State, Data, KeccakF.B);
+      
+      -- Now call Extract_Bytes for all possible output lengths,
+      -- checking that the correct data is returned.
+      for I in Natural range 0 .. KeccakF.B / 8 loop
+         Bits_Result  := (others => 0);
+         Bytes_Result := (others => 16#FF#);
+         
+         Extract_Bytes(T.State, Bytes_Result(1 .. I));
+         
+         Extract_Bits(T.State, Bits_Result(1 .. I), I*8);
+         
+         Assert(Bytes_Result(1 .. I) = Bits_Result(1 .. I),
+                "Extract_Bits and Extract_Bytes have different output for " &
+                "length" & Integer'Image(I));
+      end loop;
+   end Test_Extract_Bits_Same_As_Extract_Bytes;
 
 end KeccakF_Tests;

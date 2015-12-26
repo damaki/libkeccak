@@ -40,37 +40,44 @@ is
    package KeccakF_1600_Tests is new KeccakF_Tests
       (Keccak.Keccak_1600.KeccakF_1600,
        Keccak.Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
-       Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes);
+       Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
+       Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bits);
        
    package KeccakF_800_Tests is new KeccakF_Tests
       (Keccak.Keccak_800.KeccakF_800,
        Keccak.Keccak_800.KeccakF_800_Lanes.XOR_Bits_Into_State,
-       Keccak.Keccak_800.KeccakF_800_Lanes.Extract_Bytes);
+       Keccak.Keccak_800.KeccakF_800_Lanes.Extract_Bytes,
+       Keccak.Keccak_800.KeccakF_800_Lanes.Extract_Bits);
        
    package KeccakF_400_Tests is new KeccakF_Tests
       (Keccak.Keccak_400.KeccakF_400,
        Keccak.Keccak_400.KeccakF_400_Lanes.XOR_Bits_Into_State,
-       Keccak.Keccak_400.KeccakF_400_Lanes.Extract_Bytes);
+       Keccak.Keccak_400.KeccakF_400_Lanes.Extract_Bytes,
+       Keccak.Keccak_400.KeccakF_400_Lanes.Extract_Bits);
        
    package KeccakF_200_Tests is new KeccakF_Tests
       (Keccak.Keccak_200.KeccakF_200,
        Keccak.Keccak_200.KeccakF_200_Lanes.XOR_Bits_Into_State,
-       Keccak.Keccak_200.KeccakF_200_Lanes.Extract_Bytes);
+       Keccak.Keccak_200.KeccakF_200_Lanes.Extract_Bytes,
+       Keccak.Keccak_200.KeccakF_200_Lanes.Extract_Bits);
        
    package KeccakF_100_Tests is new KeccakF_Tests
       (Keccak.Keccak_100.KeccakF_100,
        Keccak.Keccak_100.KeccakF_100_Lanes.XOR_Bits_Into_State,
-       Keccak.Keccak_100.KeccakF_100_Lanes.Extract_Bytes);
+       Keccak.Keccak_100.KeccakF_100_Lanes.Extract_Bytes,
+       Keccak.Keccak_100.KeccakF_100_Lanes.Extract_Bits);
        
    package KeccakF_50_Tests is new KeccakF_Tests
       (Keccak.Keccak_50.KeccakF_50,
        Keccak.Keccak_50.KeccakF_50_Lanes.XOR_Bits_Into_State,
-       Keccak.Keccak_50.KeccakF_50_Lanes.Extract_Bytes);
+       Keccak.Keccak_50.KeccakF_50_Lanes.Extract_Bytes,
+       Keccak.Keccak_50.KeccakF_50_Lanes.Extract_Bits);
        
    package KeccakF_25_Tests is new KeccakF_Tests
       (Keccak.Keccak_25.KeccakF_25,
        Keccak.Keccak_25.KeccakF_25_Lanes.XOR_Bits_Into_State,
-       Keccak.Keccak_25.KeccakF_25_Lanes.Extract_Bytes);
+       Keccak.Keccak_25.KeccakF_25_Lanes.Extract_Bytes,
+       Keccak.Keccak_25.KeccakF_25_Lanes.Extract_Bits);
           
    package Caller_1600 is new AUnit.Test_Caller (KeccakF_1600_Tests.Test);
    package Caller_800  is new AUnit.Test_Caller (KeccakF_800_Tests.Test);
@@ -95,6 +102,8 @@ is
                                       KeccakF_1600_Tests.Test_XOR_Entire_State'Access));
       Ret.Add_Test(Caller_1600.Create("Keccak-f[1600]: Test XOR is correct all possible bit-lengths", 
                                       KeccakF_1600_Tests.Test_XOR_Bit_Length'Access));
+      Ret.Add_Test(Caller_1600.Create("Keccak-f[1600]: Test Extract_Bits and Extract_Bytes equivalence", 
+                                      KeccakF_1600_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
                                  
       Ret.Add_Test(Caller_800.Create("Keccak-f[800]: Test initial Keccak state is zero", 
                                       KeccakF_800_Tests.Test_Initial_State'Access));
@@ -106,6 +115,8 @@ is
                                       KeccakF_800_Tests.Test_XOR_Entire_State'Access));
       Ret.Add_Test(Caller_800.Create("Keccak-f[800]: Test XOR is correct all possible bit-lengths", 
                                       KeccakF_800_Tests.Test_XOR_Bit_Length'Access));
+      Ret.Add_Test(Caller_800.Create("Keccak-f[800]: Test Extract_Bits and Extract_Bytes equivalence", 
+                                      KeccakF_800_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
                                  
       Ret.Add_Test(Caller_400.Create("Keccak-f[400]: Test initial Keccak state is zero", 
                                       KeccakF_400_Tests.Test_Initial_State'Access));
@@ -117,6 +128,8 @@ is
                                       KeccakF_400_Tests.Test_XOR_Entire_State'Access));
       Ret.Add_Test(Caller_400.Create("Keccak-f[400]: Test XOR is correct all possible bit-lengths", 
                                       KeccakF_400_Tests.Test_XOR_Bit_Length'Access));
+      Ret.Add_Test(Caller_400.Create("Keccak-f[400]: Test Extract_Bits and Extract_Bytes equivalence", 
+                                      KeccakF_400_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
                                  
       Ret.Add_Test(Caller_200.Create("Keccak-f[200]: Test initial Keccak state is zero", 
                                       KeccakF_200_Tests.Test_Initial_State'Access));
@@ -128,6 +141,8 @@ is
                                       KeccakF_200_Tests.Test_XOR_Entire_State'Access));
       Ret.Add_Test(Caller_200.Create("Keccak-f[200]: Test XOR is correct all possible bit-lengths", 
                                       KeccakF_200_Tests.Test_XOR_Bit_Length'Access));
+      Ret.Add_Test(Caller_200.Create("Keccak-f[200]: Test Extract_Bits and Extract_Bytes equivalence", 
+                                      KeccakF_200_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
                                  
       Ret.Add_Test(Caller_100.Create("Keccak-f[100]: Test initial Keccak state is zero", 
                                       KeccakF_100_Tests.Test_Initial_State'Access));
@@ -139,6 +154,8 @@ is
                                       KeccakF_100_Tests.Test_XOR_Entire_State'Access));
       Ret.Add_Test(Caller_100.Create("Keccak-f[100]: Test XOR is correct all possible bit-lengths", 
                                       KeccakF_100_Tests.Test_XOR_Bit_Length'Access));
+      Ret.Add_Test(Caller_100.Create("Keccak-f[100]: Test Extract_Bits and Extract_Bytes equivalence", 
+                                      KeccakF_100_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
                                  
       Ret.Add_Test(Caller_50.Create("Keccak-f[50]: Test initial Keccak state is zero", 
                                      KeccakF_50_Tests.Test_Initial_State'Access));
@@ -150,6 +167,8 @@ is
                                      KeccakF_50_Tests.Test_XOR_Entire_State'Access));
       Ret.Add_Test(Caller_50.Create("Keccak-f[50]: Test XOR is correct all possible bit-lengths", 
                                      KeccakF_50_Tests.Test_XOR_Bit_Length'Access));
+      Ret.Add_Test(Caller_50.Create("Keccak-f[50]: Test Extract_Bits and Extract_Bytes equivalence", 
+                                      KeccakF_50_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
                                  
       Ret.Add_Test(Caller_25.Create("Keccak-f[25]: Test initial Keccak state is zero", 
                                      KeccakF_25_Tests.Test_Initial_State'Access));
@@ -161,6 +180,8 @@ is
                                      KeccakF_25_Tests.Test_XOR_Entire_State'Access));
       Ret.Add_Test(Caller_25.Create("Keccak-f[25]: Test XOR is correct all possible bit-lengths", 
                                      KeccakF_25_Tests.Test_XOR_Bit_Length'Access));
+      Ret.Add_Test(Caller_25.Create("Keccak-f[25]: Test Extract_Bits and Extract_Bytes equivalence", 
+                                      KeccakF_25_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
       
       return Ret;
    end Suite;
