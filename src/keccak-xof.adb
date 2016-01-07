@@ -31,7 +31,7 @@ is
    procedure Init(Ctx : out Context)
    is
    begin
-      XOF_Sponge.Init(Ctx.Sponge_Ctx, Capacity_Size);
+      XOF_Sponge.Init(Ctx.Sponge_Ctx, Capacity);
       Ctx.Update_Complete := False;
    end Init;
 

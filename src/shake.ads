@@ -39,16 +39,16 @@ is
    -- See Section 6.2 of NIST FIPS-202.
 
    package SHAKE128 is new Keccak.XOF
-     (XOF_Sponge    => Keccak.Keccak_1600.Sponge,
-      Capacity_Size => 256,
-      Suffix        => 2#11_11#,
-      Suffix_Size   => 4);
+     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+      Capacity    => 256,
+      Suffix      => 2#11_11#,
+      Suffix_Size => 4);
 
    package SHAKE256 is new Keccak.XOF
-     (XOF_Sponge    => Keccak.Keccak_1600.Sponge,
-      Capacity_Size => 512,
-      Suffix        => 2#11_11#,
-      Suffix_Size   => 4);
+     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+      Capacity    => 512,
+      Suffix      => 2#11_11#,
+      Suffix_Size => 4);
 
 
 end SHAKE;
