@@ -45,8 +45,8 @@ generic
    
    -- Sponge capacity.
    --
-   -- This must be a multiple of 8, and must be smaller than 1600.
-   Capacity_Size : Positive;
+   -- This must be a multiple of 8, and must be smaller than the state size.
+   Capacity      : Positive;
 
    Suffix        : Keccak.Types.Byte;
 
@@ -54,9 +54,6 @@ generic
    
    -- @summary
    -- Generic eXtendable Output Function (XOF).
-   --
-   -- @description
-   -- The 
 package Keccak.XOF
 is
    -- Import common types from Keccak.Types to avoid users of the

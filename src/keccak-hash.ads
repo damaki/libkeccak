@@ -42,8 +42,11 @@ with Keccak.Types;
 generic
    with package Hash_Sponge is new Keccak.Sponge(<>);
 
-   -- Output digest size in bits. E.g. for SHA3-256 Digest_Size=256
-   Digest_Size : Positive;
+   -- The capacity of the hash. By default the capacity is twice the digest size.
+   --
+   -- The Rate is calculated as Hash_Sponge.State_Size - Capacity, and the value
+   -- for the capacity must be chosen so that the rate is a multiple of 8.
+   Capacity : Positive := Digest_Size * 2;
 
    -- Up to 8 bits that are appended to the message before padding bits.
    --
@@ -54,18 +57,12 @@ generic
    -- in the range 0 .. 8.
    Suffix_Size : Natural;
 
-   -- The capacity of the hash. By default the capacity is twice the digest size.
-   --
-   -- The Rate is calculated as Hash_Sponge.State_Size - Capacity, and the value
-   -- for the capacity must be chosen so that the rate is a multiple of 8.
-   Capacity : Positive := Digest_Size * 2;
+   -- Output digest size in bits. E.g. for SHA3-256 Digest_Size=256
+   Digest_Size : Positive;
 
    -- @summary
    -- A generic implementation of a hashing algorithm based on the Sponge
    -- cryptographic primitive.
-   --
-   -- @description
-   -- The
 package Keccak.Hash
 is
    -- Import common types from Keccak.Types to avoid users of the
