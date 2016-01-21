@@ -69,6 +69,43 @@ is
 
 
 
+   procedure Update(Ctx     : in out Context;
+                    Message : in     Byte_Array)
+   is
+      Max_Chunk_Len : constant := (Natural'Last / 8) - 1;
+
+      Remaining     : Natural  := Message'Length;
+      Offset        : Natural  := 0;
+
+   begin
+      while Remaining >= Max_Chunk_Len loop
+         pragma Loop_Variant(Decreases => Remaining);
+         pragma Loop_Invariant(Remaining + Offset = Message'Length
+                               and State_Of(Ctx) = Updating);
+
+         Update(Ctx,
+                Message(Message'First + Offset .. Message'First + Offset + (Max_Chunk_Len - 1)),
+                Max_Chunk_Len * 8);
+
+         Remaining := Remaining - Max_Chunk_Len;
+         Offset    := Offset    + Max_Chunk_Len;
+      end loop;
+
+      if Remaining > 0 then
+         pragma Assert_And_Cut(Remaining < Natural'Last / 8
+                               and Offset + Remaining = Message'Length
+                               and State_Of(Ctx) = Updating);
+
+         Update(Ctx,
+                Message(Message'First + Offset .. Message'Last),
+                Remaining * 8);
+
+         pragma Assert(State_Of(Ctx) = Updating);
+      end if;
+   end Update;
+
+
+
    procedure Final(Ctx     : in out Context;
                    Digest  :    out Digest_Type)
    is

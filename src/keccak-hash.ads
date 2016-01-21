@@ -116,7 +116,7 @@ is
      Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old)),
      Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
                         others               => State_Of(Ctx) = Ready_To_Finish);
-   -- Add message bytes to the hash computation
+   -- Add bit-oriented messages to the hash computation
    --
    -- This procedure can be called multiple times to process
    -- large amounts of data in chunks. However, for all calls before the last
@@ -129,6 +129,20 @@ is
    -- @param Message The bytes to hash.
    -- @param Bit_Length The number of bits to hash from the Message array.
    -- Any additional bits in the Message array past this length are ignored.
+
+
+   procedure Update(Ctx     : in out Context;
+                    Message : in     Byte_Array)
+     with Depends => (Ctx => + Message),
+     Pre => State_Of(Ctx) = Updating,
+     Post => State_Of(Ctx) = Updating;
+   -- Add byte-oriented messages to the hash computation.
+   --
+   -- This procedure can be called multiple times to process large amounts
+   -- of data in chunks.
+   --
+   -- @param Ctx The hash context to update.
+   -- @param Message The bytes to hash.
 
 
 

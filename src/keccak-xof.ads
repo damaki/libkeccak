@@ -94,7 +94,7 @@ is
      Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old)),
      Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
                         others               => State_Of(Ctx) = Ready_To_Extract);
-   -- Input data into the XOF.
+   -- Input bit-oriented data into the XOF.
    --
    -- This function can be called multiple times to input large amounts of
    -- data. 
@@ -114,6 +114,20 @@ is
    --   bits are ignored. All calls to Update before the last call must have
    --   Bit_Length as a multiple of 8 bits. The last call to Update can have
    --   Bit_Length with any value.
+   
+   
+   procedure Update(Ctx     : in out Context;
+                    Message : in     Byte_Array)
+     with Depends => (Ctx => + Message),
+     Pre => State_Of(Ctx) = Updating,
+     Post => State_Of(Ctx) = Updating;
+   -- Input byte-oriented data into the XOF.
+   --
+   -- This procedure can be called multiple times to process large amounts
+   -- of data in chunks.
+   --
+   -- @param Ctx The hash context to update.
+   -- @param Message The bytes to input into the XOF.
    
    
 
