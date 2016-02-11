@@ -58,7 +58,7 @@ begin
    SHA3.SHA3_256.Final(Ctx, Digest);
    
    return Digest;
-end Compute_ash;
+end Compute_Hash;
 ```
 
 # License
