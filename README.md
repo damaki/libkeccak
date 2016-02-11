@@ -35,7 +35,31 @@ the Keccak team which were submitted in the SHA-3 competition:
 
 These hash functions differ from the final SHA-3 hash functions only in that the
 SHA-3 functions append two additional bits to each message, whereas the Keccak
-hash functions do not. 
+hash functions do not.
+
+# Example
+
+Here's an example of calculating the SHA3-256 hash of a byte array (array of
+type ``Interfaces.Unsigned_8``):
+
+```Ada
+with Keccak.Types;
+with SHA3;
+
+function Compute_Hash(Data : in Keccak.Types.Byte_Array)
+   return SHA3.SHA3_256.Digest_Type
+is
+   Ctx    : SHA3.SHA3_256.Context;
+   Digest : SHA3.SHA3_256.Digest_Type;
+
+begin
+   SHA3.SHA3_256.Init(Ctx);
+   SHA3.SHA3_256.Update(Ctx, Data);
+   SHA3.SHA3_256.Final(Ctx, Digest);
+   
+   return Digest;
+end Compute_ash;
+```
 
 # License
 
