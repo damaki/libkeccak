@@ -43,5 +43,9 @@ is
    procedure Test_Absorb_Streaming(T : in out Test);
    procedure Test_Squeeze_Streaming(T : in out Test);
    procedure Test_Absorb_No_Suffix(T : in out Test);
+   procedure Test_Suffix_Bits(T : in out Test);
+   procedure Test_Null_Absorb(T : in out Test);
+   procedure Test_Absorb_Suffix_Only(T : in out Test);
+   procedure Test_Suffix_Packing(T : in out Test);
 
 end Sponge_Tests;

@@ -86,6 +86,22 @@ is
          (Caller_1600.Create
             ("Sponge[Keccak-f[1600], pad10*1, 512]: Absorb same as Absorb_With_Suffix with 0 suffix bits", 
              Sponge_1600_Tests.Test_Absorb_No_Suffix'Access));
+      Ret.Add_Test
+         (Caller_1600.Create
+            ("Sponge[Keccak-f[1600], pad10*1, 512]: Absorb_With_Suffix is same as Absorb with suffix bits in message", 
+             Sponge_1600_Tests.Test_Suffix_Bits'Access));
+      Ret.Add_Test
+         (Caller_1600.Create
+            ("Sponge[Keccak-f[1600], pad10*1, 512]: Test absorbing 0 bits", 
+             Sponge_1600_Tests.Test_Null_Absorb'Access));
+      Ret.Add_Test
+         (Caller_1600.Create
+            ("Sponge[Keccak-f[1600], pad10*1, 512]: Test absorbing only suffix bits", 
+             Sponge_1600_Tests.Test_Absorb_Suffix_Only'Access));
+      Ret.Add_Test
+         (Caller_1600.Create
+            ("Sponge[Keccak-f[1600], pad10*1, 512]: Test suffix bits packing", 
+             Sponge_1600_Tests.Test_Suffix_Packing'Access));
              
       Ret.Add_Test
          (Caller_800.Create
@@ -99,6 +115,22 @@ is
          (Caller_800.Create
             ("Sponge[Keccak-f[800], pad10*1, 512]: Absorb same as Absorb_With_Suffix with 0 suffix bits", 
              Sponge_800_Tests.Test_Absorb_No_Suffix'Access));
+      Ret.Add_Test
+         (Caller_800.Create
+            ("Sponge[Keccak-f[800], pad10*1, 512]: Absorb_With_Suffix is same as Absorb with suffix bits in message", 
+             Sponge_800_Tests.Test_Suffix_Bits'Access));
+      Ret.Add_Test
+         (Caller_800.Create
+            ("Sponge[Keccak-f[800], pad10*1, 512]: Test absorbing 0 bits", 
+             Sponge_800_Tests.Test_Null_Absorb'Access));
+      Ret.Add_Test
+         (Caller_800.Create
+            ("Sponge[Keccak-f[800], pad10*1, 512]: Test absorbing only suffix bits", 
+             Sponge_800_Tests.Test_Absorb_Suffix_Only'Access));
+      Ret.Add_Test
+         (Caller_800.Create
+            ("Sponge[Keccak-f[800], pad10*1, 512]: Test suffix bits packing", 
+             Sponge_800_Tests.Test_Suffix_Packing'Access));
              
       Ret.Add_Test
          (Caller_400.Create
@@ -112,6 +144,22 @@ is
          (Caller_400.Create
             ("Sponge[Keccak-f[400], pad10*1, 256]: Absorb same as Absorb_With_Suffix with 0 suffix bits", 
              Sponge_400_Tests.Test_Absorb_No_Suffix'Access));
+      Ret.Add_Test
+         (Caller_400.Create
+            ("Sponge[Keccak-f[400], pad10*1, 256]: Absorb_With_Suffix is same as Absorb with suffix bits in message", 
+             Sponge_400_Tests.Test_Suffix_Bits'Access));
+      Ret.Add_Test
+         (Caller_400.Create
+            ("Sponge[Keccak-f[400], pad10*1, 256]: Test absorbing 0 bits", 
+             Sponge_400_Tests.Test_Null_Absorb'Access));
+      Ret.Add_Test
+         (Caller_400.Create
+            ("Sponge[Keccak-f[400], pad10*1, 256]: Test absorbing only suffix bits", 
+             Sponge_400_Tests.Test_Absorb_Suffix_Only'Access));
+      Ret.Add_Test
+         (Caller_400.Create
+            ("Sponge[Keccak-f[400], pad10*1, 256]: Test suffix bits packing", 
+             Sponge_400_Tests.Test_Suffix_Packing'Access));
              
       Ret.Add_Test
          (Caller_200.Create
@@ -125,6 +173,22 @@ is
          (Caller_200.Create
             ("Sponge[Keccak-f[200], pad10*1, 128]: Absorb same as Absorb_With_Suffix with 0 suffix bits", 
              Sponge_200_Tests.Test_Absorb_No_Suffix'Access));
+      Ret.Add_Test
+         (Caller_200.Create
+            ("Sponge[Keccak-f[200], pad10*1, 128]: Absorb_With_Suffix is same as Absorb with suffix bits in message", 
+             Sponge_200_Tests.Test_Suffix_Bits'Access));
+      Ret.Add_Test
+         (Caller_200.Create
+            ("Sponge[Keccak-f[200], pad10*1, 128]: Test absorbing 0 bits", 
+             Sponge_200_Tests.Test_Null_Absorb'Access));
+      Ret.Add_Test
+         (Caller_200.Create
+            ("Sponge[Keccak-f[200], pad10*1, 128]: Test absorbing only suffix bits", 
+             Sponge_200_Tests.Test_Absorb_Suffix_Only'Access));
+      Ret.Add_Test
+         (Caller_200.Create
+            ("Sponge[Keccak-f[200], pad10*1, 128]: Test suffix bits packing", 
+             Sponge_200_Tests.Test_Suffix_Packing'Access));
              
       Ret.Add_Test
          (Caller_100.Create
@@ -138,6 +202,22 @@ is
          (Caller_100.Create
             ("Sponge[Keccak-f[100], pad10*1, 60]: Absorb same as Absorb_With_Suffix with 0 suffix bits", 
              Sponge_100_Tests.Test_Absorb_No_Suffix'Access));
+      Ret.Add_Test
+         (Caller_100.Create
+            ("Sponge[Keccak-f[100], pad10*1, 60]: Absorb_With_Suffix is same as Absorb with suffix bits in message", 
+             Sponge_100_Tests.Test_Suffix_Bits'Access));
+      Ret.Add_Test
+         (Caller_100.Create
+            ("Sponge[Keccak-f[100], pad10*1, 60]: Test absorbing 0 bits", 
+             Sponge_100_Tests.Test_Null_Absorb'Access));
+      Ret.Add_Test
+         (Caller_100.Create
+            ("Sponge[Keccak-f[100], pad10*1, 60]: Test absorbing only suffix bits", 
+             Sponge_100_Tests.Test_Absorb_Suffix_Only'Access));
+      Ret.Add_Test
+         (Caller_100.Create
+            ("Sponge[Keccak-f[100], pad10*1, 60]: Test suffix bits packing", 
+             Sponge_100_Tests.Test_Suffix_Packing'Access));
              
       Ret.Add_Test
          (Caller_50.Create
@@ -151,6 +231,22 @@ is
          (Caller_50.Create
             ("Sponge[Keccak-f[50], pad10*1, 26]: Absorb same as Absorb_With_Suffix with 0 suffix bits", 
              Sponge_50_Tests.Test_Absorb_No_Suffix'Access));
+      Ret.Add_Test
+         (Caller_50.Create
+            ("Sponge[Keccak-f[50], pad10*1, 26]: Absorb_With_Suffix is same as Absorb with suffix bits in message", 
+             Sponge_50_Tests.Test_Suffix_Bits'Access));
+      Ret.Add_Test
+         (Caller_50.Create
+            ("Sponge[Keccak-f[50], pad10*1, 26]: Test absorbing 0 bits", 
+             Sponge_50_Tests.Test_Null_Absorb'Access));
+      Ret.Add_Test
+         (Caller_50.Create
+            ("Sponge[Keccak-f[50], pad10*1, 26]: Test absorbing only suffix bits", 
+             Sponge_50_Tests.Test_Absorb_Suffix_Only'Access));
+      Ret.Add_Test
+         (Caller_50.Create
+            ("Sponge[Keccak-f[50], pad10*1, 26]: Test suffix bits packing", 
+             Sponge_50_Tests.Test_Suffix_Packing'Access));
              
       Ret.Add_Test
          (Caller_25.Create
@@ -164,6 +260,22 @@ is
          (Caller_25.Create
             ("Sponge[Keccak-f[25], pad10*1, 9]: Absorb same as Absorb_With_Suffix with 0 suffix bits", 
              Sponge_25_Tests.Test_Absorb_No_Suffix'Access));
+      Ret.Add_Test
+         (Caller_25.Create
+            ("Sponge[Keccak-f[25], pad10*1, 9]: Absorb_With_Suffix is same as Absorb with suffix bits in message", 
+             Sponge_25_Tests.Test_Suffix_Bits'Access));
+      Ret.Add_Test
+         (Caller_25.Create
+            ("Sponge[Keccak-f[25], pad10*1, 9]: Test absorbing 0 bits", 
+             Sponge_25_Tests.Test_Null_Absorb'Access));
+      Ret.Add_Test
+         (Caller_25.Create
+            ("Sponge[Keccak-f[25], pad10*1, 9]: Test absorbing only suffix bits", 
+             Sponge_25_Tests.Test_Absorb_Suffix_Only'Access));
+      Ret.Add_Test
+         (Caller_25.Create
+            ("Sponge[Keccak-f[25], pad10*1, 9]: Test suffix bits packing", 
+             Sponge_25_Tests.Test_Suffix_Packing'Access));
 
       
       return Ret;
