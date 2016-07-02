@@ -136,7 +136,7 @@ at some point to add proof that the algorithms correctly implement the specifica
 Correctness of the algorithms is demonstrated using a combination of unit
 testing and Known Answer Tests (KAT). The Known Answer Tests comprise the bulk
 of the tests and they provide assurance that the algorithms are implemented
-correctly. Currently there are 
+correctly.
 
 The unit tests aim to cover the cases that are not covered by the KAT, such
 as boundary conditions. As the project moves forwards I will experiment with
