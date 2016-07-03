@@ -25,12 +25,12 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Types; use Keccak.Types;
-with Keccak.XOF;
+with Keccak.Generic_XOF;
 
-pragma Elaborate_All(Keccak.XOF);
+pragma Elaborate_All(Keccak.Generic_XOF);
 
 generic
-   with package XOF is new Keccak.XOF(<>);
+   with package XOF is new Keccak.Generic_XOF(<>);
    --  The extendable output function on which the CSHAKE instance is
    --  constructed.
 package Keccak.Generic_CSHAKE
