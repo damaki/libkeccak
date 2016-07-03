@@ -80,6 +80,8 @@ generic
    -- block if there is not enough free bits in the first provided block).
 package Keccak.Generic_Sponge
 is
+   
+   Block_Size_Bits : constant Positive := State_Size;
 
    type States is (Absorbing, Squeezing);
 

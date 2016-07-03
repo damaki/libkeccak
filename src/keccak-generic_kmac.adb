@@ -24,41 +24,58 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Interfaces;
-with Keccak.Types;
+with Keccak.Util;
 
-package Keccak.Util
-with SPARK_Mode => On
+package body Keccak.Generic_KMAC
 is
-   use type Interfaces.Unsigned_8;
 
-   function To_Byte_Array (Str : in String) return Types.Byte_Array
-     with Inline,
-     Post => (To_Byte_Array'Result'Length = Str'Length
-              and To_Byte_Array'Result'First = Str'First
-              and To_Byte_Array'Result'Last = Str'Last);
-   -- Return the byte array representation of a string.
-   --
-   -- @param Str The string to convert to a byte array.
+   procedure Init(Ctx           :    out Context;
+                  Key           : in     Types.Byte_Array;
+                  Customization : in     String;
+                  Output_Length : in     Positive)
+   is
+      Encoded_Key_Length : constant Types.Byte_Array
+        := Util.Left_Encode(Key'Length);
+   begin
+      KMAC_CSHAKE.Init(Ctx           => Ctx.CSHAKE_Ctx,
+                       Customization => Customization,
+                       Function_Name => "kmac");
 
-   function Left_Encode(Length : in Natural) return Types.Byte_Array
-     with
-       Post => (Left_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Left_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
-   --  Encode a length using the left_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
-   --
-   --  Example, the length 16#ABCDEF# will be encoded as the byte array
-   --  (3, 16#AB#, 16#CD#, 16#EF#)
+      KMAC_CSHAKE.Update
+        (Ctx     => Ctx.CSHAKE_Ctx,
+         Message => Encoded_Key_Length);
+      KMAC_CSHAKE.Update
+        (Ctx     => Ctx.CSHAKE_Ctx,
+         Message => Key);
 
-   function Right_Encode(Length : in Natural) return Types.Byte_Array
-     with
-       Post => (Right_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Right_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
-   --  Encode a length using the right_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
-   --
-   --  Example, the length 16#ABCDEF# will be encoded as the byte array
-   --  (16#AB#, 16#CD#, 16#EF#, 3)
+      KMAC_CSHAKE.Update
+        (Ctx     => Ctx.CSHAKE_Ctx,
+         Message => KMAC_CSHAKE.Padding_Zeroes(Encoded_Key_Length'Length,
+                                               Key'Length));
 
-end Keccak.Util;
+      --  Output_Length will be overwritten during actual initialization
+      Ctx.Output_Length := Output_Length;
+   end Init;
+
+   procedure Update(Ctx     : in out Context;
+                    Message : in     Types.Byte_Array)
+   is
+   begin
+      KMAC_CSHAKE.Update(Ctx     => Ctx.CSHAKE_Ctx,
+                         Message => Message);
+   end Update;
+
+   procedure Finish(Ctx : in out Context;
+                    MAC :    out Types.Byte_Array)
+   is
+   begin
+      KMAC_CSHAKE.Update
+        (Ctx     => Ctx.CSHAKE_Ctx,
+         Message => Util.Right_Encode(Ctx.Output_Length));
+
+      KMAC_CSHAKE.Extract
+        (Ctx    => Ctx.CSHAKE_Ctx,
+         Digest => MAC);
+   end Finish;
+
+end Keccak.Generic_KMAC;

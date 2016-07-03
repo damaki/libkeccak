@@ -93,7 +93,6 @@ is
      Pre => (State_Of(Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
-     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old)),
      Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
                         others               => State_Of(Ctx) = Ready_To_Extract);
    -- Input bit-oriented data into the XOF.
@@ -136,8 +135,7 @@ is
    procedure Extract(Ctx    : in out Context;
                      Digest :    out Byte_Array)
      with Depends => ((Digest, Ctx) => (Ctx, Digest)),
-     Post => (State_Of(Ctx) = Extracting
-              and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
+     Post => State_Of(Ctx) = Extracting;
    -- Extract bytes from the XOF.
    --
    -- Each call to Extract can read an arbitrary number of bytes from the XOF.
@@ -155,7 +153,8 @@ is
    
    
 
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number;
+   function Rate return Positive
+     with Post => Rate'Result mod 8 = 0;
    -- @return The rate of the XOF (in bits).
    
 
@@ -168,13 +167,13 @@ private
       Update_Complete : Boolean;
    end record;
    
-
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
-   is (XOF_Sponge.Rate_Of(Ctx.Sponge_Ctx));
+   function Rate return Positive
+   is (XOF_Sponge.Block_Size_Bits - Capacity);
 
    function Can_Absorb(Ctx : in Context) return Boolean
    is (XOF_Sponge.In_Queue_Bit_Length(Ctx.Sponge_Ctx) mod 8 = 0 
-       and XOF_Sponge.In_Queue_Bit_Length(Ctx.Sponge_Ctx) < Rate_Of(Ctx));
+       and (XOF_Sponge.In_Queue_Bit_Length(Ctx.Sponge_Ctx) < 
+              XOF_Sponge.Rate_Of(Ctx.Sponge_Ctx)));
 
    function State_Of(Ctx : in Context) return States
    is (if XOF_Sponge.State_Of(Ctx.Sponge_Ctx) = XOF_Sponge.Squeezing then Extracting
