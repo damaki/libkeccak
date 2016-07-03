@@ -24,41 +24,16 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Interfaces;
-with Keccak.Types;
+with CSHAKE;
+with Keccak.Generic_KMAC;
 
-package Keccak.Util
+pragma Elaborate_All(Keccak.Generic_KMAC);
+
+package KMAC
 with SPARK_Mode => On
 is
-   use type Interfaces.Unsigned_8;
 
-   function To_Byte_Array (Str : in String) return Types.Byte_Array
-     with Inline,
-     Post => (To_Byte_Array'Result'Length = Str'Length
-              and To_Byte_Array'Result'First = Str'First
-              and To_Byte_Array'Result'Last = Str'Last);
-   -- Return the byte array representation of a string.
-   --
-   -- @param Str The string to convert to a byte array.
+   package KMAC128 is new Keccak.Generic_KMAC(CSHAKE.CSHAKE128);
+   package KMAC256 is new Keccak.Generic_KMAC(CSHAKE.CSHAKE256);
 
-   function Left_Encode(Length : in Natural) return Types.Byte_Array
-     with
-       Post => (Left_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Left_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
-   --  Encode a length using the left_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
-   --
-   --  Example, the length 16#ABCDEF# will be encoded as the byte array
-   --  (3, 16#AB#, 16#CD#, 16#EF#)
-
-   function Right_Encode(Length : in Natural) return Types.Byte_Array
-     with
-       Post => (Right_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Right_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
-   --  Encode a length using the right_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
-   --
-   --  Example, the length 16#ABCDEF# will be encoded as the byte array
-   --  (16#AB#, 16#CD#, 16#EF#, 3)
-
-end Keccak.Util;
+end KMAC;

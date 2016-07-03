@@ -18,4 +18,56 @@ is
       return String_To_Byte_Array_Conversion (Str);
    end To_Byte_Array;
 
+   function Left_Encode(Length : in Natural) return Types.Byte_Array
+   is
+      Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 1) := (others => 0);
+
+      X       : Natural := Length;
+      N       : Natural := 0;
+
+   begin
+
+      for I in Positive range 1 .. (Natural'Size / 8) loop
+         pragma Loop_Invariant(N = I - 1);
+
+         exit when X = 0;
+
+         Encoded(Encoded'Last - N) := Types.Byte(X mod 256);
+
+         X := X / 256;
+         N := N + 1;
+
+      end loop;
+
+      Encoded(Encoded'Last - N) := Types.Byte(N);
+
+      return Encoded(Encoded'Last - N .. Encoded'Last);
+   end Left_Encode;
+
+   function Right_Encode(Length : in Natural) return Types.Byte_Array
+   is
+      Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 1) := (others => 0);
+
+      X       : Natural := Length;
+      N       : Natural := 0;
+
+   begin
+
+      for I in Positive range 1 .. (Natural'Size / 8) loop
+         pragma Loop_Invariant(N = I - 1);
+
+         exit when X = 0;
+
+         Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
+
+         X := X / 256;
+         N := N + 1;
+
+      end loop;
+
+      Encoded(Encoded'Last) := Types.Byte(N);
+
+      return Encoded(Encoded'Last - N .. Encoded'Last);
+   end Right_Encode;
+
 end Keccak.Util;

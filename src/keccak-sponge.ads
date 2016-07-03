@@ -80,6 +80,8 @@ generic
    -- block if there is not enough free bits in the first provided block).
 package Keccak.Sponge
 is
+   
+   Block_Size_Bits : constant Positive := State_Size;
 
    type States is (Absorbing, Squeezing);
 
@@ -133,7 +135,8 @@ is
    
    
    function Rate_Of(Ctx : in Context) return Positive
-     with Post => Rate_Of'Result < State_Size;
+     with Post => (Rate_Of'Result < State_Size
+                   and Rate_Of'Result mod 8 = 0);
    -- Gets the currently configured rate of the sponge.
    --
    -- The rate is derived from the sponge's capacity and the State_Size.
