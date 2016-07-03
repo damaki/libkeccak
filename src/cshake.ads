@@ -24,41 +24,32 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Interfaces;
-with Keccak.Types;
+with Keccak.Generic_CSHAKE;
+with Keccak.XOF;
+with Keccak.Keccak_1600;
 
-package Keccak.Util
+pragma Elaborate_All(Keccak.Generic_CSHAKE);
+pragma Elaborate_All(Keccak.XOF);
+
+package CSHAKE
 with SPARK_Mode => On
 is
-   use type Interfaces.Unsigned_8;
+   package CSHAKE128_XOF is new Keccak.XOF
+     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+      Capacity    => 256,
+      Suffix      => 2#00#,
+      Suffix_Size => 2);
 
-   function To_Byte_Array (Str : in String) return Types.Byte_Array
-     with Inline,
-     Post => (To_Byte_Array'Result'Length = Str'Length
-              and To_Byte_Array'Result'First = Str'First
-              and To_Byte_Array'Result'Last = Str'Last);
-   -- Return the byte array representation of a string.
-   --
-   -- @param Str The string to convert to a byte array.
+   package CSHAKE256_XOF is new Keccak.XOF
+     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+      Capacity    => 512,
+      Suffix      => 2#00#,
+      Suffix_Size => 2);
 
-   function Left_Encode(Length : in Natural) return Types.Byte_Array
-     with
-       Post => (Left_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Left_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
-   --  Encode a length using the left_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
-   --
-   --  Example, the length 16#ABCDEF# will be encoded as the byte array
-   --  (3, 16#AB#, 16#CD#, 16#EF#)
+   package CSHAKE128 is new Keccak.Generic_CSHAKE
+     (XOF             => CSHAKE128_XOF);
 
-   function Right_Encode(Length : in Natural) return Types.Byte_Array
-     with
-       Post => (Right_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Right_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
-   --  Encode a length using the right_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
-   --
-   --  Example, the length 16#ABCDEF# will be encoded as the byte array
-   --  (16#AB#, 16#CD#, 16#EF#, 3)
+   package CSHAKE256 is new Keccak.Generic_CSHAKE
+     (XOF             => CSHAKE256_XOF);
 
-end Keccak.Util;
+end CSHAKE;
