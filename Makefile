@@ -1,12 +1,14 @@
 OUTPUT_DIR   = $(CURDIR)/out
 BUILD_DIR    = $(OUTPUT_DIR)/build
 
-GENERIC_BODIES = src/keccak-duplex.adb \
-                 src/keccak-hash.adb \
-                 src/keccak-sponge.adb \
-                 src/keccak-xof.adb \
-                 src/keccak-keccakf.adb \
-                 src/keccak-keccakf-permutation.adb
+GENERIC_BODIES = src/keccak-generic_duplex.adb \
+                 src/keccak-generic_hash.adb \
+                 src/keccak-generic_sponge.adb \
+                 src/keccak-generic_xof.adb \
+                 src/keccak-generic_keccakf.adb \
+                 src/keccak-generic_keccakf-permutation.adb \
+                 src/keccak-generic_keccakf-bit_lanes.adb \
+                 src/keccak-generic_keccakf-byte_lanes.adb
 
 ################################################################################
 

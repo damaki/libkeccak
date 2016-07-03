@@ -66,7 +66,7 @@ generic
    -- @description
    -- The duplex construction is a cryptographic scheme defined in the 
    -- specification "Cryptographic Sponge Functions" from authors of Keccak.
-package Keccak.Duplex
+package Keccak.Generic_Duplex
 is
    subtype Rate_Number is Positive range 1 + Min_Padding_Bits .. State_Size - 1;
 
@@ -182,4 +182,4 @@ private
    function Max_Input_Length(Ctx : in Context) return Positive
    is (Rate_Of(Ctx) - Min_Padding_Bits);
 
-end Keccak.Duplex;
+end Keccak.Generic_Duplex;

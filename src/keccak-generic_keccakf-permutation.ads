@@ -30,7 +30,7 @@ generic
    --
    -- By default, the definition from The Keccak Reference is used.
    Num_Rounds : Positive := 12 + (2*L);
-package Keccak.KeccakF.Permutation
+package Keccak.Generic_KeccakF.Permutation
 is
 
    procedure Permute(A : in out State)
@@ -39,4 +39,4 @@ is
    --
    -- @param A The Keccak state to permute.
 
-end Keccak.KeccakF.Permutation;
+end Keccak.Generic_KeccakF.Permutation;

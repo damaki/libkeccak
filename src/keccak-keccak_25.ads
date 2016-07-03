@@ -25,25 +25,25 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Interfaces;
-with Keccak.Duplex;
-with Keccak.KeccakF;
-with Keccak.KeccakF.Bit_Lanes;
-with Keccak.KeccakF.Permutation;
+with Keccak.Generic_Duplex;
+with Keccak.Generic_KeccakF;
+with Keccak.Generic_KeccakF.Bit_Lanes;
+with Keccak.Generic_KeccakF.Permutation;
 with Keccak.Padding;
-with Keccak.Sponge;
+with Keccak.Generic_Sponge;
 with Keccak.Types;
 
-pragma Elaborate_All(Keccak.Duplex);
-pragma Elaborate_All(Keccak.KeccakF);
-pragma Elaborate_All(Keccak.KeccakF.Bit_Lanes);
-pragma Elaborate_All(Keccak.KeccakF.Permutation);
-pragma Elaborate_All(Keccak.Sponge);
+pragma Elaborate_All(Keccak.Generic_Duplex);
+pragma Elaborate_All(Keccak.Generic_KeccakF);
+pragma Elaborate_All(Keccak.Generic_KeccakF.Bit_Lanes);
+pragma Elaborate_All(Keccak.Generic_KeccakF.Permutation);
+pragma Elaborate_All(Keccak.Generic_Sponge);
 
 package Keccak.Keccak_25
 with SPARK_Mode => On
 is
 
-   package KeccakF_25 is new Keccak.KeccakF
+   package KeccakF_25 is new Keccak.Generic_KeccakF
      (L           => 0,
       Lane_Type   => Keccak.Types.Unsigned_1,
       Shift_Left  => Keccak.Types.Shift_Left_1,
@@ -55,7 +55,7 @@ is
 
    package KeccakF_25_Lanes is new KeccakF_25.Bit_Lanes;
 
-   package Sponge is new Keccak.Sponge
+   package Sponge is new Keccak.Generic_Sponge
      (State_Size          => KeccakF_25.B,
       State_Type          => KeccakF_25.State,
       Init_State          => KeccakF_25.Init,
@@ -64,7 +64,7 @@ is
       Extract_Data        => KeccakF_25_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
 
-   package Duplex is new Keccak.Duplex
+   package Duplex is new Keccak.Generic_Duplex
      (State_Size          => KeccakF_25.B,
       State_Type          => KeccakF_25.State,
       Init_State          => KeccakF_25.Init,

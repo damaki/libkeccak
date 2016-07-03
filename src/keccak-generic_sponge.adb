@@ -27,7 +27,7 @@
 
 with Interfaces; use Interfaces;
 
-package body Keccak.Sponge
+package body Keccak.Generic_Sponge
 is
 
    procedure Init(Ctx      :    out Context;
@@ -416,4 +416,4 @@ is
 
 
 
-end Keccak.Sponge;
+end Keccak.Generic_Sponge;

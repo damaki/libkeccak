@@ -36,12 +36,12 @@
 --    * Extract to get an arbitrary amount of output bytes from the XOF.
 -------------------------------------------------------------------------------
 
-with Keccak.Sponge;
+with Keccak.Generic_Sponge;
 with Keccak.Types;
 
 -- Basis for the eXtendable Output Functions (XOF).
 generic
-   with package XOF_Sponge is new Keccak.Sponge(<>);
+   with package XOF_Sponge is new Keccak.Generic_Sponge(<>);
    
    -- Sponge capacity.
    --
@@ -54,7 +54,7 @@ generic
    
    -- @summary
    -- Generic eXtendable Output Function (XOF).
-package Keccak.XOF
+package Keccak.Generic_XOF
 is
    -- Import common types from Keccak.Types to avoid users of the
    -- package to be dependent on Keccak.Types.
@@ -179,4 +179,4 @@ private
        elsif Ctx.Update_Complete or (not Can_Absorb(Ctx)) then Ready_To_Extract
        else Updating);
 
-end Keccak.XOF;
+end Keccak.Generic_XOF;

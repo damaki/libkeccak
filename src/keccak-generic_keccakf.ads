@@ -63,7 +63,7 @@ generic
    -- @description
    -- This generic package implements the Keccak-f permutations for bit sizes of:
    -- 25, 50, 100, 200, 400, 800, and 1600 bits.
-package Keccak.KeccakF
+package Keccak.Generic_KeccakF
 is
    W : constant Positive := 2**L; -- Lane size in bits
    B : constant Positive := W*25; -- State size in bits (1600, 800, etc...)
@@ -105,4 +105,4 @@ private
      with Depends => (AR => (A, RI)),
      Inline;
 
-end Keccak.KeccakF;
+end Keccak.Generic_KeccakF;

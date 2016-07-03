@@ -78,7 +78,7 @@ generic
    -- Additionally, the 'Pad' procedure provides the padding rule, which adds
    -- padding bits into a block of data (the padding may spill over into another
    -- block if there is not enough free bits in the first provided block).
-package Keccak.Sponge
+package Keccak.Generic_Sponge
 is
 
    type States is (Absorbing, Squeezing);
@@ -303,4 +303,4 @@ private
    function In_Queue_Bit_Length(Ctx : in Context) return Natural
    is (Ctx.Bits_Absorbed);
 
-end Keccak.Sponge;
+end Keccak.Generic_Sponge;

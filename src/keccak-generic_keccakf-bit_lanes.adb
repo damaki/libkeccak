@@ -26,7 +26,7 @@
 -------------------------------------------------------------------------------
 with Interfaces;
 
-package body Keccak.KeccakF.Bit_Lanes
+package body Keccak.Generic_KeccakF.Bit_Lanes
 is
 
    procedure XOR_Bits_Into_State(A       : in out State;
@@ -169,4 +169,4 @@ is
    end Extract_Bits;
 
 
-end Keccak.KeccakF.Bit_Lanes;
+end Keccak.Generic_KeccakF.Bit_Lanes;

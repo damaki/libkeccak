@@ -25,11 +25,11 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Keccak.Sponge;
+with Keccak.Generic_Sponge;
 with AUnit.Test_Fixtures;
 
 generic
-   with package Sponge is new Keccak.Sponge(<>);
+   with package Sponge is new Keccak.Generic_Sponge(<>);
    Capacity : Positive;
 package Sponge_Tests
 is

@@ -26,9 +26,9 @@
 -------------------------------------------------------------------------------
 
 with Keccak.Keccak_1600;
-with Keccak.XOF;
+with Keccak.Generic_XOF;
 
-pragma Elaborate_All(Keccak.XOF);
+pragma Elaborate_All(Keccak.Generic_XOF);
 
 package RawSHAKE
 with SPARK_Mode => On
@@ -38,13 +38,13 @@ is
    --
    -- See Section 6.3 of NIST FIPS-202.
 
-   package RawSHAKE128 is new Keccak.XOF
+   package RawSHAKE128 is new Keccak.Generic_XOF
      (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
       Capacity    => 256,
       Suffix      => 2#11#,
       Suffix_Size => 2);
 
-   package RawSHAKE256 is new Keccak.XOF
+   package RawSHAKE256 is new Keccak.Generic_XOF
      (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
       Capacity    => 512,
       Suffix      => 2#11#,

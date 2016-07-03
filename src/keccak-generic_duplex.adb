@@ -25,7 +25,7 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-package body Keccak.Duplex
+package body Keccak.Generic_Duplex
 is
 
    procedure Init(Ctx      :    out Context;
@@ -116,4 +116,4 @@ is
       F(Ctx.State);
    end Duplex_Mute;
 
-end Keccak.Duplex;
+end Keccak.Generic_Duplex;

@@ -26,11 +26,11 @@
 -------------------------------------------------------------------------------
 
 with AUnit.Test_Fixtures;
-with Keccak.KeccakF;
+with Keccak.Generic_KeccakF;
 with Keccak.Types;
 
 generic
-   with package KeccakF is new Keccak.KeccakF(<>);
+   with package KeccakF is new Keccak.Generic_KeccakF(<>);
    with procedure XOR_Bits_Into_State(A       : in out KeccakF.State;
                                       Data    : in     Keccak.Types.Byte_Array;
                                       Bit_Len : in     Natural);

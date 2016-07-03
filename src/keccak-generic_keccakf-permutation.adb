@@ -24,7 +24,7 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-package body Keccak.KeccakF.Permutation
+package body Keccak.Generic_KeccakF.Permutation
 is
 
    procedure Permute(A : in out State)
@@ -40,4 +40,4 @@ is
       end loop;
    end Permute;
 
-end Keccak.KeccakF.Permutation;
+end Keccak.Generic_KeccakF.Permutation;

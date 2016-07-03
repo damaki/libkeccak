@@ -25,10 +25,10 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Keccak.Duplex;
+with Keccak.Generic_Duplex;
 
 generic
-   with package Duplex is new Keccak.Duplex(<>);
+   with package Duplex is new Keccak.Generic_Duplex(<>);
 package KAT.Duplex_Runner
 is
 

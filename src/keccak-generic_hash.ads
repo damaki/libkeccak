@@ -36,11 +36,11 @@
 --    * Final to get the digest (hash).
 -------------------------------------------------------------------------------
 
-with Keccak.Sponge;
+with Keccak.Generic_Sponge;
 with Keccak.Types;
 
 generic
-   with package Hash_Sponge is new Keccak.Sponge(<>);
+   with package Hash_Sponge is new Keccak.Generic_Sponge(<>);
 
    -- Output digest size in bits. E.g. for SHA3-256 Digest_Size=256
    Digest_Size : Positive;
@@ -63,7 +63,7 @@ generic
    -- @summary
    -- A generic implementation of a hashing algorithm based on the Sponge
    -- cryptographic primitive.
-package Keccak.Hash
+package Keccak.Generic_Hash
 is
    -- Import common types from Keccak.Types to avoid users of the
    -- package to be dependent on Keccak.Types.
@@ -199,4 +199,4 @@ private
        elsif Can_Absorb(Ctx) and not Ctx.Update_Complete then Updating
        else Ready_To_Finish);
 
-end Keccak.Hash;
+end Keccak.Generic_Hash;

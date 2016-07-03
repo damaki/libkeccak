@@ -24,7 +24,7 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-package body Keccak.KeccakF.Byte_Lanes
+package body Keccak.Generic_KeccakF.Byte_Lanes
 is
 
    procedure XOR_Bits_Into_State(A       : in out State;
@@ -171,4 +171,4 @@ is
       end if;
    end Extract_Bits;
 
-end Keccak.KeccakF.Byte_Lanes;
+end Keccak.Generic_KeccakF.Byte_Lanes;

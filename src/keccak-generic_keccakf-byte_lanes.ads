@@ -26,7 +26,7 @@
 -------------------------------------------------------------------------------
 
 generic
-package Keccak.KeccakF.Byte_Lanes
+package Keccak.Generic_KeccakF.Byte_Lanes
 is
 
    procedure XOR_Bits_Into_State(A       : in out State;
@@ -70,4 +70,4 @@ is
      Pre => (Bit_Len <= B
              and then Data'Length = (Bit_Len + 7) / 8);
 
-end Keccak.KeccakF.Byte_Lanes;
+end Keccak.Generic_KeccakF.Byte_Lanes;

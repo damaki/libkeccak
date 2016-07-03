@@ -25,10 +25,10 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Keccak.Hash;
+with Keccak.Generic_Hash;
 
 generic
-   with package Hash is new Keccak.Hash(<>);
+   with package Hash is new Keccak.Generic_Hash(<>);
 package KAT.Runner
 is
 

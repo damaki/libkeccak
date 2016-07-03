@@ -26,7 +26,7 @@
 -------------------------------------------------------------------------------
 with Interfaces;
 
-package body Keccak.KeccakF
+package body Keccak.Generic_KeccakF
 is
    -- Keccak Theta operation
    --
@@ -229,4 +229,4 @@ is
       A := (others => (others => 0));
    end Init;
 
-end Keccak.KeccakF;
+end Keccak.Generic_KeccakF;
