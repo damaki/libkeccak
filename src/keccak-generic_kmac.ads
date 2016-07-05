@@ -40,12 +40,15 @@ is
 
    procedure Init(Ctx           :    out Context;
                   Key           : in     Types.Byte_Array;
-                  Customization : in     String;
-                  Output_Length : in     Positive)
-     with Depends => (Ctx => (Key, Customization, Output_Length)),
-     Post => (Output_Length_Of(Ctx) = Output_Length
-              and State_Of(Ctx) = Updating);
+                  Customization : in     String)
+     with Depends => (Ctx => (Key, Customization)),
+     Post => State_Of(Ctx) = Updating;
    --  Initialize the KMAC context.
+   --
+   --  In cases where many KMAC computations are performed with the same
+   --  key and customization string it is possible to
+   --  initialize a context once with the desired parameters, then copy the
+   --  context as many times as necessary for the different computations.
    --
    --  @param Ctx The contex to initialize.
    --
@@ -54,18 +57,13 @@ is
    --
    --  @param Customization An optional customization string to provide domain
    --     separation for different usages of KMAC.
-   --
-   --  @param Output_Length The length (in bytes) of the output digest produced
-   --     by the KMAC instance. Note that any positive value is permitted for
-   --     the length.
 
 
    procedure Update(Ctx     : in out Context;
                     Message : in     Types.Byte_Array)
      with Depends => (Ctx => + Message),
      Pre => State_Of(Ctx) = Updating,
-     Post => (State_Of(Ctx) = Updating
-              and Output_Length_Of(Ctx) = Output_Length_Of(Ctx'Old));
+     Post => State_Of(Ctx) = Updating;
    --  Process data with KMAC.
    --
    --  Note that this function can be called multiple times to process an
@@ -79,13 +77,9 @@ is
    procedure Finish(Ctx : in out Context;
                     MAC :    out Types.Byte_Array)
      with Depends => ((Ctx, MAC) => (Ctx, MAC)),
-     Pre => (State_Of(Ctx) = Updating
-             and MAC'Length = Output_Length_Of(Ctx)),
+     Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Finished;
    --  Finish the KMAC computation and generate the MAC.
-   --
-   --  Note that the length of the MAC array must exactly match the output
-   --  length that was configured when the context was initialized.
    --
    --  After calling this procedure the context can no longer be used. However,
    --  it can be re-initialized to perform a new KMAC computation.
@@ -93,8 +87,7 @@ is
    --  @param Ctx The KMAC context.
    --
    --  @param MAC The computed MAC is written to this array. The length of
-   --     this array must exactly match the output length that was configured
-   --     when the KMAC context was initialized.
+   --     this array can be arbitrary.
 
 
    function State_Of(Ctx : in Context) return States;
@@ -115,17 +108,11 @@ is
    --  is based on Keccak[1600]), and the Capacity is 256 bits, which results
    --  in a rate of 1600 - 256 = 1344 bits (168 bytes).
 
-   function Output_Length_Of(Ctx : in Context) return Positive;
-   --  Get the output length (in bytes) of a KMAC context.
-   --
-   --  The output length is configured when the context is initialized.
-
 private
    use type KMAC_CSHAKE.States;
 
    type Context is record
       CSHAKE_Ctx    : KMAC_CSHAKE.Context;
-      Output_Length : Positive;
    end record;
 
    function State_Of(Ctx : in Context) return States
@@ -135,8 +122,5 @@ private
 
    function Rate return Positive
    is (KMAC_CSHAKE.Rate);
-
-   function Output_Length_Of(Ctx : in Context) return Positive
-   is (Ctx.Output_Length);
 
 end Keccak.Generic_KMAC;
