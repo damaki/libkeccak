@@ -31,8 +31,7 @@ is
 
    procedure Init(Ctx           :    out Context;
                   Key           : in     Types.Byte_Array;
-                  Customization : in     String;
-                  Output_Length : in     Positive)
+                  Customization : in     String)
    is
       Encoded_Key_Length : constant Types.Byte_Array
         := Util.Left_Encode(Key'Length);
@@ -52,9 +51,6 @@ is
         (Ctx     => Ctx.CSHAKE_Ctx,
          Message => KMAC_CSHAKE.Padding_Zeroes(Encoded_Key_Length'Length,
                                                Key'Length));
-
-      --  Output_Length will be overwritten during actual initialization
-      Ctx.Output_Length := Output_Length;
    end Init;
 
    procedure Update(Ctx     : in out Context;
@@ -69,9 +65,10 @@ is
                     MAC :    out Types.Byte_Array)
    is
    begin
+      --  Encode and process the output length
       KMAC_CSHAKE.Update
         (Ctx     => Ctx.CSHAKE_Ctx,
-         Message => Util.Right_Encode(Ctx.Output_Length));
+         Message => Util.Right_Encode(MAC'Length));
 
       KMAC_CSHAKE.Extract
         (Ctx    => Ctx.CSHAKE_Ctx,
