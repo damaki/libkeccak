@@ -53,6 +53,11 @@ is
    --  both strings to be empty then SHAKE must be used instead, or
    --  Keccak.XOF if a customized version of SHAKE is required.
    --
+   --  In cases where many CSHAKE computations are performed with the same
+   --  customization and function name strings it is possible to initialize
+   --  a context once with the desired parameters, then copy the context as
+   --  many times as necessary for the different computations.
+   --
    --  @param Ctx The context to initialize.
    --
    --  @param Customization An optional customization string to provide domain
