@@ -38,7 +38,7 @@ is
    begin
       KMAC_CSHAKE.Init(Ctx           => Ctx.CSHAKE_Ctx,
                        Customization => Customization,
-                       Function_Name => "kmac");
+                       Function_Name => "KMAC");
 
       Ctx.Finished := False;
 

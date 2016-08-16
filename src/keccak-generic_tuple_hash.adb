@@ -37,7 +37,7 @@ is
 
       CSHAKE.Init(Ctx           => Ctx.Ctx,
                   Customization => Customization,
-                  Function_Name => "tuplehash");
+                  Function_Name => "TupleHash");
    end Init;
 
 
