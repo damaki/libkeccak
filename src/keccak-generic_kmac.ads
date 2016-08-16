@@ -36,7 +36,7 @@ is
 
    type Context is private;
 
-   type States is (Updating, Finished);
+   type States is (Updating, Extracting, Finished);
 
    procedure Init(Ctx           :    out Context;
                   Key           : in     Types.Byte_Array;
@@ -84,10 +84,37 @@ is
    --  After calling this procedure the context can no longer be used. However,
    --  it can be re-initialized to perform a new KMAC computation.
    --
+   --  The number of output bytes requested is determined from the length of
+   --  the MAC array (i.e. MAC'Length) and has an effect on the value of the
+   --  output MAC. For example, two different KMAC computations with identical
+   --  inputs (same key and input data) but with different MAC lengths will
+   --  produce independent MAC values.
+   --
+   --  Note that this procedure can only be called once for each KMAC
+   --  computation. This requires that the required MAC length is known before
+   --  calling this procedure, and a Byte_Array with the correct length is
+   --  given to this procedure. For applications where the number of required
+   --  output bytes is not known until after bytes are output, see the Extract
+   --  procedure.
+   --
    --  @param Ctx The KMAC context.
    --
    --  @param MAC The computed MAC is written to this array. The length of
    --     this array can be arbitrary.
+
+
+   procedure Extract(Ctx : in out Context;
+                     MAC :    out Types.Byte_Array)
+     with Depends => ((Ctx, MAC) => (Ctx, MAC)),
+     Pre => State_Of(Ctx) in Updating | Extracting,
+     Post => State_Of(Ctx) = Extracting;
+   --  Finish the KMAC computation generate XOF output bytes.
+   --
+   --  After calling this procudure no more data can be input into the KMAC
+   --  computation.
+   --
+   --  This function can be called multiple times to produce an arbitrary
+   --  number of output bytes.
 
 
    function State_Of(Ctx : in Context) return States;
@@ -112,13 +139,15 @@ private
    use type KMAC_CSHAKE.States;
 
    type Context is record
-      CSHAKE_Ctx    : KMAC_CSHAKE.Context;
+      CSHAKE_Ctx : KMAC_CSHAKE.Context;
+      Finished   : Boolean;
    end record;
 
    function State_Of(Ctx : in Context) return States
-   is (if KMAC_CSHAKE.State_Of(Ctx.CSHAKE_Ctx) = KMAC_CSHAKE.Updating
-       then Updating
-       else Finished);
+   is (if Ctx.Finished then Finished
+       elsif KMAC_CSHAKE.State_Of(Ctx.CSHAKE_Ctx) = KMAC_CSHAKE.Updating then
+          Updating
+       else Extracting);
 
    function Rate return Positive
    is (KMAC_CSHAKE.Rate);

@@ -40,6 +40,8 @@ is
                        Customization => Customization,
                        Function_Name => "kmac");
 
+      Ctx.Finished := False;
+
       KMAC_CSHAKE.Update
         (Ctx     => Ctx.CSHAKE_Ctx,
          Message => Encoded_Key_Length);
@@ -65,6 +67,8 @@ is
                     MAC :    out Types.Byte_Array)
    is
    begin
+      Ctx.Finished := True;
+
       --  Encode and process the output length
       KMAC_CSHAKE.Update
         (Ctx     => Ctx.CSHAKE_Ctx,
@@ -74,5 +78,20 @@ is
         (Ctx    => Ctx.CSHAKE_Ctx,
          Digest => MAC);
    end Finish;
+
+   procedure Extract(Ctx : in out Context;
+                     MAC :    out Types.Byte_Array)
+   is
+   begin
+      if State_Of(Ctx) = Updating then
+         KMAC_CSHAKE.Update
+           (Ctx     => Ctx.CSHAKE_Ctx,
+            Message => Util.Right_Encode(0));
+      end if;
+
+      KMAC_CSHAKE.Extract
+        (Ctx    => Ctx.CSHAKE_Ctx,
+         Digest => MAC);
+   end Extract;
 
 end Keccak.Generic_KMAC;
