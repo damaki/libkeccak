@@ -34,7 +34,7 @@ is
 
    type Context is private;
 
-   type States is (Updating, Finished);
+   type States is (Updating, Extracting, Finished);
 
    procedure Init(Ctx           :    out Context;
                   Customization : in     String := "")
@@ -53,18 +53,25 @@ is
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Finished;
 
+   procedure Extract(Ctx    : in out Context;
+                     Digest :    out Byte_Array)
+     with Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     Pre => State_Of(Ctx) in Updating | Extracting,
+     Post => State_Of(Ctx) = Extracting;
+
    function State_Of(Ctx : in Context) return States;
 
 private
    use type CSHAKE.States;
 
    type Context is record
-      Ctx : CSHAKE.Context;
+      Ctx      : CSHAKE.Context;
+      Finished : Boolean;
    end record;
 
    function State_Of(Ctx : in Context) return States
-   is (if CSHAKE.State_Of(Ctx.Ctx) = CSHAKE.Updating
-       then Updating
-       else Finished);
+   is (if Ctx.Finished then Finished
+       elsif CSHAKE.State_Of(Ctx.Ctx) = CSHAKE.Updating then Updating
+       else Extracting);
 
 end Keccak.Generic_Tuple_Hash;

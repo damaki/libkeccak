@@ -33,6 +33,8 @@ is
                   Customization : in     String := "")
    is
    begin
+      Ctx.Finished := False;
+
       CSHAKE.Init(Ctx           => Ctx.Ctx,
                   Customization => Customization,
                   Function_Name => "tuplehash");
@@ -60,6 +62,23 @@ is
 
       CSHAKE.Extract(Ctx    => Ctx.Ctx,
                      Digest => Digest);
+
+      Ctx.Finished := True;
    end Finish;
+
+   procedure Extract(Ctx    : in out Context;
+                     Digest :    out Byte_Array)
+   is
+   begin
+      if State_Of(Ctx) = Updating then
+         CSHAKE.Update
+           (Ctx     => Ctx.Ctx,
+            Message => Util.Right_Encode(0));
+      end if;
+
+      CSHAKE.Extract
+        (Ctx    => Ctx.Ctx,
+         Digest => Digest);
+   end Extract;
 
 end Keccak.Generic_Tuple_Hash;
