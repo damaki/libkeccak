@@ -38,7 +38,7 @@ is
 
    type Context is private;
 
-   type States is (Updating, Extracting);
+   type States is (Updating, Ready_To_Extract, Extracting);
 
    procedure Init(Ctx           :    out Context;
                   Customization : in     String := "";
@@ -84,6 +84,18 @@ is
    --  @param Ctx The CSHAKE context.
    --
    --  @param Message The data to process with CSHAKE.
+
+
+   procedure Update(Ctx        : in out Context;
+                    Message    : in     Byte_Array;
+                    Bit_Length : in     Natural)
+     with Depends => (Ctx => + (Message, Bit_Length)),
+     Pre => (State_Of(Ctx) = Updating
+             and then (Message'Length < Natural'Last / 8)
+             and then Bit_Length <= Message'Length * 8),
+     Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
+                        others               => State_Of(Ctx) = Ready_To_Extract);
+
 
    procedure Extract(Ctx    : in out Context;
                      Digest :    out Byte_Array)
@@ -140,8 +152,10 @@ private
    end record;
 
    function State_Of(Ctx : in Context) return States
-   is (if XOF.State_Of(Ctx.XOF_Ctx) = XOF.Updating then Updating
-       else Extracting);
+   is (case XOF.State_Of (Ctx.XOF_Ctx) is
+          when XOF.Updating         => Updating,
+          when XOF.Ready_To_Extract => Ready_To_Extract,
+          when XOF.Extracting       => Extracting);
 
    function Rate return Positive
    is (XOF.Rate);

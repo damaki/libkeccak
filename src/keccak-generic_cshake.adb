@@ -106,6 +106,14 @@ is
       XOF.Update(Ctx.XOF_Ctx, Message);
    end Update;
 
+   procedure Update(Ctx        : in out Context;
+                    Message    : in     Byte_Array;
+                    Bit_Length : in     Natural)
+   is
+   begin
+      XOF.Update(Ctx.XOF_Ctx, Message, Bit_Length);
+   end Update;
+
    procedure Extract(Ctx    : in out Context;
                      Digest :    out Byte_Array)
    is
