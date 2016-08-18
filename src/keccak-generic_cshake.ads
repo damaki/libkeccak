@@ -133,12 +133,20 @@ is
 
    function Padding_Zeroes(Length_1 : in Natural;
                            Length_2 : in Natural := 0) return Byte_Array
-     with Post => (Padding_Zeroes'Result'Length = 0
-                   or Padding_Zeroes'Result'Length mod (Rate / 8) /= 0);
+     with Post =>
+       (((Length_1 mod (Rate / 8)) +
+        (Length_2 mod (Rate / 8)) +
+          Padding_Zeroes'Result'Length) mod (Rate / 8) = 0),
+       Contract_Cases =>
+         (((Length_1 mod (Rate / 8)) + (Length_2 mod (Rate / 8)))
+            mod (Rate / 8) = 0
+          => Padding_Zeroes'Result'Length = 0,
+
+          others => Padding_Zeroes'Result'Length in 1 .. (Rate / 8));
    --  Get a byte array with the necessary number of 'zero' padding bytes
-   --  such that (Length_1 + Length_2 + Result'Length) mod Byte_Pad_Length = 0
+   --  such that (Length_1 + Length_2 + Result'Length) mod (Rate / 8) = 0
    --
-   --  Note that if (Length_1 + Length_2) mod Byte_Pad_Length = 0 then an empty
+   --  Note that if (Length_1 + Length_2) mod (Rate / 8) = 0 then an empty
    --  array is returned.
    --
    --  This is intended to be used by constructions built on top of CSHAKE,
