@@ -48,8 +48,7 @@ is
          return Zeroes(1 .. 0);
 
       else
-         Num_Zeroes := Natural(Rate_Bytes) -
-           ((L1 + L2) mod Natural(Rate_Bytes));
+         Num_Zeroes := Rate_Bytes - ((L1 + L2) mod Rate_Bytes);
 
          return Zeroes(1 .. Num_Zeroes);
       end if;
