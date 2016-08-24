@@ -64,6 +64,8 @@ is
    subtype Index_Number is Keccak.Types.Index_Number;
    subtype Byte_Array   is Keccak.Types.Byte_Array;
    
+   subtype Rate_Bits_Number is XOF_Sponge.Rate_Bits_Number;
+   
    type States is (Updating, Ready_To_Extract, Extracting);
 
    type Context is private;
@@ -153,7 +155,7 @@ is
    
    
 
-   function Rate_Of(Ctx : in Context) return Positive;
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number;
    -- @return The rate of the XOF (in bits).
    
 
@@ -167,7 +169,7 @@ private
    end record;
    
 
-   function Rate_Of(Ctx : in Context) return Positive
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
    is (XOF_Sponge.Rate_Of(Ctx.Sponge_Ctx));
 
    function Can_Absorb(Ctx : in Context) return Boolean

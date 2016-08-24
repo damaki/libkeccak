@@ -77,6 +77,8 @@ is
 
    subtype Digest_Type is Keccak.Types.Byte_Array(Digest_Index);
 
+   subtype Rate_Bits_Number is Hash_Sponge.Rate_Bits_Number;
+
    -- The possible states for the context.
    --
    -- @value Updating When in this state the context can be updated
@@ -170,7 +172,7 @@ is
 
 
 
-   function Rate_Of(Ctx : in Context) return Positive;
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number;
    -- Get the current rate (in bits) of the context.
    --
    -- @return The rate of the context.
@@ -187,7 +189,7 @@ private
    function In_Queue_Bit_Length(Ctx : in Context) return Natural
    is (Hash_Sponge.In_Queue_Bit_Length(Ctx.Sponge_Ctx));
 
-   function Rate_Of(Ctx : in Context) return Positive
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
    is (Hash_Sponge.Rate_Of(Ctx.Sponge_Ctx));
 
    function Can_Absorb(Ctx : in Context) return Boolean

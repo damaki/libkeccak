@@ -85,6 +85,14 @@ is
 
    type Context is private;
    
+   subtype Rate_Bits_Number is Positive range 1 .. State_Size - 1
+     with Dynamic_Predicate => Rate_Bits_Number mod 8 = 0;
+   --  Number representing the Rate (in bits).
+   --
+   --  The Rate must be a positive integer, and less than the size of the
+   --  state (i.e. there must be at least 1 bit of "capacity"). Furthermore,
+   --  this implementation restricts the Rate to a multiple of 8 bits.
+   
    ----------------------------------------------------------------------------
    -- Sponge procedures
    ----------------------------------------------------------------------------
@@ -132,8 +140,7 @@ is
    
    
    
-   function Rate_Of(Ctx : in Context) return Positive
-     with Post => Rate_Of'Result < State_Size;
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number;
    -- Gets the currently configured rate of the sponge.
    --
    -- The rate is derived from the sponge's capacity and the State_Size.
@@ -251,7 +258,7 @@ private
    -- The rate number here represents bytes, not bits.
    -- This makes it easier to handle in proof, since bytes are
    -- always a multiple of 8 bits.
-   subtype Rate_Number is Positive range 1 .. ((State_Size + 7)/8) - 1;
+   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7)/8) - 1;
 
    subtype Byte_Absorption_Number is Natural range 0 .. ((State_Size + 7)/8) - 1;
    
@@ -284,7 +291,7 @@ private
 
       -- The rate parameter. This value is represented in bytes, not bits
       -- so that it is easier to manage in proof.
-      Rate            : Rate_Number;
+      Rate            : Rate_Bytes_Number;
       
       -- The current state of the sponge (Absorbing or Squeezing).
       Curr_State      : States;
@@ -297,7 +304,7 @@ private
    function State_Of(Ctx : in Context) return States
    is (Ctx.Curr_State);
    
-   function Rate_Of(Ctx : in Context) return Positive
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
    is (Positive(Ctx.Rate) * 8);
    
    function In_Queue_Bit_Length(Ctx : in Context) return Natural

@@ -39,7 +39,7 @@ is
       Ctx.Block           := (others => 0);
       Ctx.Bits_Absorbed   := 0;
       Ctx.Bytes_Squeezed  := 0;
-      Ctx.Rate            := (State_Size - Natural(Capacity))/8;
+      Ctx.Rate            := (State_Size - Capacity)/8;
       Ctx.Curr_State      := Absorbing;
    end Init;
 
