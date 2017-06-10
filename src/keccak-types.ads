@@ -42,7 +42,7 @@ is
 
    subtype Byte is Interfaces.Unsigned_8;
 
-   subtype Index_Number is Natural;
+   subtype Index_Number is Natural range 0 .. Natural'Last - 1;
    type Byte_Array is array(Index_Number range <>) of Byte;
 
 
