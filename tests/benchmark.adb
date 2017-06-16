@@ -27,8 +27,8 @@
 
 with Ada.Real_Time;
 with Ada.Text_IO;
-with Keccak.KeccakF;
-with Keccak.KeccakF.Permutation;
+with Keccak.Generic_KeccakF;
+with Keccak.Generic_KeccakF.Permutation;
 with Keccak.Keccak_25;
 with Keccak.Keccak_50;
 with Keccak.Keccak_100;
@@ -37,9 +37,9 @@ with Keccak.Keccak_400;
 with Keccak.Keccak_800;
 with Keccak.Keccak_1600;
 with Keccak.Types;
-with Keccak.XOF;
-with Keccak.Hash;
-with Keccak.Duplex;
+with Keccak.Generic_XOF;
+with Keccak.Generic_Hash;
+with Keccak.Generic_Duplex;
 with Keccak.Keccak_1600;
 with SHA3;
 with SHAKE;
@@ -130,7 +130,7 @@ is
    ----------------------------------------------------------------------------
    generic
        Name : String;
-       with package Hash_Package is new Keccak.Hash(<>);
+       with package Hash_Package is new Keccak.Generic_Hash(<>);
    procedure Hash_Benchmark;
    
    procedure Hash_Benchmark
@@ -171,7 +171,7 @@ is
    ----------------------------------------------------------------------------
    generic
        Name : String;
-       with package XOF_Package is new Keccak.XOF(<>);
+       with package XOF_Package is new Keccak.Generic_XOF(<>);
    procedure XOF_Benchmark;
    
    procedure XOF_Benchmark
@@ -226,7 +226,7 @@ is
    generic
       Name : String;
       Capacity : Positive;
-      with package Duplex is new Keccak.Duplex(<>);
+      with package Duplex is new Keccak.Generic_Duplex(<>);
    procedure Duplex_Benchmark;
    
    procedure Duplex_Benchmark
@@ -274,7 +274,7 @@ is
    ----------------------------------------------------------------------------
    generic
       Name : String;
-      with package Keccak_F is new Keccak.KeccakF(<>);
+      with package Keccak_F is new Keccak.Generic_KeccakF(<>);
       with package KeccakF_Permutation is new Keccak_F.Permutation(<>);
    procedure KeccakF_Benchmark;
    
