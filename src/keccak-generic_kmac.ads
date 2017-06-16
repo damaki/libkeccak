@@ -42,6 +42,7 @@ is
                   Key           : in     Types.Byte_Array;
                   Customization : in     String)
      with Depends => (Ctx => (Key, Customization)),
+     Pre => Customization'Length <= Natural'Last / 8,
      Post => State_Of(Ctx) = Updating;
    --  Initialize the KMAC context.
    --

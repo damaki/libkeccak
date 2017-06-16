@@ -27,6 +27,7 @@
 
 with Ada.Containers.Vectors;
 with Ada.Finalization;
+with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Keccak.Types;
 
 package KAT
@@ -57,10 +58,28 @@ is
    procedure Adjust    (T : in out Duplex_KAT_Test);
    procedure Finalize  (T : in out Duplex_KAT_Test);
    
+   
+   type CSHAKE_KAT_Test is new Ada.Finalization.Controlled with record
+      Line     : Natural;
+      N_Data   : Unbounded_String;
+      S_Data   : Unbounded_String;
+      In_Len   : Natural;
+      In_Data  : Byte_Array_Access;
+      Out_Len  : Natural;
+      Out_Data : Byte_Array_Access;
+   end record;
+   
+   procedure Initialize(T : in out CSHAKE_KAT_Test);
+   procedure Adjust    (T : in out CSHAKE_KAT_Test);
+   procedure Finalize  (T : in out CSHAKE_KAT_Test);
+   
    package KAT_Vectors is new Ada.Containers.Vectors(Element_Type => KAT_Test,
                                                      Index_Type   => Natural);
    
    package Duplex_KAT_Vectors is new Ada.Containers.Vectors(Element_Type => Duplex_KAT_Test,
+                                                            Index_Type   => Natural);
+   
+   package CSHAKE_KAT_Vectors is new Ada.Containers.Vectors(Element_Type => CSHAKE_KAT_Test,
                                                             Index_Type   => Natural);
    
    procedure Load_Test_Vectors(File_Name  : in     String;
@@ -83,9 +102,12 @@ is
    
    procedure Load_Duplex_Test_Vectors(File_Name : in     String;
                                       Tests     :    out Duplex_KAT_Vectors.Vector);
+   
+   procedure Load_CSHAKE_Test_Vectors (File_Name : in     String;
+                                       Tests     :    out CSHAKE_KAT_Vectors.Vector);
                                       
    -- Helper function to convert a byte array to a hex string.
-   function Byte_Array_To_String(Byte_Array : in Keccak.Types.Byte_Array) return String;
+   function Byte_Array_To_String(Data : in Keccak.Types.Byte_Array) return String;
    
 
 end KAT;

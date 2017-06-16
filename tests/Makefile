@@ -15,7 +15,9 @@ KAT_EXECUTABLES = $(OUTPUT_DIR)/kat/sha3_224_kat \
 						$(OUTPUT_DIR)/kat/keccak_384_kat \
 						$(OUTPUT_DIR)/kat/keccak_512_kat \
 						$(OUTPUT_DIR)/kat/keccak_duplex_kat_r1026c574 \
-						$(OUTPUT_DIR)/kat/keccak_duplex_kat_r1027c573
+						$(OUTPUT_DIR)/kat/keccak_duplex_kat_r1027c573 \
+						$(OUTPUT_DIR)/kat/cshake_128_kat \
+						$(OUTPUT_DIR)/kat/cshake_256_kat
 
 DUMMY := $(shell mkdir -p $(OUTPUT_DIR)) \
          $(shell mkdir -p $(OUTPUT_DIR)/kat) \
@@ -24,7 +26,11 @@ DUMMY := $(shell mkdir -p $(OUTPUT_DIR)) \
 
 all: kat benchmark unit_test
 
+.PHONY: $(KAT_EXECUTABLES)
+.PHONY: kat
 kat: $(KAT_EXECUTABLES)
+	$(OUTPUT_DIR)/kat/cshake_128_kat kat/testvectors/cSHAKE_128.txt
+	$(OUTPUT_DIR)/kat/cshake_256_kat kat/testvectors/cSHAKE_256.txt
 	$(OUTPUT_DIR)/kat/keccak_duplex_kat_r1026c574 kat/testvectors/DuplexKAT_r1026c574.txt
 	$(OUTPUT_DIR)/kat/keccak_duplex_kat_r1027c573 kat/testvectors/DuplexKAT_r1027c573.txt
 	$(OUTPUT_DIR)/kat/keccak_224_kat kat/testvectors/ShortMsgKAT_224.txt
@@ -85,6 +91,12 @@ $(OUTPUT_DIR)/kat/keccak_duplex_kat_r1026c574:
 
 $(OUTPUT_DIR)/kat/keccak_duplex_kat_r1027c573:
 	gprbuild -aP$(KECCAK_DIR) -P keccak_duplex_kat_r1027c573.gpr
+
+$(OUTPUT_DIR)/kat/cshake_128_kat:
+	gprbuild -aP$(KECCAK_DIR) -P cshake_128_kat.gpr
+
+$(OUTPUT_DIR)/kat/cshake_256_kat:
+	gprbuild -aP$(KECCAK_DIR) -P cshake_256_kat.gpr
 
 $(OUTPUT_DIR)/benchmark/benchmark:
 	gprbuild -aP$(KECCAK_DIR) -P benchmark.gpr

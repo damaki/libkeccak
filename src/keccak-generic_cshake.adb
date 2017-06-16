@@ -58,16 +58,19 @@ is
                   Customization : in     String := "";
                   Function_Name : in     String := "")
    is
-      Encoded_Customization_Length : constant Byte_Array
-        := Util.Left_Encode(Customization'Length);
-
-      Encoded_Function_Name_Length : constant Byte_Array
-        := Util.Left_Encode(Function_Name'Length);
 
       Rate_Bytes : constant Positive := Rate / 8;
 
-      Zeroes : constant Types.Byte_Array(1 .. Rate_Bytes) := (others => 0);
+      Encoded_Customization_Length : constant Byte_Array
+        := Util.Left_Encode(Customization'Length * 8);
 
+      Encoded_Function_Name_Length : constant Byte_Array
+        := Util.Left_Encode(Function_Name'Length * 8);
+
+      Encoded_Rate                 : constant Byte_Array
+        := Util.Left_Encode (Rate_Bytes);
+
+      Zeroes : constant Types.Byte_Array(1 .. Rate_Bytes) := (others => 0);
 
       Padding_Length : Natural;
 
@@ -75,22 +78,26 @@ is
       XOF.Init(Ctx.XOF_Ctx);
 
       XOF.Update(Ctx     => Ctx.XOF_Ctx,
-                 Message => Encoded_Customization_Length);
-      XOF.Update(Ctx     => Ctx.XOF_Ctx,
-                 Message => Util.To_Byte_Array(Customization));
+                 Message => Encoded_Rate);
 
       XOF.Update(Ctx     => Ctx.XOF_Ctx,
                  Message => Encoded_Function_Name_Length);
       XOF.Update(Ctx     => Ctx.XOF_Ctx,
                  Message => Util.To_Byte_Array(Function_Name));
 
+      XOF.Update(Ctx     => Ctx.XOF_Ctx,
+                 Message => Encoded_Customization_Length);
+      XOF.Update(Ctx     => Ctx.XOF_Ctx,
+                 Message => Util.To_Byte_Array(Customization));
+
       Padding_Length :=
+        Encoded_Rate'Length mod Rate_Bytes +
         Encoded_Customization_Length'Length mod Rate_Bytes +
         Encoded_Function_Name_Length'Length mod Rate_Bytes +
         Customization'Length mod Rate_Bytes +
         Function_Name'Length mod Rate_Bytes;
 
-      Padding_Length := Padding_Length mod Rate_Bytes;
+      Padding_Length := Rate_Bytes - (Padding_Length mod Rate_Bytes);
 
       if Padding_Length mod Rate_Bytes /= 0 then
          XOF.Update(Ctx        => Ctx.XOF_Ctx,
