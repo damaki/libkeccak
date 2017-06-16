@@ -24,61 +24,17 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Keccak.Util; use Keccak.Util;
 
-package body Keccak.Generic_Tuple_Hash
+with AUnit.Test_Fixtures;
+
+package Util_Tests
 is
 
-   procedure Init(Ctx           :    out Context;
-                  Customization : in     String := "")
-   is
-   begin
-      Ctx.Finished := False;
+   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
+   
+   procedure Set_Up(T : in out Test);
+   
+   procedure Test_Left_Encode_Bit_Length_Equivalence(T : in out Test);
+   procedure Test_Right_Encode_Bit_Length_Equivalence(T : in out Test);
 
-      CSHAKE.Init(Ctx           => Ctx.Ctx,
-                  Customization => Customization,
-                  Function_Name => "TupleHash");
-   end Init;
-
-
-   procedure Update_Tuple_Item(Ctx  : in out Context;
-                               Item : in     Byte_Array)
-   is
-   begin
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Left_Encode_Bit_Length(Item'Length));
-
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Item);
-   end Update_Tuple_Item;
-
-
-   procedure Finish(Ctx     : in out Context;
-                    Digest  :    out Byte_Array)
-   is
-   begin
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Right_Encode_Bit_Length(Digest'Length));
-
-      CSHAKE.Extract(Ctx    => Ctx.Ctx,
-                     Digest => Digest);
-
-      Ctx.Finished := True;
-   end Finish;
-
-   procedure Extract(Ctx    : in out Context;
-                     Digest :    out Byte_Array)
-   is
-   begin
-      if State_Of(Ctx) = Updating then
-         CSHAKE.Update
-           (Ctx     => Ctx.Ctx,
-            Message => Util.Right_Encode(0));
-      end if;
-
-      CSHAKE.Extract
-        (Ctx    => Ctx.Ctx,
-         Digest => Digest);
-   end Extract;
-
-end Keccak.Generic_Tuple_Hash;
+end Util_Tests;

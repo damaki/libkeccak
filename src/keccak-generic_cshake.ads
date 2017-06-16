@@ -44,9 +44,7 @@ is
                   Customization : in     String := "";
                   Function_Name : in     String := "")
      with Depends => (Ctx => (Customization, Function_Name)),
-     Pre => ((Customization /= "" or Function_Name /= "")
-             and Customization'Length <= Natural'Last / 8
-             and Function_Name'Length <= Natural'Last / 8),
+     Pre => Customization /= "" or Function_Name /= "",
      Post => State_Of(Ctx) = Updating;
    --  Initialize the CSHAKE context.
    --

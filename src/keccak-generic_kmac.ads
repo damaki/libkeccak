@@ -42,8 +42,6 @@ is
                   Key           : in     Types.Byte_Array;
                   Customization : in     String)
      with Depends => (Ctx => (Key, Customization)),
-     Pre => (Customization'Length <= Natural'Last / 8
-             and Key'Length <= Natural'Last / 8),
      Post => State_Of(Ctx) = Updating;
    --  Initialize the KMAC context.
    --
@@ -79,8 +77,7 @@ is
    procedure Finish(Ctx : in out Context;
                     MAC :    out Types.Byte_Array)
      with Depends => ((Ctx, MAC) => (Ctx, MAC)),
-     Pre => (State_Of(Ctx) = Updating
-             and MAC'Length <= Natural'Last / 8),
+     Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Finished;
    --  Finish the KMAC computation and generate the MAC.
    --

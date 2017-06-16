@@ -24,61 +24,37 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Keccak.Util; use Keccak.Util;
 
-package body Keccak.Generic_Tuple_Hash
+with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
+with AUnit.Assertions; use AUnit.Assertions;
+with Keccak.Types;     use Keccak.Types;
+with Keccak.Util;      use Keccak.Util;
+
+package body Util_Tests
 is
 
-   procedure Init(Ctx           :    out Context;
-                  Customization : in     String := "")
+   procedure Set_Up(T : in out Test)
    is
    begin
-      Ctx.Finished := False;
-
-      CSHAKE.Init(Ctx           => Ctx.Ctx,
-                  Customization => Customization,
-                  Function_Name => "TupleHash");
-   end Init;
-
-
-   procedure Update_Tuple_Item(Ctx  : in out Context;
-                               Item : in     Byte_Array)
+      null;
+   end Set_Up;
+   
+   procedure Test_Left_Encode_Bit_Length_Equivalence(T : in out Test)
    is
    begin
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Left_Encode_Bit_Length(Item'Length));
-
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Item);
-   end Update_Tuple_Item;
-
-
-   procedure Finish(Ctx     : in out Context;
-                    Digest  :    out Byte_Array)
+      for N in 0 .. Natural'Last / 8 loop
+         Assert (Left_Encode_Bit_Length (N) = Left_Encode (N * 8),
+                 "Failed for N = " & Natural'Image (N));
+      end loop;
+   end Test_Left_Encode_Bit_Length_Equivalence;
+   
+   procedure Test_Right_Encode_Bit_Length_Equivalence(T : in out Test)
    is
    begin
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Right_Encode_Bit_Length(Digest'Length));
+      for N in 0 .. Natural'Last / 8 loop
+         Assert (Right_Encode_Bit_Length (N) = Right_Encode (N * 8),
+                 "Failed for N = " & Natural'Image (N));
+      end loop;
+   end Test_Right_Encode_Bit_Length_Equivalence;
 
-      CSHAKE.Extract(Ctx    => Ctx.Ctx,
-                     Digest => Digest);
-
-      Ctx.Finished := True;
-   end Finish;
-
-   procedure Extract(Ctx    : in out Context;
-                     Digest :    out Byte_Array)
-   is
-   begin
-      if State_Of(Ctx) = Updating then
-         CSHAKE.Update
-           (Ctx     => Ctx.Ctx,
-            Message => Util.Right_Encode(0));
-      end if;
-
-      CSHAKE.Extract
-        (Ctx    => Ctx.Ctx,
-         Digest => Digest);
-   end Extract;
-
-end Keccak.Generic_Tuple_Hash;
+end Util_Tests;

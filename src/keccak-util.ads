@@ -43,22 +43,32 @@ is
 
    function Left_Encode(Length : in Natural) return Types.Byte_Array
      with
-       Post => (Left_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Left_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
+       Post => (Left_Encode'Result'Length in 1 .. (Natural'Size / 8) + 2
+                and Left_Encode'Result'First in 1 .. (Natural'Size / 8) + 2);
    --  Encode a length using the left_encode(n) method described in the
    --  proposed CSHAKE document from NIST.
    --
    --  Example, the length 16#ABCDEF# will be encoded as the byte array
    --  (3, 16#AB#, 16#CD#, 16#EF#)
 
+   function Left_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
+     with
+       Post => (Left_Encode_Bit_Length'Result'Length in 1 .. Natural'Size + 1
+                and Left_Encode_Bit_Length'Result'First in 1 .. Natural'Size + 1);
+
    function Right_Encode(Length : in Natural) return Types.Byte_Array
      with
-       Post => (Right_Encode'Result'Length in 1 .. (Natural'Size / 8) + 1
-                and Right_Encode'Result'First in 1 .. (Natural'Size / 8) + 1);
+       Post => (Right_Encode'Result'Length in 1 .. (Natural'Size / 8) + 2
+                and Right_Encode'Result'First in 1 .. (Natural'Size / 8) + 2);
    --  Encode a length using the right_encode(n) method described in the
    --  proposed CSHAKE document from NIST.
    --
    --  Example, the length 16#ABCDEF# will be encoded as the byte array
    --  (16#AB#, 16#CD#, 16#EF#, 3)
+
+   function Right_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
+     with
+       Post => (Right_Encode_Bit_Length'Result'Length in 1 .. Natural'Size + 1
+                and Right_Encode_Bit_Length'Result'First in 1 .. Natural'Size + 1);
 
 end Keccak.Util;

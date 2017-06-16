@@ -37,10 +37,10 @@ is
       Rate_Bytes : constant Positive := Rate / 8;
 
       Encoded_Customization_Length : constant Byte_Array
-        := Util.Left_Encode(Customization'Length * 8);
+        := Util.Left_Encode_Bit_Length(Customization'Length);
 
       Encoded_Function_Name_Length : constant Byte_Array
-        := Util.Left_Encode(Function_Name'Length * 8);
+        := Util.Left_Encode_Bit_Length(Function_Name'Length);
 
       Encoded_Rate                 : constant Byte_Array
         := Util.Left_Encode (Rate_Bytes);

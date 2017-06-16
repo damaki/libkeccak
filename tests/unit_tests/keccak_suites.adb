@@ -27,6 +27,7 @@
 
 with KeccakF_Suite;
 with Sponge_Suite;
+with Util_Suite;
 with AUnit.Test_Caller;
 
 package body Keccak_Suites
@@ -38,6 +39,7 @@ is
    begin
       Ret.Add_Test(KeccakF_Suite.Suite);
       Ret.Add_Test(Sponge_Suite.Suite);
+      Ret.Add_Test(Util_Suite.Suite);
 
       return Ret;
    end Suite;

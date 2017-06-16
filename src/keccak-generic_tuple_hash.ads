@@ -39,21 +39,18 @@ is
    procedure Init(Ctx           :    out Context;
                   Customization : in     String := "")
      with Depends => (Ctx => Customization),
-     Pre => Customization'Length <= Natural'Last / 8,
      Post => State_Of(Ctx) = Updating;
 
    procedure Update_Tuple_Item(Ctx  : in out Context;
                                Item : in     Byte_Array)
      with Depends => (Ctx => + Item),
-     Pre => (State_Of(Ctx) = Updating
-             and Item'Length <= Natural'Last / 8),
+     Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Updating;
 
    procedure Finish(Ctx     : in out Context;
                     Digest  :    out Byte_Array)
      with Depends => ((Ctx, Digest) => (Ctx, Digest)),
-     Pre => (State_Of(Ctx) = Updating
-             and Digest'Length <= Natural'Last / 8),
+     Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Finished;
 
    procedure Extract(Ctx    : in out Context;
