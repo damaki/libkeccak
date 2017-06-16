@@ -49,6 +49,7 @@ is
    S_Regexp      : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("S = ""(.*)""");
    KeyLen_Regexp : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("KeyLen = (\d+)");
    Key_Regexp    : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("Key = (\w+)");
+   Tuple_Regexp  : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("Tuple = (\w+)");
    
    
    ----------------------------------------------------------------------------
@@ -403,7 +404,7 @@ is
             GNAT.Regpat.Match(Out_Regexp,    Line, Out_Match);
             GNAT.Regpat.Match(S_Regexp,      Line, S_Match);
                
-            --  N = "??"
+            --  S = "??"
             if S_Match (0) /= GNAT.Regpat.No_Match then
                Line_Num := Curr_Line_Num;
                S_Data := To_Unbounded_String(Line(S_Match(1).First .. S_Match(1).Last));
@@ -455,6 +456,78 @@ is
          Curr_Line_Num := Curr_Line_Num + 1;
       end loop;
    end Load_KMAC_Test_Vectors;
+   
+   
+   procedure Load_Tuple_Test_Vectors (File_Name : in     String;
+                                      Tests     :    out Tuple_KAT_Vectors.Vector)
+   is
+      File          : Ada.Text_IO.File_Type;
+      Curr_Line_Num : Natural := 1;
+      
+      Line_Num      : Natural;
+      Tuples        : Unbounded_String_Vectors.Vector;
+      Out_Len       : Natural;
+      Out_Data      : Byte_Array_Access := null;
+      S_Data        : Unbounded_String;
+      
+   begin
+      Tests := Tuple_KAT_Vectors.Empty_Vector;
+   
+      Ada.Text_IO.Open(File => File,
+                       Mode => Ada.Text_IO.In_File,
+                       Name => File_Name);
+      
+      while not Ada.Text_IO.End_Of_File(File) loop
+         declare
+            Line : String := Ada.Text_IO.Get_Line(File);
+            
+            Tuple_Match  : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            OutLen_Match : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            Out_Match    : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            S_Match      : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+         
+         begin
+            GNAT.Regpat.Match(Tuple_Regexp,  Line, Tuple_Match);
+            GNAT.Regpat.Match(OutLen_Regexp, Line, OutLen_Match);
+            GNAT.Regpat.Match(Out_Regexp,    Line, Out_Match);
+            GNAT.Regpat.Match(S_Regexp,      Line, S_Match);
+               
+            --  S = "??"
+            if S_Match (0) /= GNAT.Regpat.No_Match then
+               Line_Num := Curr_Line_Num;
+               S_Data := To_Unbounded_String(Line(S_Match(1).First .. S_Match(1).Last));
+               
+            --  Tuple = ??
+            elsif Tuple_Match (0) /= GNAT.Regpat.No_Match then
+               Unbounded_String_Vectors.Append (Tuples, To_Unbounded_String(Line(Tuple_Match(1).First .. Tuple_Match(1).Last)));
+               
+            -- OutLen = ??
+            elsif OutLen_Match(0) /= GNAT.Regpat.No_Match then
+               Out_Len := Natural'Value(Line(OutLen_Match(1).First .. OutLen_Match(1).Last));
+           
+            -- Out = ??
+            elsif Out_Match(0) /= GNAT.Regpat.No_Match then
+               Out_Data := Hex_String_To_Byte_Array(Line(Out_Match(1).First .. Out_Match(1).Last));
+               
+               declare
+                  Curr_Test : Tuple_KAT_Test;
+               begin
+                  Curr_Test.Line     := Line_Num;
+                  Curr_Test.S_Data   := S_Data;
+                  Curr_Test.Tuples   := Tuples;
+                  Curr_Test.Out_Len  := Out_Len;
+                  Curr_Test.Out_Data := Out_Data;
+                  Tuple_KAT_Vectors.Append(Tests, Curr_Test);
+               end;
+               
+               Tuples := Unbounded_String_Vectors.Empty_Vector;
+               
+            end if;
+         end;
+         
+         Curr_Line_Num := Curr_Line_Num + 1;
+      end loop;
+   end Load_Tuple_Test_Vectors;
    
    
    procedure Initialize(T : in out KAT_Test)
@@ -625,6 +698,37 @@ is
          T.In_Data := null;
       end if;
       
+      if T.Out_Data /= null then
+         Free(T.Out_Data);
+         T.Out_Data := null;
+      end if;
+   end Finalize;
+   
+   
+   procedure Initialize(T : in out Tuple_KAT_Test)
+   is
+   begin
+      T.Line     := 0;
+      T.Tuples   := Unbounded_String_Vectors.Empty_Vector;
+      T.Out_Len  := 0;
+      T.Out_Data := null;
+   end Initialize;
+   
+   
+   procedure Adjust(T : in out Tuple_KAT_Test)
+   is
+   begin
+      if T.Out_Data/= null then
+         T.Out_Data := new Keccak.Types.Byte_Array'(T.Out_Data.all);
+      end if;
+   end Adjust;
+   
+   
+   procedure Finalize(T : in out Tuple_KAT_Test)
+   is
+      procedure Free is new Ada.Unchecked_Deallocation(Keccak.Types.Byte_Array,
+                                                       Byte_Array_Access);
+   begin
       if T.Out_Data /= null then
          Free(T.Out_Data);
          T.Out_Data := null;

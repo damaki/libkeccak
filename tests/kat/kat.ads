@@ -89,6 +89,21 @@ is
    procedure Adjust    (T : in out KMAC_KAT_Test);
    procedure Finalize  (T : in out KMAC_KAT_Test);
    
+   package Unbounded_String_Vectors is new Ada.Containers.Vectors(Element_Type => Unbounded_String,
+                                                                  Index_Type   => Natural);
+   
+   type Tuple_KAT_Test is new Ada.Finalization.Controlled with record
+      Line     : Natural;
+      S_Data   : Unbounded_String;
+      Tuples   : Unbounded_String_Vectors.Vector;
+      Out_Len  : Natural;
+      Out_Data : Byte_Array_Access;
+   end record;
+   
+   procedure Initialize(T : in out Tuple_KAT_Test);
+   procedure Adjust    (T : in out Tuple_KAT_Test);
+   procedure Finalize  (T : in out Tuple_KAT_Test);
+   
    package KAT_Vectors is new Ada.Containers.Vectors(Element_Type => KAT_Test,
                                                      Index_Type   => Natural);
    
@@ -101,6 +116,11 @@ is
    package KMAC_KAT_Vectors is new Ada.Containers.Vectors(Element_Type => KMAC_KAT_Test,
                                                           Index_Type   => Natural);
    
+   package Tuple_KAT_Vectors is new Ada.Containers.Vectors(Element_Type => Tuple_KAT_Test,
+                                                           Index_Type   => Natural);
+                                                           
+   function Hex_String_To_Byte_Array(Str : in String) return Byte_Array_Access;
+                                                              
    procedure Load_Test_Vectors(File_Name  : in     String;
                                Tests      :    out KAT_Vectors.Vector;
                                Align_Bits : in     Boolean);
@@ -127,6 +147,9 @@ is
    
    procedure Load_KMAC_Test_Vectors (File_Name : in     String;
                                      Tests     :    out KMAC_KAT_Vectors.Vector);
+   
+   procedure Load_Tuple_Test_Vectors (File_Name : in     String;
+                                      Tests     :    out Tuple_KAT_Vectors.Vector);
                                       
    -- Helper function to convert a byte array to a hex string.
    function Byte_Array_To_String(Data : in Keccak.Types.Byte_Array) return String;
