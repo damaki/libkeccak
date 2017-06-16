@@ -167,6 +167,7 @@ private
       Update_Complete : Boolean;
    end record;
    
+
    function Rate return Positive
    is (XOF_Sponge.Block_Size_Bits - Capacity);
 

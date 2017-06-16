@@ -130,6 +130,7 @@ is
    --  is based on Keccak[1600]), and the Capacity is 256 bits, which results
    --  in a rate of 1600 - 256 = 1344 bits (168 bytes).
 
+
 private
    use type XOF.States;
 
