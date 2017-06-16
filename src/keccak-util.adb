@@ -56,12 +56,12 @@ is
       for I in Positive range 1 .. (Natural'Size / 8) loop
          pragma Loop_Invariant(N = I - 1);
 
-         exit when X = 0;
-
          Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
 
          X := X / 256;
          N := N + 1;
+
+         exit when X = 0;
 
       end loop;
 

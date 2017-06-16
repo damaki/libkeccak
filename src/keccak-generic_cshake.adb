@@ -29,31 +29,6 @@ with Keccak.Util;
 package body Keccak.Generic_CSHAKE
 is
 
-   function Padding_Zeroes(Length_1 : in Natural;
-                           Length_2 : in Natural := 0) return Byte_Array
-   is
-      Rate_Bytes : constant Positive := Rate / 8;
-
-      L1 : constant Natural := Length_1 mod Rate_Bytes;
-      L2 : constant Natural := Length_2 mod Rate_Bytes;
-
-      Zeroes : constant Types.Byte_Array(1 .. Rate_Bytes)
-        := (others => 0);
-
-      Num_Zeroes : Natural;
-
-   begin
-      if (L1 + L2) mod Rate_Bytes = 0 then
-         --  No need to add padding zeroes... Return an empty array.
-         return Zeroes(1 .. 0);
-
-      else
-         Num_Zeroes := Rate_Bytes - ((L1 + L2) mod Rate_Bytes);
-
-         return Zeroes(1 .. Num_Zeroes);
-      end if;
-   end Padding_Zeroes;
-
    procedure Init(Ctx           :    out Context;
                   Customization : in     String := "";
                   Function_Name : in     String := "")

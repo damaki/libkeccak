@@ -33,8 +33,17 @@ is
                   Key           : in     Types.Byte_Array;
                   Customization : in     String)
    is
+      Rate_Bytes : constant Positive := Rate / 8;
+
       Encoded_Key_Length : constant Types.Byte_Array
-        := Util.Left_Encode(Key'Length);
+        := Util.Left_Encode(Key'Length * 8);
+
+      Encoded_Rate       : constant Types.Byte_Array
+        := Util.Left_Encode(Rate_Bytes);
+
+      Zeroes : constant Types.Byte_Array (1 .. Rate_Bytes) := (others => 0);
+
+      Padding_Length : Natural;
    begin
       KMAC_CSHAKE.Init(Ctx           => Ctx.CSHAKE_Ctx,
                        Customization => Customization,
@@ -44,15 +53,27 @@ is
 
       KMAC_CSHAKE.Update
         (Ctx     => Ctx.CSHAKE_Ctx,
+         Message => Encoded_Rate);
+
+      KMAC_CSHAKE.Update
+        (Ctx     => Ctx.CSHAKE_Ctx,
          Message => Encoded_Key_Length);
       KMAC_CSHAKE.Update
         (Ctx     => Ctx.CSHAKE_Ctx,
          Message => Key);
 
-      KMAC_CSHAKE.Update
-        (Ctx     => Ctx.CSHAKE_Ctx,
-         Message => KMAC_CSHAKE.Padding_Zeroes(Encoded_Key_Length'Length,
-                                               Key'Length));
+      Padding_Length :=
+        Encoded_Rate'Length mod Rate_Bytes +
+        Encoded_Key_Length'Length mod Rate_Bytes +
+        Key'Length mod Rate_Bytes;
+
+      Padding_Length := Rate_Bytes - (Padding_Length mod Rate_Bytes);
+
+      if Padding_Length mod Rate_Bytes /= 0 then
+         KMAC_CSHAKE.Update
+           (Ctx     => Ctx.CSHAKE_Ctx,
+            Message => Zeroes (1 .. Padding_Length));
+      end if;
    end Init;
 
    procedure Update(Ctx     : in out Context;
@@ -72,7 +93,7 @@ is
       --  Encode and process the output length
       KMAC_CSHAKE.Update
         (Ctx     => Ctx.CSHAKE_Ctx,
-         Message => Util.Right_Encode(MAC'Length));
+         Message => Util.Right_Encode(MAC'Length * 8));
 
       KMAC_CSHAKE.Extract
         (Ctx    => Ctx.CSHAKE_Ctx,

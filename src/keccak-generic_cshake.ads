@@ -132,28 +132,6 @@ is
    --  is based on Keccak[1600]), and the Capacity is 256 bits, which results
    --  in a rate of 1600 - 256 = 1344 bits (168 bytes).
 
-
-   function Padding_Zeroes(Length_1 : in Natural;
-                           Length_2 : in Natural := 0) return Byte_Array
-     with Post =>
-       (((Length_1 mod (Rate / 8)) +
-        (Length_2 mod (Rate / 8)) +
-          Padding_Zeroes'Result'Length) mod (Rate / 8) = 0),
-       Contract_Cases =>
-         (((Length_1 mod (Rate / 8)) + (Length_2 mod (Rate / 8)))
-            mod (Rate / 8) = 0
-          => Padding_Zeroes'Result'Length = 0,
-
-          others => Padding_Zeroes'Result'Length in 1 .. (Rate / 8));
-   --  Get a byte array with the necessary number of 'zero' padding bytes
-   --  such that (Length_1 + Length_2 + Result'Length) mod (Rate / 8) = 0
-   --
-   --  Note that if (Length_1 + Length_2) mod (Rate / 8) = 0 then an empty
-   --  array is returned.
-   --
-   --  This is intended to be used by constructions built on top of CSHAKE,
-   --  such as KMAC.
-
 private
    use type XOF.States;
 

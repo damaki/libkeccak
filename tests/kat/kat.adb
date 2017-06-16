@@ -47,6 +47,8 @@ is
    Out_Regexp    : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("Out = (\w+)");
    N_Regexp      : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("N = ""(.*)""");
    S_Regexp      : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("S = ""(.*)""");
+   KeyLen_Regexp : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("KeyLen = (\d+)");
+   Key_Regexp    : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("Key = (\w+)");
    
    
    ----------------------------------------------------------------------------
@@ -358,6 +360,103 @@ is
    end Load_CSHAKE_Test_Vectors;
    
    
+   procedure Load_KMAC_Test_Vectors (File_Name : in     String;
+                                       Tests     :    out KMAC_KAT_Vectors.Vector)
+   is
+      File          : Ada.Text_IO.File_Type;
+      Curr_Line_Num : Natural := 1;
+      
+      Line_Num      : Natural;
+      Key_Len       : Natural;
+      Key_Data      : Byte_Array_Access := null;
+      In_Len        : Natural;
+      Out_Len       : Natural;
+      In_Data       : Byte_Array_Access := null;
+      Out_Data      : Byte_Array_Access := null;
+      S_Data        : Unbounded_String;
+      
+   begin
+      Tests := KMAC_KAT_Vectors.Empty_Vector;
+   
+      Ada.Text_IO.Open(File => File,
+                       Mode => Ada.Text_IO.In_File,
+                       Name => File_Name);
+      
+      while not Ada.Text_IO.End_Of_File(File) loop
+         declare
+            Line : String := Ada.Text_IO.Get_Line(File);
+            
+            KeyLen_Match : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            Key_Match    : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            InLen_Match  : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            In_Match     : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            OutLen_Match : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            Out_Match    : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            S_Match      : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+         
+         begin
+            GNAT.Regpat.Match(InLen_Regexp,  Line, InLen_Match);
+            GNAT.Regpat.Match(In_Regexp,     Line, In_Match);
+            GNAT.Regpat.Match(KeyLen_Regexp, Line, KeyLen_Match);
+            GNAT.Regpat.Match(Key_Regexp,    Line, Key_Match);
+            GNAT.Regpat.Match(OutLen_Regexp, Line, OutLen_Match);
+            GNAT.Regpat.Match(Out_Regexp,    Line, Out_Match);
+            GNAT.Regpat.Match(S_Regexp,      Line, S_Match);
+               
+            --  N = "??"
+            if S_Match (0) /= GNAT.Regpat.No_Match then
+               Line_Num := Curr_Line_Num;
+               S_Data := To_Unbounded_String(Line(S_Match(1).First .. S_Match(1).Last));
+               
+            --  KeyLen = ??
+            elsif KeyLen_Match (0) /= GNAT.Regpat.No_Match then
+               Key_Len := Natural'Value(Line(KeyLen_Match(1).First .. KeyLen_Match(1).Last));
+               
+            --  Key = ??
+            elsif Key_Match(0) /= GNAT.Regpat.No_Match then
+               Key_Data := Hex_String_To_Byte_Array(Line(Key_Match(1).First .. Key_Match(1).Last));
+            
+            -- InLen = ??
+            elsif InLen_Match(0) /= GNAT.Regpat.No_Match then
+               In_Len   := Natural'Value(Line(InLen_Match(1).First .. InLen_Match(1).Last));
+               
+            -- In = ??
+            elsif In_Match(0) /= GNAT.Regpat.No_Match then
+               In_Data := Hex_String_To_Byte_Array(Line(In_Match(1).First .. In_Match(1).Last));
+            
+            -- OutLen = ??
+            elsif OutLen_Match(0) /= GNAT.Regpat.No_Match then
+               Out_Len := Natural'Value(Line(OutLen_Match(1).First .. OutLen_Match(1).Last));
+           
+            -- Out = ??
+            elsif Out_Match(0) /= GNAT.Regpat.No_Match then
+               Out_Data := Hex_String_To_Byte_Array(Line(Out_Match(1).First .. Out_Match(1).Last));
+               
+               declare
+                  Curr_Test : KMAC_KAT_Test;
+               begin
+                  Curr_Test.Line     := Line_Num;
+                  Curr_Test.Key_Len  := Key_Len;
+                  Curr_Test.Key_Data := Key_Data;
+                  Curr_Test.S_Data   := S_Data;
+                  Curr_Test.In_Len   := In_Len;
+                  Curr_Test.In_Data  := In_Data;
+                  Curr_Test.Out_Len  := Out_Len;
+                  Curr_Test.Out_Data := Out_Data;
+                  KMAC_KAT_Vectors.Append(Tests, Curr_Test);
+               end;
+               
+               In_Data  := null;
+               Out_Data := null;
+               
+            end if;
+         end;
+         
+         Curr_Line_Num := Curr_Line_Num + 1;
+      end loop;
+   end Load_KMAC_Test_Vectors;
+   
+   
    procedure Initialize(T : in out KAT_Test)
    is
    begin
@@ -469,6 +568,58 @@ is
       procedure Free is new Ada.Unchecked_Deallocation(Keccak.Types.Byte_Array,
                                                        Byte_Array_Access);
    begin
+      if T.In_Data /= null then
+         Free(T.In_Data);
+         T.In_Data := null;
+      end if;
+      
+      if T.Out_Data /= null then
+         Free(T.Out_Data);
+         T.Out_Data := null;
+      end if;
+   end Finalize;
+   
+   
+   procedure Initialize(T : in out KMAC_KAT_Test)
+   is
+   begin
+      T.Line     := 0;
+      T.Key_Len  := 0;
+      T.Key_Data := null;
+      T.In_Len   := 0;
+      T.In_Data  := null;
+      T.Out_Len  := 0;
+      T.Out_Data := null;
+   end Initialize;
+   
+   
+   procedure Adjust(T : in out KMAC_KAT_Test)
+   is
+   begin
+      if T.Key_Data /= null then
+         T.Key_Data := new Keccak.Types.Byte_Array'(T.Key_Data.all);
+      end if;
+   
+      if T.In_Data /= null then
+         T.In_Data := new Keccak.Types.Byte_Array'(T.In_Data.all);
+      end if;
+      
+      if T.Out_Data/= null then
+         T.Out_Data := new Keccak.Types.Byte_Array'(T.Out_Data.all);
+      end if;
+   end Adjust;
+   
+   
+   procedure Finalize(T : in out KMAC_KAT_Test)
+   is
+      procedure Free is new Ada.Unchecked_Deallocation(Keccak.Types.Byte_Array,
+                                                       Byte_Array_Access);
+   begin
+      if T.Key_Data /= null then
+         Free(T.Key_Data);
+         T.Key_Data := null;
+      end if;
+      
       if T.In_Data /= null then
          Free(T.In_Data);
          T.In_Data := null;
