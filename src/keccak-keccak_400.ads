@@ -28,14 +28,14 @@ with Interfaces;
 with Keccak.Generic_Duplex;
 with Keccak.Generic_KeccakF;
 with Keccak.Generic_KeccakF.Byte_Lanes;
-with Keccak.Generic_KeccakF.Permutation;
+with Keccak.Generic_KeccakF.Optimized_Permutation;
 with Keccak.Padding;
 with Keccak.Generic_Sponge;
 
 pragma Elaborate_All(Keccak.Generic_Duplex);
 pragma Elaborate_All(Keccak.Generic_KeccakF);
 pragma Elaborate_All(Keccak.Generic_KeccakF.Byte_Lanes);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Permutation);
+pragma Elaborate_All(Keccak.Generic_KeccakF.Optimized_Permutation);
 pragma Elaborate_All(Keccak.Generic_Sponge);
 
 package Keccak.Keccak_400
@@ -49,8 +49,10 @@ is
       Shift_Right => Interfaces.Shift_Right,
       Rotate_Left => Interfaces.Rotate_Left);
 
+   package KeccakF_400_Permutation is new KeccakF_400.Optimized_Permutation;
+
    -- Keccak-f[400] permutation with the default number of rounds.
-   package KeccakF_400_Permutation is new KeccakF_400.Permutation;
+   procedure Permute is new KeccakF_400_Permutation.Permute;
 
    package KeccakF_400_Lanes is new KeccakF_400.Byte_Lanes;
 
@@ -58,7 +60,7 @@ is
      (State_Size          => KeccakF_400.B,
       State_Type          => KeccakF_400.State,
       Init_State          => KeccakF_400.Init,
-      F                   => KeccakF_400_Permutation.Permute,
+      F                   => Permute,
       XOR_Bits_Into_State => KeccakF_400_Lanes.XOR_Bits_Into_State,
       Extract_Data        => KeccakF_400_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
@@ -67,7 +69,7 @@ is
      (State_Size          => KeccakF_400.B,
       State_Type          => KeccakF_400.State,
       Init_State          => KeccakF_400.Init,
-      F                   => KeccakF_400_Permutation.Permute,
+      F                   => Permute,
       XOR_Bits_Into_State => KeccakF_400_Lanes.XOR_Bits_Into_State,
       Extract_Bits        => KeccakF_400_Lanes.Extract_Bits,
       Pad                 => Keccak.Padding.Pad101_Single_Block,

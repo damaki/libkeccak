@@ -54,6 +54,7 @@ is
    procedure Test_XOR_Entire_State(T : in out Test);
    procedure Test_XOR_Bit_Length(T : in out Test);
    procedure Test_Extract_Bits_Same_As_Extract_Bytes(T : in out Test);
+   procedure Test_Permute_Implementations (T : in out Test);
 
 end KeccakF_Tests;
 

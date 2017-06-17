@@ -104,6 +104,8 @@ is
                                       KeccakF_1600_Tests.Test_XOR_Bit_Length'Access));
       Ret.Add_Test(Caller_1600.Create("Keccak-f[1600]: Test Extract_Bits and Extract_Bytes equivalence", 
                                       KeccakF_1600_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+      Ret.Add_Test(Caller_1600.Create("Keccak-f[1600]: Compare Optimized and Reference permutations", 
+                                      KeccakF_1600_Tests.Test_Permute_Implementations'Access));
                                  
       Ret.Add_Test(Caller_800.Create("Keccak-f[800]: Test initial Keccak state is zero", 
                                       KeccakF_800_Tests.Test_Initial_State'Access));
@@ -117,6 +119,8 @@ is
                                       KeccakF_800_Tests.Test_XOR_Bit_Length'Access));
       Ret.Add_Test(Caller_800.Create("Keccak-f[800]: Test Extract_Bits and Extract_Bytes equivalence", 
                                       KeccakF_800_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+      Ret.Add_Test(Caller_800.Create("Keccak-f[800]: Compare Optimized and Reference permutations", 
+                                      KeccakF_800_Tests.Test_Permute_Implementations'Access));
                                  
       Ret.Add_Test(Caller_400.Create("Keccak-f[400]: Test initial Keccak state is zero", 
                                       KeccakF_400_Tests.Test_Initial_State'Access));
@@ -130,6 +134,8 @@ is
                                       KeccakF_400_Tests.Test_XOR_Bit_Length'Access));
       Ret.Add_Test(Caller_400.Create("Keccak-f[400]: Test Extract_Bits and Extract_Bytes equivalence", 
                                       KeccakF_400_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+      Ret.Add_Test(Caller_400.Create("Keccak-f[400]: Compare Optimized and Reference permutations", 
+                                      KeccakF_400_Tests.Test_Permute_Implementations'Access));
                                  
       Ret.Add_Test(Caller_200.Create("Keccak-f[200]: Test initial Keccak state is zero", 
                                       KeccakF_200_Tests.Test_Initial_State'Access));
@@ -143,6 +149,8 @@ is
                                       KeccakF_200_Tests.Test_XOR_Bit_Length'Access));
       Ret.Add_Test(Caller_200.Create("Keccak-f[200]: Test Extract_Bits and Extract_Bytes equivalence", 
                                       KeccakF_200_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+      Ret.Add_Test(Caller_200.Create("Keccak-f[200]: Compare Optimized and Reference permutations", 
+                                      KeccakF_200_Tests.Test_Permute_Implementations'Access));
                                  
       Ret.Add_Test(Caller_100.Create("Keccak-f[100]: Test initial Keccak state is zero", 
                                       KeccakF_100_Tests.Test_Initial_State'Access));
@@ -156,6 +164,8 @@ is
                                       KeccakF_100_Tests.Test_XOR_Bit_Length'Access));
       Ret.Add_Test(Caller_100.Create("Keccak-f[100]: Test Extract_Bits and Extract_Bytes equivalence", 
                                       KeccakF_100_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+      Ret.Add_Test(Caller_100.Create("Keccak-f[100]: Compare Optimized and Reference permutations", 
+                                      KeccakF_100_Tests.Test_Permute_Implementations'Access));
                                  
       Ret.Add_Test(Caller_50.Create("Keccak-f[50]: Test initial Keccak state is zero", 
                                      KeccakF_50_Tests.Test_Initial_State'Access));
@@ -168,7 +178,9 @@ is
       Ret.Add_Test(Caller_50.Create("Keccak-f[50]: Test XOR is correct all possible bit-lengths", 
                                      KeccakF_50_Tests.Test_XOR_Bit_Length'Access));
       Ret.Add_Test(Caller_50.Create("Keccak-f[50]: Test Extract_Bits and Extract_Bytes equivalence", 
-                                      KeccakF_50_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+                                     KeccakF_50_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+      Ret.Add_Test(Caller_50.Create("Keccak-f[50]: Compare Optimized and Reference permutations", 
+                                     KeccakF_50_Tests.Test_Permute_Implementations'Access));
                                  
       Ret.Add_Test(Caller_25.Create("Keccak-f[25]: Test initial Keccak state is zero", 
                                      KeccakF_25_Tests.Test_Initial_State'Access));
@@ -182,6 +194,8 @@ is
                                      KeccakF_25_Tests.Test_XOR_Bit_Length'Access));
       Ret.Add_Test(Caller_25.Create("Keccak-f[25]: Test Extract_Bits and Extract_Bytes equivalence", 
                                       KeccakF_25_Tests.Test_Extract_Bits_Same_As_Extract_Bytes'Access));
+      Ret.Add_Test(Caller_25.Create("Keccak-f[25]: Compare Optimized and Reference permutations", 
+                                     KeccakF_25_Tests.Test_Permute_Implementations'Access));
       
       return Ret;
    end Suite;

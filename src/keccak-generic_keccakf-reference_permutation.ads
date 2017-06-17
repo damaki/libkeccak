@@ -24,19 +24,47 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-package body Keccak.Generic_KeccakF.Permutation
+
+generic
+package Keccak.Generic_KeccakF.Reference_Permutation
 is
 
+   generic
+      -- Number of rounds.
+      --
+      -- By default, the definition from The Keccak Reference is used.
+      Num_Rounds : Round_Count := 12 + (2*L);
    procedure Permute(A : in out State)
-   is
-      Temp : State;
+     with Depends => (A => A);
+   -- Permute the Keccak state.
+   --
+   -- @param A The Keccak state to permute.
 
-   begin
-      for I in Round_Index range 0 .. Round_Index(Num_Rounds - 1) loop
-         Theta(A, Temp);
-         Rho_Pi(Temp);
-         Chi_Iota(Temp, A, I);
-      end loop;
-   end Permute;
+private
 
-end Keccak.Generic_KeccakF.Permutation;
+   procedure Theta(A  : in     State;
+                   AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Rho(A  : in     State;
+                 AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Pi(A  : in     State;
+                AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Rho_Pi (A  : in out State)
+     with Depends => (A => A),
+     Inline;
+
+   procedure Chi_Iota(A  : in     State;
+                      AR :    out State;
+                      RI : in     Round_Index)
+     with Depends => (AR => (A, RI)),
+     Inline;
+
+end Keccak.Generic_KeccakF.Reference_Permutation;

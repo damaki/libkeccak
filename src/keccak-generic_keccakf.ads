@@ -30,13 +30,13 @@ generic
    -- The binary logarithm of the lane size.
    --
    -- This determines the Keccak-f state size. Possible values are:
-   -- * L=0 => Keccak-f[25]
-   -- * L=1 => Keccak-f[50]
-   -- * L=2 => Keccak-f[100]
-   -- * L=3 => Keccak-f[200]
-   -- * L=4 => Keccak-f[400]
-   -- * L=5 => Keccak-f[800]
-   -- * L=6 => Keccak-f[1600]
+   -- * L=0 => 1-bit lanes,  Keccak-f[25]
+   -- * L=1 => 2-bit lanes,  Keccak-f[50]
+   -- * L=2 => 4-bit lanes,  Keccak-f[100]
+   -- * L=3 => 8-bit lanes,  Keccak-f[200]
+   -- * L=4 => 16-bit lanes, Keccak-f[400]
+   -- * L=5 => 32-bit lanes, Keccak-f[800]
+   -- * L=6 => 64-bit lanes, Keccak-f[1600]
    L : in Natural;
 
    -- Modular type for a lane of the Keccak state.
@@ -68,6 +68,11 @@ is
    W : constant Positive := 2**L; -- Lane size in bits
    B : constant Positive := W*25; -- State size in bits (1600, 800, etc...)
 
+   pragma Assert (Lane_Type'Modulus = 2**W,
+                  "Value for L is incompatible with the specified lane type");
+
+   subtype Round_Count is Positive range 1 .. 24;
+
    type State is private;
 
    procedure Init(A : out State)
@@ -83,30 +88,5 @@ private
    type State is array(X_Coord, Y_Coord) of Lane_Type;
 
    type Round_Index is new Natural range 0 .. 23;
-
-   procedure Theta(A  : in     State;
-                   AR :    out State)
-     with Depends => (AR => A),
-     Inline;
-
-   procedure Rho(A  : in     State;
-                 AR :    out State)
-     with Depends => (AR => A),
-     Inline;
-
-   procedure Pi(A  : in     State;
-                AR :    out State)
-     with Depends => (AR => A),
-     Inline;
-
-   procedure Rho_Pi (A  : in out State)
-     with Depends => (A => A),
-     Inline;
-
-   procedure Chi_Iota(A  : in     State;
-                      AR :    out State;
-                      RI : in     Round_Index)
-     with Depends => (AR => (A, RI)),
-     Inline;
 
 end Keccak.Generic_KeccakF;
