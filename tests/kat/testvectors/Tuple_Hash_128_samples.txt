@@ -1,0 +1,24 @@
+# Tuple_Hash_128_samples.txt
+# Algorithm name: TupleHash128
+# Test vectors obtained from: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/TupleHash_samples.pdf
+# Accessed 16 June 2017
+
+S = ""
+Tuple = 000102
+Tuple = 101112131415
+OutLen = 256
+Out = C5D8786C1AFB9B82111AB34B65B2C0048FA64E6D48E263264CE1707D3FFC8ED1
+
+S = "My Tuple App"
+Tuple = 000102
+Tuple = 101112131415
+OutLen = 256
+Out = 75CDB20FF4DB1154E841D758E24160C54BAE86EB8C13E7F5F40EB35588E96DFB
+
+S = "My Tuple App"
+Tuple = 000102
+Tuple = 101112131415
+Tuple = 202122232425262728
+OutLen = 256
+Out = E60F202C89A2631EDA8D4C588CA5FD07F39E5151998DECCF973ADB3804BB6E84
+

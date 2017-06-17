@@ -10,6 +10,7 @@ libkeccak implements the following constructions:
 * The Duplex construction
 * Hash functions based on the Sponge construction
 * eXtendable Output Functions (XOF) based on the Sponge construction
+* cSHAKE, KMAC, and TupleHash as specified in NIST SP 800-185 [4]
 
 libkeccak also provides concrete implementations for the hash functions and
 XOFs described in NIST FIPS 202 (see [1]):
@@ -36,6 +37,12 @@ the Keccak team which were submitted in the SHA-3 competition:
 These hash functions differ from the final SHA-3 hash functions only in that the
 SHA-3 functions append two additional bits to each message, whereas the Keccak
 hash functions do not.
+
+The library's algorithms are implemented using Ada's powerful generics. This
+allows for extensive customization and re-use of the various algorithms. You
+can define your own configurations of hash functions. For example, you can 
+create a hash function using a reduced-round Keccak permutation, or you can
+re-use the sponge construction based on a custom permutation algorithm.
 
 # Example
 
@@ -150,3 +157,5 @@ output Functions. August 2015 http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.20
 http://keccak.noekeon.org/Keccak-reference-3.0.pdf
 * [3] Cryptographic Sponge Functions Version 0.1. January 2011
 http://sponge.noekeon.org/CSF-0.1.pdf
+* [4] NIST SP 800-185 - SHA-3 Derived Functions: cSHAKE, KMAC, TupleHash, and ParallelHash. December 2016
+http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf

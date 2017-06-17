@@ -24,24 +24,32 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Generic_CSHAKE;
+with Keccak.Generic_XOF;
+with Keccak.Keccak_1600;
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
+pragma Elaborate_All(Keccak.Generic_CSHAKE);
+pragma Elaborate_All(Keccak.Generic_XOF);
 
-package body Keccak_Suites
+package CSHAKE
+with SPARK_Mode => On
 is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
+   package CSHAKE128_XOF is new Keccak.Generic_XOF
+     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+      Capacity    => 256,
+      Suffix      => 2#00#,
+      Suffix_Size => 2);
 
-      return Ret;
-   end Suite;
+   package CSHAKE256_XOF is new Keccak.Generic_XOF
+     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+      Capacity    => 512,
+      Suffix      => 2#00#,
+      Suffix_Size => 2);
 
-end Keccak_Suites;
+   package CSHAKE128 is new Keccak.Generic_CSHAKE
+     (XOF             => CSHAKE128_XOF);
+
+   package CSHAKE256 is new Keccak.Generic_CSHAKE
+     (XOF             => CSHAKE256_XOF);
+
+end CSHAKE;

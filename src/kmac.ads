@@ -24,24 +24,16 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with CSHAKE;
+with Keccak.Generic_KMAC;
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
+pragma Elaborate_All(Keccak.Generic_KMAC);
 
-package body Keccak_Suites
+package KMAC
+with SPARK_Mode => On
 is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
 
-      return Ret;
-   end Suite;
+   package KMAC128 is new Keccak.Generic_KMAC(CSHAKE.CSHAKE128);
+   package KMAC256 is new Keccak.Generic_KMAC(CSHAKE.CSHAKE256);
 
-end Keccak_Suites;
+end KMAC;

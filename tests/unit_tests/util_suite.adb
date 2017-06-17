@@ -25,23 +25,29 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
+with Util_Tests;
 with AUnit.Test_Caller;
 
-package body Keccak_Suites
+package body Util_Suite
 is
+
+   package Caller is new AUnit.Test_Caller (Util_Tests.Test);
+
    function Suite return Access_Test_Suite
    is
    
       Ret : constant Access_Test_Suite := new Test_Suite;
    begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
-
+      Ret.Add_Test
+         (Caller.Create
+            ("Test Left_Encode_Bit_Length equivalence to Left_Encode", 
+             Util_Tests.Test_Left_Encode_Bit_Length_Equivalence'Access));
+      Ret.Add_Test
+         (Caller.Create
+            ("Test Right_Encode_Bit_Length equivalence to Right_Encode", 
+             Util_Tests.Test_Right_Encode_Bit_Length_Equivalence'Access));
+     
       return Ret;
    end Suite;
 
-end Keccak_Suites;
+end Util_Suite;

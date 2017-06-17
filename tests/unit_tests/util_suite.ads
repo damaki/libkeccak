@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2017, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -25,23 +25,10 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
+with AUnit.Test_Suites; use AUnit.Test_Suites;
 
-package body Keccak_Suites
-is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
+package Util_Suite is
 
-      return Ret;
-   end Suite;
+   function Suite return Access_Test_Suite;
 
-end Keccak_Suites;
+end Util_Suite;

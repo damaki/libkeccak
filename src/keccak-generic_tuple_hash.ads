@@ -24,24 +24,54 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Generic_CSHAKE;
+with Keccak.Types;          use Keccak.Types;
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
-
-package body Keccak_Suites
+generic
+   with package CSHAKE is new Generic_CSHAKE(<>);
+package Keccak.Generic_Tuple_Hash
 is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
 
-      return Ret;
-   end Suite;
+   type Context is private;
 
-end Keccak_Suites;
+   type States is (Updating, Extracting, Finished);
+
+   procedure Init(Ctx           :    out Context;
+                  Customization : in     String := "")
+     with Depends => (Ctx => Customization),
+     Post => State_Of(Ctx) = Updating;
+
+   procedure Update_Tuple_Item(Ctx  : in out Context;
+                               Item : in     Byte_Array)
+     with Depends => (Ctx => + Item),
+     Pre => State_Of(Ctx) = Updating,
+     Post => State_Of(Ctx) = Updating;
+
+   procedure Finish(Ctx     : in out Context;
+                    Digest  :    out Byte_Array)
+     with Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     Pre => State_Of(Ctx) = Updating,
+     Post => State_Of(Ctx) = Finished;
+
+   procedure Extract(Ctx    : in out Context;
+                     Digest :    out Byte_Array)
+     with Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     Pre => State_Of(Ctx) in Updating | Extracting,
+     Post => State_Of(Ctx) = Extracting;
+
+   function State_Of(Ctx : in Context) return States;
+
+private
+   use type CSHAKE.States;
+
+   type Context is record
+      Ctx      : CSHAKE.Context;
+      Finished : Boolean;
+   end record;
+
+   function State_Of(Ctx : in Context) return States
+   is (if Ctx.Finished then Finished
+       elsif CSHAKE.State_Of(Ctx.Ctx) = CSHAKE.Updating then Updating
+       else Extracting);
+
+end Keccak.Generic_Tuple_Hash;

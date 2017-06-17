@@ -24,24 +24,14 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with CSHAKE;
+with Keccak.Generic_Tuple_Hash;
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
-
-package body Keccak_Suites
+package Tuple_Hash
+with SPARK_Mode => On
 is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
 
-      return Ret;
-   end Suite;
+   package Tuple_Hash_128 is new Keccak.Generic_Tuple_Hash(CSHAKE.CSHAKE128);
+   package Tuple_Hash_256 is new Keccak.Generic_Tuple_Hash(CSHAKE.CSHAKE256);
 
-end Keccak_Suites;
+end Tuple_Hash;

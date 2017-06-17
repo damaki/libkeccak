@@ -24,24 +24,61 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Util; use Keccak.Util;
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
-
-package body Keccak_Suites
+package body Keccak.Generic_Tuple_Hash
 is
-   function Suite return Access_Test_Suite
+
+   procedure Init(Ctx           :    out Context;
+                  Customization : in     String := "")
    is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
    begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
+      Ctx.Finished := False;
 
-      return Ret;
-   end Suite;
+      CSHAKE.Init(Ctx           => Ctx.Ctx,
+                  Customization => Customization,
+                  Function_Name => "TupleHash");
+   end Init;
 
-end Keccak_Suites;
+
+   procedure Update_Tuple_Item(Ctx  : in out Context;
+                               Item : in     Byte_Array)
+   is
+   begin
+      CSHAKE.Update(Ctx     => Ctx.Ctx,
+                    Message => Left_Encode_Bit_Length(Item'Length));
+
+      CSHAKE.Update(Ctx     => Ctx.Ctx,
+                    Message => Item);
+   end Update_Tuple_Item;
+
+
+   procedure Finish(Ctx     : in out Context;
+                    Digest  :    out Byte_Array)
+   is
+   begin
+      CSHAKE.Update(Ctx     => Ctx.Ctx,
+                    Message => Right_Encode_Bit_Length(Digest'Length));
+
+      CSHAKE.Extract(Ctx    => Ctx.Ctx,
+                     Digest => Digest);
+
+      Ctx.Finished := True;
+   end Finish;
+
+   procedure Extract(Ctx    : in out Context;
+                     Digest :    out Byte_Array)
+   is
+   begin
+      if State_Of(Ctx) = Updating then
+         CSHAKE.Update
+           (Ctx     => Ctx.Ctx,
+            Message => Util.Right_Encode(0));
+      end if;
+
+      CSHAKE.Extract
+        (Ctx    => Ctx.Ctx,
+         Digest => Digest);
+   end Extract;
+
+end Keccak.Generic_Tuple_Hash;

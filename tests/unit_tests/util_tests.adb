@@ -25,23 +25,36 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
+with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
+with AUnit.Assertions; use AUnit.Assertions;
+with Keccak.Types;     use Keccak.Types;
+with Keccak.Util;      use Keccak.Util;
 
-package body Keccak_Suites
+package body Util_Tests
 is
-   function Suite return Access_Test_Suite
+
+   procedure Set_Up(T : in out Test)
    is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
    begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
+      null;
+   end Set_Up;
+   
+   procedure Test_Left_Encode_Bit_Length_Equivalence(T : in out Test)
+   is
+   begin
+      for N in 0 .. Natural'Last / 8 loop
+         Assert (Left_Encode_Bit_Length (N) = Left_Encode (N * 8),
+                 "Failed for N = " & Natural'Image (N));
+      end loop;
+   end Test_Left_Encode_Bit_Length_Equivalence;
+   
+   procedure Test_Right_Encode_Bit_Length_Equivalence(T : in out Test)
+   is
+   begin
+      for N in 0 .. Natural'Last / 8 loop
+         Assert (Right_Encode_Bit_Length (N) = Right_Encode (N * 8),
+                 "Failed for N = " & Natural'Image (N));
+      end loop;
+   end Test_Right_Encode_Bit_Length_Equivalence;
 
-      return Ret;
-   end Suite;
-
-end Keccak_Suites;
+end Util_Tests;

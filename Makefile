@@ -8,7 +8,10 @@ GENERIC_BODIES = src/keccak-generic_duplex.adb \
                  src/keccak-generic_keccakf.adb \
                  src/keccak-generic_keccakf-permutation.adb \
                  src/keccak-generic_keccakf-bit_lanes.adb \
-                 src/keccak-generic_keccakf-byte_lanes.adb
+                 src/keccak-generic_keccakf-byte_lanes.adb \
+                 src/keccak-generic_cshake.adb \
+                 src/keccak-generic_kmac.adb \
+                 src/keccak-generic_tuple_hash.adb
 
 ################################################################################
 

@@ -1,0 +1,24 @@
+# Tuple_Hash_128_samples.txt
+# Algorithm name: TupleHash128 (XOF)
+# Test vectors obtained from: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/TupleHashXOF_samples.pdf
+# Accessed 16 June 2017
+
+S = ""
+Tuple = 000102
+Tuple = 101112131415
+OutLen = 256
+Out = 2F103CD7C32320353495C68DE1A8129245C6325F6F2A3D608D92179C96E68488
+
+S = "My Tuple App"
+Tuple = 000102
+Tuple = 101112131415
+OutLen = 256
+Out = 3FC8AD69453128292859A18B6C67D7AD85F01B32815E22CE839C49EC374E9B9A
+
+S = "My Tuple App"
+Tuple = 000102
+Tuple = 101112131415
+Tuple = 202122232425262728
+OutLen = 256
+Out = 900FE16CAD098D28E74D632ED852F99DAAB7F7DF4D99E775657885B4BF76D6F8
+
