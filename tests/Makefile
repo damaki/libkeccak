@@ -66,6 +66,8 @@ kat: $(KAT_EXECUTABLES)
 	$(OUTPUT_DIR)/kat/keccak_384_kat kat/testvectors/ExtremelyLongMsgKAT_384.txt
 	$(OUTPUT_DIR)/kat/keccak_512_kat kat/testvectors/ExtremelyLongMsgKAT_512.txt
 
+.PHONY: $(OUTPUT_DIR)/benchmark/benchmark
+.PHONY: benchmark
 benchmark: $(OUTPUT_DIR)/benchmark/benchmark
 	$(OUTPUT_DIR)/benchmark/benchmark
 

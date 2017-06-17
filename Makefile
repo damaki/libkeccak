@@ -39,6 +39,7 @@ unit_test:
 coverage:
 	$(MAKE) KECCAK_DIR=$(OUTPUT_DIR)/keccak -C tests coverage
 
+.PHONY: benchmark
 benchmark: install_local
 	$(MAKE) KECCAK_DIR=$(OUTPUT_DIR)/keccak -C tests benchmark
 	
