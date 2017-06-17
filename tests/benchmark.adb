@@ -28,7 +28,6 @@
 with Ada.Real_Time;
 with Ada.Text_IO;
 with Keccak.Generic_KeccakF;
-with Keccak.Generic_KeccakF.Permutation;
 with Keccak.Keccak_25;
 with Keccak.Keccak_50;
 with Keccak.Keccak_100;
@@ -363,31 +362,31 @@ is
    procedure Benchmark_KeccakF_25 is new KeccakF_Benchmark
      ("KeccakF[25]", 
       Keccak.Keccak_25.KeccakF_25, 
-      Keccak.Keccak_25.KeccakF_25_Permutation.Permute);
+      Keccak.Keccak_25.Permute);
    procedure Benchmark_KeccakF_50 is new KeccakF_Benchmark
      ("KeccakF[50]", 
       Keccak.Keccak_50.KeccakF_50, 
-      Keccak.Keccak_50.KeccakF_50_Permutation.Permute);
+      Keccak.Keccak_50.Permute);
    procedure Benchmark_KeccakF_100 is new KeccakF_Benchmark
      ("KeccakF[100]", 
       Keccak.Keccak_100.KeccakF_100, 
-      Keccak.Keccak_100.KeccakF_100_Permutation.Permute);
+      Keccak.Keccak_100.Permute);
    procedure Benchmark_KeccakF_200 is new KeccakF_Benchmark
      ("KeccakF[200]", 
       Keccak.Keccak_200.KeccakF_200, 
-      Keccak.Keccak_200.KeccakF_200_Permutation.Permute);
+      Keccak.Keccak_200.Permute);
    procedure Benchmark_KeccakF_400 is new KeccakF_Benchmark
      ("KeccakF[400]", 
       Keccak.Keccak_400.KeccakF_400, 
-      Keccak.Keccak_400.KeccakF_400_Permutation.Permute);
+      Keccak.Keccak_400.Permute);
    procedure Benchmark_KeccakF_800 is new KeccakF_Benchmark
      ("KeccakF[800]", 
       Keccak.Keccak_800.KeccakF_800, 
-      Keccak.Keccak_800.KeccakF_800_Permutation.Permute);
+      Keccak.Keccak_800.Permute);
    procedure Benchmark_KeccakF_1600 is new KeccakF_Benchmark
      ("KeccakF[1600]", 
       Keccak.Keccak_1600.KeccakF_1600, 
-      Keccak.Keccak_1600.KeccakF_1600_Permutation.Permute);
+      Keccak.Keccak_1600.Permute);
 
 begin
    Ada.Text_IO.Put_Line("Algorithm,Time,Data Length,Performance");

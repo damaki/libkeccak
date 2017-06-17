@@ -6,7 +6,8 @@ GENERIC_BODIES = src/keccak-generic_duplex.adb \
                  src/keccak-generic_sponge.adb \
                  src/keccak-generic_xof.adb \
                  src/keccak-generic_keccakf.adb \
-                 src/keccak-generic_keccakf-permutation.adb \
+                 src/keccak-generic_keccakf-optimized_permutation.adb \
+                 src/keccak-generic_keccakf-reference_permutation.adb \
                  src/keccak-generic_keccakf-bit_lanes.adb \
                  src/keccak-generic_keccakf-byte_lanes.adb \
                  src/keccak-generic_cshake.adb \

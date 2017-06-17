@@ -246,7 +246,7 @@ is
          Asu := Asu xor Du;
          Bbu := Rotate_Left(Asu, 78 mod W);
          Eba := Bba  xor ((not Bbe) and   Bbi );
-         Eba := Eba xor Lane_Type(RC(RI));
+         Eba := Eba xor Lane_Type(RC(RI) and (2**W - 1));
          Ca  := Eba;
          Ebe := Bbe xor ((not Bbi) and Bbo );
          Ce  := Ebe;
@@ -383,7 +383,7 @@ is
          Esu := Esu xor Du;
          Bbu := Rotate_Left(Esu, 78 mod W);
          Aba := Bba xor ((not Bbe) and Bbi );
-         Aba := Aba xor Lane_Type(RC(RI));
+         Aba := Aba xor Lane_Type(RC(RI) and (2**W - 1));
          Ca  := Aba;
          Abe := Bbe xor ((not Bbi) and Bbo );
          Ce  := Abe;

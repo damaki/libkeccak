@@ -49,8 +49,10 @@ is
       Shift_Right => Interfaces.Shift_Right,
       Rotate_Left => Interfaces.Rotate_Left);
 
-   -- Keccak-f[800] permutation with the default number of rounds.
    package KeccakF_800_Permutation is new KeccakF_800.Optimized_Permutation;
+
+   -- Keccak-f[800] permutation with the default number of rounds.
+   procedure Permute is new KeccakF_800_Permutation.Permute;
 
    package KeccakF_800_Lanes is new KeccakF_800.Byte_Lanes;
 
@@ -58,7 +60,7 @@ is
      (State_Size          => KeccakF_800.B,
       State_Type          => KeccakF_800.State,
       Init_State          => KeccakF_800.Init,
-      F                   => KeccakF_800_Permutation.Permute,
+      F                   => Permute,
       XOR_Bits_Into_State => KeccakF_800_Lanes.XOR_Bits_Into_State,
       Extract_Data        => KeccakF_800_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
@@ -67,7 +69,7 @@ is
      (State_Size          => KeccakF_800.B,
       State_Type          => KeccakF_800.State,
       Init_State          => KeccakF_800.Init,
-      F                   => KeccakF_800_Permutation.Permute,
+      F                   => Permute,
       XOR_Bits_Into_State => KeccakF_800_Lanes.XOR_Bits_Into_State,
       Extract_Bits        => KeccakF_800_Lanes.Extract_Bits,
       Pad                 => Keccak.Padding.Pad101_Single_Block,

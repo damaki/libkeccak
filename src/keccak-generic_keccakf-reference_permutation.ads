@@ -26,17 +26,45 @@
 -------------------------------------------------------------------------------
 
 generic
-   -- Number of rounds.
-   --
-   -- By default, the definition from The Keccak Reference is used.
-   Num_Rounds : Positive := 12 + (2*L);
-package Keccak.Generic_KeccakF.Permutation
+package Keccak.Generic_KeccakF.Reference_Permutation
 is
 
+   generic
+      -- Number of rounds.
+      --
+      -- By default, the definition from The Keccak Reference is used.
+      Num_Rounds : Positive := 12 + (2*L);
    procedure Permute(A : in out State)
      with Depends => (A => A);
    -- Permute the Keccak state.
    --
    -- @param A The Keccak state to permute.
 
-end Keccak.Generic_KeccakF.Permutation;
+private
+
+   procedure Theta(A  : in     State;
+                   AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Rho(A  : in     State;
+                 AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Pi(A  : in     State;
+                AR :    out State)
+     with Depends => (AR => A),
+     Inline;
+
+   procedure Rho_Pi (A  : in out State)
+     with Depends => (A => A),
+     Inline;
+
+   procedure Chi_Iota(A  : in     State;
+                      AR :    out State;
+                      RI : in     Round_Index)
+     with Depends => (AR => (A, RI)),
+     Inline;
+
+end Keccak.Generic_KeccakF.Reference_Permutation;

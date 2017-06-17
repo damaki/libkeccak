@@ -25,10 +25,11 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 generic
-   Num_Rounds : Positive := 12 + (2*L);
 package Keccak.Generic_KeccakF.Optimized_Permutation
 is
 
+   generic
+      Num_Rounds : Positive := 12 + (2*L);
    procedure Permute (S : in out State);
 
 end Keccak.Generic_KeccakF.Optimized_Permutation;
