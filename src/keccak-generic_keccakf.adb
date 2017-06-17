@@ -157,6 +157,47 @@ is
             );
    end Pi;
 
+   -- Keccak Rho and Pi operations merged
+   --
+   -- See Algorithms 2 and 3 in Sections 3.2.2 and 3.2.3 of NIST FIPS-202.
+   --
+   -- @param A The Keccak state to permute with the Rho and Pi operations.
+   procedure Rho_Pi (A  : in out State)
+   is
+   begin
+      A := (0 => (0 => A(0, 0),
+                  1 => Rotate_Left(A(3, 0), 28  mod W),
+                  2 => Rotate_Left(A(1, 0), 1   mod W),
+                  3 => Rotate_Left(A(4, 0), 91  mod W),
+                  4 => Rotate_Left(A(2, 0), 190 mod W)
+                 ),
+            1 => (0 => Rotate_Left(A(1, 1), 300 mod W),
+                  1 => Rotate_Left(A(4, 1), 276 mod W),
+                  2 => Rotate_Left(A(2, 1), 6   mod W),
+                  3 => Rotate_Left(A(0, 1), 36  mod W),
+                  4 => Rotate_Left(A(3, 1), 55  mod W)
+                 ),
+            2 => (0 => Rotate_Left(A(2, 2), 171 mod W),
+                  1 => Rotate_Left(A(0, 2), 3   mod W),
+                  2 => Rotate_Left(A(3, 2), 153 mod W),
+                  3 => Rotate_Left(A(1, 2), 10  mod W),
+                  4 => Rotate_Left(A(4, 2), 231 mod W)
+                 ),
+            3 => (0 => Rotate_Left(A(3, 3), 21  mod W),
+                  1 => Rotate_Left(A(1, 3), 45  mod W),
+                  2 => Rotate_Left(A(4, 3), 136 mod W),
+                  3 => Rotate_Left(A(2, 3), 15  mod W),
+                  4 => Rotate_Left(A(0, 3), 105 mod W)
+                 ),
+            4 => (0 => Rotate_Left(A(4, 4), 78  mod W),
+                  1 => Rotate_Left(A(2, 4), 253 mod W),
+                  2 => Rotate_Left(A(0, 4), 210 mod W),
+                  3 => Rotate_Left(A(3, 4), 120 mod W),
+                  4 => Rotate_Left(A(1, 4), 66  mod W)
+                 )
+           );
+   end Rho_Pi;
+
    -- Keccak Chi and Iota operations
    --
    -- See Algorithms 4 and 5 in Sections 3.2.4 and 3.2.5 of NIST FIPS-202.

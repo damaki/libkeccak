@@ -34,8 +34,7 @@ is
    begin
       for I in Round_Index range 0 .. Round_Index(Num_Rounds - 1) loop
          Theta(A, Temp);
-         Rho(Temp, A);
-         Pi(A, Temp);
+         Rho_Pi(Temp);
          Chi_Iota(Temp, A, I);
       end loop;
    end Permute;

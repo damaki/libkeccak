@@ -99,6 +99,10 @@ private
      with Depends => (AR => A),
      Inline;
 
+   procedure Rho_Pi (A  : in out State)
+     with Depends => (A => A),
+     Inline;
+
    procedure Chi_Iota(A  : in     State;
                       AR :    out State;
                       RI : in     Round_Index)
