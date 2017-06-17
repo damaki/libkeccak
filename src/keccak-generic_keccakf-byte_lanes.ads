@@ -29,6 +29,10 @@ generic
 package Keccak.Generic_KeccakF.Byte_Lanes
 is
 
+   pragma Assert
+     (W mod 8 = 0,
+      "Byte_Lanes can only be used with lane sizes that are a multiple of 8");
+
    procedure XOR_Bits_Into_State(A       : in out State;
                                  Data    : in     Keccak.Types.Byte_Array;
                                  Bit_Len : in     Natural)

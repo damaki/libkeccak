@@ -29,6 +29,10 @@ generic
 package Keccak.Generic_KeccakF.Bit_Lanes
 is
 
+   pragma Assert
+     (W in 1 | 2 | 4,
+      "Bit_Lanes can only be used with lane sizes that 1, 2, or 4 bits wide");
+
    procedure XOR_Bits_Into_State(A       : in out State;
                                  Data    : in     Keccak.Types.Byte_Array;
                                  Bit_Len : in     Natural)
