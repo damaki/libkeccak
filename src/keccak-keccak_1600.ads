@@ -28,14 +28,14 @@ with Interfaces;
 with Keccak.Generic_Duplex;
 with Keccak.Generic_KeccakF;
 with Keccak.Generic_KeccakF.Byte_Lanes;
-with Keccak.Generic_KeccakF.Permutation;
+with Keccak.Generic_KeccakF.Optimized_Permutation;
 with Keccak.Padding;
 with Keccak.Generic_Sponge;
 
 pragma Elaborate_All(Keccak.Generic_Duplex);
 pragma Elaborate_All(Keccak.Generic_KeccakF);
 pragma Elaborate_All(Keccak.Generic_KeccakF.Byte_Lanes);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Permutation);
+pragma Elaborate_All(Keccak.Generic_KeccakF.Optimized_Permutation);
 pragma Elaborate_All(Keccak.Generic_Sponge);
 
 package Keccak.Keccak_1600
@@ -49,8 +49,8 @@ is
       Shift_Right => Interfaces.Shift_Right,
       Rotate_Left => Interfaces.Rotate_Left);
 
-   -- Keccak-f[1600] permutation with the default number of rounds.
-   package KeccakF_1600_Permutation is new KeccakF_1600.Permutation;
+   -- Keccak-f[1600] optimized permutation with the default number of rounds.
+   package KeccakF_1600_Permutation is new KeccakF_1600.Optimized_Permutation;
 
    package KeccakF_1600_Lanes is new KeccakF_1600.Byte_Lanes;
 
