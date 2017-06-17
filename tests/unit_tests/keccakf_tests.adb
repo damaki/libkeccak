@@ -26,6 +26,8 @@
 -------------------------------------------------------------------------------
 
 with AUnit.Assertions; use AUnit.Assertions;
+with Keccak.Generic_KeccakF.Optimized_Permutation;
+with Keccak.Generic_KeccakF.Reference_Permutation;
 
 package body KeccakF_Tests
 is
@@ -243,5 +245,36 @@ is
                 "length" & Integer'Image(I));
       end loop;
    end Test_Extract_Bits_Same_As_Extract_Bytes;
+   
+   
+   --  Test that the reference and optimized permutation functions
+   --  produce the same output.
+   procedure Test_Permute_Implementations (T : in out Test)
+   is
+      use type KeccakF.State;
+   
+      package R_Permutation is new KeccakF.Reference_Permutation;
+      package O_Permutation is new KeccakF.Optimized_Permutation;
+      
+      procedure R_Permute is new R_Permutation.Permute;
+      procedure O_Permute is new O_Permutation.Permute;
+      
+      R_State : KeccakF.State;
+      O_State : KeccakF.State;
+      
+   begin
+   
+      KeccakF.Init (R_State);
+      KeccakF.Init (O_State);
+      
+      for N in 1 .. 1_000 loop
+          R_Permute (R_State);
+          O_Permute (O_State);
+          
+          Assert (R_State = O_State,
+                  "States are not equal after " & Integer'Image (N) & " permutations") ;
+      end loop; 
+   
+   end Test_Permute_Implementations;
 
 end KeccakF_Tests;
