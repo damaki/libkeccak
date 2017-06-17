@@ -71,6 +71,8 @@ is
    pragma Assert (Lane_Type'Modulus = 2**W,
                   "Value for L is incompatible with the specified lane type");
 
+   subtype Round_Count is Positive range 1 .. 24;
+
    type State is private;
 
    procedure Init(A : out State)

@@ -29,7 +29,10 @@ package Keccak.Generic_KeccakF.Optimized_Permutation
 is
 
    generic
-      Num_Rounds : Positive := 12 + (2*L);
+      -- Number of rounds.
+      --
+      -- By default, the definition from The Keccak Reference is used.
+      Num_Rounds : Round_Count := 12 + (2*L);
    procedure Permute (S : in out State);
 
 end Keccak.Generic_KeccakF.Optimized_Permutation;

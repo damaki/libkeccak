@@ -33,7 +33,7 @@ is
       -- Number of rounds.
       --
       -- By default, the definition from The Keccak Reference is used.
-      Num_Rounds : Positive := 12 + (2*L);
+      Num_Rounds : Round_Count := 12 + (2*L);
    procedure Permute(A : in out State)
      with Depends => (A => A);
    -- Permute the Keccak state.
