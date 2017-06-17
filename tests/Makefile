@@ -20,8 +20,12 @@ KAT_EXECUTABLES = $(OUTPUT_DIR)/kat/sha3_224_kat \
 						$(OUTPUT_DIR)/kat/cshake_256_kat \
 						$(OUTPUT_DIR)/kat/kmac_128_kat \
 						$(OUTPUT_DIR)/kat/kmac_256_kat \
+						$(OUTPUT_DIR)/kat/kmacxof_128_kat \
+						$(OUTPUT_DIR)/kat/kmacxof_256_kat \
 						$(OUTPUT_DIR)/kat/tuple_hash_128_kat \
-						$(OUTPUT_DIR)/kat/tuple_hash_256_kat
+						$(OUTPUT_DIR)/kat/tuple_hash_256_kat \
+						$(OUTPUT_DIR)/kat/tuple_hash_xof_128_kat \
+						$(OUTPUT_DIR)/kat/tuple_hash_xof_256_kat
 
 DUMMY := $(shell mkdir -p $(OUTPUT_DIR)) \
          $(shell mkdir -p $(OUTPUT_DIR)/kat) \
@@ -33,12 +37,16 @@ all: kat benchmark unit_test
 .PHONY: $(KAT_EXECUTABLES)
 .PHONY: kat
 kat: $(KAT_EXECUTABLES)
-	$(OUTPUT_DIR)/kat/tuple_hash_128_kat kat/testvectors/Tuple_Hash_128.txt
-	$(OUTPUT_DIR)/kat/tuple_hash_256_kat kat/testvectors/Tuple_Hash_256.txt
-	$(OUTPUT_DIR)/kat/kmac_128_kat kat/testvectors/KMAC_128.txt
-	$(OUTPUT_DIR)/kat/kmac_256_kat kat/testvectors/KMAC_256.txt
-	$(OUTPUT_DIR)/kat/cshake_128_kat kat/testvectors/cSHAKE_128.txt
-	$(OUTPUT_DIR)/kat/cshake_256_kat kat/testvectors/cSHAKE_256.txt
+	$(OUTPUT_DIR)/kat/tuple_hash_128_kat kat/testvectors/Tuple_Hash_128_samples.txt
+	$(OUTPUT_DIR)/kat/tuple_hash_256_kat kat/testvectors/Tuple_Hash_256_samples.txt
+	$(OUTPUT_DIR)/kat/tuple_hash_xof_128_kat kat/testvectors/Tuple_Hash_XOF_128_samples.txt
+	$(OUTPUT_DIR)/kat/tuple_hash_xof_256_kat kat/testvectors/Tuple_Hash_XOF_256_samples.txt
+	$(OUTPUT_DIR)/kat/kmac_128_kat kat/testvectors/KMAC_128_samples.txt
+	$(OUTPUT_DIR)/kat/kmac_256_kat kat/testvectors/KMAC_256_samples.txt
+	$(OUTPUT_DIR)/kat/kmacxof_128_kat kat/testvectors/KMACXOF_128_samples.txt
+	$(OUTPUT_DIR)/kat/kmacxof_256_kat kat/testvectors/KMACXOF_256_samples.txt
+	$(OUTPUT_DIR)/kat/cshake_128_kat kat/testvectors/cSHAKE_128_samples.txt
+	$(OUTPUT_DIR)/kat/cshake_256_kat kat/testvectors/cSHAKE_256_samples.txt
 	$(OUTPUT_DIR)/kat/keccak_duplex_kat_r1026c574 kat/testvectors/DuplexKAT_r1026c574.txt
 	$(OUTPUT_DIR)/kat/keccak_duplex_kat_r1027c573 kat/testvectors/DuplexKAT_r1027c573.txt
 	$(OUTPUT_DIR)/kat/keccak_224_kat kat/testvectors/ShortMsgKAT_224.txt
@@ -113,11 +121,23 @@ $(OUTPUT_DIR)/kat/kmac_128_kat:
 $(OUTPUT_DIR)/kat/kmac_256_kat:
 	gprbuild -aP$(KECCAK_DIR) -P kmac_256_kat.gpr
 
+$(OUTPUT_DIR)/kat/kmacxof_128_kat:
+	gprbuild -aP$(KECCAK_DIR) -P kmacxof_128_kat.gpr
+
+$(OUTPUT_DIR)/kat/kmacxof_256_kat:
+	gprbuild -aP$(KECCAK_DIR) -P kmacxof_256_kat.gpr
+
 $(OUTPUT_DIR)/kat/tuple_hash_128_kat:
 	gprbuild -aP$(KECCAK_DIR) -P tuple_hash_128_kat.gpr
 
 $(OUTPUT_DIR)/kat/tuple_hash_256_kat:
 	gprbuild -aP$(KECCAK_DIR) -P tuple_hash_256_kat.gpr
+
+$(OUTPUT_DIR)/kat/tuple_hash_xof_128_kat:
+	gprbuild -aP$(KECCAK_DIR) -P tuple_hash_xof_128_kat.gpr
+
+$(OUTPUT_DIR)/kat/tuple_hash_xof_256_kat:
+	gprbuild -aP$(KECCAK_DIR) -P tuple_hash_xof_256_kat.gpr
 
 $(OUTPUT_DIR)/benchmark/benchmark:
 	gprbuild -aP$(KECCAK_DIR) -P benchmark.gpr

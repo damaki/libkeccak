@@ -1,4 +1,4 @@
-# Tuple_Hash_128.txt
+# Tuple_Hash_128_samples.txt
 # Algorithm name: TupleHash128
 # Test vectors obtained from: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/TupleHash_samples.pdf
 # Accessed 16 June 2017

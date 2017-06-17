@@ -1,4 +1,4 @@
-# cSHAKE_256.txt
+# cSHAKE_256_samples.txt
 # Algorithm name: cSHAKE256
 # Test vectors obtained from: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/cSHAKE_samples.pdf
 # Accessed 16 June 2017

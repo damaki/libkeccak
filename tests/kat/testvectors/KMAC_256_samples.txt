@@ -1,4 +1,4 @@
-# KMAC_256.txt
+# KMAC_256_samples.txt
 # Algorithm name: KMAC128
 # Test vectors obtained from: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/KMAC_samples.pdf
 # Accessed 16 June 2017

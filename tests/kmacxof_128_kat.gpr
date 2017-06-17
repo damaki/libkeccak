@@ -1,0 +1,14 @@
+with "libkeccak";
+
+project Kmacxof_128_KAT is
+
+   for Source_Dirs use ("kat");
+   for Object_Dir use "out/kat";
+   for Main use ("kmacxof_128_kat.adb");
+
+   package Compiler is
+      for Default_Switches ("Ada") use ("-Winline", "-O2", "-gnatN", "-gnata", "-gnatwe");
+   end Compiler;   
+
+end Kmacxof_128_KAT;
+

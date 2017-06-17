@@ -1,4 +1,4 @@
-# Tuple_Hash_256.txt
+# Tuple_Hash_256_samples.txt
 # Algorithm name: TupleHash256
 # Test vectors obtained from: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/TupleHash_samples.pdf
 # Accessed 16 June 2017
