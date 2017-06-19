@@ -47,7 +47,12 @@ is
       Block(Block'First + (Num_Used_Bits/8) + 1 .. Block'Last) := (others => 0);
 
       -- Append last 1 bit
-      Last_Bit          := Shift_Right(2#1000_0000#, 8 - (Max_Bit_Length mod 8));
+      if Max_Bit_Length mod 8 = 0 then
+         Last_Bit := 2#1000_0000#;
+      else
+         Last_Bit := Shift_Right(2#1000_0000#, 8 - (Max_Bit_Length mod 8));
+      end if;
+
       Block(Block'Last) := Block(Block'Last) or Last_Bit;
    end Pad101_Single_Block;
 
