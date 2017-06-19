@@ -27,6 +27,8 @@
 
 with Ada.Real_Time;
 with Ada.Text_IO;
+with KangarooTwelve;
+with Keccak.Generic_KangarooTwelve;
 with Keccak.Generic_KeccakF;
 with Keccak.Keccak_25;
 with Keccak.Keccak_50;
@@ -266,7 +268,7 @@ is
    
    end Duplex_Benchmark;
    
-   -------------------------------------------------------------------------		---
+   ----------------------------------------------------------------------------
    -- KeccakF_Benchmark
    --
    -- Generic procedure to run a benchmark for a KeccakF permutation.
@@ -317,6 +319,62 @@ is
       
       
    end KeccakF_Benchmark;
+   
+   ----------------------------------------------------------------------------
+   -- K12_Benchmark
+   --
+   -- Generic procedure to run a benchmark for a KangarooTwelve 
+   ----------------------------------------------------------------------------
+   generic
+      Name : String;
+      with package K12 is new Keccak.Generic_KangarooTwelve(<>);
+   procedure K12_Benchmark;
+   
+   procedure K12_Benchmark
+   is
+      use type Ada.Real_Time.Time;
+   
+      Ctx    : K12.Context;
+      Digest : Keccak.Types.Byte_Array(1 .. 1024*1024);
+      
+      Start_Time : Ada.Real_Time.Time;
+      End_Time   : Ada.Real_Time.Time;
+   begin
+      
+      -- Benchmark Absorbing
+      for I in Positive range 1 .. Repeat loop
+         Start_Time := Ada.Real_Time.Clock;
+      
+         K12.Init(Ctx);
+         
+         for I in Positive range 1 .. Benchmark_Data_Size_MiB loop
+            K12.Update(Ctx, Data_Chunk);
+         end loop;
+      
+         K12.Finish (Ctx, "Benchmark");
+         
+         End_Time := Ada.Real_Time.Clock;
+         
+         Ada.Text_IO.Put(Name & " (Updating), ");
+         Print_Time(Data_Chunk'Length * Benchmark_Data_Size_MiB,
+                    End_Time - Start_Time);
+      end loop;
+      
+      -- Benchmark squeezing
+      for I in Positive range 1 .. Repeat loop
+         Start_Time := Ada.Real_Time.Clock;
+      
+         for I in Positive range 1 .. Benchmark_Data_Size_MiB loop
+            K12.Extract(Ctx, Digest);
+         end loop;
+         
+         End_Time := Ada.Real_Time.Clock;
+         
+         Ada.Text_IO.Put(Name & " (Extracting), ");
+         Print_Time(Digest'Length * Benchmark_Data_Size_MiB,
+                    End_Time - Start_Time);
+      end loop;
+   end K12_Benchmark;
    
    ----------------------------------------------------------------------------
    -- Benchmark procedure instantiations.
@@ -387,9 +445,16 @@ is
      ("KeccakF[1600]", 
       Keccak.Keccak_1600.KeccakF_1600, 
       Keccak.Keccak_1600.Permute);
+   
+   procedure Benchmark_K12 is new K12_Benchmark
+     ("KangarooTwelve",
+      KangarooTwelve.K12);
 
 begin
    Ada.Text_IO.Put_Line("Algorithm,Time,Data Length,Performance");
+   
+   Benchmark_K12;
+   Ada.Text_IO.New_Line;
 
    Benchmark_SHA_224;
    Ada.Text_IO.New_Line;
