@@ -492,7 +492,7 @@ is
             "unused assignment to ""A",
             Reason => "Axx variables are also re-used as temporaries");
 
-         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (Round_Index (RI * 2));
+         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (First_Round + Round_Index (RI * 2));
 
          pragma Warnings (GNATprove, On);
 
@@ -501,7 +501,7 @@ is
             "unused assignment to ""E",
             Reason => "Exx variables are also re-used as temporaries");
 
-         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (Round_Index ((RI * 2) + 1));
+         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (First_Round + Round_Index (RI * 2) + 1);
 
          pragma Warnings (GNATprove, On);
       end loop;
@@ -514,7 +514,7 @@ is
             "unused assignment to ""C",
             Reason => "Cx variables are no longer needed");
 
-         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (Round_Index (Num_Rounds - 1));
+         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (First_Round + Round_Index (Num_Rounds - 1));
 
          pragma Warnings (GNATprove, On);
 

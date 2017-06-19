@@ -32,6 +32,10 @@ is
    begin
       for I in S.States'Range loop
          Init (S.States (I));
+
+         pragma Annotate (GNATprove, False_Positive,
+                          """S.States"" might not be initialized",
+                          "S.States is initialized after full loop");
       end loop;
    end Init;
 

@@ -56,7 +56,7 @@ is
        Post => (Left_Encode_Bit_Length'Result'Length in 1 .. Natural'Size + 1
                 and Left_Encode_Bit_Length'Result'First in 1 .. Natural'Size + 1);
 
-   function Right_Encode(Length : in Natural) return Types.Byte_Array
+   function Right_Encode (Length : in Natural) return Types.Byte_Array
      with
        Post => (Right_Encode'Result'Length in 1 .. (Natural'Size / 8) + 2
                 and Right_Encode'Result'First in 1 .. (Natural'Size / 8) + 2);
@@ -70,5 +70,10 @@ is
      with
        Post => (Right_Encode_Bit_Length'Result'Length in 1 .. Natural'Size + 1
                 and Right_Encode_Bit_Length'Result'First in 1 .. Natural'Size + 1);
+
+   function Right_Encode_K12 (Length : in Natural) return Types.Byte_Array
+     with
+       Post => (Right_Encode_K12'Result'Length in 1 .. (Natural'Size / 8) + 2
+                and Right_Encode_K12'Result'First in 1 .. (Natural'Size / 8) + 2);
 
 end Keccak.Util;

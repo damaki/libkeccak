@@ -73,6 +73,8 @@ is
 
    subtype Round_Count is Positive range 1 .. 24;
 
+   type Round_Index is new Natural range 0 .. 23;
+
    type State is private;
 
    procedure Init(A : out State)
@@ -86,7 +88,5 @@ private
    type Y_Coord is mod 5;
 
    type State is array(X_Coord, Y_Coord) of Lane_Type;
-
-   type Round_Index is new Natural range 0 .. 23;
 
 end Keccak.Generic_KeccakF;

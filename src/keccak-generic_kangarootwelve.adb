@@ -25,6 +25,7 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Util;
+with Ada.Text_IO;
 
 package body Keccak.Generic_KangarooTwelve
 is
@@ -32,7 +33,7 @@ is
    Suffix_110_62  : constant Types.Byte_Array (1 .. 8) := (1 => 2#011#, others => 0);
    Suffix_110     : constant Types.Byte_Array (1 .. 1) := (1 => 2#011#);
    Suffix_11      : constant Types.Byte_Array (1 .. 1) := (1 => 2#11#);
-   Suffix_FFFF_01 : constant Types.Byte_Array (1 .. 3) := (16#FF#, 16#FF#, 2#01#);
+   Suffix_FFFF_01 : constant Types.Byte_Array (1 .. 3) := (16#FF#, 16#FF#, 2#10#);
 
    generic
       with package XOF_Parallel_N is new Keccak.Generic_Parallel_XOF (<>);
@@ -56,7 +57,14 @@ is
       --  Process N blocks in parallel and produce N chaining values.
       XOF_Parallel_N.Init    (Par_Ctx);
       XOF_Parallel_N.Update  (Par_Ctx, Data);
+
+      pragma Warnings (GNATprove, Off,
+                       "unused assignment to ""Par_Ctx""",
+                       Reason => "No further data needs to be extracted");
+
       XOF_Parallel_N.Extract (Par_Ctx, CV_N);
+
+      pragma Warnings (GNATprove, On);
 
       --  Process the chaining values with the outer XOF.
       XOF_Serial.Update
@@ -86,9 +94,17 @@ is
 
    begin
       --  Process N blocks in parallel and produce N changing values.
-      XOF_Serial.Init    (Serial_Ctx);
-      XOF_Serial.Update  (Serial_Ctx, Data);
+      XOF_Serial.Init   (Serial_Ctx);
+      XOF_Serial.Update (Serial_Ctx, Data);
+      XOF_Serial.Update (Serial_Ctx, Suffix_110, 3);
+
+      pragma Warnings (GNATprove, Off,
+                       "unused assignment to ""Serial_Ctx""",
+                       Reason => "No further data needs to be extracted");
+
       XOF_Serial.Extract (Serial_Ctx, CV);
+
+      pragma Warnings (GNATprove, On);
 
       --  Process the chaining values with the outer XOF.
       XOF_Serial.Update
@@ -204,9 +220,16 @@ is
                Message    => Suffix_110,
                Bit_Length => 3);
 
+            pragma Warnings
+              (GNATprove, Off,
+               "unused assignment",
+               Reason => "No further data needs to be extracted before Init");
+
             XOF_Serial.Extract
               (Ctx    => Ctx.Partial_Block_XOF,
                Digest => CV);
+
+            pragma Warnings (GNATprove, On);
 
             XOF_Serial.Update
               (Ctx     => Ctx.Outer_XOF,
@@ -230,46 +253,6 @@ is
 
          end if;
 
-      else
-
-         if Data'Length >= Block_Size_Bytes then
-            Pos := Data'First;
-
-            XOF_Serial.Update
-              (Ctx     => Ctx.Partial_Block_XOF,
-               Message => Data (Pos .. Pos + (Block_Size_Bytes - 1)));
-
-            --  Add suffix '110' bits
-            XOF_Serial.Update
-              (Ctx        => Ctx.Partial_Block_XOF,
-               Message    => Suffix_110,
-               Bit_Length => 3);
-
-            XOF_Serial.Extract
-              (Ctx    => Ctx.Partial_Block_XOF,
-               Digest => CV);
-
-            XOF_Serial.Update
-              (Ctx     => Ctx.Outer_XOF,
-               Message => CV);
-
-            XOF_Serial.Init (Ctx.Partial_Block_XOF);
-
-            Added := Block_Size_Bytes;
-
-            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 1;
-
-         else
-            XOF_Serial.Update
-              (Ctx     => Ctx.Partial_Block_XOF,
-               Message => Data);
-
-            Ctx.Partial_Block_Length := Data'Length;
-
-            Added := Data'Length;
-
-         end if;
-
       end if;
    end Add_To_Partial_Block;
 
@@ -282,14 +265,15 @@ is
 
       Ctx.Nb_Blocks            := 0;
       Ctx.Partial_Block_Length := 0;
+      Ctx.Finished             := False;
    end Init;
 
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
    is
-      Remaining : Natural := Data'Length;
-      Offset    : Natural := 0;
+      Remaining : Natural;
+      Offset    : Natural;
       Pos       : Types.Index_Number;
 
    begin
@@ -304,6 +288,9 @@ is
 
       --  Process blocks of 8 in parallel
       while Remaining >= Block_Size_Bytes * 8 loop
+         pragma Loop_Invariant (Offset + Remaining = Data'Length);
+         Ada.Text_IO.Put_Line ("Processing 8 blocks");
+
          Pos := Data'First + Offset;
 
          Process_8_Parallel_Blocks
@@ -319,6 +306,9 @@ is
 
       --  Process blocks of 4 in parallel
       while Remaining >= Block_Size_Bytes * 4 loop
+         pragma Loop_Invariant (Offset + Remaining = Data'Length);
+         Ada.Text_IO.Put_Line ("Processing 4 blocks");
+
          Pos := Data'First + Offset;
 
          Process_4_Parallel_Blocks
@@ -334,9 +324,12 @@ is
 
       --  Process blocks of 2 in parallel
       while Remaining >= Block_Size_Bytes * 2 loop
+         pragma Loop_Invariant (Offset + Remaining = Data'Length);
+         Ada.Text_IO.Put_Line ("Processing 2 blocks");
+
          Pos := Data'First + Offset;
 
-         Process_4_Parallel_Blocks
+         Process_2_Parallel_Blocks
            (Ctx  => Ctx,
             Data => Data (Pos .. Pos + ((Block_Size_Bytes * 2) - 1)));
 
@@ -349,9 +342,10 @@ is
 
       --  Process single blocks
       if Remaining >= Block_Size_Bytes then
+         Ada.Text_IO.Put_Line ("Processing 1 block");
          Pos := Data'First + Offset;
 
-         Process_4_Parallel_Blocks
+         Process_1_Block
            (Ctx  => Ctx,
             Data => Data (Pos .. Pos + (Block_Size_Bytes - 1)));
 
@@ -363,6 +357,7 @@ is
 
       --  Process remaining data.
       if Remaining > 0 then
+         Ada.Text_IO.Put_Line ("Storing leftovers");
          XOF_Serial.Update
            (Ctx     => Ctx.Partial_Block_XOF,
             Message => Data (Data'First + Offset .. Data'Last));
@@ -372,50 +367,74 @@ is
    end Update;
 
 
+   procedure Finish (Ctx           : in out Context;
+                     Customization : in     String)
+   is
+   begin
+      Update (Ctx, Util.To_Byte_Array (Customization));
+      Update (Ctx, Util.Right_Encode_K12 (Customization'Length));
+
+      Ctx.Finished := True;
+
+      if Ctx.Nb_Blocks = 0 then
+         XOF_Serial.Update
+           (Ctx        => Ctx.Outer_XOF,
+            Message    => Suffix_11,
+            Bit_Length => 2);
+
+      else
+            --  Produce final CV for final block
+            --  (if the last block is a partial block)
+         if Ctx.Partial_Block_Length > 0 then
+            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 1;
+
+            XOF_Serial.Update
+              (Ctx        => Ctx.Partial_Block_XOF,
+               Message    => Suffix_110,
+               Bit_Length => 3);
+
+            declare
+               CV : Types.Byte_Array (1 .. CV_Size_Bytes);
+            begin
+
+               pragma Warnings
+                 (GNATprove, Off,
+                  "unused assignment",
+                  Reason => "No further data needs to be extracted");
+
+               XOF_Serial.Extract
+                 (Ctx    => Ctx.Partial_Block_XOF,
+                  Digest => CV);
+
+               pragma Warnings (GNATprove, Off);
+
+               XOF_Serial.Update
+                 (Ctx     => Ctx.Outer_XOF,
+                  Message => CV);
+            end;
+
+               --  Preserve type invariant
+            XOF_Serial.Init (Ctx.Partial_Block_XOF);
+         end if;
+
+         Ada.Text_IO.Put_Line (Natural'Image (Ctx.Nb_Blocks));
+
+         XOF_Serial.Update
+           (Ctx     => Ctx.Outer_XOF,
+            Message => Util.Right_Encode_K12 (Ctx.Nb_Blocks - 1));
+
+         XOF_Serial.Update
+           (Ctx        => Ctx.Outer_XOF,
+            Message    => Suffix_FFFF_01,
+            Bit_Length => 18);
+      end if;
+   end Finish;
+
+
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
    is
-
    begin
-      if State_Of (Ctx) = Updating then
-
-         if Ctx.Nb_Blocks = 0 then
-            XOF_Serial.Update
-              (Ctx        => Ctx.Outer_XOF,
-               Message    => Suffix_11,
-               Bit_Length => 2);
-
-         else
-            --  Produce final CV for final block
-            --  (if the last block is a partial block)
-            if Ctx.Partial_Block_Length > 0 then
-               declare
-                  CV : Types.Byte_Array (1 .. CV_Size_Bytes);
-               begin
-                  XOF_Serial.Extract
-                    (Ctx    => Ctx.Partial_Block_XOF,
-                     Digest => CV);
-
-                  XOF_Serial.Update
-                    (Ctx     => Ctx.Outer_XOF,
-                     Message => CV);
-               end;
-
-               --  Preserve type invariant
-               XOF_Serial.Init (Ctx.Partial_Block_XOF);
-            end if;
-
-            XOF_Serial.Update
-              (Ctx     => Ctx.Outer_XOF,
-               Message => Util.Right_Encode (Ctx.Nb_Blocks - 1));
-
-            XOF_Serial.Update
-              (Ctx        => Ctx.Outer_XOF,
-               Message    => Suffix_FFFF_01,
-               Bit_Length => 18);
-         end if;
-      end if;
-
       XOF_Serial.Extract
         (Ctx    => Ctx.Outer_XOF,
          Digest => Data);

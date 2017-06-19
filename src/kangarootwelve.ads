@@ -41,7 +41,9 @@ is
 
    --  KangarooTwelve uses the Keccak-F[1600] permutation with 12 rounds.
    procedure Permute_KeccakF_1600_R12
-   is new Keccak.Keccak_1600.KeccakF_1600_Permutation.Permute (Num_Rounds => 12);
+   is new Keccak.Keccak_1600.KeccakF_1600_Permutation.Permute
+     (First_Round => 12,
+      Num_Rounds  => 12);
 
 
    --  The generic KangarooTwelve implementation requires parallel implementations
@@ -83,7 +85,14 @@ is
 
 
    --  We also need parallel sponges for each level of parallelism.
-   package Sponge_S1 renames Keccak.Keccak_1600.Sponge;
+   package Sponge_S1 is new Keccak.Generic_Sponge
+     (State_Size          => 1600,
+      State_Type          => Keccak.Keccak_1600.KeccakF_1600.State,
+      Init_State          => Keccak.Keccak_1600.KeccakF_1600.Init,
+      F                   => Permute_KeccakF_1600_R12,
+      XOR_Bits_Into_State => Keccak.Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
+      Extract_Data        => Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
+      Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
 
    package Sponge_P2 is new Keccak.Generic_Parallel_Sponge
      (State_Size          => 1600,

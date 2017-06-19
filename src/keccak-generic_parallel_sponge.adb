@@ -48,11 +48,13 @@ is
    is
       Block_Size : constant Natural := Data'Length / Num_Parallel_Instances;
 
+      Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
+
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. Ctx.Rate - 1);
+      Buffer     : Types.Byte_Array (0 .. Rate_Bytes - 1) := (others => 0);
 
    begin
 
@@ -112,11 +114,13 @@ is
    is
       Block_Size : constant Natural := Data'Length / Num_Parallel_Instances;
 
+      Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
+
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. Ctx.Rate - 1);
+      Buffer     : Types.Byte_Array (0 .. Rate_Bytes - 1) := (others => 0);
 
    begin
       Ctx.State := Squeezing;
@@ -124,7 +128,7 @@ is
       while Remaining >= Ctx.Rate loop
          pragma Loop_Invariant (Offset + Remaining = Block_Size);
 
-         pragma Loop_Invariant (Offset mod Block_Size = 0);
+         pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
 
          for I in 0 .. Num_Parallel_Instances - 1 loop
             Pos := Data'First + (I * Block_Size) + Offset;
@@ -172,10 +176,10 @@ is
               Num_Used_Bits  => Suffix_Len,
               Max_Bit_Length => Ctx.Rate * 8);
 
-         for I in 0 .. Num_Parallel_Instances - 1 loop
+         for I in State_Index loop
             XOR_Bits_Into_State
               (S       => Ctx.Permutation_State,
-               Index   => State_Index_Offset_From_First (I),
+               Index   => I,
                Data    => Buffer,
                Bit_Len => Ctx.Rate * 8);
          end loop;
@@ -192,11 +196,13 @@ is
    is
       Block_Size : constant Natural := Data'Length / Num_Parallel_Instances;
 
+      Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
+
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. Ctx.Rate - 1);
+      Buffer     : Types.Byte_Array (0 .. Rate_Bytes - 1);
 
    begin
       --  If we're coming straight from the absorbing phase then we need to
@@ -208,10 +214,10 @@ is
               Num_Used_Bits  => 0,
               Max_Bit_Length => Ctx.Rate * 8);
 
-         for I in 0 .. Num_Parallel_Instances - 1 loop
+         for I in State_Index loop
             XOR_Bits_Into_State
               (S       => Ctx.Permutation_State,
-               Index   => State_Index_Offset_From_First (I),
+               Index   => I,
                Data    => Buffer,
                Bit_Len => Ctx.Rate * 8);
          end loop;
@@ -232,6 +238,10 @@ is
               (S     => Ctx.Permutation_State,
                Index => State_Index_Offset_From_First (I),
                Data  => Data (Pos .. Pos + (Ctx.Rate - 1)));
+
+            pragma Annotate (GNATprove, False_Positive,
+                             """Data"" might not be initialized",
+                             "S.States is fully initialized at end of subprogram");
          end loop;
 
          Permute_All (Ctx.Permutation_State);
@@ -251,6 +261,10 @@ is
               (S     => Ctx.Permutation_State,
                Index => State_Index_Offset_From_First (I),
                Data  => Data (Pos .. Pos + (Remaining - 1)));
+
+            pragma Annotate (GNATprove, False_Positive,
+                             """Data"" might not be initialized",
+                             "S.States is fully initialized at end of subprogram");
          end loop;
 
       end if;

@@ -56,7 +56,7 @@ is
    type Context is private;
 
 
-   type States is (Updating, Extracting);
+   type States is (Updating, Ready_To_Extract, Extracting);
 
 
    procedure Init (Ctx : out Context);
@@ -68,9 +68,16 @@ is
      Post => State_Of (Ctx) = Updating;
 
 
+   procedure Finish (Ctx           : in out Context;
+                     Customization : in     String)
+     with Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Ready_To_Extract;
+
+
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
-     with Post => State_Of (Ctx) = Extracting;
+     with Pre => State_Of (Ctx) in Ready_To_Extract | Extracting,
+     Post => State_Of (Ctx) = Extracting;
 
 
 
@@ -95,15 +102,17 @@ private
       Partial_Block_XOF    : XOF_Serial.Context;
       Nb_Blocks            : Natural;
       Partial_Block_Length : Partial_Block_Length_Number;
-   end record
-     with Type_Invariant =>
-       XOF_Serial.State_Of (Context.Partial_Block_XOF) = XOF_Serial.Updating;
+      Finished             : Boolean;
+   end record;
 
 
    function State_Of (Ctx : in Context) return States
    is (case XOF_Serial.State_Of (Ctx.Outer_XOF) is
-          when XOF_Serial.Updating  => Updating,
-          when others               => Extracting);
+          when XOF_Serial.Updating         => (if Ctx.Finished
+                                               then Ready_To_Extract
+                                               else Updating),
+          when XOF_Serial.Ready_To_Extract => Ready_To_Extract,
+          when XOF_Serial.Extracting       => Extracting);
 
 
 end Keccak.Generic_KangarooTwelve;

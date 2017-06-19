@@ -68,18 +68,24 @@ is
    procedure XOR_Bits_Into_State (S       : in out Parallel_State;
                                   Index   : in     State_Index;
                                   Data    : in     Types.Byte_Array;
-                                  Bit_Len : in     Natural);
+                                  Bit_Len : in     Natural)
+     with Pre => (Data'Length <= Natural'Last / 8
+                  and then Bit_Len <= Data'Length * 8
+                  and then Bit_Len <= State_Size_Bits);
 
 
    procedure Extract_Bytes (S     : in     Parallel_State;
                             Index : in     State_Index;
-                            Data  :    out Types.Byte_Array);
+                            Data  :    out Types.Byte_Array)
+     with Pre => (Data'Length <= ((State_Size_Bits + 7) / 8));
 
 
    procedure Extract_Bits (S       : in     Parallel_State;
                            Index   : in     State_Index;
                            Data    :    out Types.Byte_Array;
-                           Bit_Len : in     Natural);
+                           Bit_Len : in     Natural)
+     with Pre => (Bit_Len <= State_Size_Bits
+                  and then Data'Length = (Bit_Len + 7) / 8);
 
 private
 

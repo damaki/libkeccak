@@ -32,7 +32,8 @@ is
       -- Number of rounds.
       --
       -- By default, the definition from The Keccak Reference is used.
-      Num_Rounds : Round_Count := 12 + (2*L);
+      First_Round : Round_Index := 0;
+      Num_Rounds  : Round_Count := 12 + (2*L);
    procedure Permute (S : in out State);
 
 end Keccak.Generic_KeccakF.Optimized_Permutation;

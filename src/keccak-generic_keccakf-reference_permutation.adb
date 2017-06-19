@@ -270,7 +270,7 @@ is
       Temp : State;
 
    begin
-      for I in Round_Index range 0 .. Round_Index(Num_Rounds - 1) loop
+      for I in Round_Index range First_Round .. First_Round + Round_Index(Num_Rounds - 1) loop
          Theta(A, Temp);
          Rho_Pi(Temp);
          Chi_Iota(Temp, A, I);

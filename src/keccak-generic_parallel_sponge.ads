@@ -139,6 +139,11 @@ is
         others
         => State_Of (Ctx) = Finished);
 
+   pragma Annotate
+     (GNATprove, False_Positive,
+      """Data"" might not be initialized",
+      "GNATprove issues a false positive due to the use of loops to initialize Data");
+
 
    function State_Of (Ctx : in Context) return States;
 

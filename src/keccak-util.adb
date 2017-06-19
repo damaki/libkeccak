@@ -132,4 +132,30 @@ is
       return Encoded(Encoded'Last - N .. Encoded'Last);
    end Right_Encode_Bit_Length;
 
+   function Right_Encode_K12(Length : in Natural) return Types.Byte_Array
+   is
+      Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
+
+      X       : Natural := Length;
+      N       : Natural := 0;
+
+   begin
+
+      for I in Positive range 1 .. (Natural'Size / 8) + 1 loop
+         pragma Loop_Invariant(N = I - 1);
+
+         exit when X = 0;
+
+         Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
+
+         X := X / 256;
+         N := N + 1;
+
+      end loop;
+
+      Encoded(Encoded'Last) := Types.Byte(N);
+
+      return Encoded(Encoded'Last - N .. Encoded'Last);
+   end Right_Encode_K12;
+
 end Keccak.Util;
