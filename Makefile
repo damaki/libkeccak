@@ -1,18 +1,23 @@
 OUTPUT_DIR   = $(CURDIR)/out
 BUILD_DIR    = $(OUTPUT_DIR)/build
 
-GENERIC_BODIES = src/keccak-generic_duplex.adb \
+GENERIC_BODIES = src/keccak-generic_cshake.adb \
+                 src/keccak-generic_duplex.adb \
                  src/keccak-generic_hash.adb \
-                 src/keccak-generic_sponge.adb \
-                 src/keccak-generic_xof.adb \
-                 src/keccak-generic_keccakf.adb \
-                 src/keccak-generic_keccakf-optimized_permutation.adb \
-                 src/keccak-generic_keccakf-reference_permutation.adb \
+                 src/keccak-generic_kangarootwelve.adb \
                  src/keccak-generic_keccakf-bit_lanes.adb \
                  src/keccak-generic_keccakf-byte_lanes.adb \
-                 src/keccak-generic_cshake.adb \
+                 src/keccak-generic_keccakf-optimized_permutation.adb \
+                 src/keccak-generic_keccakf-reference_permutation.adb \
+                 src/keccak-generic_keccakf.adb \
                  src/keccak-generic_kmac.adb \
-                 src/keccak-generic_tuple_hash.adb
+                 src/keccak-generic_parallel_permutation_parallel_fallback.adb \
+                 src/keccak-generic_parallel_permutation_serial_fallback.adb \
+                 src/keccak-generic_parallel_sponge.adb \
+                 src/keccak-generic_parallel_xof.adb \
+                 src/keccak-generic_sponge.adb \
+                 src/keccak-generic_tuple_hash.adb \
+                 src/keccak-generic_xof.adb
 
 ################################################################################
 

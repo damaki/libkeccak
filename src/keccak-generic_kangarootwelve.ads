@@ -1,0 +1,109 @@
+-------------------------------------------------------------------------------
+-- Copyright (c) 2017, Daniel King
+-- All rights reserved.
+--
+-- Redistribution and use in source and binary forms, with or without
+-- modification, are permitted provided that the following conditions are met:
+--     * Redistributions of source code must retain the above copyright
+--       notice, this list of conditions and the following disclaimer.
+--     * Redistributions in binary form must reproduce the above copyright
+--       notice, this list of conditions and the following disclaimer in the
+--       documentation and/or other materials provided with the distribution.
+--     * The name of the copyright holder may not be used to endorse or promote
+--       Products derived from this software without specific prior written
+--       permission.
+--
+-- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+-- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+-- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+-- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+-- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+-- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+-- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+-- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+-- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-------------------------------------------------------------------------------
+with Keccak.Generic_XOF;
+with Keccak.Generic_Parallel_XOF;
+with Keccak.Types;
+
+generic
+
+   with package XOF_Serial is new Keccak.Generic_XOF (<>);
+   --  This XOF must be configured with NO SUFFIX BITS.
+   --  The Generic_KangarooTwelve implementation takes care of the appropriate
+   --  suffix bits when using this XOF_Serial.
+
+   with package XOF_Parallel_2 is new Keccak.Generic_Parallel_XOF (<>);
+   --  This XOF must be configured to add the 3 suffix bits 2#011#.
+
+   with package XOF_Parallel_4 is new Keccak.Generic_Parallel_XOF (<>);
+   --  This XOF must be configured to add the 3 suffix bits 2#011#.
+
+   with package XOF_Parallel_8 is new Keccak.Generic_Parallel_XOF (<>);
+   --  This XOF must be configured to add the 3 suffix bits 2#011#.
+
+package Keccak.Generic_KangarooTwelve
+is
+
+   --  Assertions to check that the correct parallel instances have
+   --  been provided.
+   pragma Assert (XOF_Parallel_2.Num_Parallel_Instances = 2);
+   pragma Assert (XOF_Parallel_4.Num_Parallel_Instances = 4);
+   pragma Assert (XOF_Parallel_8.Num_Parallel_Instances = 8);
+
+   type Context is private;
+
+
+   type States is (Updating, Extracting);
+
+
+   procedure Init (Ctx : out Context);
+
+
+   procedure Update (Ctx  : in out Context;
+                     Data : in     Types.Byte_Array)
+     with Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Updating;
+
+
+   procedure Extract (Ctx  : in out Context;
+                      Data :    out Types.Byte_Array)
+     with Post => State_Of (Ctx) = Extracting;
+
+
+
+   function State_Of (Ctx : in Context) return States;
+
+private
+   Block_Size_Bytes : constant := 8192;
+   --  Size of each parallel block.
+   --  This is set to 8 kiB in the K12 documentation.
+
+   CV_Size_Bytes    : constant := 256 / 8;
+   --  The size of each chaining value (CV) in bytes.
+   --  This is set to 256 bits (32 bytes) in the documentation.
+
+   use type XOF_Serial.States;
+
+   subtype Partial_Block_Length_Number is Natural range 0 .. Block_Size_Bytes - 1;
+
+
+   type Context is record
+      Outer_XOF            : XOF_Serial.Context;
+      Partial_Block_XOF    : XOF_Serial.Context;
+      Nb_Blocks            : Natural;
+      Partial_Block_Length : Partial_Block_Length_Number;
+   end record
+     with Type_Invariant =>
+       XOF_Serial.State_Of (Context.Partial_Block_XOF) = XOF_Serial.Updating;
+
+
+   function State_Of (Ctx : in Context) return States
+   is (case XOF_Serial.State_Of (Ctx.Outer_XOF) is
+          when XOF_Serial.Updating  => Updating,
+          when others               => Extracting);
+
+
+end Keccak.Generic_KangarooTwelve;
