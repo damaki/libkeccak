@@ -25,7 +25,6 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Util;
-with Ada.Text_IO;
 
 package body Keccak.Generic_KangarooTwelve
 is
@@ -289,7 +288,6 @@ is
       --  Process blocks of 8 in parallel
       while Remaining >= Block_Size_Bytes * 8 loop
          pragma Loop_Invariant (Offset + Remaining = Data'Length);
-         Ada.Text_IO.Put_Line ("Processing 8 blocks");
 
          Pos := Data'First + Offset;
 
@@ -307,7 +305,6 @@ is
       --  Process blocks of 4 in parallel
       while Remaining >= Block_Size_Bytes * 4 loop
          pragma Loop_Invariant (Offset + Remaining = Data'Length);
-         Ada.Text_IO.Put_Line ("Processing 4 blocks");
 
          Pos := Data'First + Offset;
 
@@ -325,7 +322,6 @@ is
       --  Process blocks of 2 in parallel
       while Remaining >= Block_Size_Bytes * 2 loop
          pragma Loop_Invariant (Offset + Remaining = Data'Length);
-         Ada.Text_IO.Put_Line ("Processing 2 blocks");
 
          Pos := Data'First + Offset;
 
@@ -342,7 +338,6 @@ is
 
       --  Process single blocks
       if Remaining >= Block_Size_Bytes then
-         Ada.Text_IO.Put_Line ("Processing 1 block");
          Pos := Data'First + Offset;
 
          Process_1_Block
@@ -357,7 +352,6 @@ is
 
       --  Process remaining data.
       if Remaining > 0 then
-         Ada.Text_IO.Put_Line ("Storing leftovers");
          XOF_Serial.Update
            (Ctx     => Ctx.Partial_Block_XOF,
             Message => Data (Data'First + Offset .. Data'Last));
@@ -416,8 +410,6 @@ is
                --  Preserve type invariant
             XOF_Serial.Init (Ctx.Partial_Block_XOF);
          end if;
-
-         Ada.Text_IO.Put_Line (Natural'Image (Ctx.Nb_Blocks));
 
          XOF_Serial.Update
            (Ctx     => Ctx.Outer_XOF,
