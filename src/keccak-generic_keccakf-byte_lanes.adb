@@ -36,13 +36,18 @@ is
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
-      Initial_Byte_Len : Natural := (Bit_Len + 7) / 8 with Ghost;
-
    begin
       -- Process whole lanes (64 bits).
       Outer_Loop:
       for Y in Y_Coord loop
+         pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
+         pragma Loop_Invariant (Offset mod (W/8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (W/8) * 5);
+
          for X in X_Coord loop
+            pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
+            pragma Loop_Invariant (Offset mod (W/8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (W/8) * 5) + (Natural (X) * (W/8)));
 
             exit Outer_Loop when Remaining_Bits < W;
 
