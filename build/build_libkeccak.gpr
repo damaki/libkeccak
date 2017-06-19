@@ -16,7 +16,7 @@ project Build_Libkeccak is
    end Prove;
 
    package Compiler is
-      for Default_Switches ("ada") use ("-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnata");
+      for Default_Switches ("ada") use ("-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnatp");
    end Compiler;
 
    package Ide is
