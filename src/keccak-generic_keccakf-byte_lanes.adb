@@ -66,8 +66,8 @@ is
       -- Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
-            X                : X_Coord   := X_Coord ((Data'Length / (W/8)) mod 5);
-            Y                : Y_Coord   := Y_Coord ((Data'Length / (W/8))  /  5);
+            X                : X_Coord   := X_Coord ((Bit_Len / W) mod 5);
+            Y                : Y_Coord   := Y_Coord ((Bit_Len / W)  /  5);
             Word             : Lane_Type := 0;
             Remaining_Bytes  : Natural   := (Remaining_Bits + 7) / 8;
 
