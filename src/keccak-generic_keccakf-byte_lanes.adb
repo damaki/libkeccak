@@ -33,9 +33,6 @@ is
    is
       use type Keccak.Types.Byte;
 
-      X                : X_Coord := 0;
-      Y                : Y_Coord := 0;
-
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
@@ -43,37 +40,36 @@ is
 
    begin
       -- Process whole lanes (64 bits).
-      while Remaining_Bits >= W loop
-         pragma Loop_Variant(Increases => Offset,
-                             Decreases => Remaining_Bits);
-         pragma Loop_Invariant((Offset mod (W/8) = 0)
-                               and (Offset + ((Remaining_Bits + 7) / 8) = Initial_Byte_Len));
+      Outer_Loop:
+      for Y in Y_Coord loop
+         for X in X_Coord loop
 
-         declare
-            Lane : Lane_Type := 0;
-         begin
-            for I in Natural range 0 .. (W/8) - 1 loop
-               Lane := Lane or Shift_Left(Lane_Type(Data(Data'First + Offset + I)),
-                                          I*8);
-            end loop;
+            exit Outer_Loop when Remaining_Bits < W;
 
-            A(X, Y) := A(X, Y) xor Lane;
-         end;
+            declare
+               Lane : Lane_Type := 0;
+            begin
+               for I in Natural range 0 .. (W/8) - 1 loop
+                  Lane := Lane or Shift_Left(Lane_Type(Data(Data'First + Offset + I)),
+                                             I*8);
+               end loop;
 
-         X := X + 1;
-         if X = 0 then
-            Y := Y + 1;
-         end if;
+               A(X, Y) := A(X, Y) xor Lane;
+            end;
 
-         Offset          := Offset          + W/8;
-         Remaining_Bits  := Remaining_Bits  - W;
-      end loop;
+            Offset          := Offset          + W/8;
+            Remaining_Bits  := Remaining_Bits  - W;
+
+         end loop;
+      end loop Outer_Loop;
 
       -- Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
-            Word            : Lane_Type := 0;
-            Remaining_Bytes : Natural   := (Remaining_Bits + 7) / 8;
+            X                : X_Coord   := X_Coord ((Data'Length / (W/8)) mod 5);
+            Y                : Y_Coord   := Y_Coord ((Data'Length / (W/8))  /  5);
+            Word             : Lane_Type := 0;
+            Remaining_Bytes  : Natural   := (Remaining_Bits + 7) / 8;
 
          begin
             for I in Natural range 0 .. Remaining_Bytes - 1 loop
