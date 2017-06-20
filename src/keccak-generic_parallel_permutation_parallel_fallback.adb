@@ -24,15 +24,9 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Ada.Text_IO; use Ada.Text_IO;
 package body Keccak.Generic_Parallel_Permutation_Parallel_Fallback
 is
-
-   function To_Input_State_Index (I : in State_Index) return Input_State_Index
-   is (Input_State_Index
-       (Integer (Input_State_Index'First) +
-          (Integer (I) mod (Num_Parallel_Instances / 2))))
-   with Inline;
-
 
    procedure Init (S : out Parallel_State)
    is
@@ -50,43 +44,45 @@ is
    end Permute_All;
 
 
-   procedure XOR_Bits_Into_State (S       : in out Parallel_State;
-                                  Index   : in     State_Index;
-                                  Data    : in     Types.Byte_Array;
-                                  Bit_Len : in     Natural)
+   procedure XOR_Bits_Into_State (S           : in out Parallel_State;
+                                  Data        : in     Types.Byte_Array;
+                                  Data_Offset : in     Natural;
+                                  Bit_Len     : in     Natural)
    is
    begin
+      --  First half goes into instance 0
       XOR_Bits_Into_State
-        (S       => S.States (Integer (Index / 2)),
-         Index   => To_Input_State_Index (Index),
-         Data    => Data,
-         Bit_Len => Bit_Len);
+        (S           => S.States (0),
+         Data        => Data (Data'First .. Data'First + (Data'Length / 2) - 1),
+         Data_Offset => Data_Offset,
+         Bit_Len     => Bit_Len);
+
+      --  Upper half goes into instance 1
+      XOR_Bits_Into_State
+        (S           => S.States (1),
+         Data        => Data (Data'First + (Data'Length / 2) .. Data'Last),
+         Data_Offset => Data_Offset,
+         Bit_Len     => Bit_Len);
    end XOR_Bits_Into_State;
 
 
-   procedure Extract_Bytes (S     : in     Parallel_State;
-                            Index : in     State_Index;
-                            Data  :    out Types.Byte_Array)
+   procedure Extract_Bytes (S           : in     Parallel_State;
+                            Data        :    out Types.Byte_Array;
+                            Data_Offset : in     Natural;
+                            Byte_Len    : in     Natural)
    is
    begin
       Extract_Bytes
-        (S       => S.States (Integer (Index / 2)),
-         Index   => To_Input_State_Index (Index),
-         Data    => Data);
+        (S           => S.States (0),
+         Data        => Data (Data'First .. Data'First + (Data'Length / 2) - 1),
+         Data_Offset => Data_Offset,
+         Byte_Len    => Byte_Len);
+
+      Extract_Bytes
+        (S           => S.States (1),
+         Data        => Data (Data'First + (Data'Length / 2) .. Data'Last),
+         Data_Offset => Data_Offset,
+         Byte_Len    => Byte_Len);
    end Extract_Bytes;
-
-
-   procedure Extract_Bits (S       : in     Parallel_State;
-                           Index   : in     State_Index;
-                           Data    :    out Types.Byte_Array;
-                           Bit_Len : in     Natural)
-   is
-   begin
-      Extract_Bits
-        (S       => S.States (Integer (Index / 2)),
-         Index   => To_Input_State_Index (Index),
-         Data    => Data,
-         Bit_Len => Bit_Len);
-   end Extract_Bits;
 
 end Keccak.Generic_Parallel_Permutation_Parallel_Fallback;

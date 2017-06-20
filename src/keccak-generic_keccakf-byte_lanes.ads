@@ -67,6 +67,11 @@ is
    --   Note that the buffer can be smaller than the state size if fewer bytes
    --   are needed.
 
+   pragma Annotate
+     (GNATprove, False_Positive,
+      """Data"" might not be initialized",
+      "GNATprove issues a false positive due to the use of loops to initialize Data");
+
    procedure Extract_Bits(A       : in     State;
                           Data    :    out Keccak.Types.Byte_Array;
                           Bit_Len : in     Natural)

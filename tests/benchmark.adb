@@ -28,6 +28,7 @@
 with Ada.Real_Time;
 with Ada.Text_IO;
 with KangarooTwelve;
+with Keccak.SSE2_KeccakF_1600;
 with Keccak.Generic_KangarooTwelve;
 with Keccak.Generic_KeccakF;
 with Keccak.Keccak_25;
@@ -275,8 +276,9 @@ is
    ----------------------------------------------------------------------------
    generic
       Name : String;
-      with package Keccak_F is new Keccak.Generic_KeccakF(<>);
-      with procedure Permute(A : in out Keccak_F.State);
+      type State_Type is private;
+      with procedure Init (A : out State_Type);
+      with procedure Permute(A : in out State_Type);
    procedure KeccakF_Benchmark;
    
    procedure KeccakF_Benchmark
@@ -286,7 +288,7 @@ is
       package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
       package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
             
-      State : Keccak_F.State;
+      State : State_Type;
       
       Start_Time : Ada.Real_Time.Time;
       End_Time   : Ada.Real_Time.Time;
@@ -294,7 +296,7 @@ is
       Num_Iterations : Natural := 1_000_000;
       
    begin
-      Keccak_F.Init(State);
+      Init(State);
       
       for I in Positive range 1 .. Repeat loop
          Start_Time := Ada.Real_Time.Clock;
@@ -418,33 +420,45 @@ is
      ("Duplex r576c1024", 1024, Keccak.Keccak_1600.Duplex);
    
    procedure Benchmark_KeccakF_25 is new KeccakF_Benchmark
-     ("KeccakF[25]", 
-      Keccak.Keccak_25.KeccakF_25, 
+     ("Keccak-p[25,12]", 
+      Keccak.Keccak_25.KeccakF_25.State, 
+      Keccak.Keccak_25.KeccakF_25.Init, 
       Keccak.Keccak_25.Permute);
    procedure Benchmark_KeccakF_50 is new KeccakF_Benchmark
-     ("KeccakF[50]", 
-      Keccak.Keccak_50.KeccakF_50, 
+     ("Keccak-p[50,14]", 
+      Keccak.Keccak_50.KeccakF_50.State, 
+      Keccak.Keccak_50.KeccakF_50.Init, 
       Keccak.Keccak_50.Permute);
    procedure Benchmark_KeccakF_100 is new KeccakF_Benchmark
-     ("KeccakF[100]", 
-      Keccak.Keccak_100.KeccakF_100, 
+     ("Keccak-p[100,16]", 
+      Keccak.Keccak_100.KeccakF_100.State, 
+      Keccak.Keccak_100.KeccakF_100.Init, 
       Keccak.Keccak_100.Permute);
    procedure Benchmark_KeccakF_200 is new KeccakF_Benchmark
-     ("KeccakF[200]", 
-      Keccak.Keccak_200.KeccakF_200, 
+     ("Keccak-p[200,18]", 
+      Keccak.Keccak_200.KeccakF_200.State, 
+      Keccak.Keccak_200.KeccakF_200.Init,  
       Keccak.Keccak_200.Permute);
    procedure Benchmark_KeccakF_400 is new KeccakF_Benchmark
-     ("KeccakF[400]", 
-      Keccak.Keccak_400.KeccakF_400, 
+     ("Keccak-p[400,20]", 
+      Keccak.Keccak_400.KeccakF_400.State, 
+      Keccak.Keccak_400.KeccakF_400.Init, 
       Keccak.Keccak_400.Permute);
    procedure Benchmark_KeccakF_800 is new KeccakF_Benchmark
-     ("KeccakF[800]", 
-      Keccak.Keccak_800.KeccakF_800, 
+     ("Keccak-p[800,22]",
+      Keccak.Keccak_800.KeccakF_800.State, 
+      Keccak.Keccak_800.KeccakF_800.Init, 
       Keccak.Keccak_800.Permute);
    procedure Benchmark_KeccakF_1600 is new KeccakF_Benchmark
-     ("KeccakF[1600]", 
-      Keccak.Keccak_1600.KeccakF_1600, 
+     ("Keccak-p[1600,24]", 
+      Keccak.Keccak_1600.KeccakF_1600.State,
+      Keccak.Keccak_1600.KeccakF_1600.Init, 
       Keccak.Keccak_1600.Permute);
+   procedure Benchmark_KeccakF_1600_P2 is new KeccakF_Benchmark
+     ("Keccak-p[1600,12]×2", 
+      Keccak.SSE2_KeccakF_1600.Parallel_State,
+      Keccak.SSE2_KeccakF_1600.Init, 
+      KangarooTwelve.Permute_KeccakF_1600_R12_P2);
    
    procedure Benchmark_K12 is new K12_Benchmark
      ("KangarooTwelve",
@@ -502,6 +516,9 @@ begin
    Ada.Text_IO.New_Line;
    
    Benchmark_Duplex_r576c1024;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_1600_P2;
    Ada.Text_IO.New_Line;
    
    Benchmark_KeccakF_1600;

@@ -24,6 +24,7 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+
 package body Keccak.Generic_Parallel_Sponge
 is
 
@@ -53,25 +54,24 @@ is
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
+      Buf_First  : Types.Index_Number;
+      Buf_Last   : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. Rate_Bytes - 1) := (others => 0);
+      Buffer     : Types.Byte_Array (0 .. (Rate_Bytes * Num_Parallel_Instances) - 1) := (others => 0);
 
    begin
-
       while Remaining >= Ctx.Rate loop
          pragma Loop_Invariant (Offset + Remaining = Block_Size);
 
          pragma Loop_Invariant (Offset mod Block_Size = 0);
 
-         for I in 0 .. Num_Parallel_Instances - 1 loop
-            Pos := Data'First + (I * Block_Size) + Offset;
+         Pos := Data'First + Offset;
 
-            XOR_Bits_Into_State
-              (S       => Ctx.Permutation_State,
-               Index   => State_Index_Offset_From_First (I),
-               Data    => Data (Pos .. Pos + (Ctx.Rate - 1)),
-               Bit_Len => Ctx.Rate * 8);
-         end loop;
+         XOR_Bits_Into_State
+           (S           => Ctx.Permutation_State,
+            Data        => Data,
+            Data_Offset => Offset,
+            Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
 
@@ -87,18 +87,21 @@ is
          for I in 0 .. Num_Parallel_Instances - 1 loop
             Pos := Data'First + (I * Block_Size) + Offset;
 
-            Buffer (0 .. Remaining - 1) := Data (Pos .. Pos + (Remaining - 1));
+            Buf_First := (Ctx.Rate * I);
+            Buf_Last  := (Ctx.Rate * I) + (Remaining - 1);
 
-            Pad (Block          => Buffer,
+            Buffer (Buf_First .. Buf_Last) := Data (Pos .. Pos + (Remaining - 1));
+
+            Pad (Block          => Buffer (Buf_First .. Buf_First + Ctx.Rate - 1),
                  Num_Used_Bits  => Remaining * 8,
                  Max_Bit_Length => Ctx.Rate * 8);
-
-            XOR_Bits_Into_State
-              (S       => Ctx.Permutation_State,
-               Index   => State_Index_Offset_From_First (I),
-               Data    => Buffer,
-               Bit_Len => Ctx.Rate * 8);
          end loop;
+
+         XOR_Bits_Into_State
+           (S           => Ctx.Permutation_State,
+            Data        => Buffer,
+            Data_Offset => 0,
+            Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
       end if;
@@ -119,8 +122,10 @@ is
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
+      Buf_First  : Types.Index_Number;
+      Buf_Last   : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. Rate_Bytes - 1) := (others => 0);
+      Buffer     : Types.Byte_Array (0 .. (Rate_Bytes * Num_Parallel_Instances) - 1) := (others => 0);
 
    begin
       Ctx.State := Squeezing;
@@ -130,15 +135,13 @@ is
 
          pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
 
-         for I in 0 .. Num_Parallel_Instances - 1 loop
-            Pos := Data'First + (I * Block_Size) + Offset;
+         Pos := Data'First + Offset;
 
-            XOR_Bits_Into_State
-              (S       => Ctx.Permutation_State,
-               Index   => State_Index_Offset_From_First (I),
-               Data    => Data (Pos .. Pos + (Ctx.Rate - 1)),
-               Bit_Len => Ctx.Rate * 8);
-         end loop;
+         XOR_Bits_Into_State
+           (S           => Ctx.Permutation_State,
+            Data        => Data,
+            Data_Offset => Offset,
+            Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
 
@@ -147,23 +150,26 @@ is
       end loop;
 
       if Remaining > 0 then
-         --  Apply the padding rule to the final piece of data + suffix.
+         --  Apply the padding rule to the final chunk of data + suffix.
          for I in 0 .. Num_Parallel_Instances - 1 loop
             Pos := Data'First + (I * Block_Size) + Offset;
 
-            Buffer (0 .. Remaining - 1) := Data (Pos .. Pos + (Remaining - 1));
-            Buffer (Remaining) := Suffix;
+            Buf_First := (Ctx.Rate * I);
+            Buf_Last  := (Ctx.Rate * I) + (Remaining - 1);
 
-            Pad (Block          => Buffer,
+            Buffer (Buf_First .. Buf_Last) := Data (Pos .. Pos + (Remaining - 1));
+            Buffer (Buf_Last + 1) := Suffix;
+
+            Pad (Block          => Buffer (Buf_First .. Buf_First + Ctx.Rate - 1),
                  Num_Used_Bits  => (Remaining * 8) + Suffix_Len,
                  Max_Bit_Length => Ctx.Rate * 8);
-
-            XOR_Bits_Into_State
-              (S       => Ctx.Permutation_State,
-               Index   => State_Index_Offset_From_First (I),
-               Data    => Buffer,
-               Bit_Len => Ctx.Rate * 8);
          end loop;
+
+         XOR_Bits_Into_State
+           (S           => Ctx.Permutation_State,
+            Data        => Buffer,
+            Data_Offset => 0,
+            Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
 
@@ -172,17 +178,21 @@ is
          Buffer := (0      => Suffix,
                     others => 0);
 
-         Pad (Block          => Buffer,
+         Pad (Block          => Buffer (0 .. Ctx.Rate - 1),
               Num_Used_Bits  => Suffix_Len,
               Max_Bit_Length => Ctx.Rate * 8);
 
-         for I in State_Index loop
-            XOR_Bits_Into_State
-              (S       => Ctx.Permutation_State,
-               Index   => I,
-               Data    => Buffer,
-               Bit_Len => Ctx.Rate * 8);
+         --  Replicate the padding for each parallel instance.
+         for I in 1 .. Num_Parallel_Instances - 1 loop
+            Buffer (I * Ctx.Rate .. I * Ctx.Rate + Ctx.Rate - 1) :=
+              Buffer (0 .. Ctx.Rate - 1);
          end loop;
+
+         XOR_Bits_Into_State
+           (S           => Ctx.Permutation_State,
+            Data        => Buffer,
+            Data_Offset => 0,
+            Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
 
@@ -210,17 +220,21 @@ is
       if Ctx.State = Absorbing then
          Buffer := (others => 0);
 
-         Pad (Block          => Buffer,
+         Pad (Block          => Buffer (0 .. Ctx.Rate - 1),
               Num_Used_Bits  => 0,
               Max_Bit_Length => Ctx.Rate * 8);
 
-         for I in State_Index loop
-            XOR_Bits_Into_State
-              (S       => Ctx.Permutation_State,
-               Index   => I,
-               Data    => Buffer,
-               Bit_Len => Ctx.Rate * 8);
+         --  Replicate the padding for each parallel instance.
+         for I in 1 .. Num_Parallel_Instances - 1 loop
+            Buffer (I * Ctx.Rate .. I * Ctx.Rate + Ctx.Rate - 1) :=
+              Buffer (0 .. Ctx.Rate - 1);
          end loop;
+
+         XOR_Bits_Into_State
+           (S           => Ctx.Permutation_State,
+            Data        => Buffer,
+            Data_Offset => 0,
+            Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
       end if;
@@ -231,18 +245,13 @@ is
 
          pragma Loop_Invariant (Offset mod Block_Size = 0);
 
-         for I in 0 .. Num_Parallel_Instances - 1 loop
-            Pos := Data'First + (I * Block_Size) + Offset;
+         Pos := Data'First + Offset;
 
-            Extract_Bytes
-              (S     => Ctx.Permutation_State,
-               Index => State_Index_Offset_From_First (I),
-               Data  => Data (Pos .. Pos + (Ctx.Rate - 1)));
-
-            pragma Annotate (GNATprove, False_Positive,
-                             """Data"" might not be initialized",
-                             "S.States is fully initialized at end of subprogram");
-         end loop;
+         Extract_Bytes
+           (S           => Ctx.Permutation_State,
+            Data        => Data,
+            Data_Offset => Offset,
+            Byte_Len    => Ctx.Rate);
 
          Permute_All (Ctx.Permutation_State);
 
@@ -254,18 +263,13 @@ is
       if Remaining > 0 then
          Ctx.State := Finished;
 
-         for I in 0 .. Num_Parallel_Instances - 1 loop
-            Pos := Data'First + (I * Block_Size) + Offset;
+         Pos := Data'First + Offset;
 
-            Extract_Bytes
-              (S     => Ctx.Permutation_State,
-               Index => State_Index_Offset_From_First (I),
-               Data  => Data (Pos .. Pos + (Remaining - 1)));
-
-            pragma Annotate (GNATprove, False_Positive,
-                             """Data"" might not be initialized",
-                             "S.States is fully initialized at end of subprogram");
-         end loop;
+         Extract_Bytes
+           (S           => Ctx.Permutation_State,
+            Data        => Data,
+            Data_Offset => Offset,
+            Byte_Len    => Remaining);
 
       end if;
    end Squeeze_Bytes_All;

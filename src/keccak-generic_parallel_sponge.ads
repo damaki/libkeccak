@@ -43,15 +43,16 @@ generic
    with procedure Permute_All (S : in out State_Type);
    --  Apply the permutation function to each state in parallel.
 
-   with procedure XOR_Bits_Into_State (S       : in out State_Type;
-                                       Index   : in     State_Index;
-                                       Data    : in     Types.Byte_Array;
-                                       Bit_Len : in     Natural);
+   with procedure XOR_Bits_Into_State (S           : in out State_Type;
+                                       Data        : in     Types.Byte_Array;
+                                       Data_Offset : in     Natural;
+                                       Bit_Len     : in     Natural);
    --  XOR bits into a specific instance of the permutation state.
 
-   with procedure Extract_Bytes(S     : in     State_Type;
-                                Index : in     State_Index;
-                                Data  :    out Keccak.Types.Byte_Array);
+   with procedure Extract_Bytes(S           : in     State_Type;
+                                Data        :    out Keccak.Types.Byte_Array;
+                                Data_Offset : in     Natural;
+                                Byte_Len    : in     Natural);
    -- Extracts a bytes of output from the state
 
    with procedure Pad (Block          : in out Keccak.Types.Byte_Array;

@@ -31,17 +31,14 @@ generic
    type Input_State_Index is range <>;
    with procedure Init (A : out Permutation_State);
    with procedure Permute (A : in out Permutation_State);
-   with procedure XOR_Bits_Into_State (S       : in out Permutation_State;
-                                       Index   : in     Input_State_Index;
-                                       Data    : in     Types.Byte_Array;
-                                       Bit_Len : in     Natural);
-   with procedure Extract_Bytes (S     : in     Permutation_State;
-                                 Index : in     Input_State_Index;
-                                 Data  :    out Types.Byte_Array);
-   with procedure Extract_Bits (S       : in     Permutation_State;
-                                Index   : in     Input_State_Index;
-                                Data    :    out Types.Byte_Array;
-                                Bit_Len : in     Natural);
+   with procedure XOR_Bits_Into_State (S           : in out Permutation_State;
+                                       Data        : in     Types.Byte_Array;
+                                       Data_Offset : in     Natural;
+                                       Bit_Len     : in     Natural);
+   with procedure Extract_Bytes (S           : in     Permutation_State;
+                                 Data        :    out Types.Byte_Array;
+                                 Data_Offset : in     Natural;
+                                 Byte_Len    : in     Natural);
    State_Size_Bits    : Positive;
 
    --  @brief@
@@ -78,21 +75,16 @@ is
    procedure Permute_All (S : in out Parallel_State);
 
 
-   procedure XOR_Bits_Into_State (S       : in out Parallel_State;
-                                  Index   : in     State_Index;
-                                  Data    : in     Types.Byte_Array;
-                                  Bit_Len : in     Natural);
+   procedure XOR_Bits_Into_State (S           : in out Parallel_State;
+                                  Data        : in     Types.Byte_Array;
+                                  Data_Offset : in     Natural;
+                                  Bit_Len     : in     Natural);
 
 
-   procedure Extract_Bytes (S     : in     Parallel_State;
-                            Index : in     State_Index;
-                            Data  :    out Types.Byte_Array);
-
-
-   procedure Extract_Bits (S       : in     Parallel_State;
-                           Index   : in     State_Index;
-                           Data    :    out Types.Byte_Array;
-                           Bit_Len : in     Natural);
+   procedure Extract_Bytes (S           : in     Parallel_State;
+                            Data        :    out Types.Byte_Array;
+                            Data_Offset : in     Natural;
+                            Byte_Len    : in     Natural);
 
 private
 

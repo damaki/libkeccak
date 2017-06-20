@@ -37,8 +37,9 @@ is
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
    is
+      Block_Size : constant Natural := (Data'Length / Num_Parallel_Instances);
    begin
-      if Data'Length mod Rate / 8 = 0 then
+      if Block_Size mod Rate / 8 = 0 then
          Sponge.Absorb_Bytes_All (Ctx.Sponge_Ctx, Data);
       else
          Sponge.Absorb_Bytes_All_With_Suffix

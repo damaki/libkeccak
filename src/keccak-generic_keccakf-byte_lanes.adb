@@ -101,8 +101,6 @@ is
 
       Lane            : Lane_Type;
    begin
-      Data := (others => 0); -- workaround for flow analysis.
-
       -- Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
 
       -- Process whole lanes
@@ -117,6 +115,10 @@ is
          for I in Natural range 0 .. (W/8) - 1 loop
             Data(Data'First + Offset + I)
               := Keccak.Types.Byte(Shift_Right(Lane, I*8) and 16#FF#);
+
+            pragma Annotate (GNATprove, False_Positive,
+                             """Data"" might not be initialized",
+                             "Data is initialized at end of procedure");
          end loop;
 
          X := X + 1;
@@ -146,6 +148,10 @@ is
 
                Data(Data'First + Offset)
                  := Keccak.Types.Byte(Shift_Right(Lane, Shift) and 16#FF#);
+
+               pragma Annotate (GNATprove, False_Positive,
+                                """Data"" might not be initialized",
+                                "Data is initialized at end of procedure");
 
                Shift           := Shift + 8;
                Offset          := Offset + 1;
