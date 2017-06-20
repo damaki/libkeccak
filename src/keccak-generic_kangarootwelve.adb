@@ -40,6 +40,14 @@ is
      (Ctx  : in out Context;
       Data : in     Types.Byte_Array)
      with Pre => Data'Length = Block_Size_Bytes * XOF_Parallel_N.Num_Parallel_Instances;
+   --  Generic procedure to process N blocks in parallel.
+   --
+   --  This procedure process N blocks in parallel to produce N chaining values
+   --  (CV). The CVs are then processed in the outer (serial) XOF.
+   --
+   --  @param Ctx The KangarooTwelve context.
+   --
+   --  @param Data Byte array containing N blocks.
 
 
    procedure Generic_Process_Parallel_Blocks
@@ -85,7 +93,13 @@ is
    procedure Process_1_Block
      (Ctx  : in out Context;
       Data : in     Types.Byte_Array)
-     with Pre => Data'Length <= Block_Size_Bytes
+     with Pre => Data'Length <= Block_Size_Bytes;
+   --  Processes a single block using a serial XOF.
+
+
+   procedure Process_1_Block
+     (Ctx  : in out Context;
+      Data : in     Types.Byte_Array)
    is
       Serial_Ctx : XOF_Serial.Context;
 
@@ -119,7 +133,21 @@ is
      with Pre => Ctx.Nb_Blocks = 0,
      Post => (Added <= Block_Size_Bytes
               and Added <= Data'Length
-              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0))
+              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0));
+   --  Add bytes to the first block.
+   --
+   --  The first block is processed differently from the others, as it is
+   --  processed in the Ctx.Outer_XOF, in line with the chaining values. The
+   --  first block does not produce a chaining value.
+   --
+   --  Other blocks (after the first one) are hashed separately to produce
+   --  chaining values.
+
+
+   procedure Add_To_First_Block
+     (Ctx   : in out Context;
+      Data  : in     Types.Byte_Array;
+      Added :    out Natural)
    is
       Pos           : Types.Index_Number;
       Free_In_Block : Natural;
@@ -196,7 +224,13 @@ is
      with Pre => Ctx.Nb_Blocks > 0,
      Post => (Added <= Block_Size_Bytes
               and Added <= Data'Length
-              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0))
+              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0));
+
+
+   procedure Add_To_Partial_Block
+     (Ctx   : in out Context;
+      Data  : in     Types.Byte_Array;
+      Added :    out Natural)
    is
       Pos           : Types.Index_Number;
       Free_In_Block : Natural;
@@ -251,6 +285,9 @@ is
             Added := Data'Length;
 
          end if;
+
+      else
+         Added := 0;
 
       end if;
    end Add_To_Partial_Block;

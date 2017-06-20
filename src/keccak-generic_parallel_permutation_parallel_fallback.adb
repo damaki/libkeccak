@@ -31,8 +31,14 @@ is
    procedure Init (S : out Parallel_State)
    is
    begin
-      Init (S.States (0));
-      Init (S.States (1));
+      for I in S.States'Range loop
+         Init (S.States (I));
+
+         pragma Annotate
+           (GNATprove, False_Positive,
+            """S.States"" might not be initialized",
+            "All elements of S.States are initialized after loop");
+      end loop;
    end Init;
 
 
@@ -67,7 +73,7 @@ is
 
 
    procedure Extract_Bytes (S           : in     Parallel_State;
-                            Data        :    out Types.Byte_Array;
+                            Data        : in out Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
    is

@@ -28,7 +28,6 @@
 with Ada.Real_Time;
 with Ada.Text_IO;
 with KangarooTwelve;
-with Keccak.SSE2_KeccakF_1600;
 with Keccak.Generic_KangarooTwelve;
 with Keccak.Generic_KeccakF;
 with Keccak.Keccak_25;
@@ -456,8 +455,8 @@ is
       Keccak.Keccak_1600.Permute);
    procedure Benchmark_KeccakF_1600_P2 is new KeccakF_Benchmark
      ("Keccak-p[1600,12]×2", 
-      Keccak.SSE2_KeccakF_1600.Parallel_State,
-      Keccak.SSE2_KeccakF_1600.Init, 
+      KangarooTwelve.KeccakF_1600_R12_P2.Parallel_State,
+      KangarooTwelve.KeccakF_1600_R12_P2.Init, 
       KangarooTwelve.Permute_KeccakF_1600_R12_P2);
    
    procedure Benchmark_K12 is new K12_Benchmark

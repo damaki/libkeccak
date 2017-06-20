@@ -50,7 +50,7 @@ generic
    --  XOR bits into a specific instance of the permutation state.
 
    with procedure Extract_Bytes(S           : in     State_Type;
-                                Data        :    out Keccak.Types.Byte_Array;
+                                Data        : in out Keccak.Types.Byte_Array;
                                 Data_Offset : in     Natural;
                                 Byte_Len    : in     Natural);
    -- Extracts a bytes of output from the state

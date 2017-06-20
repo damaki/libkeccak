@@ -11,6 +11,7 @@ GENERIC_BODIES = src/keccak-generic_cshake.adb \
                  src/keccak-generic_keccakf-reference_permutation.adb \
                  src/keccak-generic_keccakf.adb \
                  src/keccak-generic_kmac.adb \
+                 src/keccak-generic_parallel_keccakf.adb \
                  src/keccak-generic_parallel_permutation_parallel_fallback.adb \
                  src/keccak-generic_parallel_permutation_serial_fallback.adb \
                  src/keccak-generic_parallel_sponge.adb \

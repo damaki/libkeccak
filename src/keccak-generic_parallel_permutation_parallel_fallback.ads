@@ -36,7 +36,7 @@ generic
                                        Data_Offset : in     Natural;
                                        Bit_Len     : in     Natural);
    with procedure Extract_Bytes (S           : in     Permutation_State;
-                                 Data        :    out Types.Byte_Array;
+                                 Data        : in out Types.Byte_Array;
                                  Data_Offset : in     Natural;
                                  Byte_Len    : in     Natural);
    State_Size_Bits    : Positive;
@@ -82,7 +82,7 @@ is
 
 
    procedure Extract_Bytes (S           : in     Parallel_State;
-                            Data        :    out Types.Byte_Array;
+                            Data        : in out Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural);
 

@@ -1,19 +1,51 @@
-with Interfaces; use Interfaces;
-
-package body Keccak.SSE2_KeccakF_1600
+-------------------------------------------------------------------------------
+-- Copyright (c) 2017, Daniel King
+-- All rights reserved.
+--
+-- Redistribution and use in source and binary forms, with or without
+-- modification, are permitted provided that the following conditions are met:
+--     * Redistributions of source code must retain the above copyright
+--       notice, this list of conditions and the following disclaimer.
+--     * Redistributions in binary form must reproduce the above copyright
+--       notice, this list of conditions and the following disclaimer in the
+--       documentation and/or other materials provided with the distribution.
+--     * The name of the copyright holder may not be used to endorse or promote
+--       Products derived from this software without specific prior written
+--       permission.
+--
+-- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+-- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+-- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+-- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+-- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+-- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+-- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+-- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+-- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-------------------------------------------------------------------------------
+package body Keccak.Generic_Parallel_KeccakF
 is
-   W : constant := 64;
 
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
-                           Offset : in Natural) return Unsigned_64
-   is (Unsigned_64 (Data (Data'First + Offset))
-       or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 1)), 8)
-       or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 2)), 16)
-       or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 3)), 24)
-       or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 4)), 32)
-       or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 5)), 40)
-       or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 6)), 48)
-       or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 7)), 56))
+                           Offset : in Natural) return Lane_Type
+     with Inline;
+
+
+   function Bytes_To_Lane (Data   : in Types.Byte_Array;
+                           Offset : in Natural) return Lane_Type
+   is
+      Lane : Lane_Type := 0;
+   begin
+      for I in 0 .. (W/8) - 1 loop
+         Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)), I*8);
+      end loop;
+      return Lane;
+   end Bytes_To_Lane;
+
+
+   function VXXI_Index_Offset_From_First (Offset : in Natural) return VXXI_Index
+   is (VXXI_Index (Integer (VXXI_Index'First) + Offset))
    with Inline;
 
 
@@ -26,47 +58,47 @@ is
 
    procedure Permute_All (S : in out Parallel_State)
    is
-      type Round_Constants is array(Round_Index) of V2DI_View;
+      type Round_Constants is array(Round_Index) of VXXI_View;
 
       RC : constant Round_Constants :=
         (
-           (16#0000_0000_0000_0001#,16#0000_0000_0000_0001#),
-           (16#0000_0000_0000_8082#,16#0000_0000_0000_8082#),
-           (16#8000_0000_0000_808A#,16#8000_0000_0000_808A#),
-           (16#8000_0000_8000_8000#,16#8000_0000_8000_8000#),
-           (16#0000_0000_0000_808B#,16#0000_0000_0000_808B#),
-           (16#0000_0000_8000_0001#,16#0000_0000_8000_0001#),
-           (16#8000_0000_8000_8081#,16#8000_0000_8000_8081#),
-           (16#8000_0000_0000_8009#,16#8000_0000_0000_8009#),
-           (16#0000_0000_0000_008A#,16#0000_0000_0000_008A#),
-           (16#0000_0000_0000_0088#,16#0000_0000_0000_0088#),
-           (16#0000_0000_8000_8009#,16#0000_0000_8000_8009#),
-           (16#0000_0000_8000_000A#,16#0000_0000_8000_000A#),
-           (16#0000_0000_8000_808B#,16#0000_0000_8000_808B#),
-           (16#8000_0000_0000_008B#,16#8000_0000_0000_008B#),
-           (16#8000_0000_0000_8089#,16#8000_0000_0000_8089#),
-           (16#8000_0000_0000_8003#,16#8000_0000_0000_8003#),
-           (16#8000_0000_0000_8002#,16#8000_0000_0000_8002#),
-           (16#8000_0000_0000_0080#,16#8000_0000_0000_0080#),
-           (16#0000_0000_0000_800A#,16#0000_0000_0000_800A#),
-           (16#8000_0000_8000_000A#,16#8000_0000_8000_000A#),
-           (16#8000_0000_8000_8081#,16#8000_0000_8000_8081#),
-           (16#8000_0000_0000_8080#,16#8000_0000_0000_8080#),
-           (16#0000_0000_8000_0001#,16#0000_0000_8000_0001#),
-           (16#8000_0000_8000_8008#,16#8000_0000_8000_8008#)
+           (others => 16#0000_0000_0000_0001#),
+           (others => 16#0000_0000_0000_8082#),
+           (others => 16#8000_0000_0000_808A#),
+           (others => 16#8000_0000_8000_8000#),
+           (others => 16#0000_0000_0000_808B#),
+           (others => 16#0000_0000_8000_0001#),
+           (others => 16#8000_0000_8000_8081#),
+           (others => 16#8000_0000_0000_8009#),
+           (others => 16#0000_0000_0000_008A#),
+           (others => 16#0000_0000_0000_0088#),
+           (others => 16#0000_0000_8000_8009#),
+           (others => 16#0000_0000_8000_000A#),
+           (others => 16#0000_0000_8000_808B#),
+           (others => 16#8000_0000_0000_008B#),
+           (others => 16#8000_0000_0000_8089#),
+           (others => 16#8000_0000_0000_8003#),
+           (others => 16#8000_0000_0000_8002#),
+           (others => 16#8000_0000_0000_0080#),
+           (others => 16#0000_0000_0000_800A#),
+           (others => 16#8000_0000_8000_000A#),
+           (others => 16#8000_0000_8000_8081#),
+           (others => 16#8000_0000_0000_8080#),
+           (others => 16#0000_0000_8000_0001#),
+           (others => 16#8000_0000_8000_8008#)
         );
 
-      Aba, Abe, Abi, Abo, Abu : V2DI;
-      Aga, Age, Agi, Ago, Agu : V2DI;
-      Aka, Ake, Aki, Ako, Aku : V2DI;
-      Ama, Ame, Ami, Amo, Amu : V2DI;
-      Asa, Ase, Asi, Aso, Asu : V2DI;
-      Ca, Ce, Ci, Co, Cu      : V2DI;
-      Eba, Ebe, Ebi, Ebo, Ebu : V2DI;
-      Ega, Ege, Egi, Ego, Egu : V2DI;
-      Eka, Eke, Eki, Eko, Eku : V2DI;
-      Ema, Eme, Emi, Emo, Emu : V2DI;
-      Esa, Ese, Esi, Eso, Esu : V2DI;
+      Aba, Abe, Abi, Abo, Abu : VXXI;
+      Aga, Age, Agi, Ago, Agu : VXXI;
+      Aka, Ake, Aki, Ako, Aku : VXXI;
+      Ama, Ame, Ami, Amo, Amu : VXXI;
+      Asa, Ase, Asi, Aso, Asu : VXXI;
+      Ca, Ce, Ci, Co, Cu      : VXXI;
+      Eba, Ebe, Ebi, Ebo, Ebu : VXXI;
+      Ega, Ege, Egi, Ego, Egu : VXXI;
+      Eka, Eke, Eki, Eko, Eku : VXXI;
+      Ema, Eme, Emi, Emo, Emu : VXXI;
+      Esa, Ese, Esi, Eso, Esu : VXXI;
 
       procedure Copy_From_State
         with Global => (Input  => S,
@@ -213,13 +245,13 @@ is
                                    Ema, Eme, Emi, Emo, Emu,
                                    Esa, Ese, Esi, Eso, Esu))
       is
-         Da, De, Di, D0, Du : V2DI;
+         Da, De, Di, D0, Du : VXXI;
 
-         Bba, Bbe, Bbi, Bbo, Bbu : V2DI;
-         Bga, Bge, Bgi, Bgo, Bgu : V2DI;
-         Bka, Bke, Bki, Bko, Bku : V2DI;
-         Bma, Bme, Bmi, Bmo, Bmu : V2DI;
-         Bsa, Bse, Bsi, Bso, Bsu : V2DI;
+         Bba, Bbe, Bbi, Bbo, Bbu : VXXI;
+         Bga, Bge, Bgi, Bgo, Bgu : VXXI;
+         Bka, Bke, Bki, Bko, Bku : VXXI;
+         Bma, Bme, Bmi, Bmo, Bmu : VXXI;
+         Bsa, Bse, Bsi, Bso, Bsu : VXXI;
 
       begin
          Da := Cu xor Rotate_Left(Ce, 1);
@@ -350,13 +382,13 @@ is
                                    Asa, Ase, Asi, Aso, Asu)),
         Inline
       is
-         Da, De, Di, D0, Du : V2DI;
+         Da, De, Di, D0, Du : VXXI;
 
-         Bba, Bbe, Bbi, Bbo, Bbu : V2DI;
-         Bga, Bge, Bgi, Bgo, Bgu : V2DI;
-         Bka, Bke, Bki, Bko, Bku : V2DI;
-         Bma, Bme, Bmi, Bmo, Bmu : V2DI;
-         Bsa, Bse, Bsi, Bso, Bsu : V2DI;
+         Bba, Bbe, Bbi, Bbo, Bbu : VXXI;
+         Bga, Bge, Bgi, Bgo, Bgu : VXXI;
+         Bka, Bke, Bki, Bko, Bku : VXXI;
+         Bma, Bme, Bmi, Bmo, Bmu : VXXI;
+         Bsa, Bse, Bsi, Bso, Bsu : VXXI;
 
       begin
          Da := Cu xor Rotate_Left(Ce, 1);
@@ -527,13 +559,17 @@ is
    is
       use type Keccak.Types.Byte;
 
-      Stride           : constant Natural := Data'Length / 2;
+      Stride           : constant Natural := Data'Length / Num_Parallel_Instances;
 
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
+      Lanes            : array (0 .. Num_Parallel_Instances) of Lane_Type := (others => 0);
+
+      SI               : VXXI_Index;
+
    begin
-      -- Process whole lanes (64 bits).
+      -- Process whole lanes (e.g. 64 bits for Keccak-f[1600]).
       Outer_Loop:
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
@@ -547,8 +583,10 @@ is
 
             exit Outer_Loop when Remaining_Bits < W;
 
-            S(X, Y)(0) := S (X,Y)(0) xor Bytes_To_Lane (Data, Data_Offset + Offset);
-            S(X, Y)(1) := S (X,Y)(1) xor Bytes_To_Lane (Data, Data_Offset + Offset + Stride);
+            for I in 0 .. Num_Parallel_Instances - 1 loop
+               SI := VXXI_Index_Offset_From_First (I);
+               S(X,Y)(SI) := S(X,Y)(SI) xor Bytes_To_Lane (Data, Data_Offset + Offset + (Stride * I));
+            end loop;
 
             Offset         := Offset          + W/8;
             Remaining_Bits := Remaining_Bits  - W;
@@ -561,18 +599,19 @@ is
          declare
             X                : X_Coord   := X_Coord ((Bit_Len / W) mod 5);
             Y                : Y_Coord   := Y_Coord ((Bit_Len / W)  /  5);
-            Word0            : Unsigned_64 := 0;
-            Word1            : Unsigned_64 := 0;
             Remaining_Bytes  : Natural   := (Remaining_Bits + 7) / 8;
 
          begin
             for I in Natural range 0 .. Remaining_Bytes - 1 loop
-               Word0 := Word0 or Shift_Left(Unsigned_64(Data(Data'First + Data_Offset + Offset + I)), I*8);
-               Word1 := Word1 or Shift_Left(Unsigned_64(Data(Data'First + Data_Offset + Offset + I + Stride)), I*8);
+               for J in 0 .. Num_Parallel_Instances - 1 loop
+                  Lanes (J) := Lanes (J) or Shift_Left(Lane_Type(Data(Data'First + Data_Offset + Offset + I + (Stride * I))), I*8);
+               end loop;
             end loop;
 
-            S(X, Y)(0) := S(X, Y)(0) xor (Word0 and (2**Remaining_Bits) - 1);
-            S(X, Y)(1) := S(X, Y)(1) xor (Word0 and (2**Remaining_Bits) - 1);
+            for I in 0 .. Num_Parallel_Instances - 1 loop
+               SI := VXXI_Index_Offset_From_First (I);
+               S(X,Y)(SI) := S(X,Y)(SI) xor Lanes (I);
+            end loop;
          end;
       end if;
    end XOR_Bits_Into_State;
@@ -580,7 +619,7 @@ is
 
 
    procedure Extract_Bytes(S           : in     Parallel_State;
-                           Data        :    out Keccak.Types.Byte_Array;
+                           Data        : in out Keccak.Types.Byte_Array;
                            Data_Offset : in     Natural;
                            Byte_Len    : in     Natural)
    is
@@ -594,8 +633,9 @@ is
       Remaining_Bytes : Natural := Byte_Len;
       Offset          : Natural := 0;
 
-      Lane0           : Unsigned_64;
-      Lane1           : Unsigned_64;
+      Lane            : Lane_Type;
+
+      SI              : VXXI_Index;
    begin
       -- Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
 
@@ -606,22 +646,18 @@ is
          pragma Loop_Invariant(Offset mod (W/8) = 0
                                and Offset + Remaining_Bytes = Byte_Len);
 
-         Lane0 := S(X, Y)(0);
+         for I in 0 .. Num_Parallel_Instances - 1 loop
+            SI := VXXI_Index_Offset_From_First (I);
+            Lane := S(X, Y) (SI);
 
-         for I in Natural range 0 .. (W/8) - 1 loop
-            Data(Data'First + Data_Offset + Offset + I)
-              := Keccak.Types.Byte(Shift_Right(Lane0, I*8) and 16#FF#);
+            for J in Natural range 0 .. (W/8) - 1 loop
+               Data(Data'First + Data_Offset + Offset + J + (Stride * I))
+                 := Keccak.Types.Byte(Shift_Right(Lane, J*8) and 16#FF#);
 
-            pragma Annotate (GNATprove, False_Positive,
-                             """Data"" might not be initialized",
-                             "Data is initialized at end of procedure");
-         end loop;
-
-         Lane1 := S(X, Y)(1);
-
-         for I in Natural range 0 .. (W/8) - 1 loop
-            Data(Data'First + Data_Offset + Offset + I + Stride)
-              := Keccak.Types.Byte(Shift_Right(Lane1, I*8) and 16#FF#);
+               pragma Annotate (GNATprove, False_Positive,
+                                """Data"" might not be initialized",
+                                "Data is initialized at end of procedure");
+            end loop;
          end loop;
 
          X := X + 1;
@@ -635,38 +671,37 @@ is
 
       -- Process any remaining data (smaller than 1 lane)
       if Remaining_Bytes > 0 then
-         Lane0 := S(X, Y)(0);
-         Lane1 := S(X, Y)(1);
+         for I in 0 .. Num_Parallel_Instances - 1 loop
+            SI := VXXI_Index_Offset_From_First (I);
+            Lane := S(X, Y)(SI);
 
-         declare
-            Shift          : Natural := 0;
-            Initial_Offset : Natural := Offset with Ghost;
-         begin
-            while Remaining_Bytes > 0 loop
-               pragma Loop_Variant(Increases => Offset,
-                                   Increases => Shift,
-                                   Decreases => Remaining_Bytes);
-               pragma Loop_Invariant(Offset + Remaining_Bytes = Data'Length
-                                     and Shift mod 8 = 0
-                                     and Shift = (Offset - Initial_Offset) * 8);
+            declare
+               Shift          : Natural := 0;
+               Initial_Offset : Natural := Offset with Ghost;
+            begin
+               while Remaining_Bytes > 0 loop
+                  pragma Loop_Variant(Increases => Offset,
+                                      Increases => Shift,
+                                      Decreases => Remaining_Bytes);
+                  pragma Loop_Invariant(Offset + Remaining_Bytes = Data'Length
+                                        and Shift mod 8 = 0
+                                        and Shift = (Offset - Initial_Offset) * 8);
 
-               Data(Data'First + Data_Offset + Offset)
-                 := Keccak.Types.Byte(Shift_Right(Lane0, Shift) and 16#FF#);
-               Data(Data'First + Data_Offset + Offset + Stride)
-                 := Keccak.Types.Byte(Shift_Right(Lane1, Shift) and 16#FF#);
+                  Data(Data'First + Data_Offset + Offset + (Stride * I))
+                    := Keccak.Types.Byte(Shift_Right(Lane, Shift) and 16#FF#);
 
-               pragma Annotate (GNATprove, False_Positive,
-                                """Data"" might not be initialized",
-                                "Data is initialized at end of procedure");
+                  pragma Annotate (GNATprove, False_Positive,
+                                   """Data"" might not be initialized",
+                                   "Data is initialized at end of procedure");
 
-               Shift           := Shift + 8;
-               Offset          := Offset + 1;
-               Remaining_Bytes := Remaining_Bytes - 1;
-            end loop;
-         end;
+                  Shift           := Shift + 8;
+                  Offset          := Offset + 1;
+                  Remaining_Bytes := Remaining_Bytes - 1;
+               end loop;
+            end;
+         end loop;
       end if;
 
    end Extract_Bytes;
 
-
-end Keccak.SSE2_KeccakF_1600;
+end Keccak.Generic_Parallel_KeccakF;

@@ -65,8 +65,6 @@ is
 
          pragma Loop_Invariant (Offset mod Block_Size = 0);
 
-         Pos := Data'First + Offset;
-
          XOR_Bits_Into_State
            (S           => Ctx.Permutation_State,
             Data        => Data,
@@ -134,8 +132,6 @@ is
          pragma Loop_Invariant (Offset + Remaining = Block_Size);
 
          pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
-
-         Pos := Data'First + Offset;
 
          XOR_Bits_Into_State
            (S           => Ctx.Permutation_State,
@@ -210,7 +206,6 @@ is
 
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
-      Pos        : Types.Index_Number;
 
       Buffer     : Types.Byte_Array (0 .. Rate_Bytes - 1);
 
@@ -245,13 +240,16 @@ is
 
          pragma Loop_Invariant (Offset mod Block_Size = 0);
 
-         Pos := Data'First + Offset;
-
          Extract_Bytes
            (S           => Ctx.Permutation_State,
             Data        => Data,
             Data_Offset => Offset,
             Byte_Len    => Ctx.Rate);
+
+         pragma Annotate
+           (GNATprove, False_Positive,
+            """Data"" might not be initialized",
+            "The array will be wholly initialized at the end of this procedure");
 
          Permute_All (Ctx.Permutation_State);
 
@@ -263,13 +261,16 @@ is
       if Remaining > 0 then
          Ctx.State := Finished;
 
-         Pos := Data'First + Offset;
-
          Extract_Bytes
            (S           => Ctx.Permutation_State,
             Data        => Data,
             Data_Offset => Offset,
             Byte_Len    => Remaining);
+
+         pragma Annotate
+           (GNATprove, False_Positive,
+            """Data"" might not be initialized",
+            "The array will be wholly initialized at the end of this procedure");
 
       end if;
    end Squeeze_Bytes_All;
