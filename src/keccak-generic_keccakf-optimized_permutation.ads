@@ -34,6 +34,7 @@ is
       -- By default, the definition from The Keccak Reference is used.
       First_Round : Round_Index := 0;
       Num_Rounds  : Round_Count := 12 + (2*L);
-   procedure Permute (S : in out State);
+   procedure Permute (S : in out State)
+     with Global => null;
 
 end Keccak.Generic_KeccakF.Optimized_Permutation;

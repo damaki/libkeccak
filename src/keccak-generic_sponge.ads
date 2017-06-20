@@ -101,7 +101,8 @@ is
 
    procedure Init(Ctx             :    out Context;
                   Capacity        : in     Positive)
-     with Depends => (Ctx => Capacity),
+     with Global => null,
+     Depends => (Ctx => Capacity),
      Pre => (((State_Size - Capacity) mod 8 = 0) and (Capacity < State_Size)),
      Post => ((State_Of(Ctx) = Absorbing)
               and (Rate_Of(Ctx) = State_Size - Capacity)
@@ -126,7 +127,8 @@ is
    --   * Must be a multiple of 8 (this is a requirement for this implementation)
               
 
-   function State_Of(Ctx : in Context) return States;
+   function State_Of(Ctx : in Context) return States
+     with Global => null;
    -- Gets the current state of the sponge.
    --
    -- The sponge has two states: Absorbing and Squeezing. Initially the sponge
@@ -142,7 +144,8 @@ is
    
    
    
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number;
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
+     with Global => null;
    -- Gets the currently configured rate of the sponge.
    --
    -- The rate is derived from the sponge's capacity and the State_Size.
@@ -154,7 +157,8 @@ is
    procedure Absorb(Ctx        : in out Context;
                     Data       : in     Keccak.Types.Byte_Array;
                     Bit_Length : in     Natural)
-     with Depends => (Ctx => + (Data, Bit_Length)),
+     with Global => null,
+     Depends => (Ctx => + (Data, Bit_Length)),
      Pre => (State_Of(Ctx) = Absorbing
              and then Bit_Length <= Natural'Last - 7
              and then (Bit_Length + 7) / 8 <= Data'Length
@@ -185,12 +189,13 @@ is
                                 Bit_Length : in     Natural;
                                 Suffix     : in     Keccak.Types.Byte;
                                 Suffix_Len : in     Natural)
-     with Pre => (State_Of(Ctx) = Absorbing
-                  and then Suffix_Len <= 8
-                  and then Bit_Length <= Natural'Last - 8
-                  and then (Bit_Length + 7) / 8 <= Message'Length
-                  and then In_Queue_Bit_Length(Ctx) mod 8 = 0
-                  and then In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)),
+     with Global => null,
+     Pre => (State_Of(Ctx) = Absorbing
+             and then Suffix_Len <= 8
+             and then Bit_Length <= Natural'Last - 8
+             and then (Bit_Length + 7) / 8 <= Message'Length
+             and then In_Queue_Bit_Length(Ctx) mod 8 = 0
+             and then In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)),
      Post => (State_Of(Ctx) = Absorbing
               and Rate_Of(Ctx) = Rate_Of(Ctx'Old)
               and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
@@ -229,7 +234,8 @@ is
 
    procedure Squeeze(Ctx    : in out Context;
                      Digest :    out Keccak.Types.Byte_Array)
-     with Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     with Global => null,
+     Depends => ((Ctx, Digest) => (Ctx, Digest)),
      Post => (State_Of(Ctx) = Squeezing
               and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
    -- Squeeze (output) bits from the sponge.
@@ -248,7 +254,8 @@ is
    
    
    function In_Queue_Bit_Length(Ctx : in Context) return Natural
-     with Post => In_Queue_Bit_Length'Result < State_Size;
+     with Global => null,
+     Post => In_Queue_Bit_Length'Result < State_Size;
    -- Get the number of bits which are waiting in the input queue, and have
    -- not yet been absorbed into the sponge.
    --

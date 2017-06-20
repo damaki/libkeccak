@@ -41,7 +41,8 @@ is
    procedure Init(Ctx           :    out Context;
                   Key           : in     Types.Byte_Array;
                   Customization : in     String)
-     with Depends => (Ctx => (Key, Customization)),
+     with Global => null,
+     Depends => (Ctx => (Key, Customization)),
      Post => State_Of(Ctx) = Updating;
    --  Initialize the KMAC context.
    --
@@ -61,7 +62,8 @@ is
 
    procedure Update(Ctx     : in out Context;
                     Message : in     Types.Byte_Array)
-     with Depends => (Ctx => + Message),
+     with Global => null,
+     Depends => (Ctx => + Message),
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Updating;
    --  Process data with KMAC.
@@ -76,7 +78,8 @@ is
 
    procedure Finish(Ctx : in out Context;
                     MAC :    out Types.Byte_Array)
-     with Depends => ((Ctx, MAC) => (Ctx, MAC)),
+     with Global => null,
+     Depends => ((Ctx, MAC) => (Ctx, MAC)),
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Finished;
    --  Finish the KMAC computation and generate the MAC.
@@ -105,7 +108,8 @@ is
 
    procedure Extract(Ctx : in out Context;
                      MAC :    out Types.Byte_Array)
-     with Depends => ((Ctx, MAC) => (Ctx, MAC)),
+     with Global => null,
+     Depends => ((Ctx, MAC) => (Ctx, MAC)),
      Pre => State_Of(Ctx) in Updating | Extracting,
      Post => State_Of(Ctx) = Extracting;
    --  Finish the KMAC computation generate XOF output bytes.
@@ -117,7 +121,8 @@ is
    --  number of output bytes.
 
 
-   function State_Of(Ctx : in Context) return States;
+   function State_Of(Ctx : in Context) return States
+     with Global => null;
    --  Get the current state of the context.
    --
    --  The context can only be used whilst it is in the "Updating" state.
@@ -127,7 +132,8 @@ is
 
 
    function Rate return Positive
-     with Post => Rate'Result mod 8 = 0;
+     with Global => null,
+     Post => Rate'Result mod 8 = 0;
    --  Get the rate parameter (in bits) of the KMAC instance.
    --
    --  The rate is defined as the underlying state size minus the capacity

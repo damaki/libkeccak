@@ -36,7 +36,8 @@ is
       First_Round : Round_Index := 0;
       Num_Rounds  : Round_Count := 12 + (2*L);
    procedure Permute(A : in out State)
-     with Depends => (A => A);
+     with Global => null,
+     Depends => (A => A);
    -- Permute the Keccak state.
    --
    -- @param A The Keccak state to permute.
@@ -45,27 +46,32 @@ private
 
    procedure Theta(A  : in     State;
                    AR :    out State)
-     with Depends => (AR => A),
+     with Global => null,
+     Depends => (AR => A),
      Inline;
 
    procedure Rho(A  : in     State;
                  AR :    out State)
-     with Depends => (AR => A),
+     with Global => null,
+     Depends => (AR => A),
      Inline;
 
    procedure Pi(A  : in     State;
                 AR :    out State)
-     with Depends => (AR => A),
+     with Global => null,
+     Depends => (AR => A),
      Inline;
 
    procedure Rho_Pi (A  : in out State)
-     with Depends => (A => A),
+     with Global => null,
+     Depends => (A => A),
      Inline;
 
    procedure Chi_Iota(A  : in     State;
                       AR :    out State;
                       RI : in     Round_Index)
-     with Depends => (AR => (A, RI)),
+     with Global => null,
+     Depends => (AR => (A, RI)),
      Inline;
 
 end Keccak.Generic_KeccakF.Reference_Permutation;

@@ -100,7 +100,8 @@ is
    ---------------------------------------------------------------------------
 
    procedure Init(Ctx : out Context)
-     with Depends => (Ctx => null),
+     with Global => null,
+     Depends => (Ctx => null),
      Post => State_Of(Ctx) = Updating;
    -- Initializes the hash context.
    --
@@ -111,7 +112,8 @@ is
    procedure Update(Ctx        : in out Context;
                     Message    : in     Byte_Array;
                     Bit_Length : in     Natural)
-     with Depends => (Ctx => + (Message, Bit_Length)),
+     with Global => null,
+     Depends => (Ctx => + (Message, Bit_Length)),
      Pre => (State_Of(Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
@@ -135,7 +137,8 @@ is
 
    procedure Update(Ctx     : in out Context;
                     Message : in     Byte_Array)
-     with Depends => (Ctx => + Message),
+     with Global => null,
+     Depends => (Ctx => + Message),
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Updating;
    -- Add byte-oriented messages to the hash computation.
@@ -150,7 +153,8 @@ is
 
    procedure Final(Ctx    : in out Context;
                    Digest :    out Digest_Type)
-     with Depends => ((Digest, Ctx) => Ctx),
+     with Global => null,
+     Depends => ((Digest, Ctx) => Ctx),
      Pre => State_Of(Ctx) in Updating | Ready_To_Finish,
      Post => (State_Of(Ctx) = Finished
               and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
@@ -165,14 +169,16 @@ is
    -- @param Digest The computed digest (hash) is output in this parameter.
 
 
-   function State_Of(Ctx : in Context) return States;
+   function State_Of(Ctx : in Context) return States
+     with Global => null;
    -- Get the current state of the context.
    --
    -- @return The context's current state.
 
 
 
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number;
+   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
+     with Global => null;
    -- Get the current rate (in bits) of the context.
    --
    -- @return The rate of the context.

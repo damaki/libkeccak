@@ -38,28 +38,33 @@ is
 
    procedure Init(Ctx           :    out Context;
                   Customization : in     String := "")
-     with Depends => (Ctx => Customization),
+     with Global => null,
+     Depends => (Ctx => Customization),
      Post => State_Of(Ctx) = Updating;
 
    procedure Update_Tuple_Item(Ctx  : in out Context;
                                Item : in     Byte_Array)
-     with Depends => (Ctx => + Item),
+     with Global => null,
+     Depends => (Ctx => + Item),
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Updating;
 
    procedure Finish(Ctx     : in out Context;
                     Digest  :    out Byte_Array)
-     with Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     with Global => null,
+     Depends => ((Ctx, Digest) => (Ctx, Digest)),
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Finished;
 
    procedure Extract(Ctx    : in out Context;
                      Digest :    out Byte_Array)
-     with Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     with Global => null,
+     Depends => ((Ctx, Digest) => (Ctx, Digest)),
      Pre => State_Of(Ctx) in Updating | Extracting,
      Post => State_Of(Ctx) = Extracting;
 
-   function State_Of(Ctx : in Context) return States;
+   function State_Of(Ctx : in Context) return States
+     with Global => null;
 
 private
    use type CSHAKE.States;

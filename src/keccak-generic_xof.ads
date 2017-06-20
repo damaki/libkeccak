@@ -75,7 +75,8 @@ is
    ----------------------------------------------------------------------------
 
    procedure Init(Ctx : out Context)
-     with Depends => (Ctx => null),
+     with Global => null,
+     Depends => (Ctx => null),
      Post => State_Of(Ctx) = Updating;
    -- Initializes the XOF.
    --
@@ -89,7 +90,8 @@ is
    procedure Update(Ctx        : in out Context;
                     Message    : in     Byte_Array;
                     Bit_Length : in     Natural)
-     with Depends => (Ctx => + (Message, Bit_Length)),
+     with Global => null,
+     Depends => (Ctx => + (Message, Bit_Length)),
      Pre => (State_Of(Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
@@ -119,7 +121,8 @@ is
    
    procedure Update(Ctx     : in out Context;
                     Message : in     Byte_Array)
-     with Depends => (Ctx => + Message),
+     with Global => null,
+     Depends => (Ctx => + Message),
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Updating;
    -- Input byte-oriented data into the XOF.
@@ -134,7 +137,8 @@ is
 
    procedure Extract(Ctx    : in out Context;
                      Digest :    out Byte_Array)
-     with Depends => ((Digest, Ctx) => (Ctx, Digest)),
+     with Global => null,
+     Depends => ((Digest, Ctx) => (Ctx, Digest)),
      Post => State_Of(Ctx) = Extracting;
    -- Extract bytes from the XOF.
    --
@@ -148,13 +152,15 @@ is
    
    
 
-   function State_Of(Ctx : in Context) return States;
+   function State_Of(Ctx : in Context) return States
+     with Global => null;
    -- @return The current state of the XOF context.
    
    
 
    function Rate return Positive
-     with Post => Rate'Result mod 8 = 0;
+     with Global => null,
+     Post => Rate'Result mod 8 = 0;
    -- @return The rate of the XOF (in bits).
    
 

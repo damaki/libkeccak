@@ -45,9 +45,10 @@ is
                                  Max_Bit_Length : in     Natural;
                                  Next_Block     :    out Keccak.Types.Byte_Array;
                                  Spilled        :    out Boolean)
-     with Depends => (First_Block => + (Num_Used_Bits, Max_Bit_Length),
-                      Next_Block  => + (Num_Used_Bits, Max_Bit_Length),
-                      Spilled     => (Num_Used_Bits, Max_Bit_Length)),
+     with Global => null,
+     Depends => (First_Block => + (Num_Used_Bits, Max_Bit_Length),
+                 Next_Block  => + (Num_Used_Bits, Max_Bit_Length),
+                 Spilled     => (Num_Used_Bits, Max_Bit_Length)),
      Pre => (Next_Block'Length = First_Block'Length
              and then First_Block'Length <= Natural'Last / 8
              and then Max_Bit_Length <= Natural'Last - 7
@@ -87,7 +88,8 @@ is
    procedure Pad101_Single_Block(Block          : in out Keccak.Types.Byte_Array;
                                  Num_Used_Bits  : in     Natural;
                                  Max_Bit_Length : in     Natural)
-     with Depends => (Block => + (Num_Used_Bits, Max_Bit_Length)),
+     with Global => null,
+     Depends => (Block => + (Num_Used_Bits, Max_Bit_Length)),
      Pre => (Block'Length <= Natural'Last / 8
              and then Max_Bit_Length <= Natural'Last - 7
              and then Block'Length = (Max_Bit_Length + 7) / 8

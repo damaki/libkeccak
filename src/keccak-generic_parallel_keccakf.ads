@@ -111,7 +111,8 @@ is
    subtype Round_Count is Positive range 1 .. 24;
 
 
-   procedure Init (S : out Parallel_State);
+   procedure Init (S : out Parallel_State)
+     with Global => null;
 
 
    generic
@@ -125,10 +126,11 @@ is
                                   Data        : in     Types.Byte_Array;
                                   Data_Offset : in     Natural;
                                   Bit_Len     : in     Natural)
-     with Pre => (Data'Length / Num_Parallel_Instances <= Natural'Last / 8
-                  and then Data'Length mod 2 = 0
-                  and then Bit_Len <= (Data'Length / Num_Parallel_Instances) * 8
-                  and then Bit_Len <= 1600);
+     with Global => null,
+     Pre => (Data'Length / Num_Parallel_Instances <= Natural'Last / 8
+             and then Data'Length mod 2 = 0
+             and then Bit_Len <= (Data'Length / Num_Parallel_Instances) * 8
+             and then Bit_Len <= 1600);
    --  XOR bits into each parallel Keccak instance.
    --
    --  The @Data@ array contains the data to be XORed into all parallel
@@ -173,9 +175,10 @@ is
                             Data        : in out Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
-     with Pre => (Byte_Len <= 1600 / 8
-                  and Byte_Len <= Data'Length / 2
-                  and Data'Length mod 2 = 0);
+     with Global => null,
+     Pre => (Byte_Len <= 1600 / 8
+             and Byte_Len <= Data'Length / 2
+             and Data'Length mod 2 = 0);
    --  Extract bytes from the Keccak state.
    --
    --  The @Data@ array is split into N equal sized chunks, where N is the

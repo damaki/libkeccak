@@ -90,24 +90,28 @@ is
 
    type State_Index is new Natural range 0 .. Num_Parallel_Instances - 1;
 
-   procedure Init (S : out Parallel_State);
+   procedure Init (S : out Parallel_State)
+     with Global => null;
 
 
    generic
       with procedure Permute (S : in out Permutation_State);
-   procedure Permute_All (S : in out Parallel_State);
+   procedure Permute_All (S : in out Parallel_State)
+     with Global => null;
 
 
    procedure XOR_Bits_Into_State (S           : in out Parallel_State;
                                   Data        : in     Types.Byte_Array;
                                   Data_Offset : in     Natural;
-                                  Bit_Len     : in     Natural);
+                                  Bit_Len     : in     Natural)
+     with Global => null;
 
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;
                             Data_Offset : in     Natural;
-                            Byte_Len    : in     Natural);
+                            Byte_Len    : in     Natural)
+     with Global => null;
 
 private
 

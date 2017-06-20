@@ -43,7 +43,8 @@ is
    procedure Init(Ctx           :    out Context;
                   Customization : in     String := "";
                   Function_Name : in     String := "")
-     with Depends => (Ctx => (Customization, Function_Name)),
+     with Global => null,
+     Depends => (Ctx => (Customization, Function_Name)),
      Pre => Customization /= "" or Function_Name /= "",
      Post => State_Of(Ctx) = Updating;
    --  Initialize the CSHAKE context.
@@ -72,7 +73,8 @@ is
 
    procedure Update(Ctx     : in out Context;
                     Message : in     Byte_Array)
-     with Inline,
+     with Global => null,
+     Inline,
      Depends => (Ctx => + Message),
      Pre => State_Of(Ctx) = Updating,
      Post => State_Of(Ctx) = Updating;
@@ -89,7 +91,8 @@ is
    procedure Update(Ctx        : in out Context;
                     Message    : in     Byte_Array;
                     Bit_Length : in     Natural)
-     with Depends => (Ctx => + (Message, Bit_Length)),
+     with Global => null,
+     Depends => (Ctx => + (Message, Bit_Length)),
      Pre => (State_Of(Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
@@ -99,7 +102,8 @@ is
 
    procedure Extract(Ctx    : in out Context;
                      Digest :    out Byte_Array)
-     with Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     with Global => null,
+     Depends => ((Ctx, Digest) => (Ctx, Digest)),
      Post => State_Of(Ctx) = Extracting;
    --  Produce output bytes.
    --
@@ -116,13 +120,15 @@ is
 
 
 
-   function State_Of(Ctx : in Context) return States;
+   function State_Of(Ctx : in Context) return States
+     with Global => null;
    --  Get the current state of a context.
 
 
 
    function Rate return Positive
-     with Post => Rate'Result mod 8 = 0;
+     with Global => null,
+       Post => Rate'Result mod 8 = 0;
    --  Get the rate parameter (in bits) of the CSHAKE instance.
    --
    --  The rate is defined as the underlying state size minus the capacity

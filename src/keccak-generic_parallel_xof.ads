@@ -51,23 +51,28 @@ is
 
 
    procedure Init (Ctx : out Context)
-     with Post => State_Of (Ctx) = Updating;
+     with Global => null,
+     Post => State_Of (Ctx) = Updating;
 
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
-     with Pre => State_Of (Ctx) = Updating;
+     with Global => null,
+     Pre => State_Of (Ctx) = Updating;
 
 
    procedure Extract (Ctx  : in out Context;
-                      Data :    out Types.Byte_Array);
+                      Data :    out Types.Byte_Array)
+     with Global => null;
 
 
-   function State_Of (Ctx : in Context) return States;
+   function State_Of (Ctx : in Context) return States
+     with Global => null;
 
 
    function Rate return Positive
-     with Post => Rate'Result mod 8 = 0;
+     with Global => null,
+     Post => Rate'Result mod 8 = 0;
 
 
 private

@@ -86,13 +86,15 @@ is
 
    procedure Init (Ctx      :    out Context;
                    Capacity : in     Positive)
-     with Post => State_Of (Ctx) = Absorbing;
+     with Global => null,
+     Post => State_Of (Ctx) = Absorbing;
 
 
    procedure Absorb_Bytes_All (Ctx        : in out Context;
                                Data       : in     Types.Byte_Array)
-     with Pre => (Data'Length mod Num_Parallel_Instances = 0
-                  and State_Of (Ctx) = Absorbing),
+     with Global => null,
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and State_Of (Ctx) = Absorbing),
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate_Of (Ctx) / 8) = 0
         => State_Of (Ctx) = Absorbing,
@@ -124,15 +126,17 @@ is
       Data       : in     Types.Byte_Array;
       Suffix     : in     Types.Byte;
       Suffix_Len : in     Natural)
-     with Pre => (Data'Length mod Num_Parallel_Instances = 0
-                  and Suffix_Len in 0 .. 8 - Min_Padding_Bits
-                  and State_Of (Ctx) = Absorbing),
+     with Global => null,
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and Suffix_Len in 0 .. 8 - Min_Padding_Bits
+             and State_Of (Ctx) = Absorbing),
      Post => State_Of (Ctx) = Squeezing;
 
 
    procedure Squeeze_Bytes_All (Ctx        : in out Context;
                                 Data       :    out Types.Byte_Array)
-     with Pre => (Data'Length mod Num_Parallel_Instances = 0),
+     with Global => null,
+     Pre => (Data'Length mod Num_Parallel_Instances = 0),
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate_Of (Ctx) / 8) = 0
         => State_Of (Ctx) = Squeezing,

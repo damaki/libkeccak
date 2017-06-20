@@ -58,35 +58,40 @@ is
 
    type State_Index is new Natural range 0 .. Parallel_Instances - 1;
 
-   procedure Init (S : out Parallel_State);
+   procedure Init (S : out Parallel_State)
+     with Global => null;
 
 
    generic
       with procedure Permute (A : in out KeccakF_State);
-   procedure Permute_All (S : in out Parallel_State);
+   procedure Permute_All (S : in out Parallel_State)
+     with Global => null;
 
 
    procedure XOR_Bits_Into_State (S       : in out Parallel_State;
                                   Index   : in     State_Index;
                                   Data    : in     Types.Byte_Array;
                                   Bit_Len : in     Natural)
-     with Pre => (Data'Length <= Natural'Last / 8
-                  and then Bit_Len <= Data'Length * 8
-                  and then Bit_Len <= State_Size_Bits);
+     with Global => null,
+     Pre => (Data'Length <= Natural'Last / 8
+             and then Bit_Len <= Data'Length * 8
+             and then Bit_Len <= State_Size_Bits);
 
 
    procedure Extract_Bytes (S     : in     Parallel_State;
                             Index : in     State_Index;
                             Data  :    out Types.Byte_Array)
-     with Pre => (Data'Length <= ((State_Size_Bits + 7) / 8));
+     with Global => null,
+     Pre => (Data'Length <= ((State_Size_Bits + 7) / 8));
 
 
    procedure Extract_Bits (S       : in     Parallel_State;
                            Index   : in     State_Index;
                            Data    :    out Types.Byte_Array;
                            Bit_Len : in     Natural)
-     with Pre => (Bit_Len <= State_Size_Bits
-                  and then Data'Length = (Bit_Len + 7) / 8);
+     with Global => null,
+     Pre => (Bit_Len <= State_Size_Bits
+             and then Data'Length = (Bit_Len + 7) / 8);
 
 private
 

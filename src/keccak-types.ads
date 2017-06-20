@@ -48,49 +48,58 @@ is
 
    function Shift_Left_1(Value  : in Unsigned_1;
                          Amount : in Natural) return Unsigned_1
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 1;
 
    function Shift_Left_2(Value  : in Unsigned_2;
                          Amount : in Natural) return Unsigned_2
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 2;
 
    function Shift_Left_4(Value  : in Unsigned_4;
                          Amount : in Natural) return Unsigned_4
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 4;
 
 
    function Shift_Right_1(Value  : in Unsigned_1;
                           Amount : in Natural) return Unsigned_1
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 1;
 
    function Shift_Right_2(Value  : in Unsigned_2;
                           Amount : in Natural) return Unsigned_2
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 2;
 
    function Shift_Right_4(Value  : in Unsigned_4;
                           Amount : in Natural) return Unsigned_4
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 4;
 
 
    function Rotate_Left_1(Value  : in Unsigned_1;
                           Amount : in Natural) return Unsigned_1
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 1;
 
    function Rotate_Left_2(Value  : in Unsigned_2;
                           Amount : in Natural) return Unsigned_2
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 2;
 
    function Rotate_Left_4(Value  : in Unsigned_4;
                           Amount : in Natural) return Unsigned_4
-     with Inline,
+     with Global => null,
+     Inline,
      Pre => Amount <= 4;
 
 private

@@ -59,24 +59,28 @@ is
    type States is (Updating, Ready_To_Extract, Extracting);
 
 
-   procedure Init (Ctx : out Context);
+   procedure Init (Ctx : out Context)
+     with Global => null;
 
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
-     with Pre => State_Of (Ctx) = Updating,
+     with Global => null,
+     Pre => State_Of (Ctx) = Updating,
      Post => State_Of (Ctx) = Updating;
 
 
    procedure Finish (Ctx           : in out Context;
                      Customization : in     String)
-     with Pre => State_Of (Ctx) = Updating,
+     with Global => null,
+     Pre => State_Of (Ctx) = Updating,
      Post => State_Of (Ctx) = Ready_To_Extract;
 
 
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
-     with Pre => State_Of (Ctx) in Ready_To_Extract | Extracting,
+     with Global => null,
+     Pre => State_Of (Ctx) in Ready_To_Extract | Extracting,
      Post => State_Of (Ctx) = Extracting;
 
 

@@ -78,7 +78,8 @@ is
    type State is private;
 
    procedure Init(A : out State)
-     with Depends => (A => null);
+     with Global => null,
+     Depends => (A => null);
    -- Initialize the Keccak-f state.
    --
    -- Initially, the Keccak state is set to 0.
