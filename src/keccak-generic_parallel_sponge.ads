@@ -34,8 +34,8 @@ generic
    type State_Type is private;
    --  Type of the parallel permutation state.
 
-   type State_Index is range <>;
-   --  Type for indexing a specific permutation within the parallel instances.
+   Parallelism : Positive;
+   --  Number of parallel instances provided by State_Type.
 
    with procedure Init (S : out State_Type);
    --  Initializes the parallel permutation states.
@@ -63,8 +63,7 @@ generic
    Min_Padding_Bits : Natural;
 package Keccak.Generic_Parallel_Sponge
 is
-   Num_Parallel_Instances : constant Positive :=
-     Integer (State_Index'Last) - Integer (State_Index'First) + 1;
+   Num_Parallel_Instances : constant Positive := Parallelism;
 
 
    Block_Size_Bits        : constant Positive := State_Size;
@@ -126,7 +125,8 @@ is
       Suffix     : in     Types.Byte;
       Suffix_Len : in     Natural)
      with Pre => (Data'Length mod Num_Parallel_Instances = 0
-                  and Suffix_Len in 0 .. 8 - Min_Padding_Bits),
+                  and Suffix_Len in 0 .. 8 - Min_Padding_Bits
+                  and State_Of (Ctx) = Absorbing),
      Post => State_Of (Ctx) = Squeezing;
 
 

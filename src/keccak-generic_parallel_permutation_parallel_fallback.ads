@@ -28,17 +28,39 @@ with Keccak.Types;
 
 generic
    type Permutation_State is private;
-   type Input_State_Index is range <>;
-   with procedure Init (A : out Permutation_State);
-   with procedure Permute (A : in out Permutation_State);
+   --  Type for the parallel permutation state (e.g. Keccak-f[1600]×2).
+
+   Base_Parallelism : Positive;
+   --  The number of parallel instances for the @Permutation_Type@.
+   --
+   --  For example, if Permutation_State is the state for Keccak-f[1600]×4
+   --  then set Base_Parallelism to 4.
+
+   Parallel_Factor : Positive;
+   --  Multiply the Base_Parallelism by this number.
+   --
+   --  The overall number of parallel instances will be:
+   --     Base_Parallelism * Parallel_Factor.
+   --
+   --  For example, if this package is instantiated with Keccak-f[1600]×4
+   --  and Parallel_Factor = 2, then this package will use 2x Keccak-f[1600]×4
+   --  to produce an overall Keccak-f[1600]×8 parallel permutation.
+
+   with procedure Init (S : out Permutation_State);
+   --  Initializes the Permutation_State to all zeroes.
+
    with procedure XOR_Bits_Into_State (S           : in out Permutation_State;
                                        Data        : in     Types.Byte_Array;
                                        Data_Offset : in     Natural;
                                        Bit_Len     : in     Natural);
+   --  XOR bits into each parallel state.
+
    with procedure Extract_Bytes (S           : in     Permutation_State;
                                  Data        : in out Types.Byte_Array;
                                  Data_Offset : in     Natural;
                                  Byte_Len    : in     Natural);
+   --  Extract bytes from each parallel state.
+
    State_Size_Bits    : Positive;
 
    --  @brief@
@@ -62,8 +84,7 @@ generic
 package Keccak.Generic_Parallel_Permutation_Parallel_Fallback
 is
 
-   Num_Parallel_Instances : constant Positive :=
-     2 * (Integer (Input_State_Index'Last) - Integer (Input_State_Index'First) + 1);
+   Num_Parallel_Instances : constant Positive := Base_Parallelism * Parallel_Factor;
 
    type Parallel_State is private;
 
@@ -72,6 +93,8 @@ is
    procedure Init (S : out Parallel_State);
 
 
+   generic
+      with procedure Permute (S : in out Permutation_State);
    procedure Permute_All (S : in out Parallel_State);
 
 
@@ -88,7 +111,9 @@ is
 
 private
 
-   type Permutation_State_Array is array (0 .. 1) of Permutation_State;
+   type Permutation_State_Array is
+     array (0 .. Parallel_Factor - 1)
+     of Permutation_State;
 
    type Parallel_State is record
       States : Permutation_State_Array;

@@ -28,11 +28,6 @@
 package body Keccak.Generic_Parallel_Sponge
 is
 
-   function State_Index_Offset_From_First (I : in Natural) return State_Index
-   is (State_Index (Integer (State_Index'First) + I))
-   with Inline,
-   Pre => I in 0 .. Num_Parallel_Instances - 1;
-
 
    procedure Init (Ctx      :    out Context;
                    Capacity : in     Positive)

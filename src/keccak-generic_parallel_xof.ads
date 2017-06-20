@@ -50,11 +50,13 @@ is
    type States is (Updating, Extracting, Finished);
 
 
-   procedure Init (Ctx : out Context);
+   procedure Init (Ctx : out Context)
+     with Post => State_Of (Ctx) = Updating;
 
 
    procedure Update (Ctx  : in out Context;
-                     Data : in     Types.Byte_Array);
+                     Data : in     Types.Byte_Array)
+     with Pre => State_Of (Ctx) = Updating;
 
 
    procedure Extract (Ctx  : in out Context;

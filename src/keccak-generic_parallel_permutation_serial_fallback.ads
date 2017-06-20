@@ -29,7 +29,6 @@ with Keccak.Types;
 generic
    type KeccakF_State is private;
    with procedure Init (A : out KeccakF_State);
-   with procedure Permute (A : in out KeccakF_State);
    with procedure XOR_Bits_Into_State (S       : in out KeccakF_State;
                                        Data    : in     Types.Byte_Array;
                                        Bit_Len : in     Natural);
@@ -62,6 +61,8 @@ is
    procedure Init (S : out Parallel_State);
 
 
+   generic
+      with procedure Permute (A : in out KeccakF_State);
    procedure Permute_All (S : in out Parallel_State);
 
 

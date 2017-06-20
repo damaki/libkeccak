@@ -24,7 +24,6 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Ada.Text_IO; use Ada.Text_IO;
 package body Keccak.Generic_Parallel_Permutation_Parallel_Fallback
 is
 
@@ -45,8 +44,9 @@ is
    procedure Permute_All (S : in out Parallel_State)
    is
    begin
-      Permute (S.States (0));
-      Permute (S.States (1));
+      for I in S.States'Range loop
+         Permute (S.States (I));
+      end loop;
    end Permute_All;
 
 
@@ -55,20 +55,20 @@ is
                                   Data_Offset : in     Natural;
                                   Bit_Len     : in     Natural)
    is
-   begin
-      --  First half goes into instance 0
-      XOR_Bits_Into_State
-        (S           => S.States (0),
-         Data        => Data (Data'First .. Data'First + (Data'Length / 2) - 1),
-         Data_Offset => Data_Offset,
-         Bit_Len     => Bit_Len);
+      Stride : constant Natural := Data'Length / Parallel_Factor;
 
-      --  Upper half goes into instance 1
-      XOR_Bits_Into_State
-        (S           => S.States (1),
-         Data        => Data (Data'First + (Data'Length / 2) .. Data'Last),
-         Data_Offset => Data_Offset,
-         Bit_Len     => Bit_Len);
+      Pos    : Types.Index_Number;
+
+   begin
+      for I in 0 .. Parallel_Factor - 1 loop
+         Pos := Data'First + (Stride * I);
+
+         XOR_Bits_Into_State
+           (S           => S.States (I),
+            Data        => Data (Pos .. Pos + Stride - 1),
+            Data_Offset => Data_Offset,
+            Bit_Len     => Bit_Len);
+      end loop;
    end XOR_Bits_Into_State;
 
 
@@ -77,18 +77,20 @@ is
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
    is
-   begin
-      Extract_Bytes
-        (S           => S.States (0),
-         Data        => Data (Data'First .. Data'First + (Data'Length / 2) - 1),
-         Data_Offset => Data_Offset,
-         Byte_Len    => Byte_Len);
+      Stride : constant Natural := Data'Length / Parallel_Factor;
 
-      Extract_Bytes
-        (S           => S.States (1),
-         Data        => Data (Data'First + (Data'Length / 2) .. Data'Last),
-         Data_Offset => Data_Offset,
-         Byte_Len    => Byte_Len);
+      Pos    : Types.Index_Number;
+
+   begin
+      for I in 0 .. Parallel_Factor - 1 loop
+         Pos := Data'First + (Stride * I);
+
+         Extract_Bytes
+           (S           => S.States (I),
+            Data        => Data (Pos .. Pos + Stride - 1),
+            Data_Offset => Data_Offset,
+            Byte_Len    => Byte_Len);
+      end loop;
    end Extract_Bytes;
 
 end Keccak.Generic_Parallel_Permutation_Parallel_Fallback;

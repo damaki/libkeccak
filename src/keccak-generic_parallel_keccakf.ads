@@ -50,6 +50,15 @@ generic
    --  A view of the vector type, permitting individual access to each vector
    --  component.
 
+   Vector_Width : Positive;
+   --  Number of vector to components to actually use.
+   --
+   --  Usually, this would be set to the actual number of vector components
+   --  (e.g. 4 for a 4x 32-bit vector). However, you may use a smaller number
+   --  if you don't want to use the full vector width. For example, you could
+   --  set Vector_Width to 2 with a 4x 32-bit vector type, to obtain 2x
+   --  parallelism.
+
    with function Load (X : in VXXI_View) return VXXI;
 
    with function Store (X : in VXXI) return VXXI_View;
@@ -84,14 +93,13 @@ generic
    --  for the target instruction set.
 package Keccak.Generic_Parallel_KeccakF
 is
-   W : constant Positive := L**2;
+   W : constant Positive := 2**L;
    --  Lane size (in bits)
 
    B : constant Positive := W*25;
    --  Keccak-f state size (in bits).
 
-   Num_Parallel_Instances : constant Positive :=
-     Integer (VXXI_Index'Last) - Integer (VXXI_Index'First) + 1;
+   Num_Parallel_Instances : constant Positive := Vector_Width;
 
 
    type Parallel_State is private;
@@ -109,7 +117,8 @@ is
    generic
       First_Round : Round_Index := 0;
       Num_Rounds  : Round_Count := 24;
-   procedure Permute_All (S : in out Parallel_State);
+   procedure Permute_All (S : in out Parallel_State)
+     with Global => null;
 
 
    procedure XOR_Bits_Into_State (S           : in out Parallel_State;

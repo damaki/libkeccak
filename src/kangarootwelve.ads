@@ -27,9 +27,7 @@
 with Keccak.Arch.SSE2;
 with Keccak.Keccak_1600;
 with Keccak.Generic_KangarooTwelve;
-with Keccak.Generic_Parallel_KeccakF;
-with Keccak.Generic_Parallel_Permutation_Serial_Fallback;
-with Keccak.Generic_Parallel_Permutation_Parallel_Fallback;
+with Keccak.Parallel_Keccak_1600;
 with Keccak.Generic_Parallel_Sponge;
 with Keccak.Generic_Parallel_XOF;
 with Keccak.Generic_Sponge;
@@ -43,96 +41,53 @@ is
 
    K12_Capacity : constant := 256;
 
-   --  KangarooTwelve uses the Keccak-F[1600] permutation with 12 rounds.
-   procedure Permute_KeccakF_1600_R12_S1
-   is new Keccak.Keccak_1600.KeccakF_1600_Permutation.Permute
+   procedure Permute_R12 is new Keccak.Keccak_1600.KeccakF_1600_Permutation.Permute
      (First_Round => 12,
       Num_Rounds  => 12);
 
-   --  The generic KangarooTwelve implementation requires parallel implementations
-   --  of 2x, 4x, and 8x parallelism.
-   package KeccakF_1600_R12_P2 is
-     new Keccak.Generic_Parallel_KeccakF
-       (L               => 6,
-        Lane_Type       => Interfaces.Unsigned_64,
-        VXXI_Index      => Keccak.Arch.SSE2.V2DI_Index,
-        VXXI            => Keccak.Arch.SSE2.V2DI,
-        VXXI_View       => Keccak.Arch.SSE2.V2DI_View,
-        Load            => Keccak.Arch.SSE2.Load,
-        Store           => Keccak.Arch.SSE2.Store,
-        "xor"           => Keccak.Arch.SSE2."xor",
-        Rotate_Left     => Keccak.Arch.SSE2.Rotate_Left,
-        And_Not         => Keccak.Arch.SSE2.And_Not,
-        Shift_Left      => Interfaces.Shift_Left,
-        Shift_Right     => Interfaces.Shift_Right);
-
-   procedure Permute_KeccakF_1600_R12_P2
-   is new KeccakF_1600_R12_P2.Permute_All
-     (First_Round => 12,
-      Num_Rounds  => 12);
-
-
-   package KeccakF_1600_R12_P4 is
-     new Keccak.Generic_Parallel_Permutation_Parallel_Fallback
-       (Permutation_State   => KeccakF_1600_R12_P2.Parallel_State,
-        Input_State_Index   => Keccak.Arch.SSE2.V2DI_Index,
-        Init                => KeccakF_1600_R12_P2.Init,
-        Permute             => Permute_KeccakF_1600_R12_P2,
-        XOR_Bits_Into_State => KeccakF_1600_R12_P2.XOR_Bits_Into_State,
-        Extract_Bytes       => KeccakF_1600_R12_P2.Extract_Bytes,
-        State_Size_Bits     => 1600);
-
-   package KeccakF_1600_R12_P8 is
-     new Keccak.Generic_Parallel_Permutation_Parallel_Fallback
-       (Permutation_State   => KeccakF_1600_R12_P4.Parallel_State,
-        Input_State_Index   => KeccakF_1600_R12_P4.State_Index,
-        Init                => KeccakF_1600_R12_P4.Init,
-        Permute             => KeccakF_1600_R12_P4.Permute_All,
-        XOR_Bits_Into_State => KeccakF_1600_R12_P4.XOR_Bits_Into_State,
-        Extract_Bytes       => KeccakF_1600_R12_P4.Extract_Bytes,
-        State_Size_Bits     => 1600);
-
-
-   --  We also need parallel sponges for each level of parallelism.
+   --  Serial sponge based on Keccak-f[1600,12]
    package Sponge_S1 is new Keccak.Generic_Sponge
      (State_Size          => 1600,
       State_Type          => Keccak.Keccak_1600.KeccakF_1600.State,
       Init_State          => Keccak.Keccak_1600.KeccakF_1600.Init,
-      F                   => Permute_KeccakF_1600_R12_S1,
+      F                   => Permute_R12,
       XOR_Bits_Into_State => Keccak.Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Data        => Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
 
+   --  Parallel sponge based on Keccak-f[1600,12]×2
    package Sponge_P2 is new Keccak.Generic_Parallel_Sponge
      (State_Size          => 1600,
-      State_Type          => KeccakF_1600_R12_P2.Parallel_State,
-      State_Index         => Keccak.Arch.SSE2.V2DI_Index,
-      Init                => KeccakF_1600_R12_P2.Init,
-      Permute_All         => Permute_KeccakF_1600_R12_P2,
-      XOR_Bits_Into_State => KeccakF_1600_R12_P2.XOR_Bits_Into_State,
-      Extract_Bytes       => KeccakF_1600_R12_P2.Extract_Bytes,
+      State_Type          => Keccak.Parallel_Keccak_1600.Parallel_State_P2,
+      Parallelism         => 2,
+      Init                => Keccak.Parallel_Keccak_1600.Init_P2,
+      Permute_All         => Keccak.Parallel_Keccak_1600.Permute_All_P2_R12,
+      XOR_Bits_Into_State => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_P2,
+      Extract_Bytes       => Keccak.Parallel_Keccak_1600.Extract_Bytes_P2,
       Pad                 => Keccak.Padding.Pad101_Single_Block,
       Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
 
+   --  Parallel sponge based on Keccak-f[1600,12]×4
    package Sponge_P4 is new Keccak.Generic_Parallel_Sponge
      (State_Size          => 1600,
-      State_Type          => KeccakF_1600_R12_P4.Parallel_State,
-      State_Index         => KeccakF_1600_R12_P4.State_Index,
-      Init                => KeccakF_1600_R12_P4.Init,
-      Permute_All         => KeccakF_1600_R12_P4.Permute_All,
-      XOR_Bits_Into_State => KeccakF_1600_R12_P4.XOR_Bits_Into_State,
-      Extract_Bytes       => KeccakF_1600_R12_P4.Extract_Bytes,
+      State_Type          => Keccak.Parallel_Keccak_1600.Parallel_State_P4,
+      Parallelism         => 4,
+      Init                => Keccak.Parallel_Keccak_1600.Init_P4,
+      Permute_All         => Keccak.Parallel_Keccak_1600.Permute_All_P4_R12,
+      XOR_Bits_Into_State => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_P4,
+      Extract_Bytes       => Keccak.Parallel_Keccak_1600.Extract_Bytes_P4,
       Pad                 => Keccak.Padding.Pad101_Single_Block,
       Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
 
+   --  Parallel sponge based on Keccak-f[1600,12]×8
    package Sponge_P8 is new Keccak.Generic_Parallel_Sponge
      (State_Size          => 1600,
-      State_Type          => KeccakF_1600_R12_P8.Parallel_State,
-      State_Index         => KeccakF_1600_R12_P8.State_Index,
-      Init                => KeccakF_1600_R12_P8.Init,
-      Permute_All         => KeccakF_1600_R12_P8.Permute_All,
-      XOR_Bits_Into_State => KeccakF_1600_R12_P8.XOR_Bits_Into_State,
-      Extract_Bytes       => KeccakF_1600_R12_P8.Extract_Bytes,
+      State_Type          => Keccak.Parallel_Keccak_1600.Parallel_State_P8,
+      Parallelism         => 8,
+      Init                => Keccak.Parallel_Keccak_1600.Init_P8,
+      Permute_All         => Keccak.Parallel_Keccak_1600.Permute_All_P8_R12,
+      XOR_Bits_Into_State => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_P8,
+      Extract_Bytes       => Keccak.Parallel_Keccak_1600.Extract_Bytes_P8,
       Pad                 => Keccak.Padding.Pad101_Single_Block,
       Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
 
@@ -141,7 +96,7 @@ is
    package XOF_S1 is new Keccak.Generic_XOF
      (XOF_Sponge  => Sponge_S1,
       Capacity    => K12_Capacity,
-      Suffix      => 0,
+      Suffix      => 0, --  Add no suffix here, since suffix is dynamic (01 or 11)
       Suffix_Size => 0);
 
    package XOF_P2 is new Keccak.Generic_Parallel_XOF

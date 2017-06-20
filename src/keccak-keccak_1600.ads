@@ -51,8 +51,9 @@ is
 
    package KeccakF_1600_Permutation is new KeccakF_1600.Optimized_Permutation;
 
-   -- Keccak-f[1600] permutation function with the default number of rounds.
-   procedure Permute is new KeccakF_1600_Permutation.Permute;
+   procedure Permute_R24 is new KeccakF_1600_Permutation.Permute
+     (First_Round => 0,
+      Num_Rounds  => 24);
 
    package KeccakF_1600_Lanes is new KeccakF_1600.Byte_Lanes;
 
@@ -60,7 +61,7 @@ is
      (State_Size          => KeccakF_1600.B,
       State_Type          => KeccakF_1600.State,
       Init_State          => KeccakF_1600.Init,
-      F                   => Permute,
+      F                   => Permute_R24,
       XOR_Bits_Into_State => KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Data        => KeccakF_1600_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
@@ -69,7 +70,7 @@ is
      (State_Size          => KeccakF_1600.B,
       State_Type          => KeccakF_1600.State,
       Init_State          => KeccakF_1600.Init,
-      F                   => Permute,
+      F                   => Permute_R24,
       XOR_Bits_Into_State => KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bits        => KeccakF_1600_Lanes.Extract_Bits,
       Pad                 => Keccak.Padding.Pad101_Single_Block,
