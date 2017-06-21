@@ -29,7 +29,10 @@ is
 
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
                            Offset : in Natural) return Lane_Type
-     with Inline;
+     with Inline,
+     Pre => (Data'Length >= W/8
+             and then Offset < Data'Length
+             and then Data'Length - Offset >= W/8);
 
 
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
@@ -46,7 +49,8 @@ is
 
    function VXXI_Index_Offset_From_First (Offset : in Natural) return VXXI_Index
    is (VXXI_Index (Integer (VXXI_Index'First) + Offset))
-   with Inline;
+   with Inline,
+   Pre => Offset < Integer (VXXI_Index'Last) - Integer (VXXI_Index'First) + 1;
 
 
    procedure Init (S : out Parallel_State)
@@ -575,11 +579,13 @@ is
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
          pragma Loop_Invariant (Offset mod (W/8) = 0);
          pragma Loop_Invariant (Offset = Natural (Y) * (W/8) * 5);
+         pragma Loop_Invariant (Offset <= Stride - Data_Offset);
 
          for X in X_Coord loop
             pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
             pragma Loop_Invariant (Offset mod (W/8) = 0);
             pragma Loop_Invariant (Offset = (Natural (Y) * (W/8) * 5) + (Natural (X) * (W/8)));
+            pragma Loop_Invariant (Offset <= Stride - Data_Offset);
 
             exit Outer_Loop when Remaining_Bits < W;
 
@@ -604,7 +610,7 @@ is
          begin
             for I in Natural range 0 .. Remaining_Bytes - 1 loop
                for J in 0 .. Num_Parallel_Instances - 1 loop
-                  Lanes (J) := Lanes (J) or Shift_Left(Lane_Type(Data(Data'First + Data_Offset + Offset + I + (Stride * I))), I*8);
+                  Lanes (J) := Lanes (J) or Shift_Left(Lane_Type(Data(Data'First + Data_Offset + Offset + I + (Stride * J))), I*8);
                end loop;
             end loop;
 
@@ -671,35 +677,31 @@ is
 
       -- Process any remaining data (smaller than 1 lane)
       if Remaining_Bytes > 0 then
-         for I in 0 .. Num_Parallel_Instances - 1 loop
-            SI := VXXI_Index_Offset_From_First (I);
-            Lane := S(X, Y)(SI);
+         declare
+            Lanes          : constant VXXI_View := S(X, Y);
+            Shift          :          Natural   := 0;
+            Initial_Offset :          Natural   := Offset with Ghost;
+         begin
+            while Remaining_Bytes > 0 loop
+               pragma Loop_Variant(Increases => Offset,
+                                   Increases => Shift,
+                                   Decreases => Remaining_Bytes);
+               pragma Loop_Invariant(Offset + Remaining_Bytes = Byte_Len
+                                     and Shift mod 8 = 0
+                                     and Shift = (Offset - Initial_Offset) * 8);
 
-            declare
-               Shift          : Natural := 0;
-               Initial_Offset : Natural := Offset with Ghost;
-            begin
-               while Remaining_Bytes > 0 loop
-                  pragma Loop_Variant(Increases => Offset,
-                                      Increases => Shift,
-                                      Decreases => Remaining_Bytes);
-                  pragma Loop_Invariant(Offset + Remaining_Bytes = Data'Length
-                                        and Shift mod 8 = 0
-                                        and Shift = (Offset - Initial_Offset) * 8);
+               for I in 0 .. Num_Parallel_Instances - 1 loop
+                  SI := VXXI_Index_Offset_From_First (I);
 
                   Data(Data'First + Data_Offset + Offset + (Stride * I))
-                    := Keccak.Types.Byte(Shift_Right(Lane, Shift) and 16#FF#);
-
-                  pragma Annotate (GNATprove, False_Positive,
-                                   """Data"" might not be initialized",
-                                   "Data is initialized at end of procedure");
-
-                  Shift           := Shift + 8;
-                  Offset          := Offset + 1;
-                  Remaining_Bytes := Remaining_Bytes - 1;
+                    := Keccak.Types.Byte(Shift_Right(Lanes(SI), Shift) and 16#FF#);
                end loop;
-            end;
-         end loop;
+
+               Shift           := Shift + 8;
+               Offset          := Offset + 1;
+               Remaining_Bytes := Remaining_Bytes - 1;
+            end loop;
+         end;
       end if;
 
    end Extract_Bytes;

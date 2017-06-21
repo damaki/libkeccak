@@ -127,10 +127,11 @@ is
                                   Data_Offset : in     Natural;
                                   Bit_Len     : in     Natural)
      with Global => null,
-     Pre => (Data'Length / Num_Parallel_Instances <= Natural'Last / 8
-             and then Data'Length mod 2 = 0
-             and then Bit_Len <= (Data'Length / Num_Parallel_Instances) * 8
-             and then Bit_Len <= 1600);
+     Pre => (Data'Length / Vector_Width <= Natural'Last / 8
+             and then Data'Length mod Vector_Width = 0
+             and then Data_Offset <= (Data'Length / Vector_Width)
+             and then Bit_Len <= ((Data'Length / Vector_Width) - Data_Offset) * 8
+             and then Bit_Len <= B);
    --  XOR bits into each parallel Keccak instance.
    --
    --  The @Data@ array contains the data to be XORed into all parallel
@@ -176,9 +177,9 @@ is
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
      with Global => null,
-     Pre => (Byte_Len <= 1600 / 8
-             and Byte_Len <= Data'Length / 2
-             and Data'Length mod 2 = 0);
+     Pre => (Data'Length mod Vector_Width = 0
+             and then Data_Offset <= Data'Length / Vector_Width
+             and then Byte_Len <= (Data'Length / Vector_Width) - Data_Offset);
    --  Extract bytes from the Keccak state.
    --
    --  The @Data@ array is split into N equal sized chunks, where N is the

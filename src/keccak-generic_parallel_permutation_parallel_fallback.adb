@@ -60,15 +60,17 @@ is
       Pos    : Types.Index_Number;
 
    begin
-      for I in 0 .. Parallel_Factor - 1 loop
-         Pos := Data'First + (Stride * I);
+      if Bit_Len > 0 then
+         for I in 0 .. Parallel_Factor - 1 loop
+            Pos := Data'First + (Stride * I);
 
-         XOR_Bits_Into_State
-           (S           => S.States (I),
-            Data        => Data (Pos .. Pos + Stride - 1),
-            Data_Offset => Data_Offset,
-            Bit_Len     => Bit_Len);
-      end loop;
+            XOR_Bits_Into_State
+              (S           => S.States (I),
+               Data        => Data (Pos .. Pos + Stride - 1),
+               Data_Offset => Data_Offset,
+               Bit_Len     => Bit_Len);
+         end loop;
+      end if;
    end XOR_Bits_Into_State;
 
 
@@ -82,15 +84,17 @@ is
       Pos    : Types.Index_Number;
 
    begin
-      for I in 0 .. Parallel_Factor - 1 loop
-         Pos := Data'First + (Stride * I);
+      if Byte_Len > 0 then
+         for I in 0 .. Parallel_Factor - 1 loop
+            Pos := Data'First + (Stride * I);
 
-         Extract_Bytes
-           (S           => S.States (I),
-            Data        => Data (Pos .. Pos + Stride - 1),
-            Data_Offset => Data_Offset,
-            Byte_Len    => Byte_Len);
-      end loop;
+            Extract_Bytes
+              (S           => S.States (I),
+               Data        => Data (Pos .. Pos + Stride - 1),
+               Data_Offset => Data_Offset,
+               Byte_Len    => Byte_Len);
+         end loop;
+      end if;
    end Extract_Bytes;
 
 end Keccak.Generic_Parallel_Permutation_Parallel_Fallback;

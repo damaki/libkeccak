@@ -104,14 +104,22 @@ is
                                   Data        : in     Types.Byte_Array;
                                   Data_Offset : in     Natural;
                                   Bit_Len     : in     Natural)
-     with Global => null;
+     with Global => null,
+     Pre => (Data'Length / Num_Parallel_Instances <= Natural'Last / 8
+             and then Data'Length mod Num_Parallel_Instances = 0
+             and then Data_Offset <= (Data'Length / Num_Parallel_Instances)
+             and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
+             and then Bit_Len <= State_Size_Bits);
 
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
-     with Global => null;
+     with Global => null,
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and then Data_Offset <= Data'Length / Num_Parallel_Instances
+             and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset);
 
 private
 
