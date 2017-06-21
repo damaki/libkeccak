@@ -69,7 +69,8 @@ is
    Block_Size_Bits        : constant Positive := State_Size;
 
 
-   type Context is private;
+   subtype Capacity_Bits_Number is Positive range 1 .. State_Size - 1
+     with Dynamic_Predicate => (State_Size - Capacity_Bits_Number) mod 8 = 0;
 
 
    subtype Rate_Bits_Number is Positive range 1 .. State_Size - 1
@@ -81,19 +82,22 @@ is
    --  this implementation restricts the Rate to a multiple of 8 bits.
 
 
+   type Context (Capacity : Capacity_Bits_Number) is private;
+
+
    type States is (Absorbing, Squeezing, Finished);
 
 
-   procedure Init (Ctx      :    out Context;
-                   Capacity : in     Positive)
+   procedure Init (Ctx : out Context)
      with Global => null,
-     Post => State_Of (Ctx) = Absorbing;
+     Post => State_Of(Ctx) = Absorbing;
 
 
    procedure Absorb_Bytes_All (Ctx        : in out Context;
                                Data       : in     Types.Byte_Array)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and Data'Length / Num_Parallel_Instances <= Natural'Last / 8
              and State_Of (Ctx) = Absorbing),
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate_Of (Ctx) / 8) = 0
@@ -128,6 +132,7 @@ is
       Suffix_Len : in     Natural)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and Data'Length / Num_Parallel_Instances <= Natural'Last / 8
              and Suffix_Len in 0 .. 8 - Min_Padding_Bits
              and State_Of (Ctx) = Absorbing),
      Post => State_Of (Ctx) = Squeezing;
@@ -136,7 +141,8 @@ is
    procedure Squeeze_Bytes_All (Ctx        : in out Context;
                                 Data       :    out Types.Byte_Array)
      with Global => null,
-     Pre => (Data'Length mod Num_Parallel_Instances = 0),
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and State_Of (Ctx) in Absorbing | Squeezing),
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate_Of (Ctx) / 8) = 0
         => State_Of (Ctx) = Squeezing,
@@ -164,11 +170,12 @@ private
    subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7)/8) - 1;
 
 
-   type Context is record
+   type Context (Capacity : Capacity_Bits_Number) is record
       Permutation_State : State_Type;
       Rate              : Rate_Bytes_Number;
       State             : States;
-   end record;
+   end record
+     with Predicate => Context.Rate = (State_Size - Context.Capacity) / 8;
 
 
    function State_Of (Ctx : in Context) return States

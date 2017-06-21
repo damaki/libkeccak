@@ -58,12 +58,26 @@ is
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
      with Global => null,
-     Pre => State_Of (Ctx) = Updating;
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and State_Of (Ctx) = Updating),
+     Contract_Cases =>
+       ((Data'Length / Num_Parallel_Instances) mod (Rate / 8) = 0
+        => State_Of (Ctx) = Updating,
+
+        others
+        => State_Of (Ctx) = Extracting);
 
 
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
-     with Global => null;
+     with Global => null,
+     Pre => (Data'Length mod Num_Parallel_Instances = 0),
+     Contract_Cases =>
+       ((Data'Length / Num_Parallel_Instances) mod (Rate / 8) = 0
+        => State_Of (Ctx) = Extracting,
+
+        others
+        => State_Of (Ctx) = Finished);
 
 
    function State_Of (Ctx : in Context) return States
@@ -79,7 +93,7 @@ private
    use type Sponge.States;
 
    type Context is record
-      Sponge_Ctx : Sponge.Context;
+      Sponge_Ctx : Sponge.Context (Capacity);
    end record;
 
 

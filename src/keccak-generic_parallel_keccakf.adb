@@ -568,8 +568,6 @@ is
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
-      Lanes            : array (0 .. Num_Parallel_Instances) of Lane_Type := (others => 0);
-
       SI               : VXXI_Index;
 
    begin
@@ -600,12 +598,16 @@ is
          end loop;
       end loop Outer_Loop;
 
+      pragma Assert ((Offset * 8) + Remaining_Bits = Bit_Len);
+      pragma Assert (Remaining_Bits < W);
+
       -- Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
             X                : X_Coord   := X_Coord ((Bit_Len / W) mod 5);
             Y                : Y_Coord   := Y_Coord ((Bit_Len / W)  /  5);
             Remaining_Bytes  : Natural   := (Remaining_Bits + 7) / 8;
+            Lanes            : array (0 .. Num_Parallel_Instances) of Lane_Type := (others => 0);
 
          begin
             for I in Natural range 0 .. Remaining_Bytes - 1 loop

@@ -29,13 +29,12 @@ package body Keccak.Generic_Parallel_Sponge
 is
 
 
-   procedure Init (Ctx      :    out Context;
-                   Capacity : in     Positive)
+   procedure Init (Ctx : out Context)
    is
    begin
-      Init (Ctx.Permutation_State);
-      Ctx.Rate  := (State_Size - Capacity) / 8;
+      Ctx.Rate  := (State_Size - Ctx.Capacity) / 8;
       Ctx.State := Absorbing;
+      Init (Ctx.Permutation_State);
    end Init;
 
 
@@ -58,7 +57,9 @@ is
       while Remaining >= Ctx.Rate loop
          pragma Loop_Invariant (Offset + Remaining = Block_Size);
 
-         pragma Loop_Invariant (Offset mod Block_Size = 0);
+         pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
+
+         pragma Loop_Invariant (Offset <= Block_Size);
 
          XOR_Bits_Into_State
            (S           => Ctx.Permutation_State,
@@ -72,8 +73,14 @@ is
          Offset    := Offset    + Ctx.Rate;
       end loop;
 
+      pragma Assert (Remaining < Ctx.Rate);
+      pragma Assert (Offset mod Ctx.Rate = 0);
+      pragma Assert (Offset + Remaining = Block_Size);
 
       if Remaining > 0 then
+         pragma Assert (Remaining mod Ctx.Rate /= 0);
+         pragma Assert (Block_Size mod Ctx.Rate /= 0);
+
          Ctx.State := Squeezing;
 
          --  Apply the padding rule to the final chunk of data.
@@ -127,6 +134,8 @@ is
          pragma Loop_Invariant (Offset + Remaining = Block_Size);
 
          pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
+
+         pragma Loop_Invariant (Offset <= Block_Size);
 
          XOR_Bits_Into_State
            (S           => Ctx.Permutation_State,
@@ -192,48 +201,79 @@ is
    end Absorb_Bytes_All_With_Suffix;
 
 
+   procedure Add_Padding (Ctx : in out Context)
+     with Global => null,
+     Pre => State_Of (Ctx) = Absorbing,
+     Post => State_Of (Ctx) = Squeezing
+   is
+      Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
+
+      Buffer     : Types.Byte_Array (0 .. (Rate_Bytes * Num_Parallel_Instances) - 1);
+   begin
+      Buffer := (others => 0);
+
+      Pad (Block          => Buffer (0 .. Ctx.Rate - 1),
+           Num_Used_Bits  => 0,
+           Max_Bit_Length => Ctx.Rate * 8);
+
+         --  Replicate the padding for each parallel instance.
+      for I in 1 .. Num_Parallel_Instances - 1 loop
+         Buffer (I * Ctx.Rate .. I * Ctx.Rate + Ctx.Rate - 1) :=
+           Buffer (0 .. Ctx.Rate - 1);
+      end loop;
+
+      XOR_Bits_Into_State
+        (S           => Ctx.Permutation_State,
+         Data        => Buffer,
+         Data_Offset => 0,
+         Bit_Len     => Ctx.Rate * 8);
+
+      Permute_All (Ctx.Permutation_State);
+
+      Ctx.State := Squeezing;
+   end Add_Padding;
+
+
+   procedure Lemma_Mod_Eq (Offset, Remaining, Length : in Natural;
+                           Rate                      : in Positive)
+     with Global => null,
+     Ghost,
+     Pre => (Offset <= Length
+             and then Remaining <= Length
+             and then Length - Remaining = Offset
+             and then Remaining < Rate
+             and then Offset mod Rate = 0),
+     Post => ((Remaining mod Rate = 0) = (Length mod Rate = 0));
+
+   procedure Lemma_Mod_Eq (Offset, Remaining, Length : in Natural;
+                                 Rate                      : in Positive)
+   is
+   begin
+      pragma Assert (Offset + Remaining = Length);
+   end Lemma_Mod_Eq;
+
+
    procedure Squeeze_Bytes_All (Ctx        : in out Context;
                                 Data       :    out Types.Byte_Array)
    is
       Block_Size : constant Natural := Data'Length / Num_Parallel_Instances;
 
-      Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
-
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
-
-      Buffer     : Types.Byte_Array (0 .. Rate_Bytes - 1);
 
    begin
       --  If we're coming straight from the absorbing phase then we need to
       --  apply the padding rule before proceeding to the squeezing phase,
       if Ctx.State = Absorbing then
-         Buffer := (others => 0);
-
-         Pad (Block          => Buffer (0 .. Ctx.Rate - 1),
-              Num_Used_Bits  => 0,
-              Max_Bit_Length => Ctx.Rate * 8);
-
-         --  Replicate the padding for each parallel instance.
-         for I in 1 .. Num_Parallel_Instances - 1 loop
-            Buffer (I * Ctx.Rate .. I * Ctx.Rate + Ctx.Rate - 1) :=
-              Buffer (0 .. Ctx.Rate - 1);
-         end loop;
-
-         XOR_Bits_Into_State
-           (S           => Ctx.Permutation_State,
-            Data        => Buffer,
-            Data_Offset => 0,
-            Bit_Len     => Ctx.Rate * 8);
-
-         Permute_All (Ctx.Permutation_State);
+         Add_Padding (Ctx);
       end if;
-
 
       while Remaining >= Ctx.Rate loop
          pragma Loop_Invariant (Offset + Remaining = Block_Size);
 
-         pragma Loop_Invariant (Offset mod Block_Size = 0);
+         pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
+
+         pragma Loop_Invariant (Offset <= Block_Size);
 
          Extract_Bytes
            (S           => Ctx.Permutation_State,
@@ -252,8 +292,16 @@ is
          Offset    := Offset    + Ctx.Rate;
       end loop;
 
+      pragma Assert (Remaining < Ctx.Rate);
+      pragma Assert (Offset mod Ctx.Rate = 0);
+      pragma Assert (Offset + Remaining = Block_Size);
+
+      Lemma_Mod_Eq (Offset, Remaining, Block_Size, Ctx.Rate);
 
       if Remaining > 0 then
+         pragma Assert (Remaining mod Ctx.Rate /= 0);
+         pragma Assert (Block_Size mod Ctx.Rate /= 0);
+
          Ctx.State := Finished;
 
          Extract_Bytes

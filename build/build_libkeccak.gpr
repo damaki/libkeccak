@@ -12,7 +12,7 @@ project Build_Libkeccak is
    end Builder;
 
    package Prove is
-      for Switches use ("-j4", "--level=2", "--timeout=30");
+      for Switches use ("-j0", "--prover=cvc4,z3,altergo", "--proof=progressive", "--steps=100000");
    end Prove;
 
    package Compiler is

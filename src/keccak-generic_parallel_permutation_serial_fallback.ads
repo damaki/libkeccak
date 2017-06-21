@@ -39,7 +39,7 @@ generic
                                 Bit_Len : in     Natural);
    State_Size_Bits    : Positive;
 
-   Parallel_Instances : Positive;
+   Parallelism : Positive;
    --  Specifies the number of simulated parallel instances.
 
    --  @brief@
@@ -50,13 +50,14 @@ generic
    --  but implements the permutation serially.
    --
    --  For example, this package can be used to simulate Keccak-p[1600,24]×8
-   --  by serially invoking 8 separate instances of Keccak-[1600,24]×1.
+   --  by serially invoking 8 separate instances of Keccak-[1600,24].
 package Keccak.Generic_Parallel_Permutation_Serial_Fallback
 is
+   Num_Parallel_Instances : constant Positive := Parallelism;
 
    type Parallel_State is private;
 
-   type State_Index is new Natural range 0 .. Parallel_Instances - 1;
+   type State_Index is new Natural range 0 .. Parallelism - 1;
 
    procedure Init (S : out Parallel_State)
      with Global => null;

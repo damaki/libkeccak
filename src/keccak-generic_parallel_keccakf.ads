@@ -31,9 +31,6 @@ generic
    -- The binary logarithm of the lane size.
    --
    -- This determines the Keccak-f state size. Possible values are:
-   -- * L=0 => 1-bit lanes,  Keccak-f[25]
-   -- * L=1 => 2-bit lanes,  Keccak-f[50]
-   -- * L=2 => 4-bit lanes,  Keccak-f[100]
    -- * L=3 => 8-bit lanes,  Keccak-f[200]
    -- * L=4 => 16-bit lanes, Keccak-f[400]
    -- * L=5 => 32-bit lanes, Keccak-f[800]
@@ -44,7 +41,7 @@ generic
    type VXXI_Index is range <>;
 
    type VXXI is private;
-   --  Vector machine type.
+   --  Vector type.
 
    type VXXI_View is array (VXXI_Index) of Lane_Type;
    --  A view of the vector type, permitting individual access to each vector
@@ -57,7 +54,7 @@ generic
    --  (e.g. 4 for a 4x 32-bit vector). However, you may use a smaller number
    --  if you don't want to use the full vector width. For example, you could
    --  set Vector_Width to 2 with a 4x 32-bit vector type, to obtain 2x
-   --  parallelism.
+   --  parallelism (the upper 2 vector components would not be used).
 
    with function Load (X : in VXXI_View) return VXXI;
 
@@ -94,7 +91,7 @@ generic
 package Keccak.Generic_Parallel_KeccakF
 is
    W : constant Positive := 2**L;
-   --  Lane size (in bits)
+   --  Lane size (in bits, i.e. 8, 16, 32, or 64)
 
    B : constant Positive := W*25;
    --  Keccak-f state size (in bits).
@@ -102,7 +99,17 @@ is
    Num_Parallel_Instances : constant Positive := Vector_Width;
 
 
+   pragma Assert (W mod 8 = 0,
+                  "Generic_Parallel_KeccakF only supports L in 3 .. 6");
+
+   pragma Assert (Vector_Width in 1 .. VXXI_View'Length,
+                  "Vector_Width exceeds vector type's width");
+
+
    type Parallel_State is private;
+
+
+   Initialized_State : constant Parallel_State;
 
 
    type Round_Index is range 0 .. 23;
@@ -179,7 +186,8 @@ is
      with Global => null,
      Pre => (Data'Length mod Vector_Width = 0
              and then Data_Offset <= Data'Length / Vector_Width
-             and then Byte_Len <= (Data'Length / Vector_Width) - Data_Offset);
+             and then Byte_Len <= (Data'Length / Vector_Width) - Data_Offset
+             and then Byte_Len <= B / 8);
    --  Extract bytes from the Keccak state.
    --
    --  The @Data@ array is split into N equal sized chunks, where N is the
@@ -218,5 +226,7 @@ private
    type Y_Coord is mod 5;
 
    type Parallel_State is array (X_Coord, Y_Coord) of VXXI_View;
+
+   Initialized_State : constant Parallel_State := (others => (others => (others => 0)));
 
 end Keccak.Generic_Parallel_KeccakF;
