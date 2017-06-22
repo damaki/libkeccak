@@ -137,6 +137,8 @@ is
 
             Buffer (Buf_First .. Buf_Last) := Data (Pos .. Pos + (Remaining - 1));
 
+            pragma Assert (Buf_First + Ctx.Rate - 1 in Buffer'Range);
+
             Pad (Block          => Buffer (Buf_First .. Buf_First + Ctx.Rate - 1),
                  Num_Used_Bits  => Remaining * 8,
                  Max_Bit_Length => Ctx.Rate * 8);
