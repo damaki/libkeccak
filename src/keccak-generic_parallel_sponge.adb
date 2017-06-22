@@ -29,6 +29,47 @@ package body Keccak.Generic_Parallel_Sponge
 is
 
 
+   procedure Lemma_Remaining_Mod_Rate_Preserve
+     (Offset, Remaining, Length : in Natural;
+      Rate                      : in Positive)
+     with Global => null,
+     Ghost,
+     Pre => (Offset <= Length
+             and then Remaining <= Length
+             and then Length - Remaining = Offset
+             and then Remaining < Rate
+             and then Offset mod Rate = 0),
+     Post => ((Remaining mod Rate = 0) = (Length mod Rate = 0));
+
+
+   procedure Lemma_Offset_Mod_Rate_Preserve
+     (Offset : in Natural;
+      Rate   : in Positive)
+     with Global => null,
+     Ghost,
+     Pre => (Offset <= Natural'Last - Rate
+             and Offset mod Rate = 0),
+     Post => (Offset + Rate) mod Rate = 0;
+
+
+   procedure Lemma_Remaining_Mod_Rate_Preserve
+     (Offset, Remaining, Length : in Natural;
+      Rate                      : in Positive)
+   is
+   begin
+      pragma Assert (Offset + Remaining = Length);
+   end Lemma_Remaining_Mod_Rate_Preserve;
+
+
+   procedure Lemma_Offset_Mod_Rate_Preserve
+     (Offset : in Natural;
+      Rate   : in Positive)
+   is
+   begin
+      pragma Assert ((Offset + Rate) mod Rate = 0);
+   end Lemma_Offset_Mod_Rate_Preserve;
+
+
    procedure Init (Ctx : out Context)
    is
    begin
@@ -69,13 +110,17 @@ is
 
          Permute_All (Ctx.Permutation_State);
 
-         Remaining := Remaining - Ctx.Rate;
+         Lemma_Offset_Mod_Rate_Preserve (Offset, Ctx.Rate);
+
          Offset    := Offset    + Ctx.Rate;
+         Remaining := Remaining - Ctx.Rate;
       end loop;
 
       pragma Assert (Remaining < Ctx.Rate);
       pragma Assert (Offset mod Ctx.Rate = 0);
       pragma Assert (Offset + Remaining = Block_Size);
+
+      Lemma_Remaining_Mod_Rate_Preserve (Offset, Remaining, Block_Size, Ctx.Rate);
 
       if Remaining > 0 then
          pragma Assert (Remaining mod Ctx.Rate /= 0);
@@ -144,6 +189,8 @@ is
             Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
+
+         Lemma_Offset_Mod_Rate_Preserve (Offset, Ctx.Rate);
 
          Remaining := Remaining - Ctx.Rate;
          Offset    := Offset    + Ctx.Rate;
@@ -234,25 +281,6 @@ is
    end Add_Padding;
 
 
-   procedure Lemma_Mod_Eq (Offset, Remaining, Length : in Natural;
-                           Rate                      : in Positive)
-     with Global => null,
-     Ghost,
-     Pre => (Offset <= Length
-             and then Remaining <= Length
-             and then Length - Remaining = Offset
-             and then Remaining < Rate
-             and then Offset mod Rate = 0),
-     Post => ((Remaining mod Rate = 0) = (Length mod Rate = 0));
-
-   procedure Lemma_Mod_Eq (Offset, Remaining, Length : in Natural;
-                                 Rate                      : in Positive)
-   is
-   begin
-      pragma Assert (Offset + Remaining = Length);
-   end Lemma_Mod_Eq;
-
-
    procedure Squeeze_Bytes_All (Ctx        : in out Context;
                                 Data       :    out Types.Byte_Array)
    is
@@ -288,6 +316,8 @@ is
 
          Permute_All (Ctx.Permutation_State);
 
+         Lemma_Offset_Mod_Rate_Preserve (Offset, Ctx.Rate);
+
          Remaining := Remaining - Ctx.Rate;
          Offset    := Offset    + Ctx.Rate;
       end loop;
@@ -296,7 +326,7 @@ is
       pragma Assert (Offset mod Ctx.Rate = 0);
       pragma Assert (Offset + Remaining = Block_Size);
 
-      Lemma_Mod_Eq (Offset, Remaining, Block_Size, Ctx.Rate);
+      Lemma_Remaining_Mod_Rate_Preserve (Offset, Remaining, Block_Size, Ctx.Rate);
 
       if Remaining > 0 then
          pragma Assert (Remaining mod Ctx.Rate /= 0);

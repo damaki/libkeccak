@@ -39,7 +39,12 @@ is
    procedure Generic_Process_Parallel_Blocks
      (Ctx  : in out Context;
       Data : in     Types.Byte_Array)
-     with Pre => Data'Length = Block_Size_Bytes * XOF_Parallel_N.Num_Parallel_Instances;
+     with Pre => (Data'Length = Block_Size_Bytes * XOF_Parallel_N.Num_Parallel_Instances
+                  and State_Of (Ctx) = Updating
+                  and Ctx.Partial_Block_Length = 0),
+     Post => (State_Of (Ctx) = Updating
+              and Ctx.Nb_Blocks = Ctx'Old.Nb_Blocks
+              and Ctx.Partial_Block_Length = Ctx'Old.Partial_Block_Length);
    --  Generic procedure to process N blocks in parallel.
    --
    --  This procedure process N blocks in parallel to produce N chaining values
@@ -93,7 +98,12 @@ is
    procedure Process_1_Block
      (Ctx  : in out Context;
       Data : in     Types.Byte_Array)
-     with Pre => Data'Length <= Block_Size_Bytes;
+     with Pre => (Data'Length <= Block_Size_Bytes
+                  and State_Of (Ctx) = Updating
+                  and Ctx.Partial_Block_Length = 0),
+     Post => (State_Of (Ctx) = Updating
+              and Ctx.Nb_Blocks = Ctx'Old.Nb_Blocks
+              and Ctx.Partial_Block_Length = Ctx'Old.Partial_Block_Length);
    --  Processes a single block using a serial XOF.
 
 
@@ -130,10 +140,13 @@ is
      (Ctx   : in out Context;
       Data  : in     Types.Byte_Array;
       Added :    out Natural)
-     with Pre => Ctx.Nb_Blocks = 0,
+     with Pre => (Ctx.Nb_Blocks = 0
+                  and State_Of (Ctx) = Updating),
      Post => (Added <= Block_Size_Bytes
               and Added <= Data'Length
-              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0));
+              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0)
+              and State_Of (Ctx) = Updating
+              and Num_Bytes_Processed (Ctx) = Num_Bytes_Processed (Ctx'Old) + Byte_Count (Added));
    --  Add bytes to the first block.
    --
    --  The first block is processed differently from the others, as it is
@@ -149,19 +162,16 @@ is
       Data  : in     Types.Byte_Array;
       Added :    out Natural)
    is
-      Pos           : Types.Index_Number;
       Free_In_Block : Natural;
 
    begin
       if Ctx.Partial_Block_Length > 0 then
          Free_In_Block := Block_Size_Bytes - Ctx.Partial_Block_Length;
 
-         Pos := Data'First;
-
          if Data'Length >= Free_In_Block then
             XOF_Serial.Update
               (Ctx     => Ctx.Outer_XOF,
-               Message => Data (Pos .. Pos + (Free_In_Block - 1)));
+               Message => Data (Data'First .. Data'First + (Free_In_Block - 1)));
 
 
             --  Add suffix '110^62' bits
@@ -188,11 +198,9 @@ is
       else
 
          if Data'Length >= Block_Size_Bytes then
-            Pos := Data'First;
-
             XOF_Serial.Update
               (Ctx     => Ctx.Outer_XOF,
-               Message => Data (Pos .. Pos + (Block_Size_Bytes - 1)));
+               Message => Data (Data'First .. Data'First + (Block_Size_Bytes - 1)));
 
             XOF_Serial.Update
               (Ctx     => Ctx.Outer_XOF,
@@ -221,18 +229,33 @@ is
      (Ctx   : in out Context;
       Data  : in     Types.Byte_Array;
       Added :    out Natural)
-     with Pre => Ctx.Nb_Blocks > 0,
+     with Pre => (Ctx.Nb_Blocks > 0
+                  and (if Ctx.Partial_Block_Length > 0
+                        then Ctx.Nb_Blocks < Natural'Last)
+                  and State_Of (Ctx) = Updating),
      Post => (Added <= Block_Size_Bytes
               and Added <= Data'Length
-              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0));
+              and (if Added < Data'Length then Ctx.Partial_Block_Length = 0)
+              and State_Of (Ctx) = Updating
+              and Num_Bytes_Processed (Ctx) = Num_Bytes_Processed (Ctx'Old) + Byte_Count (Added)),
+     Contract_Cases =>
+       (Ctx.Partial_Block_Length = 0 and Data'Length = 0 =>
+          Added = 0 and Ctx.Partial_Block_Length = 0,
 
+        Ctx.Partial_Block_Length = 0 and Data'Length > 0 =>
+          Added = 0 and Ctx.Partial_Block_Length = 0,
+
+        Ctx.Partial_Block_Length > 0 and Data'Length = 0 =>
+          Added = 0 and Ctx.Partial_Block_Length = Ctx'Old.Partial_Block_Length,
+
+        Ctx.Partial_Block_Length > 0 and Data'Length > 0 =>
+          Added > 0);
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
       Data  : in     Types.Byte_Array;
       Added :    out Natural)
    is
-      Pos           : Types.Index_Number;
       Free_In_Block : Natural;
       CV            : Types.Byte_Array (1 .. CV_Size_Bytes);
 
@@ -240,12 +263,10 @@ is
       if Ctx.Partial_Block_Length > 0 then
          Free_In_Block := Block_Size_Bytes - Ctx.Partial_Block_Length;
 
-         Pos := Data'First;
-
          if Data'Length >= Free_In_Block then
             XOF_Serial.Update
               (Ctx     => Ctx.Partial_Block_XOF,
-               Message => Data (Pos .. Pos + (Free_In_Block - 1)));
+               Message => Data (Data'First .. Data'First + (Free_In_Block - 1)));
 
             --  Add suffix '110' bits
             XOF_Serial.Update
@@ -270,8 +291,8 @@ is
 
             XOF_Serial.Init (Ctx.Partial_Block_XOF);
 
-            Ctx.Nb_Blocks            := Ctx.Nb_Blocks + 1;
             Ctx.Partial_Block_Length := 0;
+            Ctx.Nb_Blocks            := Ctx.Nb_Blocks + 1;
 
             Added := Free_In_Block;
 
@@ -296,21 +317,23 @@ is
    procedure Init (Ctx : out Context)
    is
    begin
+      Ctx.Partial_Block_Length := 0;
+      Ctx.Nb_Blocks            := 0;
+      Ctx.Finished             := False;
+
       XOF_Serial.Init (Ctx.Outer_XOF);
       XOF_Serial.Init (Ctx.Partial_Block_XOF);
-
-      Ctx.Nb_Blocks            := 0;
-      Ctx.Partial_Block_Length := 0;
-      Ctx.Finished             := False;
    end Init;
 
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
    is
-      Remaining : Natural;
-      Offset    : Natural;
-      Pos       : Types.Index_Number;
+      Initial_Bytes_Processed : constant Byte_Count := Num_Bytes_Processed (Ctx);
+
+      Remaining               : Natural;
+      Offset                  : Natural;
+      Pos                     : Types.Index_Number;
 
    begin
 
@@ -322,78 +345,102 @@ is
 
       Remaining := Data'Length - Offset;
 
-      --  Process blocks of 8 in parallel
-      while Remaining >= Block_Size_Bytes * 8 loop
-         pragma Loop_Invariant (Offset + Remaining = Data'Length);
+      if Remaining > 0 then
+         pragma Assert (Ctx.Partial_Block_Length = 0);
+         pragma Assert (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
 
-         Pos := Data'First + Offset;
+           --  Process blocks of 8 in parallel
+         while Remaining >= Block_Size_Bytes * 8 loop
+            pragma Loop_Invariant (Offset + Remaining = Data'Length);
+            pragma Loop_Invariant (State_Of (Ctx) = Updating);
+            pragma Loop_Invariant (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
+            pragma Loop_Invariant (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
+            pragma Loop_Invariant (Ctx.Partial_Block_Length = 0);
 
-         Process_8_Parallel_Blocks
-           (Ctx  => Ctx,
-            Data => Data (Pos .. Pos + ((Block_Size_Bytes * 8) - 1)));
+            Pos := Data'First + Offset;
 
-         Ctx.Nb_Blocks := Ctx.Nb_Blocks + 8;
+            Process_8_Parallel_Blocks
+              (Ctx  => Ctx,
+               Data => Data (Pos .. Pos + ((Block_Size_Bytes * 8) - 1)));
 
-         Offset    := Offset    + (Block_Size_Bytes * 8);
-         Remaining := Remaining - (Block_Size_Bytes * 8);
-      end loop;
+            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 8;
+
+            Offset    := Offset    + (Block_Size_Bytes * 8);
+            Remaining := Remaining - (Block_Size_Bytes * 8);
+         end loop;
 
 
       --  Process blocks of 4 in parallel
-      while Remaining >= Block_Size_Bytes * 4 loop
-         pragma Loop_Invariant (Offset + Remaining = Data'Length);
+         while Remaining >= Block_Size_Bytes * 4 loop
+            pragma Loop_Invariant (Offset + Remaining = Data'Length);
+            pragma Loop_Invariant (State_Of (Ctx) = Updating);
+            pragma Loop_Invariant (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
+            pragma Loop_Invariant (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
+            pragma Loop_Invariant (Ctx.Partial_Block_Length = 0);
 
-         Pos := Data'First + Offset;
+            Pos := Data'First + Offset;
 
-         Process_4_Parallel_Blocks
-           (Ctx  => Ctx,
-            Data => Data (Pos .. Pos + ((Block_Size_Bytes * 4) - 1)));
+            Process_4_Parallel_Blocks
+              (Ctx  => Ctx,
+               Data => Data (Pos .. Pos + ((Block_Size_Bytes * 4) - 1)));
 
-         Ctx.Nb_Blocks := Ctx.Nb_Blocks + 4;
+            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 4;
 
-         Offset    := Offset    + (Block_Size_Bytes * 4);
-         Remaining := Remaining - (Block_Size_Bytes * 4);
-      end loop;
+            Offset    := Offset    + (Block_Size_Bytes * 4);
+            Remaining := Remaining - (Block_Size_Bytes * 4);
+         end loop;
 
 
       --  Process blocks of 2 in parallel
-      while Remaining >= Block_Size_Bytes * 2 loop
-         pragma Loop_Invariant (Offset + Remaining = Data'Length);
+         while Remaining >= Block_Size_Bytes * 2 loop
+            pragma Loop_Invariant (Offset + Remaining = Data'Length);
+            pragma Loop_Invariant (State_Of (Ctx) = Updating);
+            pragma Loop_Invariant (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
+            pragma Loop_Invariant (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
+            pragma Loop_Invariant (Ctx.Partial_Block_Length = 0);
 
-         Pos := Data'First + Offset;
+            Pos := Data'First + Offset;
 
-         Process_2_Parallel_Blocks
-           (Ctx  => Ctx,
-            Data => Data (Pos .. Pos + ((Block_Size_Bytes * 2) - 1)));
+            Process_2_Parallel_Blocks
+              (Ctx  => Ctx,
+               Data => Data (Pos .. Pos + ((Block_Size_Bytes * 2) - 1)));
 
-         Ctx.Nb_Blocks := Ctx.Nb_Blocks + 2;
+            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 2;
 
-         Offset    := Offset    + (Block_Size_Bytes * 2);
-         Remaining := Remaining - (Block_Size_Bytes * 2);
-      end loop;
+            Offset    := Offset    + (Block_Size_Bytes * 2);
+            Remaining := Remaining - (Block_Size_Bytes * 2);
+         end loop;
 
 
       --  Process single blocks
-      if Remaining >= Block_Size_Bytes then
-         Pos := Data'First + Offset;
+         if Remaining >= Block_Size_Bytes then
+            Pos := Data'First + Offset;
 
-         Process_1_Block
-           (Ctx  => Ctx,
-            Data => Data (Pos .. Pos + (Block_Size_Bytes - 1)));
+            pragma Assert (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
+            pragma Assert (Ctx.Partial_Block_Length = 0);
 
-         Ctx.Nb_Blocks := Ctx.Nb_Blocks + 1;
+            Process_1_Block
+              (Ctx  => Ctx,
+               Data => Data (Pos .. Pos + (Block_Size_Bytes - 1)));
 
-         Offset    := Offset    + Block_Size_Bytes;
-         Remaining := Remaining - Block_Size_Bytes;
-      end if;
+            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 1;
+
+            Offset    := Offset    + Block_Size_Bytes;
+            Remaining := Remaining - Block_Size_Bytes;
+         end if;
+
+         pragma Assert (Offset + Remaining = Data'Length);
+         pragma Assert (State_Of (Ctx) = Updating);
+         pragma Assert (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
 
       --  Process remaining data.
-      if Remaining > 0 then
-         XOF_Serial.Update
-           (Ctx     => Ctx.Partial_Block_XOF,
-            Message => Data (Data'First + Offset .. Data'Last));
+         if Remaining > 0 then
+            XOF_Serial.Update
+              (Ctx     => Ctx.Partial_Block_XOF,
+               Message => Data (Data'First + Offset .. Data'Last));
 
-         Ctx.Partial_Block_Length := Remaining;
+            Ctx.Partial_Block_Length := Remaining;
+         end if;
       end if;
    end Update;
 
@@ -417,6 +464,7 @@ is
             --  Produce final CV for final block
             --  (if the last block is a partial block)
          if Ctx.Partial_Block_Length > 0 then
+            Ctx.Partial_Block_Length := 0;
             Ctx.Nb_Blocks := Ctx.Nb_Blocks + 1;
 
             XOF_Serial.Update

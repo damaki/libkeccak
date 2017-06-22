@@ -53,10 +53,19 @@ is
    pragma Assert (XOF_Parallel_4.Num_Parallel_Instances = 4);
    pragma Assert (XOF_Parallel_8.Num_Parallel_Instances = 8);
 
+
+   Block_Size_Bytes : constant := 8192;
+   --  Size of each parallel block.
+   --  This is set to 8 kiB in the K12 documentation.
+
    type Context is private;
 
 
    type States is (Updating, Ready_To_Extract, Extracting);
+
+
+   type Byte_Count is range 0 .. Block_Size_Bytes * Natural'Last;
+   -- When Natural'Last = 2**31 - 1 then Byte_Count'Last = 15.99 TiB
 
 
    procedure Init (Ctx : out Context)
@@ -66,14 +75,19 @@ is
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
      with Global => null,
-     Pre => State_Of (Ctx) = Updating,
-     Post => State_Of (Ctx) = Updating;
+     Pre => (State_Of (Ctx) = Updating
+             and Byte_Count (Data'Length) <= Max_Input_Length (Ctx)),
+     Post => (State_Of (Ctx) = Updating
+              and Num_Bytes_Processed (Ctx) = Num_Bytes_Processed (Ctx'Old) + Byte_Count (Data'Length));
 
 
    procedure Finish (Ctx           : in out Context;
                      Customization : in     String)
      with Global => null,
-     Pre => State_Of (Ctx) = Updating,
+     Pre => (State_Of (Ctx) = Updating
+             and then Customization'Length <= (Natural'Size / 8) + 2
+             and then (Byte_Count (Customization'Length) + Byte_Count (Natural'Size / 8) + 2
+                       <= Max_Input_Length (Ctx))),
      Post => State_Of (Ctx) = Ready_To_Extract;
 
 
@@ -84,13 +98,17 @@ is
      Post => State_Of (Ctx) = Extracting;
 
 
+   function State_Of (Ctx : in Context) return States
+     with Global => null;
 
-   function State_Of (Ctx : in Context) return States;
+
+   function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
+     with Global => null;
+
+
+   function Max_Input_Length (Ctx : in Context) return Byte_Count;
 
 private
-   Block_Size_Bytes : constant := 8192;
-   --  Size of each parallel block.
-   --  This is set to 8 kiB in the K12 documentation.
 
    CV_Size_Bytes    : constant := 256 / 8;
    --  The size of each chaining value (CV) in bytes.
@@ -107,16 +125,31 @@ private
       Nb_Blocks            : Natural;
       Partial_Block_Length : Partial_Block_Length_Number;
       Finished             : Boolean;
-   end record;
+   end record
+     with Predicate => (if Context.Nb_Blocks = Natural'Last
+                          then Context.Partial_Block_Length = 0);
 
 
    function State_Of (Ctx : in Context) return States
-   is (case XOF_Serial.State_Of (Ctx.Outer_XOF) is
-          when XOF_Serial.Updating         => (if Ctx.Finished
-                                               then Ready_To_Extract
-                                               else Updating),
-          when XOF_Serial.Ready_To_Extract => Ready_To_Extract,
-          when XOF_Serial.Extracting       => Extracting);
+   is (if (XOF_Serial.State_Of (Ctx.Outer_XOF) = XOF_Serial.Updating
+           and XOF_Serial.State_Of (Ctx.Partial_Block_XOF) = XOF_Serial.Updating)
+       then (if Ctx.Finished
+             then Ready_To_Extract
+             else Updating)
+
+       elsif XOF_Serial.State_Of (Ctx.Outer_XOF) = XOF_Serial.Ready_To_Extract
+       then Ready_To_Extract
+
+       else Extracting);
+
+
+   function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
+   is (Byte_Count (Ctx.Nb_Blocks) * Block_Size_Bytes
+       + Byte_Count (Ctx.Partial_Block_Length));
+
+
+   function Max_Input_Length (Ctx : in Context) return Byte_Count
+   is (Byte_Count'Last - Num_Bytes_Processed (Ctx));
 
 
 end Keccak.Generic_KangarooTwelve;

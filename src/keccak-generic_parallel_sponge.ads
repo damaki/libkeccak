@@ -175,7 +175,8 @@ private
    end record
      with Predicate =>
        (Context.Rate = (State_Size - Context.Capacity) / 8
-        and (State_Size - Context.Capacity) mod 8 = 0);
+        and then (State_Size - Context.Capacity) mod 8 = 0
+        and then Context.Rate * 8 = State_Size - Context.Capacity);
 
 
    function State_Of (Ctx : in Context) return States
