@@ -69,10 +69,6 @@ is
    Block_Size_Bits        : constant Positive := State_Size;
 
 
-   subtype Capacity_Bits_Number is Positive range 1 .. State_Size - 1
-     with Dynamic_Predicate => (State_Size - Capacity_Bits_Number) mod 8 = 0;
-
-
    subtype Rate_Bits_Number is Positive range 1 .. State_Size - 1
      with Dynamic_Predicate => Rate_Bits_Number mod 8 = 0;
    --  Number representing the Rate (in bits).
@@ -82,7 +78,7 @@ is
    --  this implementation restricts the Rate to a multiple of 8 bits.
 
 
-   type Context (Capacity : Capacity_Bits_Number) is private;
+   type Context (Capacity : Positive) is private;
 
 
    type States is (Absorbing, Squeezing, Finished);
@@ -90,6 +86,8 @@ is
 
    procedure Init (Ctx : out Context)
      with Global => null,
+     Pre => (Ctx.Capacity < State_Size
+             and then (State_Size - Ctx.Capacity) mod 8 = 0),
      Post => State_Of(Ctx) = Absorbing;
 
 
@@ -170,12 +168,14 @@ private
    subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7)/8) - 1;
 
 
-   type Context (Capacity : Capacity_Bits_Number) is record
+   type Context (Capacity : Positive) is record
       Permutation_State : State_Type;
       Rate              : Rate_Bytes_Number;
       State             : States;
    end record
-     with Predicate => Context.Rate = (State_Size - Context.Capacity) / 8;
+     with Predicate =>
+       (Context.Rate = (State_Size - Context.Capacity) / 8
+        and (State_Size - Context.Capacity) mod 8 = 0);
 
 
    function State_Of (Ctx : in Context) return States

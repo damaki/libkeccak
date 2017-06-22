@@ -30,7 +30,7 @@ is
    procedure Init (Ctx : out Context)
    is
    begin
-      Sponge.Init (Ctx.Sponge_Ctx, Capacity);
+      Sponge.Init (Ctx.Sponge_Ctx);
    end Init;
 
 
@@ -39,8 +39,9 @@ is
    is
       Block_Size : constant Natural := (Data'Length / Num_Parallel_Instances);
    begin
-      if Block_Size mod Rate / 8 = 0 then
+      if Block_Size mod (Rate / 8) = 0 then
          Sponge.Absorb_Bytes_All (Ctx.Sponge_Ctx, Data);
+
       else
          Sponge.Absorb_Bytes_All_With_Suffix
            (Ctx        => Ctx.Sponge_Ctx,

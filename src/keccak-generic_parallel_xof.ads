@@ -50,6 +50,9 @@ is
    type States is (Updating, Extracting, Finished);
 
 
+   subtype Rate_Bits_Number is Sponge.Rate_Bits_Number;
+
+
    procedure Init (Ctx : out Context)
      with Global => null,
      Post => State_Of (Ctx) = Updating;
@@ -59,6 +62,7 @@ is
                      Data : in     Types.Byte_Array)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and Data'Length / Num_Parallel_Instances <= Natural'Last / 8
              and State_Of (Ctx) = Updating),
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate / 8) = 0
@@ -71,7 +75,8 @@ is
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
      with Global => null,
-     Pre => (Data'Length mod Num_Parallel_Instances = 0),
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and State_Of (Ctx) in Updating | Extracting),
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate / 8) = 0
         => State_Of (Ctx) = Extracting,
@@ -84,9 +89,8 @@ is
      with Global => null;
 
 
-   function Rate return Positive
-     with Global => null,
-     Post => Rate'Result mod 8 = 0;
+   function Rate return Rate_Bits_Number
+     with Global => null;
 
 
 private
@@ -94,7 +98,8 @@ private
 
    type Context is record
       Sponge_Ctx : Sponge.Context (Capacity);
-   end record;
+   end record
+     with Predicate => Sponge.Rate_Of (Context.Sponge_Ctx) = Rate;
 
 
    function State_Of (Ctx : in Context) return States
@@ -104,7 +109,7 @@ private
           when Sponge.Finished  => Finished);
 
 
-   function Rate return Positive
+   function Rate return Rate_Bits_Number
    is (Sponge.Block_Size_Bits - Capacity);
 
 end Keccak.Generic_Parallel_XOF;
