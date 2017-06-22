@@ -8,7 +8,11 @@ project Benchmark is
 
    package Compiler is
       for Default_Switches ("Ada") use ("-Winline", "-O2", "-gnatN", "-gnatp", "-gnatwe");
-   end Compiler;   
+   end Compiler;
+   
+   package Linker is
+      for Default_Switches ("Ada") use ("-Wl,--gc-sections");
+   end Linker;
 
 end Benchmark;
 
