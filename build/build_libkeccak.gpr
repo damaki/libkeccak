@@ -1,11 +1,36 @@
 project Build_Libkeccak is
+   type Arch_Type is ("generic", "x86_64");
+   type SIMD_Type is ("none", "SSE2");
+   
+   Arch : Arch_Type := external ("arch", "generic");
+   SIMD : SIMD_Type := external ("simd", "none");
+   
+   Arch_Dirs     := ();
+   Arch_Switches := ();
+   
+   case Arch is
+      when "generic" =>
+         Arch_Dirs := Arch_Dirs & ("../src/generic");
+         
+      when "x86_64" =>
+         case SIMD is
+            when "none" => 
+               Arch_Dirs     := Arch_Dirs & ("../src/generic");
+            
+            when "SSE2" =>
+               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2");
+               Arch_Switches := Arch_Switches & ("-msse", "-msse2");
+         end case;
+         
+   end case;
 
    for Library_Kind use "static";
    for Library_Name use "keccak";
    for Object_Dir use "../out/build";
    for Library_Dir use "../out/build/adalib";
    for Library_Src_Dir use "../out/build/adainclude";
-   for Source_Dirs use ("../src");
+   
+   for Source_Dirs use ("../src/common") & Arch_Dirs;
 
    package Builder is
       for Default_Switches ("ada") use ("-j4");
@@ -16,7 +41,7 @@ project Build_Libkeccak is
    end Prove;
 
    package Compiler is
-      for Default_Switches ("ada") use ("-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-msse2", "-msse", "-gnatp", "-ffunction-sections", "-fdata-sections");
+      for Default_Switches ("ada") use Arch_Switches & ("-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnatp", "-ffunction-sections", "-fdata-sections");
    end Compiler;
 
    package Ide is

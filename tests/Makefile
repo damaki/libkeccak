@@ -145,7 +145,7 @@ $(OUTPUT_DIR)/benchmark/benchmark:
 	gprbuild -aP$(KECCAK_DIR) -P benchmark.gpr
 
 $(OUTPUT_DIR)/unit_tests/test_keccak:
-	gprbuild -P unit_tests.gpr
+	gprbuild -P unit_tests.gpr -Xarch=$(ARCH) -Xsimd=$(SIMD)
 
 clean:
 	rm -rf $(OUTPUT_DIR)

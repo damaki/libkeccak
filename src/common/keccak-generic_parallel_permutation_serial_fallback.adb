@@ -49,32 +49,44 @@ is
    end Permute_All;
 
 
-   procedure XOR_Bits_Into_State (S       : in out Parallel_State;
-                                  Index   : in     State_Index;
-                                  Data    : in     Types.Byte_Array;
-                                  Bit_Len : in     Natural)
+   procedure XOR_Bits_Into_State (S           : in out Parallel_State;
+                                  Data        : in     Types.Byte_Array;
+                                  Data_Offset : in     Natural;
+                                  Bit_Len     : in     Natural)
    is
+      Stride : constant Natural := Data'Length / Num_Parallel_Instances;
+
+      Pos : Types.Index_Number;
+
    begin
-      XOR_Bits_Into_State (S.States (Index), Data, Bit_Len);
+      for I in 0 .. Num_Parallel_Instances - 1 loop
+         Pos := Data'First + (Stride * I) + Data_Offset;
+
+         XOR_Bits_Into_State
+           (S       => S.States (I),
+            Data    => Data (Pos .. Pos + ((Bit_Len + 7) / 8)),
+            Bit_Len => Bit_Len);
+      end loop;
    end XOR_Bits_Into_State;
 
 
-   procedure Extract_Bytes (S     : in     Parallel_State;
-                            Index : in     State_Index;
-                            Data  :    out Types.Byte_Array)
+   procedure Extract_Bytes (S           : in     Parallel_State;
+                            Data        : in out Types.Byte_Array;
+                            Data_Offset : in     Natural;
+                            Byte_Len    : in     Natural)
    is
+      Stride : constant Natural := Data'Length / Num_Parallel_Instances;
+
+      Pos : Types.Index_Number;
+
    begin
-      Extract_Bytes (S.States (Index), Data);
+      for I in 0 .. Num_Parallel_Instances - 1 loop
+         Pos := Data'First + (Stride * I) + Data_Offset;
+
+         Extract_Bytes
+           (A    => S.States (I),
+            Data => Data (Pos .. Pos + Byte_Len - 1));
+      end loop;
    end Extract_Bytes;
-
-
-   procedure Extract_Bits (S       : in     Parallel_State;
-                           Index   : in     State_Index;
-                           Data    :    out Types.Byte_Array;
-                           Bit_Len : in     Natural)
-   is
-   begin
-      Extract_Bits (S.States (Index), Data, Bit_Len);
-   end Extract_Bits;
 
 end Keccak.Generic_Parallel_Permutation_Serial_Fallback;

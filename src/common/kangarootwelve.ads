@@ -24,7 +24,6 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Keccak.Arch.SSE2;
 with Keccak.Keccak_1600;
 with Keccak.Generic_KangarooTwelve;
 with Keccak.Parallel_Keccak_1600;

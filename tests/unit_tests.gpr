@@ -1,15 +1,39 @@
 with "aunit";
 
 project Unit_Tests is
+   type Arch_Type is ("generic", "x86_64");
+   type SIMD_Type is ("none", "SSE2");
+   
+   Arch : Arch_Type := external ("arch", "generic");
+   SIMD : SIMD_Type := external ("simd", "none");
+   
+   Arch_Dirs     := ();
+   Arch_Switches := ();
+   
+   case Arch is
+      when "generic" =>
+         Arch_Dirs := Arch_Dirs & ("../src/generic");
+         
+      when "x86_64" =>
+         case SIMD is
+            when "none" => 
+               Arch_Dirs     := Arch_Dirs & ("../src/generic");
+            
+            when "SSE2" =>
+               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2");
+               Arch_Switches := Arch_Switches & ("-msse", "-msse2");
+         end case;
+         
+   end case;
 
    --libkeccak is built from source to enable compilation with -fprofile-arcs
    -- and -ftest-coverage
-   for Source_Dirs use ("unit_tests", "../src");
+   for Source_Dirs use ("unit_tests", "../src/common") & Arch_Dirs;
    for Object_Dir use "out/unit_tests";
    for Main use ("test_keccak.adb");
 
    package Builder is
-      for Default_Switches ("ada") use ("-j4");
+      for Default_Switches ("ada") use ("-j0");
    end Builder;
 
    package Compiler is

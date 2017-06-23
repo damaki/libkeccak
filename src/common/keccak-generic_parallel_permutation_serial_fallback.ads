@@ -27,17 +27,18 @@
 with Keccak.Types;
 
 generic
-   type KeccakF_State is private;
-   with procedure Init (A : out KeccakF_State);
-   with procedure XOR_Bits_Into_State (S       : in out KeccakF_State;
+   type Permutation_State is private;
+
+   with procedure Init (A : out Permutation_State);
+
+   with procedure XOR_Bits_Into_State (S       : in out Permutation_State;
                                        Data    : in     Types.Byte_Array;
                                        Bit_Len : in     Natural);
-   with procedure Extract_Bytes (A    : in     KeccakF_State;
+
+   with procedure Extract_Bytes (A    : in     Permutation_State;
                                  Data :    out Types.Byte_Array);
-   with procedure Extract_Bits (A       : in     KeccakF_State;
-                                Data    :    out Types.Byte_Array;
-                                Bit_Len : in     Natural);
-   State_Size_Bits    : Positive;
+
+   State_Size    : Positive;
 
    Parallelism : Positive;
    --  Specifies the number of simulated parallel instances.
@@ -57,49 +58,42 @@ is
 
    type Parallel_State is private;
 
-   type State_Index is new Natural range 0 .. Parallelism - 1;
-
    procedure Init (S : out Parallel_State)
      with Global => null;
 
 
    generic
-      with procedure Permute (A : in out KeccakF_State);
+      with procedure Permute (A : in out Permutation_State);
    procedure Permute_All (S : in out Parallel_State)
      with Global => null;
 
 
-   procedure XOR_Bits_Into_State (S       : in out Parallel_State;
-                                  Index   : in     State_Index;
-                                  Data    : in     Types.Byte_Array;
-                                  Bit_Len : in     Natural)
+   procedure XOR_Bits_Into_State (S           : in out Parallel_State;
+                                  Data        : in     Types.Byte_Array;
+                                  Data_Offset : in     Natural;
+                                  Bit_Len     : in     Natural)
      with Global => null,
-     Pre => (Data'Length <= Natural'Last / 8
-             and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= State_Size_Bits);
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and then Data_Offset <= (Data'Length / Num_Parallel_Instances)
+             and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
+             and then Bit_Len <= State_Size);
 
 
-   procedure Extract_Bytes (S     : in     Parallel_State;
-                            Index : in     State_Index;
-                            Data  :    out Types.Byte_Array)
+   procedure Extract_Bytes (S           : in     Parallel_State;
+                            Data        : in out Types.Byte_Array;
+                            Data_Offset : in     Natural;
+                            Byte_Len    : in     Natural)
      with Global => null,
-     Pre => (Data'Length <= ((State_Size_Bits + 7) / 8));
-
-
-   procedure Extract_Bits (S       : in     Parallel_State;
-                           Index   : in     State_Index;
-                           Data    :    out Types.Byte_Array;
-                           Bit_Len : in     Natural)
-     with Global => null,
-     Pre => (Bit_Len <= State_Size_Bits
-             and then Data'Length = (Bit_Len + 7) / 8);
+     Pre => (Data'Length mod Num_Parallel_Instances = 0
+             and then Data_Offset <= Data'Length / Num_Parallel_Instances
+             and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset);
 
 private
 
-   type KeccakF_State_Array is array (State_Index) of KeccakF_State;
+   type Permutation_State_Array is array (0 .. Parallelism - 1) of Permutation_State;
 
    type Parallel_State is record
-      States : KeccakF_State_Array;
+      States : Permutation_State_Array;
    end record;
 
 end Keccak.Generic_Parallel_Permutation_Serial_Fallback;
