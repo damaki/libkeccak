@@ -25,7 +25,7 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Ada.Real_Time;
+with Ada.Real_Time; use Ada.Real_Time;
 with Ada.Execution_Time;
 with Ada.Text_IO;
 with KangarooTwelve;
@@ -146,6 +146,9 @@ is
       
       Start_Time : Ada.Execution_Time.CPU_Time;
       End_Time   : Ada.Execution_Time.CPU_Time;
+      
+      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      
    begin
       for I in Positive range 1 .. Repeat loop
          Start_Time := Ada.Execution_Time.Clock;
@@ -158,9 +161,14 @@ is
          
          End_Time := Ada.Execution_Time.Clock;
          
+         Total_Time := Total_Time + (End_Time - Start_Time);
+         
          Ada.Text_IO.Put(Name & ", ");
          Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
+      
+      Ada.Text_IO.Put(Name & " Average for" & Natural'Image (Repeat) & " runs: ");
+      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
    end Hash_Benchmark;
    
    
@@ -183,6 +191,9 @@ is
       
       Start_Time : Ada.Execution_Time.CPU_Time;
       End_Time   : Ada.Execution_Time.CPU_Time;
+      
+      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      
    begin
       
       -- Benchmark Absorbing
@@ -195,9 +206,17 @@ is
          
          End_Time := Ada.Execution_Time.Clock;
          
+         Total_Time := Total_Time + (End_Time - Start_Time);
+         
          Ada.Text_IO.Put(Name & " (Absorbing), ");
          Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
+      
+      Ada.Text_IO.Put(Name & " (Absorbing) Average for" & Natural'Image (Repeat) & " runs: ");
+      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
+      Ada.Text_IO.New_Line;
+      
+      Total_Time := Ada.Real_Time.Time_Span_Zero;
       
       -- Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
@@ -207,9 +226,14 @@ is
          
          End_Time := Ada.Execution_Time.Clock;
          
+         Total_Time := Total_Time + (End_Time - Start_Time);
+         
          Ada.Text_IO.Put(Name & " (Squeezing), ");
          Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
+      
+      Ada.Text_IO.Put(Name & " (Squeezing) Average for" & Natural'Image (Repeat) & " runs: ");
+      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
    end XOF_Benchmark;
    
    ----------------------------------------------------------------------------
@@ -234,6 +258,8 @@ is
       Start_Time : Ada.Execution_Time.CPU_Time;
       End_Time   : Ada.Execution_Time.CPU_Time;
       
+      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      
       Num_Iterations : Natural := (Benchmark_Data_Size_MiB*1024*1024) / ((1600-Capacity)/8);
       
    begin
@@ -253,11 +279,16 @@ is
          
          End_Time := Ada.Execution_Time.Clock;
          
+         Total_Time := Total_Time + (End_Time - Start_Time);
+         
          Ada.Text_IO.Put(Name & ", ");
          Print_Time((Duplex.Rate_Of(Ctx)/8) * Num_Iterations,
                     End_Time - Start_Time);
                        
       end loop;
+      
+      Ada.Text_IO.Put(Name & " Average for" & Natural'Image (Repeat) & " runs: ");
+      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
    
    end Duplex_Benchmark;
    
@@ -285,6 +316,8 @@ is
       Start_Time : Ada.Execution_Time.CPU_Time;
       End_Time   : Ada.Execution_Time.CPU_Time;
       
+      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      
       Num_Iterations : Natural := 1_000_000;
       
    begin
@@ -299,10 +332,9 @@ is
          
          End_Time := Ada.Execution_Time.Clock;
          
-         Ada.Text_IO.Put(Name & ", ");
+         Total_Time := Total_Time + (End_Time - Start_Time);
          
-         Duration_IO.Put(Ada.Real_Time.To_Duration(End_Time - Start_Time), Fore => 0, Aft => 6);
-         Ada.Text_IO.Put("s, ");
+         Ada.Text_IO.Put(Name & ", ");
          
          Integer_IO.Put(Item => Num_Iterations, Width => 0);
          Ada.Text_IO.Put(" calls, ");
@@ -311,6 +343,13 @@ is
          Ada.Text_IO.Put_Line(" us/call");
       end loop;
       
+      Ada.Text_IO.Put(Name & " Average for" & Natural'Image (Repeat) & " runs: ");
+
+      Integer_IO.Put(Item => Num_Iterations, Width => 0);
+      Ada.Text_IO.Put(" calls, ");
+
+      Duration_IO.Put((Ada.Real_Time.To_Duration(Total_Time / Repeat) * 1_000_000) / Num_Iterations, Fore => 0);
+      Ada.Text_IO.Put_Line(" us/call");
       
    end KeccakF_Benchmark;
    
@@ -332,6 +371,9 @@ is
       
       Start_Time : Ada.Execution_Time.CPU_Time;
       End_Time   : Ada.Execution_Time.CPU_Time;
+      
+      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      
    begin
       
       -- Benchmark Absorbing
@@ -346,9 +388,17 @@ is
          
          End_Time := Ada.Execution_Time.Clock;
          
+         Total_Time := Total_Time + (End_Time - Start_Time);
+         
          Ada.Text_IO.Put(Name & " (Updating), ");
          Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
+      
+      Ada.Text_IO.Put(Name & " (Absorbing) Average for" & Natural'Image (Repeat) & " runs: ");
+      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
+      Ada.Text_IO.New_Line;
+      
+      Total_Time := Ada.Real_Time.Time_Span_Zero;
       
       -- Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
@@ -358,9 +408,14 @@ is
          
          End_Time := Ada.Execution_Time.Clock;
          
-         Ada.Text_IO.Put(Name & " (Extracting), ");
+         Total_Time := Total_Time + (End_Time - Start_Time);
+         
+         Ada.Text_IO.Put(Name & " (Squeezing), ");
          Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
+      
+      Ada.Text_IO.Put(Name & " (Squeezing) Average for" & Natural'Image (Repeat) & " runs: ");
+      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
    end K12_Benchmark;
    
    ----------------------------------------------------------------------------
@@ -457,8 +512,6 @@ is
 begin
    Data_Chunk.all := (others => 16#A7#);
 
-   Ada.Text_IO.Put_Line("Algorithm,Time,Data Length,Performance");
-   
    Benchmark_K12;
    Ada.Text_IO.New_Line;
 
