@@ -25,6 +25,7 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
+with Ada.Command_Line;
 with Ada.Real_Time; use Ada.Real_Time;
 with Ada.Execution_Time;
 with Ada.Text_IO;
@@ -508,86 +509,233 @@ is
    procedure Benchmark_K12 is new K12_Benchmark
      ("KangarooTwelve",
       KangarooTwelve.K12);
+      
+   type Algorithm_Name is 
+      (K12,
+      SHA3_224,
+      SHA3_256,
+      SHA3_384,
+      SHA3_512,
+      Keccak_224,
+      Keccak_256,
+      Keccak_384,
+      Keccak_512,
+      SHAKE128,
+      SHAKE256,
+      RawSHAKE128,
+      RawSHAKE256,
+      Duplex_r1152c448,
+      Duplex_r1088c512,
+      Duplex_r832c768,
+      Duplex_r576c1024,
+      KeccakF_1600,
+      KeccakF_1600_P2_R24,
+      KeccakF_1600_P2_R12,
+      KeccakF_800,
+      KeccakF_400,
+      KeccakF_200,
+      KeccakF_100,
+      KeccakF_50,
+      KeccakF_25);
+   
+   Benchmarks_Enabled : array (Algorithm_Name) of Boolean := (others => False);
 
 begin
    Data_Chunk.all := (others => 16#A7#);
+   
+   for I in 1 .. Ada.Command_Line.Argument_Count loop
+      declare
+         Arg : constant String := Ada.Command_Line.Argument (I);
+      begin
+         if Arg = "--all" then
+            Benchmarks_Enabled := (others => True);
+         elsif Arg = "--k12" then
+            Benchmarks_Enabled (K12) := True;
+         elsif Arg = "--sha3-224" then
+            Benchmarks_Enabled (SHA3_224) := True;
+         elsif Arg = "--sha3-256" then
+            Benchmarks_Enabled (SHA3_256) := True;
+         elsif Arg = "--sha3-384" then
+            Benchmarks_Enabled (SHA3_384) := True;
+         elsif Arg = "--sha3-512" then
+            Benchmarks_Enabled (SHA3_512) := True;
+         elsif Arg = "--keccak-224" then
+            Benchmarks_Enabled (Keccak_224) := True;
+         elsif Arg = "--keccak-256" then
+            Benchmarks_Enabled (Keccak_256) := True;
+         elsif Arg = "--keccak-384" then
+            Benchmarks_Enabled (Keccak_384) := True;
+         elsif Arg = "--keccak-512" then
+            Benchmarks_Enabled (Keccak_512) := True;
+         elsif Arg = "--shake128" then
+            Benchmarks_Enabled (SHAKE128) := True;
+         elsif Arg = "--shake256" then
+            Benchmarks_Enabled (SHAKE256) := True;
+         elsif Arg = "--rawshake128" then
+            Benchmarks_Enabled (RawSHAKE128) := True;
+         elsif Arg = "--rawshake256" then
+            Benchmarks_Enabled (RawSHAKE256) := True;
+         elsif Arg = "--duplex-r1152c448" then
+            Benchmarks_Enabled (Duplex_r1152c448) := True;
+         elsif Arg = "--duplex-r1088c512" then
+            Benchmarks_Enabled (Duplex_r1088c512) := True;
+         elsif Arg = "--duplex-r832c768" then
+            Benchmarks_Enabled (Duplex_r832c768) := True;
+         elsif Arg = "--duplex-r576c1024" then
+            Benchmarks_Enabled (Duplex_r576c1024) := True;
+         elsif Arg = "--keccak-f[1600,24]" then
+            Benchmarks_Enabled (KeccakF_1600) := True;
+         elsif Arg = "--keccak-f[1600,24]x2" then
+            Benchmarks_Enabled (KeccakF_1600_P2_R24) := True;
+         elsif Arg = "--keccak-f[1600,12]x2" then
+            Benchmarks_Enabled (KeccakF_1600_P2_R12) := True;
+         elsif Arg = "--keccak-f[800,22]" then
+            Benchmarks_Enabled (KeccakF_800) := True;
+         elsif Arg = "--keccak-f[400,20]" then
+            Benchmarks_Enabled (KeccakF_400) := True;
+         elsif Arg = "--keccak-f[200,18]" then
+            Benchmarks_Enabled (KeccakF_200) := True;
+         elsif Arg = "--keccak-f[100,16]" then
+            Benchmarks_Enabled (KeccakF_100) := True;
+         elsif Arg = "--keccak-f[50,14]" then
+            Benchmarks_Enabled (KeccakF_50) := True;
+         elsif Arg = "--keccak-f[25,12]" then
+            Benchmarks_Enabled (KeccakF_25) := True;
+         else
+            Ada.Text_IO.Put_Line ("Unrecognized argument: " & Arg);
+            Ada.Command_Line.Set_Exit_Status (1);
+            return;
+         end if;
+      end;
+   end loop;
 
-   Benchmark_K12;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (K12) then
+      Benchmark_K12;
+      Ada.Text_IO.New_Line;
+   end if;
 
-   Benchmark_SHA_224;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (SHA3_224) then
+      Benchmark_SHA_224;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_SHA_256;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (SHA3_256) then
+      Benchmark_SHA_256;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_SHA_384;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (SHA3_384) then
+      Benchmark_SHA_384;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_SHA_512;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (SHA3_512) then
+      Benchmark_SHA_512;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Keccak_224;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Keccak_224) then
+      Benchmark_Keccak_224;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Keccak_256;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Keccak_256) then
+      Benchmark_Keccak_256;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Keccak_384;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Keccak_384) then
+      Benchmark_Keccak_384;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Keccak_512;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Keccak_512) then
+      Benchmark_Keccak_512;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_SHAKE128;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (SHAKE128) then
+      Benchmark_SHAKE128;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_SHAKE256;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (SHAKE256) then
+      Benchmark_SHAKE256;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_RawSHAKE128;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (RawSHAKE128) then
+      Benchmark_RawSHAKE128;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_RawSHAKE256;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (RawSHAKE256) then
+      Benchmark_RawSHAKE256;
+     Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Duplex_r1152c448;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Duplex_r1152c448) then
+      Benchmark_Duplex_r1152c448;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Duplex_r1088c512;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Duplex_r1088c512) then
+      Benchmark_Duplex_r1088c512;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Duplex_r832c768;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Duplex_r832c768) then
+      Benchmark_Duplex_r832c768;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_Duplex_r576c1024;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (Duplex_r576c1024) then
+      Benchmark_Duplex_r576c1024;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_1600;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_1600) then
+      Benchmark_KeccakF_1600;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_1600_P2_R24;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_1600_P2_R24) then
+      Benchmark_KeccakF_1600_P2_R24;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_1600_P2_R12;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_1600_P2_R12) then
+      Benchmark_KeccakF_1600_P2_R12;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_800;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_800) then
+      Benchmark_KeccakF_800;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_400;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_400) then
+      Benchmark_KeccakF_400;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_200;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_200) then
+      Benchmark_KeccakF_200;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_100;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_100) then
+      Benchmark_KeccakF_100;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_50;
-   Ada.Text_IO.New_Line;
+   if Benchmarks_Enabled (KeccakF_50) then
+      Benchmark_KeccakF_50;
+      Ada.Text_IO.New_Line;
+   end if;
    
-   Benchmark_KeccakF_25;
-   Ada.Text_IO.New_Line;
-
+   if Benchmarks_Enabled (KeccakF_25) then
+      Benchmark_KeccakF_25;
+      Ada.Text_IO.New_Line;
+   end if;
 end Benchmark;
