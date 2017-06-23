@@ -30,7 +30,11 @@ with Interfaces; use Interfaces;
 --  @brief@
 --  Type definitions and subprograms for SSE2 vector instructions.
 package Keccak.Arch.SSE2
+with SPARK_Mode => On
 is
+
+   pragma Warnings (GNATprove, Off,
+                    "pragma ""Machine_Attribute"" ignored (not yet supported)");
 
    ----------------------------------------------------------------------------
    --  2x 64-bit vectors
@@ -91,7 +95,8 @@ is
                             Amount : in Natural) return V2DI
       is (Shift_Left (A, Amount) xor Shift_Right (A, 64 - Amount))
       with Inline,
-      Global => null;
+      Global => null,
+      Pre => Amount <= 64;
 
    end V2DI_Vectors;
 
@@ -165,7 +170,8 @@ is
                             Amount : in Natural) return V4SI
       is (Shift_Left (A, Amount) xor Shift_Right (A, 32 - Amount))
       with Inline,
-      Global => null;
+      Global => null,
+      Pre => Amount <= 32;
 
    end V4SI_Vectors;
 
