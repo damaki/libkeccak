@@ -28,6 +28,7 @@
 package body Keccak.Generic_Parallel_Sponge
 is
 
+   pragma Warnings (Off, "postcondition does not check the outcome");
 
    procedure Lemma_Remaining_Mod_Rate_Preserve
      (Offset, Remaining, Length : in Natural;
@@ -50,6 +51,8 @@ is
      Pre => (Offset <= Natural'Last - Rate
              and Offset mod Rate = 0),
      Post => (Offset + Rate) mod Rate = 0;
+
+   pragma Warnings (On, "postcondition does not check the outcome");
 
 
    procedure Lemma_Remaining_Mod_Rate_Preserve
