@@ -556,10 +556,11 @@ is
    end Permute_All;
 
 
-   procedure XOR_Bits_Into_State(S           : in out Parallel_State;
-                                 Data        : in     Keccak.Types.Byte_Array;
-                                 Data_Offset : in     Natural;
-                                 Bit_Len     : in     Natural)
+   procedure XOR_Bits_Into_State_Separate
+     (S           : in out Parallel_State;
+      Data        : in     Keccak.Types.Byte_Array;
+      Data_Offset : in     Natural;
+      Bit_Len     : in     Natural)
    is
       use type Keccak.Types.Byte;
 
@@ -622,7 +623,73 @@ is
             end loop;
          end;
       end if;
-   end XOR_Bits_Into_State;
+   end XOR_Bits_Into_State_Separate;
+
+
+   procedure XOR_Bits_Into_State_All (S       : in out Parallel_State;
+                                      Data    : in     Keccak.Types.Byte_Array;
+                                      Bit_Len : in     Natural)
+   is
+      use type Keccak.Types.Byte;
+
+      Remaining_Bits   : Natural := Bit_Len;
+      Offset           : Natural := 0;
+
+   begin
+      -- Process whole lanes (64 bits).
+      Outer_Loop:
+      for Y in Y_Coord loop
+         pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
+         pragma Loop_Invariant (Offset mod (W/8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (W/8) * 5);
+
+         for X in X_Coord loop
+            pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
+            pragma Loop_Invariant (Offset mod (W/8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (W/8) * 5) + (Natural (X) * (W/8)));
+
+            exit Outer_Loop when Remaining_Bits < W;
+
+            declare
+               Lane : Lane_Type := 0;
+            begin
+               for I in Natural range 0 .. (W/8) - 1 loop
+                  Lane := Lane or Shift_Left(Lane_Type(Data(Data'First + Offset + I)),
+                                             I*8);
+               end loop;
+
+               for I in VXXI_Index loop
+                  S(X, Y)(I) := S(X, Y)(I) xor Lane;
+               end loop;
+            end;
+
+            Offset          := Offset          + W/8;
+            Remaining_Bits  := Remaining_Bits  - W;
+
+         end loop;
+      end loop Outer_Loop;
+
+      -- Process any remaining data (smaller than 1 lane - 64 bits)
+      if Remaining_Bits > 0 then
+         declare
+            X                : X_Coord   := X_Coord ((Bit_Len / W) mod 5);
+            Y                : Y_Coord   := Y_Coord ((Bit_Len / W)  /  5);
+            Word             : Lane_Type := 0;
+            Remaining_Bytes  : Natural   := (Remaining_Bits + 7) / 8;
+
+         begin
+            for I in Natural range 0 .. Remaining_Bytes - 1 loop
+               Word := Word or Shift_Left(Lane_Type(Data(Data'First + Offset + I)), I*8);
+            end loop;
+
+            Word := Word and (2**Remaining_Bits) - 1;
+
+            for I in VXXI_Index loop
+               S(X, Y)(I) := S(X, Y)(I) xor Word;
+            end loop;
+         end;
+      end if;
+   end XOR_Bits_Into_State_All;
 
 
 

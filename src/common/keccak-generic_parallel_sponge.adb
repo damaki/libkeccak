@@ -82,8 +82,8 @@ is
    end Init;
 
 
-   procedure Absorb_Bytes_All (Ctx        : in out Context;
-                               Data       : in     Types.Byte_Array)
+   procedure Absorb_Bytes_Separate (Ctx        : in out Context;
+                                    Data       : in     Types.Byte_Array)
    is
       Block_Size : constant Natural := Data'Length / Num_Parallel_Instances;
 
@@ -105,7 +105,7 @@ is
 
          pragma Loop_Invariant (Offset <= Block_Size);
 
-         XOR_Bits_Into_State
+         XOR_Bits_Into_State_Separate
            (S           => Ctx.Permutation_State,
             Data        => Data,
             Data_Offset => Offset,
@@ -147,7 +147,7 @@ is
                  Max_Bit_Length => Ctx.Rate * 8);
          end loop;
 
-         XOR_Bits_Into_State
+         XOR_Bits_Into_State_Separate
            (S           => Ctx.Permutation_State,
             Data        => Buffer,
             Data_Offset => 0,
@@ -156,10 +156,10 @@ is
          Permute_All (Ctx.Permutation_State);
       end if;
 
-   end Absorb_Bytes_All;
+   end Absorb_Bytes_Separate;
 
 
-   procedure Absorb_Bytes_All_With_Suffix
+   procedure Absorb_Bytes_Separate_With_Suffix
      (Ctx        : in out Context;
       Data       : in     Types.Byte_Array;
       Suffix     : in     Types.Byte;
@@ -187,7 +187,7 @@ is
 
          pragma Loop_Invariant (Offset <= Block_Size);
 
-         XOR_Bits_Into_State
+         XOR_Bits_Into_State_Separate
            (S           => Ctx.Permutation_State,
             Data        => Data,
             Data_Offset => Offset,
@@ -217,7 +217,7 @@ is
                  Max_Bit_Length => Ctx.Rate * 8);
          end loop;
 
-         XOR_Bits_Into_State
+         XOR_Bits_Into_State_Separate
            (S           => Ctx.Permutation_State,
             Data        => Buffer,
             Data_Offset => 0,
@@ -240,7 +240,7 @@ is
               Buffer (0 .. Ctx.Rate - 1);
          end loop;
 
-         XOR_Bits_Into_State
+         XOR_Bits_Into_State_Separate
            (S           => Ctx.Permutation_State,
             Data        => Buffer,
             Data_Offset => 0,
@@ -250,7 +250,7 @@ is
 
       end if;
 
-   end Absorb_Bytes_All_With_Suffix;
+   end Absorb_Bytes_Separate_With_Suffix;
 
 
    procedure Add_Padding (Ctx : in out Context)
@@ -274,7 +274,7 @@ is
            Buffer (0 .. Ctx.Rate - 1);
       end loop;
 
-      XOR_Bits_Into_State
+      XOR_Bits_Into_State_Separate
         (S           => Ctx.Permutation_State,
          Data        => Buffer,
          Data_Offset => 0,
@@ -286,8 +286,8 @@ is
    end Add_Padding;
 
 
-   procedure Squeeze_Bytes_All (Ctx        : in out Context;
-                                Data       :    out Types.Byte_Array)
+   procedure Squeeze_Bytes_Separate (Ctx        : in out Context;
+                                     Data       :    out Types.Byte_Array)
    is
       Block_Size : constant Natural := Data'Length / Num_Parallel_Instances;
 
@@ -351,6 +351,6 @@ is
             "The array will be wholly initialized at the end of this procedure");
 
       end if;
-   end Squeeze_Bytes_All;
+   end Squeeze_Bytes_Separate;
 
 end Keccak.Generic_Parallel_Sponge;

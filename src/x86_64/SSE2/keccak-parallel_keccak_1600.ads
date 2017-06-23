@@ -80,12 +80,18 @@ is
      (First_Round => 0,
       Num_Rounds  => 24);
 
-   procedure XOR_Bits_Into_State_P2
+   procedure XOR_Bits_Into_State_Separate_P2
      (S           : in out Parallel_State_P2;
       Data        : in     Types.Byte_Array;
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
-      renames KeccakF_1600_P2.XOR_Bits_Into_State;
+      renames KeccakF_1600_P2.XOR_Bits_Into_State_Separate;
+
+   procedure XOR_Bits_Into_State_All_P2
+     (S           : in out Parallel_State_P2;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+      renames KeccakF_1600_P2.XOR_Bits_Into_State_All;
 
    procedure Extract_Bytes_P2
      (S           : in     Parallel_State_P2;
@@ -101,13 +107,14 @@ is
 
    package KeccakF_1600_P4
    is new Keccak.Generic_Parallel_Permutation_Parallel_Fallback
-     (Permutation_State   => Parallel_State_P2,
-      Base_Parallelism    => 2,
-      Parallel_Factor     => 2,
-      Init                => Init_P2,
-      XOR_Bits_Into_State => XOR_Bits_Into_State_P2,
-      Extract_Bytes       => Extract_Bytes_P2,
-      State_Size_Bits     => 1600);
+     (Permutation_State            => Parallel_State_P2,
+      Base_Parallelism             => 2,
+      Parallel_Factor              => 2,
+      Init                         => Init_P2,
+      XOR_Bits_Into_State_Separate => XOR_Bits_Into_State_Separate_P2,
+      XOR_Bits_Into_State_All      => XOR_Bits_Into_State_All_P2,
+      Extract_Bytes                => Extract_Bytes_P2,
+      State_Size_Bits              => 1600);
 
    subtype Parallel_State_P4 is KeccakF_1600_P4.Parallel_State;
 
@@ -120,12 +127,18 @@ is
    procedure Permute_All_P4_R24 is new KeccakF_1600_P4.Permute_All
      (Permute_All_P2_R24);
 
-   procedure XOR_Bits_Into_State_P4
+   procedure XOR_Bits_Into_State_Separate_P4
      (S           : in out Parallel_State_P4;
       Data        : in     Types.Byte_Array;
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
-      renames KeccakF_1600_P4.XOR_Bits_Into_State;
+      renames KeccakF_1600_P4.XOR_Bits_Into_State_Separate;
+
+   procedure XOR_Bits_Into_State_All_P4
+     (S           : in out Parallel_State_P4;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+      renames KeccakF_1600_P4.XOR_Bits_Into_State_All;
 
    procedure Extract_Bytes_P4
      (S           : in     Parallel_State_P4;
@@ -141,13 +154,14 @@ is
 
    package KeccakF_1600_P8
    is new Keccak.Generic_Parallel_Permutation_Parallel_Fallback
-     (Permutation_State   => Parallel_State_P2,
-      Base_Parallelism    => 2,
-      Parallel_Factor     => 4,
-      Init                => Init_P2,
-      XOR_Bits_Into_State => XOR_Bits_Into_State_P2,
-      Extract_Bytes       => Extract_Bytes_P2,
-      State_Size_Bits     => 1600);
+     (Permutation_State            => Parallel_State_P2,
+      Base_Parallelism             => 2,
+      Parallel_Factor              => 4,
+      Init                         => Init_P2,
+      XOR_Bits_Into_State_Separate => XOR_Bits_Into_State_Separate_P2,
+      XOR_Bits_Into_State_All      => XOR_Bits_Into_State_All_P2,
+      Extract_Bytes                => Extract_Bytes_P2,
+      State_Size_Bits              => 1600);
 
    subtype Parallel_State_P8 is KeccakF_1600_P8.Parallel_State;
 
@@ -160,12 +174,18 @@ is
    procedure Permute_All_P8_R24 is new KeccakF_1600_P8.Permute_All
      (Permute_All_P2_R24);
 
-   procedure XOR_Bits_Into_State_P8
+   procedure XOR_Bits_Into_State_Separate_P8
      (S           : in out Parallel_State_P8;
       Data        : in     Types.Byte_Array;
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
-      renames KeccakF_1600_P8.XOR_Bits_Into_State;
+      renames KeccakF_1600_P8.XOR_Bits_Into_State_Separate;
+
+   procedure XOR_Bits_Into_State_All_P8
+     (S           : in out Parallel_State_P8;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+      renames KeccakF_1600_P8.XOR_Bits_Into_State_All;
 
    procedure Extract_Bytes_P8
      (S           : in     Parallel_State_P8;

@@ -34,39 +34,39 @@ is
    end Init;
 
 
-   procedure Update (Ctx  : in out Context;
-                     Data : in     Types.Byte_Array)
+   procedure Update_Separate (Ctx  : in out Context;
+                              Data : in     Types.Byte_Array)
    is
       Block_Size : constant Natural := (Data'Length / Num_Parallel_Instances);
    begin
       if Block_Size mod (Rate / 8) = 0 then
-         Sponge.Absorb_Bytes_All (Ctx.Sponge_Ctx, Data);
+         Sponge.Absorb_Bytes_Separate (Ctx.Sponge_Ctx, Data);
 
       else
-         Sponge.Absorb_Bytes_All_With_Suffix
+         Sponge.Absorb_Bytes_Separate_With_Suffix
            (Ctx        => Ctx.Sponge_Ctx,
             Data       => Data,
             Suffix     => Suffix,
             Suffix_Len => Suffix_Size);
       end if;
-   end Update;
+   end Update_Separate;
 
 
-   procedure Extract (Ctx  : in out Context;
-                      Data :    out Types.Byte_Array)
+   procedure Extract_Separate (Ctx  : in out Context;
+                               Data :    out Types.Byte_Array)
    is
       Empty_Array : constant Types.Byte_Array (1 .. 0) := (others => 0);
 
    begin
       if State_Of (Ctx) = Updating then
-         Sponge.Absorb_Bytes_All_With_Suffix
+         Sponge.Absorb_Bytes_Separate_With_Suffix
            (Ctx        => Ctx.Sponge_Ctx,
             Data       => Empty_Array,
             Suffix     => Suffix,
             Suffix_Len => Suffix_Size);
       end if;
 
-      Sponge.Squeeze_Bytes_All (Ctx.Sponge_Ctx, Data);
-   end Extract;
+      Sponge.Squeeze_Bytes_Separate (Ctx.Sponge_Ctx, Data);
+   end Extract_Separate;
 
 end Keccak.Generic_Parallel_XOF;

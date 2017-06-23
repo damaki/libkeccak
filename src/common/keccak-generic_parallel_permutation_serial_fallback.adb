@@ -49,10 +49,11 @@ is
    end Permute_All;
 
 
-   procedure XOR_Bits_Into_State (S           : in out Parallel_State;
-                                  Data        : in     Types.Byte_Array;
-                                  Data_Offset : in     Natural;
-                                  Bit_Len     : in     Natural)
+   procedure XOR_Bits_Into_State_Separate
+     (S           : in out Parallel_State;
+      Data        : in     Types.Byte_Array;
+      Data_Offset : in     Natural;
+      Bit_Len     : in     Natural)
    is
       Stride : constant Natural := Data'Length / Num_Parallel_Instances;
 
@@ -67,7 +68,22 @@ is
             Data    => Data (Pos .. Pos + ((Bit_Len + 7) / 8) - 1),
             Bit_Len => Bit_Len);
       end loop;
-   end XOR_Bits_Into_State;
+   end XOR_Bits_Into_State_Separate;
+
+
+   procedure XOR_Bits_Into_State_All
+     (S           : in out Parallel_State;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+   is
+   begin
+      for I in S.States'Range loop
+         XOR_Bits_Into_State
+           (S       => S.States (I),
+            Data    => Data,
+            Bit_Len => Bit_Len);
+      end loop;
+   end XOR_Bits_Into_State_All;
 
 
    procedure Extract_Bytes (S           : in     Parallel_State;

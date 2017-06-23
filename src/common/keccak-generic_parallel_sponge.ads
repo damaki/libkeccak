@@ -43,11 +43,18 @@ generic
    with procedure Permute_All (S : in out State_Type);
    --  Apply the permutation function to each state in parallel.
 
-   with procedure XOR_Bits_Into_State (S           : in out State_Type;
-                                       Data        : in     Types.Byte_Array;
-                                       Data_Offset : in     Natural;
-                                       Bit_Len     : in     Natural);
+   with procedure XOR_Bits_Into_State_Separate
+     (S           : in out State_Type;
+      Data        : in     Types.Byte_Array;
+      Data_Offset : in     Natural;
+      Bit_Len     : in     Natural);
    --  XOR bits into a specific instance of the permutation state.
+
+
+   with procedure XOR_Bits_Into_State_All
+     (S           : in out State_Type;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural);
 
    with procedure Extract_Bytes(S           : in     State_Type;
                                 Data        : in out Keccak.Types.Byte_Array;
@@ -95,8 +102,8 @@ is
      Post => State_Of(Ctx) = Absorbing;
 
 
-   procedure Absorb_Bytes_All (Ctx        : in out Context;
-                               Data       : in     Types.Byte_Array)
+   procedure Absorb_Bytes_Separate (Ctx        : in out Context;
+                                    Data       : in     Types.Byte_Array)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and Data'Length / Num_Parallel_Instances <= Natural'Last / 8
@@ -127,7 +134,7 @@ is
    --  Squeezing state and no more data can be absorbed.
 
 
-   procedure Absorb_Bytes_All_With_Suffix
+   procedure Absorb_Bytes_Separate_With_Suffix
      (Ctx        : in out Context;
       Data       : in     Types.Byte_Array;
       Suffix     : in     Types.Byte;
@@ -140,8 +147,8 @@ is
      Post => State_Of (Ctx) = Squeezing;
 
 
-   procedure Squeeze_Bytes_All (Ctx        : in out Context;
-                                Data       :    out Types.Byte_Array)
+   procedure Squeeze_Bytes_Separate (Ctx        : in out Context;
+                                     Data       :    out Types.Byte_Array)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and State_Of (Ctx) in Absorbing | Squeezing),

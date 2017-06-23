@@ -58,8 +58,8 @@ is
      Post => State_Of (Ctx) = Updating;
 
 
-   procedure Update (Ctx  : in out Context;
-                     Data : in     Types.Byte_Array)
+   procedure Update_Separate (Ctx  : in out Context;
+                              Data : in     Types.Byte_Array)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and Data'Length / Num_Parallel_Instances <= Natural'Last / 8
@@ -72,8 +72,8 @@ is
         => State_Of (Ctx) = Extracting);
 
 
-   procedure Extract (Ctx  : in out Context;
-                      Data :    out Types.Byte_Array)
+   procedure Extract_Separate (Ctx  : in out Context;
+                               Data :    out Types.Byte_Array)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and State_Of (Ctx) in Updating | Extracting),

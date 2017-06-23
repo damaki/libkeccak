@@ -22,7 +22,7 @@ pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Serial_Fallback);
 --    * Init_P2
 --    * Permute_All_P2_R12
 --    * Permute_All_P2_R24
---    * XOR_Bits_Into_State_P2
+--    * XOR_Bits_Into_State_Separate_P2
 --    * Extract_Bytes_P2
 --
 --  For 4x parallelism:
@@ -30,7 +30,7 @@ pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Serial_Fallback);
 --    * Init_P4
 --    * Permute_All_P4_R12
 --    * Permute_All_P4_R24
---    * XOR_Bits_Into_State_P4
+--    * XOR_Bits_Into_State_Separate_P4
 --    * Extract_Bytes_P4
 --
 --  For 8x parallelism:
@@ -38,7 +38,7 @@ pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Serial_Fallback);
 --    * Init_P8
 --    * Permute_All_P8_R12
 --    * Permute_All_P8_R24
---    * XOR_Bits_Into_State_P8
+--    * XOR_Bits_Into_State_Separate_P8
 --    * Extract_Bytes_P8
 --
 --  Any other declarations in this package are architecture-specific and should
@@ -82,12 +82,18 @@ is
    procedure Permute_All_P2_R24 is new KeccakF_1600_P2.Permute_All
      (Permute_S1_R24);
 
-   procedure XOR_Bits_Into_State_P2
+   procedure XOR_Bits_Into_State_Separate_P2
      (S           : in out Parallel_State_P2;
       Data        : in     Types.Byte_Array;
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
-      renames KeccakF_1600_P2.XOR_Bits_Into_State;
+      renames KeccakF_1600_P2.XOR_Bits_Into_State_Separate;
+
+   procedure XOR_Bits_Into_State_All_P2
+     (S           : in out Parallel_State_P2;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+      renames KeccakF_1600_P2.XOR_Bits_Into_State_All;
 
    procedure Extract_Bytes_P2
      (S           : in     Parallel_State_P2;
@@ -121,12 +127,18 @@ is
    procedure Permute_All_P4_R24 is new KeccakF_1600_P4.Permute_All
      (Permute_S1_R24);
 
-   procedure XOR_Bits_Into_State_P4
+   procedure XOR_Bits_Into_State_Separate_P4
      (S           : in out Parallel_State_P4;
       Data        : in     Types.Byte_Array;
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
-      renames KeccakF_1600_P4.XOR_Bits_Into_State;
+      renames KeccakF_1600_P4.XOR_Bits_Into_State_Separate;
+
+   procedure XOR_Bits_Into_State_All_P4
+     (S           : in out Parallel_State_P4;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+      renames KeccakF_1600_P4.XOR_Bits_Into_State_All;
 
    procedure Extract_Bytes_P4
      (S           : in     Parallel_State_P4;
@@ -160,12 +172,18 @@ is
    procedure Permute_All_P8_R24 is new KeccakF_1600_P8.Permute_All
      (Permute_S1_R24);
 
-   procedure XOR_Bits_Into_State_P8
+   procedure XOR_Bits_Into_State_Separate_P8
      (S           : in out Parallel_State_P8;
       Data        : in     Types.Byte_Array;
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
-      renames KeccakF_1600_P8.XOR_Bits_Into_State;
+      renames KeccakF_1600_P8.XOR_Bits_Into_State_Separate;
+
+   procedure XOR_Bits_Into_State_All_P8
+     (S           : in out Parallel_State_P8;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+      renames KeccakF_1600_P8.XOR_Bits_Into_State_All;
 
    procedure Extract_Bytes_P8
      (S           : in     Parallel_State_P8;

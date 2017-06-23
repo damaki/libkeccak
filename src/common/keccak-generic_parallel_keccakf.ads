@@ -129,17 +129,18 @@ is
      with Global => null;
 
 
-   procedure XOR_Bits_Into_State (S           : in out Parallel_State;
-                                  Data        : in     Types.Byte_Array;
-                                  Data_Offset : in     Natural;
-                                  Bit_Len     : in     Natural)
+   procedure XOR_Bits_Into_State_Separate
+     (S           : in out Parallel_State;
+      Data        : in     Types.Byte_Array;
+      Data_Offset : in     Natural;
+      Bit_Len     : in     Natural)
      with Global => null,
      Pre => (Data'Length / Vector_Width <= Natural'Last / 8
              and then Data'Length mod Vector_Width = 0
              and then Data_Offset <= (Data'Length / Vector_Width)
              and then Bit_Len <= ((Data'Length / Vector_Width) - Data_Offset) * 8
              and then Bit_Len <= B);
-   --  XOR bits into each parallel Keccak instance.
+   --  XOR separate data into each parallel Keccak instance.
    --
    --  The @Data@ array contains the data to be XORed into all parallel
    --  instances. The bytes in @Data@ are split into equal chunks depending on
@@ -177,6 +178,43 @@ is
    --      array.
    --
    --  @param Bit_Len The number of bits to XOR into each state.
+
+
+   procedure XOR_Bits_Into_State_All
+     (S           : in out Parallel_State;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+     with Global => null,
+     Depends => (S => + (Data, Bit_Len)),
+     Pre => (Data'Length <= Natural'Last / 8
+             and then Bit_Len <= Data'Length * 8
+             and then Bit_Len <= B);
+   --  XOR the same data into all parallel Keccak instances.
+   --
+   --  The @Data@ array contains the data to be XORed into all parallel
+   --  instances. For example, for Keccak-f[1600]×2 this would be as follows:
+   --
+   --                   BL
+   --             |<--------->|
+   --             +----------------+
+   --             |                | Data
+   --             +----------------+
+   --                     /\
+   --                XOR /  \ XOR
+   --                 v /    \ v
+   --          +-----------+-----------+
+   --          |  state 0  |  state 1  |
+   --          +-----------+-----------+
+   --
+   --  Where BL = Bit_Len
+   --
+   --  The data is always XORed starting at the beginning of the Keccak state.
+   --
+   --  @param S The parallel Keccak state to where the bits are XORed.
+   --
+   --  @param Data The array containing the data to XOR into each parallel state.
+   --
+   --  @param Bit_Len The length of the data, in bits.
 
 
    procedure Extract_Bytes (S           : in     Parallel_State;

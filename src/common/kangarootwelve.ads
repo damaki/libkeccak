@@ -56,39 +56,42 @@ is
 
    --  Parallel sponge based on Keccak-f[1600,12]×2
    package Sponge_P2 is new Keccak.Generic_Parallel_Sponge
-     (State_Size          => 1600,
-      State_Type          => Keccak.Parallel_Keccak_1600.Parallel_State_P2,
-      Parallelism         => 2,
-      Init                => Keccak.Parallel_Keccak_1600.Init_P2,
-      Permute_All         => Keccak.Parallel_Keccak_1600.Permute_All_P2_R12,
-      XOR_Bits_Into_State => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_P2,
-      Extract_Bytes       => Keccak.Parallel_Keccak_1600.Extract_Bytes_P2,
-      Pad                 => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
+     (State_Size                   => 1600,
+      State_Type                   => Keccak.Parallel_Keccak_1600.Parallel_State_P2,
+      Parallelism                  => 2,
+      Init                         => Keccak.Parallel_Keccak_1600.Init_P2,
+      Permute_All                  => Keccak.Parallel_Keccak_1600.Permute_All_P2_R12,
+      XOR_Bits_Into_State_Separate => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_Separate_P2,
+      XOR_Bits_Into_State_All      => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_All_P2,
+      Extract_Bytes                => Keccak.Parallel_Keccak_1600.Extract_Bytes_P2,
+      Pad                          => Keccak.Padding.Pad101_Single_Block,
+      Min_Padding_Bits             => Keccak.Padding.Pad101_Min_Bits);
 
    --  Parallel sponge based on Keccak-f[1600,12]×4
    package Sponge_P4 is new Keccak.Generic_Parallel_Sponge
-     (State_Size          => 1600,
-      State_Type          => Keccak.Parallel_Keccak_1600.Parallel_State_P4,
-      Parallelism         => 4,
-      Init                => Keccak.Parallel_Keccak_1600.Init_P4,
-      Permute_All         => Keccak.Parallel_Keccak_1600.Permute_All_P4_R12,
-      XOR_Bits_Into_State => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_P4,
-      Extract_Bytes       => Keccak.Parallel_Keccak_1600.Extract_Bytes_P4,
-      Pad                 => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
+     (State_Size                   => 1600,
+      State_Type                   => Keccak.Parallel_Keccak_1600.Parallel_State_P4,
+      Parallelism                  => 4,
+      Init                         => Keccak.Parallel_Keccak_1600.Init_P4,
+      Permute_All                  => Keccak.Parallel_Keccak_1600.Permute_All_P4_R12,
+      XOR_Bits_Into_State_Separate => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_Separate_P4,
+      XOR_Bits_Into_State_All      => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_All_P4,
+      Extract_Bytes                => Keccak.Parallel_Keccak_1600.Extract_Bytes_P4,
+      Pad                          => Keccak.Padding.Pad101_Single_Block,
+      Min_Padding_Bits             => Keccak.Padding.Pad101_Min_Bits);
 
    --  Parallel sponge based on Keccak-f[1600,12]×8
    package Sponge_P8 is new Keccak.Generic_Parallel_Sponge
-     (State_Size          => 1600,
-      State_Type          => Keccak.Parallel_Keccak_1600.Parallel_State_P8,
-      Parallelism         => 8,
-      Init                => Keccak.Parallel_Keccak_1600.Init_P8,
-      Permute_All         => Keccak.Parallel_Keccak_1600.Permute_All_P8_R12,
-      XOR_Bits_Into_State => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_P8,
-      Extract_Bytes       => Keccak.Parallel_Keccak_1600.Extract_Bytes_P8,
-      Pad                 => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
+     (State_Size                   => 1600,
+      State_Type                   => Keccak.Parallel_Keccak_1600.Parallel_State_P8,
+      Parallelism                  => 8,
+      Init                         => Keccak.Parallel_Keccak_1600.Init_P8,
+      Permute_All                  => Keccak.Parallel_Keccak_1600.Permute_All_P8_R12,
+      XOR_Bits_Into_State_Separate => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_Separate_P8,
+      XOR_Bits_Into_State_All      => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_All_P8,
+      Extract_Bytes                => Keccak.Parallel_Keccak_1600.Extract_Bytes_P8,
+      Pad                          => Keccak.Padding.Pad101_Single_Block,
+      Min_Padding_Bits             => Keccak.Padding.Pad101_Min_Bits);
 
 
    --  Now we can build a XOF on each parallel sponge

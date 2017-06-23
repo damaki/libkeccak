@@ -49,11 +49,17 @@ generic
    with procedure Init (S : out Permutation_State);
    --  Initializes the Permutation_State to all zeroes.
 
-   with procedure XOR_Bits_Into_State (S           : in out Permutation_State;
-                                       Data        : in     Types.Byte_Array;
-                                       Data_Offset : in     Natural;
-                                       Bit_Len     : in     Natural);
+   with procedure XOR_Bits_Into_State_Separate
+     (S           : in out Permutation_State;
+      Data        : in     Types.Byte_Array;
+      Data_Offset : in     Natural;
+      Bit_Len     : in     Natural);
    --  XOR bits into each parallel state.
+
+   with procedure XOR_Bits_Into_State_All
+     (S           : in out Permutation_State;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural);
 
    with procedure Extract_Bytes (S           : in     Permutation_State;
                                  Data        : in out Types.Byte_Array;
@@ -100,14 +106,26 @@ is
      with Global => null;
 
 
-   procedure XOR_Bits_Into_State (S           : in out Parallel_State;
-                                  Data        : in     Types.Byte_Array;
-                                  Data_Offset : in     Natural;
-                                  Bit_Len     : in     Natural)
+   procedure XOR_Bits_Into_State_Separate
+     (S           : in out Parallel_State;
+      Data        : in     Types.Byte_Array;
+      Data_Offset : in     Natural;
+      Bit_Len     : in     Natural)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and then Data_Offset <= (Data'Length / Num_Parallel_Instances)
              and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
+             and then Bit_Len <= State_Size_Bits);
+
+
+   procedure XOR_Bits_Into_State_All
+     (S           : in out Parallel_State;
+      Data        : in     Types.Byte_Array;
+      Bit_Len     : in     Natural)
+     with Global => null,
+     Depends => (S => + (Data, Bit_Len)),
+     Pre => (Data'Length <= Natural'Last / 8
+             and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= State_Size_Bits);
 
 

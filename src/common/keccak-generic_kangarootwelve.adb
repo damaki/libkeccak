@@ -68,13 +68,13 @@ is
    begin
       --  Process N blocks in parallel and produce N chaining values.
       XOF_Parallel_N.Init    (Par_Ctx);
-      XOF_Parallel_N.Update  (Par_Ctx, Data);
+      XOF_Parallel_N.Update_Separate  (Par_Ctx, Data);
 
       pragma Warnings (GNATprove, Off,
                        "unused assignment to ""Par_Ctx""",
                        Reason => "No further data needs to be extracted");
 
-      XOF_Parallel_N.Extract (Par_Ctx, CV_N);
+      XOF_Parallel_N.Extract_Separate (Par_Ctx, CV_N);
 
       pragma Warnings (GNATprove, On);
 
