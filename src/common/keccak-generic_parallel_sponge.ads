@@ -61,6 +61,10 @@ generic
    --  Apply the padding rule to a block of data.
 
    Min_Padding_Bits : Natural;
+   --  Minimum number of padding bits appended to the message.
+   --
+   --  E.g. for pad10*1 there are a minimum of 2 padding bits (two '1' bits).
+
 package Keccak.Generic_Parallel_Sponge
 is
    Num_Parallel_Instances : constant Positive := Parallelism;

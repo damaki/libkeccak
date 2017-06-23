@@ -158,13 +158,13 @@ is
    --       |  state 0  |        |  state 1  |
    --       +-----------+        +-----------+
    --
+   --  Where DO = Data_Offset and BL = Bit_Len
+   --
    --  The @Data_Offset@ determines the offset within each chunk to start
    --  reading data. @Bit_Len@ determines the number of bits to read from each
    --  chunk.
    --
    --  The data is always XORed starting at the beginning of the Keccak state.
-   --
-   --  Where DO = Data_Offset and BL = Bit_Len
    --
    --  @param S The parallel Keccak state to where the bits are XORed.
    --

@@ -39,9 +39,13 @@ generic
                                  Data :    out Types.Byte_Array);
 
    State_Size    : Positive;
+   --  State size of the permutation in bits.
+   --
+   --  E.g. for Keccak-f[1600] set State_Size to 1600.
 
    Parallelism : Positive;
    --  Specifies the number of simulated parallel instances.
+
 
    --  @brief@
    --  Serial fallback implementation of the parallel permutation API.
@@ -51,7 +55,7 @@ generic
    --  but implements the permutation serially.
    --
    --  For example, this package can be used to simulate Keccak-p[1600,24]×8
-   --  by serially invoking 8 separate instances of Keccak-[1600,24].
+   --  by serially invoking 8 separate instances of Keccak-p[1600,24].
 package Keccak.Generic_Parallel_Permutation_Serial_Fallback
 is
    Num_Parallel_Instances : constant Positive := Parallelism;
