@@ -64,7 +64,7 @@ is
 
          XOR_Bits_Into_State
            (S       => S.States (I),
-            Data    => Data (Pos .. Pos + ((Bit_Len + 7) / 8)),
+            Data    => Data (Pos .. Pos + ((Bit_Len + 7) / 8) - 1),
             Bit_Len => Bit_Len);
       end loop;
    end XOR_Bits_Into_State;

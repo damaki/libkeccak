@@ -43,7 +43,6 @@ pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Parallel_Fallback);
 --
 --  Any other declarations in this package are architecture-specific and should
 --  not be relied upon.
-package Keccak.Parallel_Ke
 package Keccak.Parallel_Keccak_1600
 with SPARK_Mode => On
 is
