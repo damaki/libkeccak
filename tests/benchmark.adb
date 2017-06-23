@@ -26,6 +26,7 @@
 -------------------------------------------------------------------------------
 
 with Ada.Real_Time;
+with Ada.Execution_Time;
 with Ada.Text_IO;
 with KangarooTwelve;
 with Keccak.Parallel_Keccak_1600;
@@ -54,7 +55,7 @@ is
    
    -- A 1 MiB data chunk to use as an input to the algorithms.
    type Byte_Array_Access is access Keccak.Types.Byte_Array;
-   Data_Chunk : Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. 1024*1024);
+   Data_Chunk : Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size_MiB*1024*1024);
    
    ----------------------------------------------------------------------------
    -- Print_Number
@@ -138,30 +139,27 @@ is
    
    procedure Hash_Benchmark
    is
-      use type Ada.Real_Time.Time;
+      use type Ada.Execution_Time.CPU_Time;
    
       Ctx   : Hash_Package.Context;
       Digest : Hash_Package.Digest_Type;
       
-      Start_Time : Ada.Real_Time.Time;
-      End_Time   : Ada.Real_Time.Time;
+      Start_Time : Ada.Execution_Time.CPU_Time;
+      End_Time   : Ada.Execution_Time.CPU_Time;
    begin
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Real_Time.Clock;
+         Start_Time := Ada.Execution_Time.Clock;
       
          Hash_Package.Init(Ctx);
          
-         for I in Positive range 1 .. Benchmark_Data_Size_MiB loop
-            Hash_Package.Update(Ctx, Data_Chunk.all, Data_Chunk.all'Length*8);
-         end loop;
+         Hash_Package.Update(Ctx, Data_Chunk.all, Data_Chunk.all'Length*8);
          
          Hash_Package.Final(Ctx, Digest);
          
-         End_Time := Ada.Real_Time.Clock;
+         End_Time := Ada.Execution_Time.Clock;
          
          Ada.Text_IO.Put(Name & ", ");
-         Print_Time(Data_Chunk.all'Length * Benchmark_Data_Size_MiB,
-                    End_Time - Start_Time);
+         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
    end Hash_Benchmark;
    
@@ -179,44 +177,38 @@ is
    
    procedure XOF_Benchmark
    is
-      use type Ada.Real_Time.Time;
+      use type Ada.Execution_Time.CPU_Time;
    
       Ctx    : XOF_Package.Context;
       
-      Start_Time : Ada.Real_Time.Time;
-      End_Time   : Ada.Real_Time.Time;
+      Start_Time : Ada.Execution_Time.CPU_Time;
+      End_Time   : Ada.Execution_Time.CPU_Time;
    begin
       
       -- Benchmark Absorbing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Real_Time.Clock;
+         Start_Time := Ada.Execution_Time.Clock;
       
          XOF_Package.Init(Ctx);
          
-         for I in Positive range 1 .. Benchmark_Data_Size_MiB loop
-            XOF_Package.Update(Ctx, Data_Chunk.all, Data_Chunk.all'Length*8);
-         end loop;
+         XOF_Package.Update(Ctx, Data_Chunk.all, Data_Chunk.all'Length*8);
          
-         End_Time := Ada.Real_Time.Clock;
+         End_Time := Ada.Execution_Time.Clock;
          
          Ada.Text_IO.Put(Name & " (Absorbing), ");
-         Print_Time(Data_Chunk.all'Length * Benchmark_Data_Size_MiB,
-                    End_Time - Start_Time);
+         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
       
       -- Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Real_Time.Clock;
+         Start_Time := Ada.Execution_Time.Clock;
       
-         for I in Positive range 1 .. Benchmark_Data_Size_MiB loop
-            XOF_Package.Extract(Ctx, Data_Chunk.all);
-         end loop;
+         XOF_Package.Extract(Ctx, Data_Chunk.all);
          
-         End_Time := Ada.Real_Time.Clock;
+         End_Time := Ada.Execution_Time.Clock;
          
          Ada.Text_IO.Put(Name & " (Squeezing), ");
-         Print_Time(Data_Chunk.all'Length * Benchmark_Data_Size_MiB,
-                    End_Time - Start_Time);
+         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
    end XOF_Benchmark;
    
@@ -233,21 +225,21 @@ is
    
    procedure Duplex_Benchmark
    is
-      use type Ada.Real_Time.Time;
+      use type Ada.Execution_Time.CPU_Time;
       
       Ctx : Duplex.Context;
       
       Out_Data : Keccak.Types.Byte_Array(1 .. 1600/8);
       
-      Start_Time : Ada.Real_Time.Time;
-      End_Time   : Ada.Real_Time.Time;
+      Start_Time : Ada.Execution_Time.CPU_Time;
+      End_Time   : Ada.Execution_Time.CPU_Time;
       
       Num_Iterations : Natural := (Benchmark_Data_Size_MiB*1024*1024) / ((1600-Capacity)/8);
       
    begin
       
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Real_Time.Clock;
+         Start_Time := Ada.Execution_Time.Clock;
          
          Duplex.Init(Ctx, Capacity);
          
@@ -259,7 +251,7 @@ is
                           Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits);
          end loop;
          
-         End_Time := Ada.Real_Time.Clock;
+         End_Time := Ada.Execution_Time.Clock;
          
          Ada.Text_IO.Put(Name & ", ");
          Print_Time((Duplex.Rate_Of(Ctx)/8) * Num_Iterations,
@@ -283,15 +275,15 @@ is
    
    procedure KeccakF_Benchmark
    is
-      use type Ada.Real_Time.Time;
+      use type Ada.Execution_Time.CPU_Time;
       
       package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
       package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
             
       State : State_Type;
       
-      Start_Time : Ada.Real_Time.Time;
-      End_Time   : Ada.Real_Time.Time;
+      Start_Time : Ada.Execution_Time.CPU_Time;
+      End_Time   : Ada.Execution_Time.CPU_Time;
       
       Num_Iterations : Natural := 1_000_000;
       
@@ -299,13 +291,13 @@ is
       Init(State);
       
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Real_Time.Clock;
+         Start_Time := Ada.Execution_Time.Clock;
          
          for J in Positive range 1 .. Num_Iterations loop
             Permute(State);
          end loop;
          
-         End_Time := Ada.Real_Time.Clock;
+         End_Time := Ada.Execution_Time.Clock;
          
          Ada.Text_IO.Put(Name & ", ");
          
@@ -334,46 +326,40 @@ is
    
    procedure K12_Benchmark
    is
-      use type Ada.Real_Time.Time;
+      use type Ada.Execution_Time.CPU_Time;
    
       Ctx    : K12.Context;
       
-      Start_Time : Ada.Real_Time.Time;
-      End_Time   : Ada.Real_Time.Time;
+      Start_Time : Ada.Execution_Time.CPU_Time;
+      End_Time   : Ada.Execution_Time.CPU_Time;
    begin
       
       -- Benchmark Absorbing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Real_Time.Clock;
+         Start_Time := Ada.Execution_Time.Clock;
       
          K12.Init(Ctx);
          
-         for I in Positive range 1 .. Benchmark_Data_Size_MiB loop
-            K12.Update(Ctx, Data_Chunk.all);
-         end loop;
+         K12.Update(Ctx, Data_Chunk.all);
       
          K12.Finish (Ctx, "Benchmark");
          
-         End_Time := Ada.Real_Time.Clock;
+         End_Time := Ada.Execution_Time.Clock;
          
          Ada.Text_IO.Put(Name & " (Updating), ");
-         Print_Time(Data_Chunk.all'Length * Benchmark_Data_Size_MiB,
-                    End_Time - Start_Time);
+         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
       
       -- Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Real_Time.Clock;
+         Start_Time := Ada.Execution_Time.Clock;
       
-         for I in Positive range 1 .. Benchmark_Data_Size_MiB loop
-            K12.Extract(Ctx, Data_Chunk.all);
-         end loop;
+         K12.Extract(Ctx, Data_Chunk.all);
          
-         End_Time := Ada.Real_Time.Clock;
+         End_Time := Ada.Execution_Time.Clock;
          
          Ada.Text_IO.Put(Name & " (Extracting), ");
-         Print_Time(Data_Chunk.all'Length * Benchmark_Data_Size_MiB,
-                    End_Time - Start_Time);
+         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
       end loop;
    end K12_Benchmark;
    
@@ -453,11 +439,16 @@ is
       Keccak.Keccak_1600.KeccakF_1600.State,
       Keccak.Keccak_1600.KeccakF_1600.Init, 
       Keccak.Keccak_1600.Permute_R24);
-   procedure Benchmark_KeccakF_1600_P2 is new KeccakF_Benchmark
+   procedure Benchmark_KeccakF_1600_P2_R12 is new KeccakF_Benchmark
      ("Keccak-p[1600,12]×2", 
       Keccak.Parallel_Keccak_1600.Parallel_State_P2,
       Keccak.Parallel_Keccak_1600.Init_P2, 
       Keccak.Parallel_Keccak_1600.Permute_All_P2_R12);
+   procedure Benchmark_KeccakF_1600_P2_R24 is new KeccakF_Benchmark
+     ("Keccak-p[1600,24]×2", 
+      Keccak.Parallel_Keccak_1600.Parallel_State_P2,
+      Keccak.Parallel_Keccak_1600.Init_P2, 
+      Keccak.Parallel_Keccak_1600.Permute_All_P2_R24);
    
    procedure Benchmark_K12 is new K12_Benchmark
      ("KangarooTwelve",
@@ -519,10 +510,13 @@ begin
    Benchmark_Duplex_r576c1024;
    Ada.Text_IO.New_Line;
    
-   Benchmark_KeccakF_1600_P2;
+   Benchmark_KeccakF_1600;
    Ada.Text_IO.New_Line;
    
-   Benchmark_KeccakF_1600;
+   Benchmark_KeccakF_1600_P2_R24;
+   Ada.Text_IO.New_Line;
+   
+   Benchmark_KeccakF_1600_P2_R12;
    Ada.Text_IO.New_Line;
    
    Benchmark_KeccakF_800;
