@@ -172,6 +172,7 @@ is
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and State_Of (Ctx) in Absorbing | Squeezing),
+     Post => Rate_Of (Ctx) = Rate_Of (Ctx'Old),
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate_Of (Ctx) / 8) = 0
         => State_Of (Ctx) = Squeezing,

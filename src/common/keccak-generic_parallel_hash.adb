@@ -293,11 +293,45 @@ is
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + ((Ctx.Block_Size * 8) - 1)));
 
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 8) <= Byte_Count (Remaining)
+               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
+               and then Byte_Count (Ctx.Block_Size * 8) <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 8)
+               <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 8)
+               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 8)
+               <=
+                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
+                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
+
+            pragma Assert
+              (Byte_Count (8)
+               <=
+                 (Byte_Count (Natural'Last)
+                  - Byte_Count (Ctx.Nb_Blocks)));
+
             Ctx.Nb_Blocks := Ctx.Nb_Blocks + 8;
 
             Offset    := Offset    + (Ctx.Block_Size * 8);
             Remaining := Remaining - (Ctx.Block_Size * 8);
          end loop;
+
+         pragma Assert_And_Cut
+           (Offset + Remaining = Data'Length
+            and State_Of (Ctx) = Updating
+            and Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset)
+            and Byte_Count (Remaining) <= Max_Input_Length (Ctx)
+            and Ctx.Partial_Block_Length = 0
+            and Ctx.Block_Size = Initial_Block_Size
+            and Remaining < Ctx.Block_Size * 8);
 
 
       --  Process blocks of 4 in parallel
@@ -315,11 +349,47 @@ is
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + ((Ctx.Block_Size * 4) - 1)));
 
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 4) <= Byte_Count (Remaining)
+               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
+               and then Byte_Count (Ctx.Block_Size * 4) <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 4)
+               <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 4)
+               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 4)
+               <=
+                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
+                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
+
+            pragma Assert
+              (Byte_Count (4)
+               <=
+                 (Byte_Count (Natural'Last)
+                  - Byte_Count (Ctx.Nb_Blocks)));
+
+            pragma Assert (4 <= Natural'Last - Ctx.Nb_Blocks);
+
             Ctx.Nb_Blocks := Ctx.Nb_Blocks + 4;
 
             Offset    := Offset    + (Ctx.Block_Size * 4);
             Remaining := Remaining - (Ctx.Block_Size * 4);
          end loop;
+
+         pragma Assert_And_Cut
+           (Offset + Remaining = Data'Length
+            and State_Of (Ctx) = Updating
+            and Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset)
+            and Byte_Count (Remaining) <= Max_Input_Length (Ctx)
+            and Ctx.Partial_Block_Length = 0
+            and Ctx.Block_Size = Initial_Block_Size
+            and Remaining < Ctx.Block_Size * 4);
 
 
       --  Process blocks of 2 in parallel
@@ -337,18 +407,47 @@ is
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + ((Ctx.Block_Size * 2) - 1)));
 
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 2) <= Byte_Count (Remaining)
+               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
+               and then Byte_Count (Ctx.Block_Size * 2) <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 2)
+               <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 2)
+               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size * 2)
+               <=
+                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
+                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
+
+            pragma Assert
+              (Byte_Count (2)
+               <=
+                 (Byte_Count (Natural'Last)
+                  - Byte_Count (Ctx.Nb_Blocks)));
+
+            pragma Assert (2 <= Natural'Last - Ctx.Nb_Blocks);
+
             Ctx.Nb_Blocks := Ctx.Nb_Blocks + 2;
 
             Offset    := Offset    + (Ctx.Block_Size * 2);
             Remaining := Remaining - (Ctx.Block_Size * 2);
          end loop;
 
-         pragma Assert (Offset + Remaining = Data'Length);
-         pragma Assert (State_Of (Ctx) = Updating);
-         pragma Assert (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
-         pragma Assert (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
-         pragma Assert (Ctx.Partial_Block_Length = 0);
-         pragma Assert (Ctx.Block_Size = Initial_Block_Size);
+         pragma Assert_And_Cut
+           (Offset + Remaining = Data'Length
+            and State_Of (Ctx) = Updating
+            and Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset)
+            and Byte_Count (Remaining) <= Max_Input_Length (Ctx)
+            and Ctx.Partial_Block_Length = 0
+            and Ctx.Block_Size = Initial_Block_Size
+            and Remaining < Ctx.Block_Size * 2);
 
       --  Process single blocks
          if Remaining >= Ctx.Block_Size then
@@ -357,6 +456,33 @@ is
             Process_1_Block
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + (Ctx.Block_Size - 1)));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size) <= Byte_Count (Remaining)
+               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
+               and then Byte_Count (Ctx.Block_Size) <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size)
+               <= Max_Input_Length (Ctx));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size)
+               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
+
+            pragma Assert
+              (Byte_Count (Ctx.Block_Size)
+               <=
+                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
+                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
+
+            pragma Assert
+              (Byte_Count (1)
+               <=
+                 (Byte_Count (Natural'Last)
+                  - Byte_Count (Ctx.Nb_Blocks)));
+
+            pragma Assert (1 <= Natural'Last - Ctx.Nb_Blocks);
 
             Ctx.Nb_Blocks := Ctx.Nb_Blocks + 1;
 
