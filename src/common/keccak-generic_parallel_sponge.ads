@@ -134,6 +134,15 @@ is
    --  Squeezing state and no more data can be absorbed.
 
 
+   procedure Absorb_Bytes_All (Ctx        : in out Context;
+                               Data       : in     Types.Byte_Array)
+     with Global => null,
+     Pre => State_Of (Ctx) = Absorbing,
+     Contract_Cases =>
+       (Data'Length mod (Rate_Of (Ctx) / 8) = 0 => State_Of (Ctx) = Absorbing,
+        others                                  => State_Of (Ctx) = Squeezing);
+
+
    procedure Absorb_Bytes_Separate_With_Suffix
      (Ctx        : in out Context;
       Data       : in     Types.Byte_Array;
@@ -144,6 +153,17 @@ is
              and Data'Length / Num_Parallel_Instances <= Natural'Last / 8
              and Suffix_Len in 0 .. 8 - Min_Padding_Bits
              and State_Of (Ctx) = Absorbing),
+     Post => State_Of (Ctx) = Squeezing;
+
+
+   procedure Absorb_Bytes_All_With_Suffix
+     (Ctx        : in out Context;
+      Data       : in     Types.Byte_Array;
+      Suffix     : in     Types.Byte;
+      Suffix_Len : in     Natural)
+     with Global => null,
+     Pre => (State_Of (Ctx) = Absorbing
+             and Suffix_Len in 0 .. 8 - Min_Padding_Bits),
      Post => State_Of (Ctx) = Squeezing;
 
 

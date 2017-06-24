@@ -72,6 +72,15 @@ is
         => State_Of (Ctx) = Extracting);
 
 
+   procedure Update_All (Ctx        : in out Context;
+                         Data       : in     Types.Byte_Array)
+     with Global => null,
+     Pre => State_Of (Ctx) = Updating,
+     Contract_Cases =>
+       (Data'Length mod (Rate / 8) = 0 => State_Of (Ctx) = Updating,
+        others                         => State_Of (Ctx) = Extracting);
+
+
    procedure Extract_Separate (Ctx  : in out Context;
                                Data :    out Types.Byte_Array)
      with Global => null,

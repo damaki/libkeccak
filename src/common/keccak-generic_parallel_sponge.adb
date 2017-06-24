@@ -140,9 +140,9 @@ is
 
             Buffer (Buf_First .. Buf_Last) := Data (Pos .. Pos + (Remaining - 1));
 
-            pragma Assert (Buf_First + Ctx.Rate - 1 in Buffer'Range);
+            pragma Assert (Buf_First + (Ctx.Rate - 1) in Buffer'Range);
 
-            Pad (Block          => Buffer (Buf_First .. Buf_First + Ctx.Rate - 1),
+            Pad (Block          => Buffer (Buf_First .. Buf_First + (Ctx.Rate - 1)),
                  Num_Used_Bits  => Remaining * 8,
                  Max_Bit_Length => Ctx.Rate * 8);
          end loop;
@@ -157,6 +157,135 @@ is
       end if;
 
    end Absorb_Bytes_Separate;
+
+
+   procedure Absorb_Bytes_All (Ctx        : in out Context;
+                               Data       : in     Types.Byte_Array)
+   is
+      Rate_Bytes : constant Positive := Ctx.Rate;
+
+      Offset    : Natural := 0;
+      Remaining : Natural := Data'Length;
+
+      Pos       : Types.Index_Number;
+
+      Buffer    : Types.Byte_Array (0 .. Rate_Bytes - 1);
+
+   begin
+
+      while Remaining >= Ctx.Rate loop
+         pragma Loop_Invariant (Offset + Remaining = Data'Length);
+         pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
+         pragma Loop_Invariant (Offset <= Data'Length);
+
+         Pos := Data'First + Offset;
+
+         XOR_Bits_Into_State_All
+           (S       => Ctx.Permutation_State,
+            Data    => Data (Pos .. Pos + Ctx.Rate - 1),
+            Bit_Len => Ctx.Rate * 8);
+
+         Permute_All (Ctx.Permutation_State);
+
+         Lemma_Offset_Mod_Rate_Preserve (Offset, Ctx.Rate);
+
+         Offset    := Offset    + Ctx.Rate;
+         Remaining := Remaining - Ctx.Rate;
+      end loop;
+
+      pragma Assert (Remaining < Ctx.Rate);
+      pragma Assert (Offset mod Ctx.Rate = 0);
+      pragma Assert (Offset + Remaining = Data'Length);
+
+      if Remaining > 0 then
+         pragma Assert (Remaining mod Ctx.Rate /= 0);
+         pragma Assert (Data'Length mod Ctx.Rate /= 0);
+
+         Ctx.State := Squeezing;
+
+         Buffer := (others => 0);
+         Buffer (0 .. Remaining - 1) := Data (Data'First + Offset .. Data'Last);
+
+         Pad (Block          => Buffer,
+              Num_Used_Bits  => Remaining * 8,
+              Max_Bit_Length => Ctx.Rate * 8);
+
+         XOR_Bits_Into_State_All
+           (S       => Ctx.Permutation_State,
+            Data    => Buffer,
+            Bit_Len => Ctx.Rate * 8);
+
+         Permute_All (Ctx.Permutation_State);
+
+      end if;
+
+   end Absorb_Bytes_All;
+
+
+   procedure Absorb_Bytes_All_With_Suffix
+     (Ctx        : in out Context;
+      Data       : in     Types.Byte_Array;
+      Suffix     : in     Types.Byte;
+      Suffix_Len : in     Natural)
+   is
+      Rate_Bytes      : constant Positive := Ctx.Rate;
+
+      Offset          : Natural;
+      Remaining       : Natural;
+      Num_Full_Blocks : Natural;
+      Length          : Natural;
+
+      Buffer          : Types.Byte_Array (0 .. Rate_Bytes - 1) := (others => 0);
+
+   begin
+      Num_Full_Blocks := Data'Length / Ctx.Rate;
+
+      --  Process full blocks of data, if available.
+      if Num_Full_Blocks > 0 then
+         Length := Num_Full_Blocks * Ctx.Rate;
+
+         Absorb_Bytes_All
+           (Ctx  => Ctx,
+            Data => Data (Data'First .. Data'First + Length - 1));
+
+         Offset    := Length;
+         Remaining := Data'Length - Length;
+
+      else
+         Offset    := 0;
+         Remaining := Data'Length;
+
+      end if;
+
+      Ctx.State := Squeezing;
+
+      if Remaining > 0 then
+         --  Append suffix + padding to remaining bytes
+
+         Buffer (0 .. Remaining - 1) := Data (Data'First + Offset .. Data'Last);
+         Buffer (Remaining) := Suffix;
+
+         Pad (Block          => Buffer,
+              Num_Used_Bits  => (Remaining * 8) + Suffix_Len,
+              Max_Bit_Length => Ctx.Rate * 8);
+
+      else
+         --  No remaining data, just process suffix + padding
+         Buffer (0) := Suffix;
+
+         Pad (Block          => Buffer,
+              Num_Used_Bits  => Suffix_Len,
+              Max_Bit_Length => Ctx.Rate * 8);
+      end if;
+
+      XOR_Bits_Into_State_All
+        (S       => Ctx.Permutation_State,
+         Data    => Buffer,
+         Bit_Len => Ctx.Rate * 8);
+
+      Permute_All (Ctx.Permutation_State);
+
+   end Absorb_Bytes_All_With_Suffix;
 
 
    procedure Absorb_Bytes_Separate_With_Suffix
@@ -212,18 +341,10 @@ is
             Buffer (Buf_First .. Buf_Last) := Data (Pos .. Pos + (Remaining - 1));
             Buffer (Buf_Last + 1) := Suffix;
 
-            Pad (Block          => Buffer (Buf_First .. Buf_First + Ctx.Rate - 1),
+            Pad (Block          => Buffer (Buf_First .. Buf_First + (Ctx.Rate - 1)),
                  Num_Used_Bits  => (Remaining * 8) + Suffix_Len,
                  Max_Bit_Length => Ctx.Rate * 8);
          end loop;
-
-         XOR_Bits_Into_State_Separate
-           (S           => Ctx.Permutation_State,
-            Data        => Buffer,
-            Data_Offset => 0,
-            Bit_Len     => Ctx.Rate * 8);
-
-         Permute_All (Ctx.Permutation_State);
 
       else
          --  Apply the padding rule to the suffix only.
@@ -240,15 +361,15 @@ is
               Buffer (0 .. Ctx.Rate - 1);
          end loop;
 
-         XOR_Bits_Into_State_Separate
-           (S           => Ctx.Permutation_State,
-            Data        => Buffer,
-            Data_Offset => 0,
-            Bit_Len     => Ctx.Rate * 8);
-
-         Permute_All (Ctx.Permutation_State);
-
       end if;
+
+      XOR_Bits_Into_State_Separate
+        (S           => Ctx.Permutation_State,
+         Data        => Buffer,
+         Data_Offset => 0,
+         Bit_Len     => Ctx.Rate * 8);
+
+      Permute_All (Ctx.Permutation_State);
 
    end Absorb_Bytes_Separate_With_Suffix;
 
