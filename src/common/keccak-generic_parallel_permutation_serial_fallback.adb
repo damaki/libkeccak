@@ -60,14 +60,18 @@ is
       Pos : Types.Index_Number;
 
    begin
-      for I in 0 .. Num_Parallel_Instances - 1 loop
-         Pos := Data'First + (Stride * I) + Data_Offset;
+      if Bit_Len > 0 then
+         pragma Assert ((Data'Length / Num_Parallel_Instances) - Data_Offset > 0);
 
-         XOR_Bits_Into_State
-           (S       => S.States (I),
-            Data    => Data (Pos .. Pos + ((Bit_Len + 7) / 8) - 1),
-            Bit_Len => Bit_Len);
-      end loop;
+         for I in 0 .. Num_Parallel_Instances - 1 loop
+            Pos := Data'First + (Stride * I) + Data_Offset;
+
+            XOR_Bits_Into_State
+              (S       => S.States (I),
+               Data    => Data (Pos .. Pos + ((Bit_Len + 7) / 8) - 1),
+               Bit_Len => Bit_Len);
+         end loop;
+      end if;
    end XOR_Bits_Into_State_Separate;
 
 
@@ -96,13 +100,17 @@ is
       Pos : Types.Index_Number;
 
    begin
-      for I in 0 .. Num_Parallel_Instances - 1 loop
-         Pos := Data'First + (Stride * I) + Data_Offset;
+      if Byte_Len > 0 then
+         pragma Assert ((Data'Length / Num_Parallel_Instances) - Data_Offset > 0);
 
-         Extract_Bytes
-           (A    => S.States (I),
-            Data => Data (Pos .. Pos + Byte_Len - 1));
-      end loop;
+         for I in 0 .. Num_Parallel_Instances - 1 loop
+            Pos := Data'First + (Stride * I) + Data_Offset;
+
+            Extract_Bytes
+              (A    => S.States (I),
+               Data => Data (Pos .. Pos + Byte_Len - 1));
+         end loop;
+      end if;
    end Extract_Bytes;
 
 end Keccak.Generic_Parallel_Permutation_Serial_Fallback;
