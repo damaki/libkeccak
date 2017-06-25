@@ -114,7 +114,7 @@ is
       XOR_Bits_Into_State_Separate => XOR_Bits_Into_State_Separate_P2,
       XOR_Bits_Into_State_All      => XOR_Bits_Into_State_All_P2,
       Extract_Bytes                => Extract_Bytes_P2,
-      State_Size_Bits              => 1600);
+      State_Size                   => 1600);
 
    subtype Parallel_State_P4 is KeccakF_1600_P4.Parallel_State;
 
@@ -161,7 +161,7 @@ is
       XOR_Bits_Into_State_Separate => XOR_Bits_Into_State_Separate_P2,
       XOR_Bits_Into_State_All      => XOR_Bits_Into_State_All_P2,
       Extract_Bytes                => Extract_Bytes_P2,
-      State_Size_Bits              => 1600);
+      State_Size                   => 1600);
 
    subtype Parallel_State_P8 is KeccakF_1600_P8.Parallel_State;
 

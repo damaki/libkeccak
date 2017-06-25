@@ -60,7 +60,15 @@ package Keccak.Generic_Parallel_Permutation_Serial_Fallback
 is
    Num_Parallel_Instances : constant Positive := Parallelism;
 
-   type Parallel_State is private;
+   type Permutation_State_Array is array (0 .. Parallelism - 1) of Permutation_State;
+
+   --  Parallel_State is not declared as a private type as a workaround for a
+   --  bug in GNATprove during flow analysis of instantiations of the
+   --  generic Permute_All procedure.
+
+   type Parallel_State is record
+      States : Permutation_State_Array;
+   end record;
 
    procedure Init (S : out Parallel_State)
      with Global => null;
@@ -104,12 +112,5 @@ is
              and then Data_Offset <= Data'Length / Num_Parallel_Instances
              and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset);
 
-private
-
-   type Permutation_State_Array is array (0 .. Parallelism - 1) of Permutation_State;
-
-   type Parallel_State is record
-      States : Permutation_State_Array;
-   end record;
 
 end Keccak.Generic_Parallel_Permutation_Serial_Fallback;

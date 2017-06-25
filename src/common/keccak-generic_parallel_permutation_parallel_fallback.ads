@@ -67,7 +67,7 @@ generic
                                  Byte_Len    : in     Natural);
    --  Extract bytes from each parallel state.
 
-   State_Size_Bits    : Positive;
+   State_Size    : Positive;
 
    --  @brief@
    --  Simulates a higher-order level of parallelism from lower-order parallelism.
@@ -92,7 +92,17 @@ is
 
    Num_Parallel_Instances : constant Positive := Base_Parallelism * Parallel_Factor;
 
-   type Parallel_State is private;
+   type Permutation_State_Array is
+     array (0 .. Parallel_Factor - 1)
+     of Permutation_State;
+
+   --  Parallel_State is not declared as a private type as a workaround for a
+   --  bug in GNATprove during flow analysis of instantiations of the
+   --  generic Permute_All procedure.
+
+   type Parallel_State is record
+      States : Permutation_State_Array;
+   end record;
 
    type State_Index is new Natural range 0 .. Num_Parallel_Instances - 1;
 
@@ -112,10 +122,11 @@ is
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
      with Global => null,
-     Pre => (Data'Length mod Num_Parallel_Instances = 0
+     Pre => (Data'Length / Num_Parallel_Instances <= Natural'Last / 8
+             and then Data'Length mod Num_Parallel_Instances = 0
              and then Data_Offset <= (Data'Length / Num_Parallel_Instances)
              and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
-             and then Bit_Len <= State_Size_Bits);
+             and then Bit_Len <= State_Size);
 
 
    procedure XOR_Bits_Into_State_All
@@ -126,7 +137,7 @@ is
      Depends => (S => + (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= State_Size_Bits);
+             and then Bit_Len <= State_Size);
 
 
    procedure Extract_Bytes (S           : in     Parallel_State;
@@ -136,16 +147,7 @@ is
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and then Data_Offset <= Data'Length / Num_Parallel_Instances
-             and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset);
-
-private
-
-   type Permutation_State_Array is
-     array (0 .. Parallel_Factor - 1)
-     of Permutation_State;
-
-   type Parallel_State is record
-      States : Permutation_State_Array;
-   end record;
+             and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset
+             and then Byte_Len <= State_Size / 8);
 
 end Keccak.Generic_Parallel_Permutation_Parallel_Fallback;
