@@ -73,7 +73,7 @@ kat: $(KAT_EXECUTABLES)
 .PHONY: $(OUTPUT_DIR)/benchmark/benchmark
 .PHONY: benchmark
 benchmark: $(OUTPUT_DIR)/benchmark/benchmark
-	$(OUTPUT_DIR)/benchmark/benchmark
+	$(OUTPUT_DIR)/benchmark/benchmark --all
 
 .PHONY:$(OUTPUT_DIR)/unit_tests/test_keccak
 unit_test: $(KECCAK_DIR)/libkeccak.a $(OUTPUT_DIR)/unit_tests/test_keccak
