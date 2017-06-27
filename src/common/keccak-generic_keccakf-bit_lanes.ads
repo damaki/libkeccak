@@ -25,25 +25,39 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
-
-package body Keccak_Suites
+generic
+package Keccak.Generic_KeccakF.Bit_Lanes
 is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
 
-      return Ret;
-   end Suite;
+   pragma Assert
+     (W in 1 | 2 | 4,
+      "Bit_Lanes can only be used with lane sizes that 1, 2, or 4 bits wide");
 
-end Keccak_Suites;
+   procedure XOR_Bits_Into_State(A       : in out State;
+                                 Data    : in     Keccak.Types.Byte_Array;
+                                 Bit_Len : in     Natural)
+     with Global => null,
+     Depends => (A => + (Data, Bit_Len)),
+     Pre => (Data'Length <= Natural'Last / 8
+             and then Bit_Len <= Data'Length * 8
+             and then Bit_Len <= B);
+
+
+
+   procedure Extract_Bytes(A    : in     State;
+                           Data :    out Keccak.Types.Byte_Array)
+     with Global => null,
+     Depends => (Data => + A),
+     Pre => Data'Length <= ((B + 7)/8);
+
+
+
+   procedure Extract_Bits(A       : in     State;
+                          Data    :    out Keccak.Types.Byte_Array;
+                          Bit_Len : in     Natural)
+     with Global => null,
+     Depends => (Data => + (A, Bit_Len)),
+     Pre => (Bit_Len <= B
+             and then Data'Length = (Bit_Len + 7) / 8);
+
+end Keccak.Generic_KeccakF.Bit_Lanes;

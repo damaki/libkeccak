@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2017, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,26 +24,23 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Generic_Parallel_Sponge;
+with Keccak.Generic_Sponge;
+with AUnit.Test_Fixtures;
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
-
-package body Keccak_Suites
+generic
+   with package Serial_Sponge   is new Keccak.Generic_Sponge(<>);
+   with package Parallel_Sponge is new Keccak.Generic_Parallel_Sponge(<>);
+   Capacity : Positive;
+package Parallel_Sponge_Tests
 is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
 
-      return Ret;
-   end Suite;
+   type Test is new AUnit.Test_Fixtures.Test_Fixture with record
+      Ctx : Parallel_Sponge.Context (Capacity);
+   end record;
 
-end Keccak_Suites;
+   procedure Set_Up (T : in out Test);
+
+   procedure Test_Same_Output_As_Serial (T : in out Test);
+
+end Parallel_Sponge_Tests;

@@ -24,26 +24,17 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
-
-package body Keccak_Suites
+generic
+package Keccak.Generic_KeccakF.Optimized_Permutation
 is
-   function Suite return Access_Test_Suite
-   is
-   
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
 
-      return Ret;
-   end Suite;
+   generic
+      -- Number of rounds.
+      --
+      -- By default, the definition from The Keccak Reference is used.
+      First_Round : Round_Index := 0;
+      Num_Rounds  : Round_Count := 12 + (2*L);
+   procedure Permute (S : in out State)
+     with Global => null;
 
-end Keccak_Suites;
+end Keccak.Generic_KeccakF.Optimized_Permutation;

@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2017, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,13 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with AUnit.Test_Caller;
+with Keccak.Generic_Parallel_Hash;
 
-package body Keccak_Suites
+generic
+   with package ParallelHash is new Keccak.Generic_Parallel_Hash(<>);
+package KAT.Parallel_Hash_Runner
 is
-   function Suite return Access_Test_Suite
-   is
+
+   procedure Run_Tests;
    
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
-
-      return Ret;
-   end Suite;
-
-end Keccak_Suites;
+end KAT.Parallel_Hash_Runner;

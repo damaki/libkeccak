@@ -3,46 +3,45 @@
 This project implements the Keccak family of sponge functions and related
 constructions using the SPARK 2014 programming language.
 
-libkeccak implements the following constructions:
+libkeccak implements the following generic constructions:
 
 * The Keccak-p permutation for state sizes of 25, 50, 100, 200, 400, 800, and 1600 bits (see [1] and [2]).
 * The Sponge construction
 * The Duplex construction
 * Hash functions based on the Sponge construction
 * eXtendable Output Functions (XOF) based on the Sponge construction
-* cSHAKE, KMAC, and TupleHash as specified in NIST SP 800-185 [4]
+* cSHAKE, KMAC, TupleHash, and ParallelHash as specified in NIST SP 800-185 [4]
+* KangarooTwelve as specified by the Keccak team [5]
 
-libkeccak also provides concrete implementations for the hash functions and
-XOFs described in NIST FIPS 202 (see [1]):
+libkeccak also provides concrete implementations of the above constructions,
+as specified in [1,4,5]:
 
 * Hash functions:
-  * SHA3-224
-  * SHA3-256
-  * SHA3-384
-  * SHA3-512
+  * SHA-3 (224, 256, 384, and 512 bits)
+  * Keccak (224, 256, 384, and 512 bits)
 * XOFs:
-  * SHAKE128
-  * SHAKE256
-  * RawSHAKE128
-  * RawSHAKE256
-
-Hash function configurations are also provided for the hash functions defined by
-the Keccak team which were submitted in the SHA-3 competition:
-
-* Keccak-224
-* Keccak-256
-* Keccak-384
-* Keccak-512
-
-These hash functions differ from the final SHA-3 hash functions only in that the
-SHA-3 functions append two additional bits to each message, whereas the Keccak
-hash functions do not.
+  * SHAKE128 and SHAKE256
+  * RawSHAKE128 and RawSHAKE256
+* cSHAKE:
+  * CSHAKE128 and CSHAKE256
+* KMAC:
+  * KMAC128 and KMAC256
+* TupleHash:
+  * TupleHash128 and TupleHash256
+* Parallel Hashes:
+  * KangarooTwelve
+  * ParallelHash128 and ParallelHash256
+  
+Note that the difference between a hash function an a XOF function is that a
+hash function has a fixed output length (for example, 256 bits), whereas the
+XOFs have arbitrary output length.
 
 The library's algorithms are implemented using Ada's powerful generics. This
-allows for extensive customization and re-use of the various algorithms. You
-can define your own configurations of hash functions. For example, you can 
-create a hash function using a reduced-round Keccak permutation, or you can
-re-use the sponge construction based on a custom permutation algorithm.
+allows for extensive customization and re-use of the various algorithms. The
+generic Sponge, XOF, and Hash packages can be instantiated for other permutation
+functions (other than just the Keccak permutation). This also permits use of
+this library based on platforms with hardware accelerated implementations of
+the Keccak permutation.
 
 # Example
 
@@ -74,17 +73,39 @@ Libkeccak is licensed under the 3-clause BSD license.
 
 # Building
 
-Building libkeccak requires GNAT 2015 for the GNAT toolset, and and SPARK 2015
-for GNATprove.
+Building libkeccak requires an Ada 2012 compiler which understands SPARK 2014
+annotations, such as GCC or AdaCore's GNAT GPL toolset. To run the proofs,
+the SPARK (GPL, Pro, or Discovery) 2017 toolset is required.
 
-To build libkeccak, change to the source directory and type:
+To build libkeccak based on the autodetected CPU architecture, change to the
+repository directory and type:
 <pre><code>make build</code></pre>
+
+You can specify a specific architecture by setting the ARCH and SIMD arguments.
+For example:
+<pre><code>make build ARCH=x86_64 SIMD=SSE2</code></pre>
+
+Currently, the following ARCH and SIMD values are supported:
+| ARCH         | Valid SIMD values    |
+| ------------ | -------------------- |
+| ARCH=generic | SIMD=none            |
+| ARCH=x86_64  | SIMD=none, SIMD=SSE2 |
+
+`ARCH=generic` should be used for any architecture which does not appear in the
+above table. 
+
+Enabling `SIMD=SSE2` will use SSE2 instructions to speed up parallel algorithms
+such as KangarooTwelve and ParallelHash. To disable SSE2 on x86_64, set `SIMD=none`.
 
 To install libkeccak to ``<destination>`` type:
 <pre><code>make install &lt;destination&gt;</code></pre>
 
 To run GNATprove to generate the proofs type:
 <pre><code>make proof</code></pre>
+
+_Note: SPARK Discovery 2017 is not distributed with the CVC4 or Z3 provers,_
+_which are required to prove libkeccak. You can install them by following_
+_the instructions [here](http://docs.adacore.com/spark2014-docs/html/ug/en/appendix/alternative_provers.html#installed-with-spark-discovery)_
 
 To run the tests type:
 <pre><code>make test</code></pre>
@@ -95,37 +116,43 @@ To run the benchmark type:
 # Benchmarks
 
 The following performance measurements were taken on an Intel Core i7-2630QM
-2.0 GHz (@2.6 GHz with turbo boost) on 64-bit Linux. The code was compiled using
-GNAT GPL 2017 (20170515).
+2.0 GHz (@2.6 GHz with turbo boost) "Sandy Bridge" on 64-bit Linux. The code
+was compiled using GNAT GPL 2017 (20170515) with SSE2 enabled.
+
+The cycles per byte are roughly estimated by dividing the clock speed
+(2.6 GHz) by the number of bytes (128 MiB).
 
 | Algorithm               | Performance |  Cycles Estimate  |
 | ----------------------- | ----------- | ----------------- |
-| SHA3-224                | 175 MiB/s   | 14.2 cycles/byte  |
-| SHA3-256                | 166 MiB/s   | 14.9 cycles/byte  |
-| SHA3-384                | 130 MiB/s   | 19.1 cycles/byte  |
-| SHA3-512                | 92 MiB/s    | 27.0 cycles/byte  |
-| Keccak-224              | 175 MiB/s   | 14.2 cycles/byte  |
-| Keccak-256              | 166 MiB/s   | 14.9 cycles/byte  |
-| Keccak-384              | 130 MiB/s   | 19.1 cycles/byte  |
-| Keccak-512              | 92 MiB/s    | 27.0 cycles/byte  |
-| SHAKE128 (Absorbing)    | 201 MiB/s   | 12.3 cycles/byte  |
+| KangarooTwelve (Absorbing) | 554 MiB/S   | 4.5 cycles/byte   |
+| KangarooTwelve (Squeezing) | 317 MiB/S   | 7.8 cycles/byte   |
+| SHA3-224                | 181 MiB/s   | 13.7 cycles/byte  |
+| SHA3-256                | 172 MiB/s   | 14.4 cycles/byte  |
+| SHA3-384                | 134 MiB/s   | 18.6 cycles/byte  |
+| SHA3-512                | 94 MiB/s    | 26.4 cycles/byte  |
+| Keccak-224              | 182 MiB/s   | 13.7 cycles/byte  |
+| Keccak-256              | 172 MiB/s   | 14.4 cycles/byte  |
+| Keccak-384              | 133 MiB/s   | 18.6 cycles/byte  |
+| Keccak-512              | 94 MiB/s    | 26.4 cycles/byte  |
+| SHAKE128 (Absorbing)    | 210 MiB/s   | 11.8 cycles/byte  |
 | SHAKE128 (Squeezing)    | 194 MiB/s   | 12.8 cycles/byte  |
-| SHAKE256 (Absorbing)    | 166 MiB/s   | 14.9 cycles/byte  |
-| SHAKE256 (Squeezing)    | 160 MiB/s   | 15.5 cycles/byte  |
-| RawSHAKE128 (Absorbing) | 201 MiB/s   | 12.3 cycles/byte  |
+| SHAKE256 (Absorbing)    | 172 MiB/s   | 14.4 cycles/byte  |
+| SHAKE256 (Squeezing)    | 162 MiB/s   | 15.3 cycles/byte  |
+| RawSHAKE128 (Absorbing) | 210 MiB/s   | 11.8 cycles/byte  |
 | RawSHAKE128 (Squeezing) | 194 MiB/s   | 12.8 cycles/byte  |
-| RawSHAKE256 (Absorbing) | 167 MiB/s   | 14.9 cycles/byte  |
-| RawSHAKE256 (Squeezing) | 160 MiB/s   | 15.5 cycles/byte  |
-| Duplex (c448)           | 148 MiB/s   | 16.8 cycles/byte  |
-| Duplex (c512)           | 140 MiB/s   | 17.7 cycles/byte  |
-| Duplex (c768)           | 113 MiB/s   | 22.0 cycles/byte  |
-| Duplex (c1024)          | 81 MiB/s    | 30.6 cycles/byte  |
-| Keccak-p\[1600,24\]     | 706 ns/call | 1834 cycles/call  |
-| Keccak-p\[800,22\]      | 673 ns/call | 1749 cycles/call  |
-| Keccak-p\[400,20\]      | 614 ns/call | 1596 cycles/call  |
-| Keccak-p\[200,18\]      | 531 ns/call | 1381 cycles/call  |
-| Keccak-p\[100,16\]      | 616 ns/call | 1601 cycles/call  |
-| Keccak-p\[50,14\]       | 700 ns/call | 1820 cycles/call  |
+| RawSHAKE256 (Absorbing) | 172 MiB/s   | 14.4 cycles/byte  |
+| RawSHAKE256 (Squeezing) | 162 MiB/s   | 15.3 cycles/byte  |
+| Duplex (c448)           | 151 MiB/s   | 16.4 cycles/byte  |
+| Duplex (c512)           | 145 MiB/s   | 17.2 cycles/byte  |
+| Duplex (c768)           | 115 MiB/s   | 21.6 cycles/byte  |
+| Duplex (c1024)          | 84 MiB/s    | 29.5 cycles/byte  |
+| Keccak-p\[1600,24\]     | 707 ns/call | 1838 cycles/call  |
+| Keccak-p\[1600,12\]x2   | 415 ns/call | 1079 cycles/call  |
+| Keccak-p\[800,22\]      | 686 ns/call | 1782 cycles/call  |
+| Keccak-p\[400,20\]      | 622 ns/call | 1616 cycles/call  |
+| Keccak-p\[200,18\]      | 534 ns/call | 1388 cycles/call  |
+| Keccak-p\[100,16\]      | 626 ns/call | 1627 cycles/call  |
+| Keccak-p\[50,14\]       | 699 ns/call | 1818 cycles/call  |
 | Keccak-p\[25,12\]       | 296 ns/call | 769 cycles/call   |
 
 # Formal Verification
@@ -159,3 +186,5 @@ http://keccak.noekeon.org/Keccak-reference-3.0.pdf
 http://sponge.noekeon.org/CSF-0.1.pdf
 * [4] NIST SP 800-185 - SHA-3 Derived Functions: cSHAKE, KMAC, TupleHash, and ParallelHash. December 2016
 http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf
+* [5] KangarooTwelve: fast hashing based on Keccak-p
+http://keccak.noekeon.org/kangarootwelve.html
