@@ -121,7 +121,7 @@ The following performance measurements were taken on an Intel Core i7-2630QM
 was compiled using GNAT GPL 2017 (20170515) with SSE2 enabled.
 
 The cycles per byte are roughly estimated by dividing the clock speed
-(2.6 GHz) by the number of bytes (128 MiB).
+(2.6 GHz) by the speed in bytes per second.
 
 | Algorithm               | Performance |  Cycles Estimate  |
 | ----------------------- | ----------- | ----------------- |
