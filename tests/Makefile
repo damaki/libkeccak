@@ -25,7 +25,9 @@ KAT_EXECUTABLES = $(OUTPUT_DIR)/kat/sha3_224_kat \
 						$(OUTPUT_DIR)/kat/tuple_hash_128_kat \
 						$(OUTPUT_DIR)/kat/tuple_hash_256_kat \
 						$(OUTPUT_DIR)/kat/tuple_hash_xof_128_kat \
-						$(OUTPUT_DIR)/kat/tuple_hash_xof_256_kat
+						$(OUTPUT_DIR)/kat/tuple_hash_xof_256_kat \
+						$(OUTPUT_DIR)/kat/parallelhash_128_kat \
+						$(OUTPUT_DIR)/kat/parallelhash_256_kat
 
 DUMMY := $(shell mkdir -p $(OUTPUT_DIR)) \
          $(shell mkdir -p $(OUTPUT_DIR)/kat) \
@@ -37,6 +39,8 @@ all: kat benchmark unit_test
 .PHONY: $(KAT_EXECUTABLES)
 .PHONY: kat
 kat: $(KAT_EXECUTABLES)
+	$(OUTPUT_DIR)/kat/parallelhash_128_kat kat/testvectors/ParallelHash128_samples.txt
+	$(OUTPUT_DIR)/kat/parallelhash_256_kat kat/testvectors/ParallelHash256_samples.txt
 	$(OUTPUT_DIR)/kat/tuple_hash_128_kat kat/testvectors/Tuple_Hash_128_samples.txt
 	$(OUTPUT_DIR)/kat/tuple_hash_256_kat kat/testvectors/Tuple_Hash_256_samples.txt
 	$(OUTPUT_DIR)/kat/tuple_hash_xof_128_kat kat/testvectors/Tuple_Hash_XOF_128_samples.txt
@@ -140,6 +144,12 @@ $(OUTPUT_DIR)/kat/tuple_hash_xof_128_kat:
 
 $(OUTPUT_DIR)/kat/tuple_hash_xof_256_kat:
 	gprbuild -aP$(KECCAK_DIR) -P tuple_hash_xof_256_kat.gpr
+
+$(OUTPUT_DIR)/kat/parallelhash_128_kat:
+	gprbuild -aP$(KECCAK_DIR) -P parallelhash_128_kat.gpr
+
+$(OUTPUT_DIR)/kat/parallelhash_256_kat:
+	gprbuild -aP$(KECCAK_DIR) -P parallelhash_256_kat.gpr
 
 $(OUTPUT_DIR)/benchmark/benchmark:
 	gprbuild -aP$(KECCAK_DIR) -P benchmark.gpr

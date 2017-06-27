@@ -50,6 +50,7 @@ is
    KeyLen_Regexp : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("KeyLen = (\d+)");
    Key_Regexp    : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("Key = (\w+)");
    Tuple_Regexp  : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("Tuple = (\w+)");
+   B_Regexp      : GNAT.Regpat.Pattern_Matcher := GNAT.Regpat.Compile("B = (\d+)");
    
    
    ----------------------------------------------------------------------------
@@ -458,6 +459,79 @@ is
    end Load_KMAC_Test_Vectors;
    
    
+   procedure Load_ParallelHash_Test_Vectors (File_Name : in     String;
+                                             Tests     :    out ParallelHash_KAT_Vectors.Vector)
+   is
+      File          : Ada.Text_IO.File_Type;
+      Curr_Line_Num : Natural := 1;
+      
+      Line_Num      : Natural;
+      Block_Size    : Positive;
+      In_Data       : Byte_Array_Access := null;
+      Out_Data      : Byte_Array_Access := null;
+      S_Data        : Unbounded_String;
+      
+   begin
+      Tests := ParallelHash_KAT_Vectors.Empty_Vector;
+   
+      Ada.Text_IO.Open(File => File,
+                       Mode => Ada.Text_IO.In_File,
+                       Name => File_Name);
+      
+      while not Ada.Text_IO.End_Of_File(File) loop
+         declare
+            Line : String := Ada.Text_IO.Get_Line(File);
+            
+            B_Match      : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            In_Match     : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            Out_Match    : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+            S_Match      : GNAT.Regpat.Match_Array(0 .. 1) := (others => GNAT.Regpat.No_Match);
+         
+         begin
+            GNAT.Regpat.Match(Msg_Regexp,    Line, In_Match);
+            GNAT.Regpat.Match(MD_Regexp,     Line, Out_Match);
+            GNAT.Regpat.Match(S_Regexp,      Line, S_Match);
+            GNAT.Regpat.Match(B_Regexp,      Line, B_Match);
+               
+            --  B = ??
+            if B_Match (0) /= GNAT.Regpat.No_Match then
+               Line_Num := Curr_Line_Num;
+               Block_Size := Positive'Value (Line(B_Match(1).First .. B_Match(1).Last));
+               
+            --  S = "??"
+            elsif S_Match (0) /= GNAT.Regpat.No_Match then
+               S_Data := To_Unbounded_String(Line(S_Match(1).First .. S_Match(1).Last));
+
+            -- Msg = ??
+            elsif In_Match(0) /= GNAT.Regpat.No_Match then
+               In_Data := Hex_String_To_Byte_Array(Line(In_Match(1).First .. In_Match(1).Last));
+           
+            -- MD = ??
+            elsif Out_Match(0) /= GNAT.Regpat.No_Match then
+               Out_Data := Hex_String_To_Byte_Array(Line(Out_Match(1).First .. Out_Match(1).Last));
+               
+               declare
+                  Curr_Test : ParallelHash_KAT_Test;
+               begin
+                  Curr_Test.Line     := Line_Num;
+                  Curr_Test.S_Data   := S_Data;
+                  Curr_Test.Block_Size := Block_Size;
+                  Curr_Test.In_Data  := In_Data;
+                  Curr_Test.Out_Data := Out_Data;
+                  ParallelHash_KAT_Vectors.Append(Tests, Curr_Test);
+               end;
+               
+               In_Data  := null;
+               Out_Data := null;
+               
+            end if;
+         end;
+         
+         Curr_Line_Num := Curr_Line_Num + 1;
+      end loop;
+   end Load_ParallelHash_Test_Vectors;
+   
+   
    procedure Load_Tuple_Test_Vectors (File_Name : in     String;
                                       Tests     :    out Tuple_KAT_Vectors.Vector)
    is
@@ -729,6 +803,43 @@ is
       procedure Free is new Ada.Unchecked_Deallocation(Keccak.Types.Byte_Array,
                                                        Byte_Array_Access);
    begin
+      if T.Out_Data /= null then
+         Free(T.Out_Data);
+         T.Out_Data := null;
+      end if;
+   end Finalize;
+   
+   
+   procedure Initialize(T : in out ParallelHash_KAT_Test)
+   is
+   begin
+      T.Line     := 0;
+      T.In_Data  := null;
+      T.Out_Data := null;
+   end Initialize;
+   
+   
+   procedure Adjust(T : in out ParallelHash_KAT_Test)
+   is
+   begin
+      if T.In_Data/= null then
+         T.In_Data := new Keccak.Types.Byte_Array'(T.In_Data.all);
+      end if;
+      if T.Out_Data/= null then
+         T.Out_Data := new Keccak.Types.Byte_Array'(T.Out_Data.all);
+      end if;
+   end Adjust;
+   
+   
+   procedure Finalize(T : in out ParallelHash_KAT_Test)
+   is
+      procedure Free is new Ada.Unchecked_Deallocation(Keccak.Types.Byte_Array,
+                                                       Byte_Array_Access);
+   begin
+      if T.In_Data /= null then
+         Free(T.In_Data);
+         T.In_Data := null;
+      end if;
       if T.Out_Data /= null then
          Free(T.Out_Data);
          T.Out_Data := null;

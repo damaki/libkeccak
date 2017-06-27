@@ -22,7 +22,9 @@ GENERIC_BODIES = src/common/keccak-generic_cshake.adb \
                  src/common/keccak-generic_keccakf-reference_permutation.adb \
                  src/common/keccak-generic_keccakf.adb \
                  src/common/keccak-generic_kmac.adb \
+                 src/common/keccak-generic_parallel_cshake.adb \
                  src/common/keccak-generic_parallel_keccakf.adb \
+                 src/common/keccak-generic_parallel_hash.adb \
                  src/common/keccak-generic_parallel_permutation_parallel_fallback.adb \
                  src/common/keccak-generic_parallel_permutation_serial_fallback.adb \
                  src/common/keccak-generic_parallel_sponge.adb \

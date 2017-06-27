@@ -30,11 +30,11 @@ package body Keccak.Generic_Parallel_Hash
 is
 
    generic
-      with package CSHAKE_Parallel_N is new Keccak.Generic_Parallel_CSHAKE (<>);
+      with package SHAKE_Parallel_N is new Keccak.Generic_Parallel_XOF (<>);
    procedure Generic_Process_Parallel_Blocks
      (Ctx  : in out Context;
       Data : in     Types.Byte_Array)
-     with Pre => (Data'Length = Ctx.Block_Size * CSHAKE_Parallel_N.Num_Parallel_Instances
+     with Pre => (Data'Length = Ctx.Block_Size * SHAKE_Parallel_N.Num_Parallel_Instances
                   and State_Of (Ctx) = Updating
                   and Ctx.Partial_Block_Length = 0),
      Post => (State_Of (Ctx) = Updating
@@ -55,22 +55,22 @@ is
      (Ctx  : in out Context;
       Data : in     Types.Byte_Array)
    is
-      N : constant Positive := CSHAKE_Parallel_N.Num_Parallel_Instances;
+      N : constant Positive := SHAKE_Parallel_N.Num_Parallel_Instances;
 
-      Par_Ctx : CSHAKE_Parallel_N.Context;
+      Par_Ctx : SHAKE_Parallel_N.Context;
 
       CV_N : Types.Byte_Array (1 .. CV_Size_Bytes * N);
 
    begin
       --  Process N blocks in parallel and produce N chaining values.
-      CSHAKE_Parallel_N.Init (Par_Ctx, "", "");
-      CSHAKE_Parallel_N.Update_Separate  (Par_Ctx, Data);
+      SHAKE_Parallel_N.Init (Par_Ctx);
+      SHAKE_Parallel_N.Update_Separate  (Par_Ctx, Data);
 
       pragma Warnings (GNATprove, Off,
                        "unused assignment to ""Par_Ctx""",
                        Reason => "No further data needs to be extracted");
 
-      CSHAKE_Parallel_N.Extract_Separate (Par_Ctx, CV_N);
+      SHAKE_Parallel_N.Extract_Separate (Par_Ctx, CV_N);
 
       pragma Warnings (GNATprove, On);
 
@@ -82,13 +82,13 @@ is
 
 
    procedure Process_8_Parallel_Blocks
-   is new Generic_Process_Parallel_Blocks (CSHAKE_Parallel_8);
+   is new Generic_Process_Parallel_Blocks (SHAKE_Parallel_8);
 
    procedure Process_4_Parallel_Blocks
-   is new Generic_Process_Parallel_Blocks (CSHAKE_Parallel_4);
+   is new Generic_Process_Parallel_Blocks (SHAKE_Parallel_4);
 
    procedure Process_2_Parallel_Blocks
-   is new Generic_Process_Parallel_Blocks (CSHAKE_Parallel_2);
+   is new Generic_Process_Parallel_Blocks (SHAKE_Parallel_2);
 
 
    procedure Process_1_Block
@@ -108,20 +108,20 @@ is
      (Ctx  : in out Context;
       Data : in     Types.Byte_Array)
    is
-      Serial_Ctx : CSHAKE_Serial.Context;
+      Serial_Ctx : SHAKE_Serial.Context;
 
       CV: Types.Byte_Array (1 .. CV_Size_Bytes);
 
    begin
       --  Process N blocks in parallel and produce N changing values.
-      CSHAKE_Serial.Init   (Serial_Ctx);
-      CSHAKE_Serial.Update (Serial_Ctx, Data);
+      SHAKE_Serial.Init   (Serial_Ctx);
+      SHAKE_Serial.Update (Serial_Ctx, Data);
 
       pragma Warnings (GNATprove, Off,
                        "unused assignment to ""Serial_Ctx""",
                        Reason => "No further data needs to be extracted");
 
-      CSHAKE_Serial.Extract (Serial_Ctx, CV);
+      SHAKE_Serial.Extract (Serial_Ctx, CV);
 
       pragma Warnings (GNATprove, On);
 
@@ -171,7 +171,7 @@ is
          Free_In_Block := Ctx.Block_Size - Ctx.Partial_Block_Length;
 
          if Data'Length >= Free_In_Block then
-            CSHAKE_Serial.Update
+            SHAKE_Serial.Update
               (Ctx     => Ctx.Partial_Block_CSHAKE,
                Message => Data (Data'First .. Data'First + (Free_In_Block - 1)));
 
@@ -180,7 +180,7 @@ is
                "unused assignment",
                Reason => "No further data needs to be extracted before Init");
 
-            CSHAKE_Serial.Extract
+            SHAKE_Serial.Extract
               (Ctx    => Ctx.Partial_Block_CSHAKE,
                Digest => CV);
 
@@ -190,7 +190,7 @@ is
               (Ctx     => Ctx.Outer_CSHAKE,
                Message => CV);
 
-            CSHAKE_Serial.Init (Ctx.Partial_Block_CSHAKE);
+            SHAKE_Serial.Init (Ctx.Partial_Block_CSHAKE);
 
             Ctx.Partial_Block_Length := 0;
             Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Free_In_Block);
@@ -198,7 +198,7 @@ is
             Added := Free_In_Block;
 
          else
-            CSHAKE_Serial.Update
+            SHAKE_Serial.Update
               (Ctx     => Ctx.Partial_Block_CSHAKE,
                Message => Data);
 
@@ -229,9 +229,9 @@ is
 
    begin
       if Ctx.Partial_Block_Length > 0 then
-         CSHAKE_Serial.Extract (Ctx.Partial_Block_CSHAKE, CV);
+         SHAKE_Serial.Extract (Ctx.Partial_Block_CSHAKE, CV);
          CSHAKE_Serial.Update  (Ctx.Outer_CSHAKE,         CV);
-         CSHAKE_Serial.Init    (Ctx.Partial_Block_CSHAKE);
+         SHAKE_Serial.Init    (Ctx.Partial_Block_CSHAKE);
 
          Ctx.Partial_Block_Length := 0;
       end if;
@@ -252,9 +252,11 @@ is
                           Customization => Customization,
                           Function_Name => "ParallelHash");
 
-      CSHAKE_Serial.Init (Ctx.Partial_Block_CSHAKE, "", "");
+      SHAKE_Serial.Init (Ctx.Partial_Block_CSHAKE);
 
-      Update (Ctx, Util.Left_Encode (Block_Size));
+      CSHAKE_Serial.Update
+        (Ctx     => Ctx.Outer_CSHAKE,
+         Message => Util.Left_Encode (Block_Size));
 
    end Init;
 
@@ -392,7 +394,7 @@ is
 
       --  Process remaining data.
          if Remaining > 0 then
-            CSHAKE_Serial.Update
+            SHAKE_Serial.Update
               (Ctx     => Ctx.Partial_Block_CSHAKE,
                Message => Data (Data'First + Offset .. Data'Last));
 
@@ -426,7 +428,7 @@ is
                             Message => Util.Right_Encode_Long_Long (Nb_Blocks));
 
       CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
-                            Message => Util.Right_Encode (Data'Length));
+                            Message => Util.Right_Encode_Bit_Length (Data'Length));
 
       CSHAKE_Serial.Extract (Ctx    => Ctx.Outer_CSHAKE,
                              Digest => Data);
@@ -440,9 +442,17 @@ is
 
    begin
       if State_Of (Ctx) = Updating then
-         Process_Last_Partial_Block (Ctx);
 
          Nb_Blocks := Long_Long_Integer (Ctx.Input_Len) / Long_Long_Integer (Ctx.Block_Size);
+
+         if Ctx.Partial_Block_Length > 0 then
+            pragma Assert (Ctx.Block_Size > 1);
+            pragma Assert (Nb_Blocks < Long_Long_Integer'Last);
+
+            Nb_Blocks := Nb_Blocks + 1;
+         end if;
+
+         Process_Last_Partial_Block (Ctx);
 
          CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
                                Message => Util.Right_Encode_Long_Long (Nb_Blocks));

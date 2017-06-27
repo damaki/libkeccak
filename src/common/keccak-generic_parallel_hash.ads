@@ -25,7 +25,8 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Generic_CSHAKE;
-with Keccak.Generic_Parallel_CSHAKE;
+with Keccak.Generic_XOF;
+with Keccak.Generic_Parallel_XOF;
 with Keccak.Types;
 
 generic
@@ -37,13 +38,15 @@ generic
    --  The Generic_KangarooTwelve implementation takes care of the appropriate
    --  suffix bits when using this CSHAKE_Serial.
 
-   with package CSHAKE_Parallel_2 is new Keccak.Generic_Parallel_CSHAKE (<>);
+   with package SHAKE_Serial is new Keccak.Generic_XOF (<>);
+
+   with package SHAKE_Parallel_2 is new Keccak.Generic_Parallel_XOF (<>);
    --  This CSHAKE must be configured to add the 3 suffix bits 2#011#.
 
-   with package CSHAKE_Parallel_4 is new Keccak.Generic_Parallel_CSHAKE (<>);
+   with package SHAKE_Parallel_4 is new Keccak.Generic_Parallel_XOF (<>);
    --  This CSHAKE must be configured to add the 3 suffix bits 2#011#.
 
-   with package CSHAKE_Parallel_8 is new Keccak.Generic_Parallel_CSHAKE (<>);
+   with package SHAKE_Parallel_8 is new Keccak.Generic_Parallel_XOF (<>);
    --  This CSHAKE must be configured to add the 3 suffix bits 2#011#.
 
 package Keccak.Generic_Parallel_Hash
@@ -51,9 +54,9 @@ is
 
    --  Assertions to check that the correct parallel instances have
    --  been provided.
-   pragma Assert (CSHAKE_Parallel_2.Num_Parallel_Instances = 2);
-   pragma Assert (CSHAKE_Parallel_4.Num_Parallel_Instances = 4);
-   pragma Assert (CSHAKE_Parallel_8.Num_Parallel_Instances = 8);
+   pragma Assert (SHAKE_Parallel_2.Num_Parallel_Instances = 2);
+   pragma Assert (SHAKE_Parallel_4.Num_Parallel_Instances = 4);
+   pragma Assert (SHAKE_Parallel_8.Num_Parallel_Instances = 8);
 
 
    type Context is private;
@@ -134,11 +137,12 @@ is
 private
 
    use type CSHAKE_Serial.States;
+   use type SHAKE_Serial.States;
 
 
    type Context is record
       Outer_CSHAKE         : CSHAKE_Serial.Context;
-      Partial_Block_CSHAKE : CSHAKE_Serial.Context;
+      Partial_Block_CSHAKE : SHAKE_Serial.Context;
       Input_Len            : Byte_Count;
       Block_Size           : Block_Size_Number;
       Partial_Block_Length : Natural;
@@ -149,7 +153,7 @@ private
 
    function State_Of (Ctx : in Context) return States
    is (if (Ctx.Finished
-           or CSHAKE_Serial.State_Of (Ctx.Partial_Block_CSHAKE) /= CSHAKE_Serial.Updating
+           or SHAKE_Serial.State_Of (Ctx.Partial_Block_CSHAKE) /= SHAKE_Serial.Updating
            or CSHAKE_Serial.State_Of (Ctx.Outer_CSHAKE)          = CSHAKE_Serial.Ready_To_Extract)
        then Finished
 

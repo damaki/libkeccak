@@ -104,6 +104,18 @@ is
    procedure Adjust    (T : in out Tuple_KAT_Test);
    procedure Finalize  (T : in out Tuple_KAT_Test);
    
+   type ParallelHash_KAT_Test is new Ada.Finalization.Controlled with record
+      Line       : Natural;
+      Block_Size : Positive;
+      S_Data     : Unbounded_String;
+      In_Data    : Byte_Array_Access;
+      Out_Data   : Byte_Array_Access;
+   end record;
+   
+   procedure Initialize(T : in out ParallelHash_KAT_Test);
+   procedure Adjust    (T : in out ParallelHash_KAT_Test);
+   procedure Finalize  (T : in out ParallelHash_KAT_Test);
+   
    package KAT_Vectors is new Ada.Containers.Vectors(Element_Type => KAT_Test,
                                                      Index_Type   => Natural);
    
@@ -118,6 +130,9 @@ is
    
    package Tuple_KAT_Vectors is new Ada.Containers.Vectors(Element_Type => Tuple_KAT_Test,
                                                            Index_Type   => Natural);
+   
+   package ParallelHash_KAT_Vectors is new Ada.Containers.Vectors(Element_Type => ParallelHash_KAT_Test,
+                                                                  Index_Type   => Natural);
                                                            
    function Hex_String_To_Byte_Array(Str : in String) return Byte_Array_Access;
                                                               
@@ -150,6 +165,9 @@ is
    
    procedure Load_Tuple_Test_Vectors (File_Name : in     String;
                                       Tests     :    out Tuple_KAT_Vectors.Vector);
+   
+   procedure Load_ParallelHash_Test_Vectors (File_Name : in     String;
+                                             Tests     :    out ParallelHash_KAT_Vectors.Vector);
                                       
    -- Helper function to convert a byte array to a hex string.
    function Byte_Array_To_String(Data : in Keccak.Types.Byte_Array) return String;
