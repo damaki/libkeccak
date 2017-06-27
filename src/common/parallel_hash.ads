@@ -49,8 +49,8 @@ is
       Pad                          => Keccak.Padding.Pad101_Single_Block,
       Min_Padding_Bits             => Keccak.Padding.Pad101_Min_Bits);
 
---     ----------------------------------------------------------------------------
---     --  Parallel XOF instantiations with 256 bits of capacity
+   ----------------------------------------------------------------------------
+   --  Parallel XOF instantiations with 256 bits of capacity
 
    package XOF128_P2 is new Keccak.Generic_Parallel_XOF
      (Sponge      => Sponge_P2,
@@ -70,8 +70,8 @@ is
       Suffix      => 2#00#,
       Suffix_Size => 2);
 
---     ----------------------------------------------------------------------------
---     --  Parallel XOF instantiations with 512 bits of capacity
+   ----------------------------------------------------------------------------
+   --  Parallel XOF instantiations with 512 bits of capacity
 
    package XOF256_P2 is new Keccak.Generic_Parallel_XOF
      (Sponge      => Sponge_P2,
@@ -91,22 +91,22 @@ is
       Suffix      => 2#00#,
       Suffix_Size => 2);
 
---     ----------------------------------------------------------------------------
---     --  Parallel CSHAKE128 instantiations
+   ----------------------------------------------------------------------------
+   --  Parallel CSHAKE128 instantiations
 
    package CSHAKE128_P2 is new Keccak.Generic_Parallel_CSHAKE (XOF128_P2);
    package CSHAKE128_P4 is new Keccak.Generic_Parallel_CSHAKE (XOF128_P4);
    package CSHAKE128_P8 is new Keccak.Generic_Parallel_CSHAKE (XOF128_P8);
 
---     ----------------------------------------------------------------------------
---     --  Parallel CSHAKE256 instantiations
+   ----------------------------------------------------------------------------
+   --  Parallel CSHAKE256 instantiations
 
    package CSHAKE256_P2 is new Keccak.Generic_Parallel_CSHAKE (XOF256_P2);
    package CSHAKE256_P4 is new Keccak.Generic_Parallel_CSHAKE (XOF256_P4);
    package CSHAKE256_P8 is new Keccak.Generic_Parallel_CSHAKE (XOF256_P8);
 
---     ----------------------------------------------------------------------------
---     --  ParallelHash instantiations
+   ----------------------------------------------------------------------------
+   --  ParallelHash instantiations
 
    package ParallelHash128 is new Keccak.Generic_Parallel_Hash
      (CV_Size_Bytes     => 256 / 8,

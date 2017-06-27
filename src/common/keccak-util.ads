@@ -69,8 +69,8 @@ is
    function Right_Encode_Long_Long (Length : in Long_Long_Integer) return Types.Byte_Array
      with
        Pre => Length >= 0,
-       Post => (Right_Encode_Long_Long'Result'Length in 1 .. (Natural'Size / 8) + 2
-                and Right_Encode_Long_Long'Result'First in 1 .. (Natural'Size / 8) + 2);
+       Post => (Right_Encode_Long_Long'Result'Length in 1 .. (Long_Long_Integer'Size / 8) + 2
+                and Right_Encode_Long_Long'Result'First in 1 .. (Long_Long_Integer'Size / 8) + 2);
 
    function Right_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
      with
