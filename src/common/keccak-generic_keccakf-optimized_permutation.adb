@@ -218,7 +218,8 @@ is
                                    Ega, Ege, Egi, Ego, Egu,
                                    Eka, Eke, Eki, Eko, Eku,
                                    Ema, Eme, Emi, Emo, Emu,
-                                   Esa, Ese, Esi, Eso, Esu))
+                                   Esa, Ese, Esi, Eso, Esu)),
+        Inline
       is
          Da, De, Di, D0, Du : Lane_Type;
 
