@@ -86,6 +86,7 @@ For example:
 <pre><code>make build ARCH=x86_64 SIMD=SSE2</code></pre>
 
 Currently, the following ARCH and SIMD values are supported:
+
 | ARCH         | Valid SIMD values    |
 | ------------ | -------------------- |
 | ARCH=generic | SIMD=none            |
