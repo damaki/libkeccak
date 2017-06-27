@@ -92,13 +92,13 @@ is
       --  Run the parallel sponge
       Parallel_Sponge.Init (T.Ctx);
 
-      Parallel_Sponge.Absorb_Bytes_All_With_Suffix
+      Parallel_Sponge.Absorb_Bytes_Separate_With_Suffix
         (Ctx        => T.Ctx,
          Data       => Input,
          Suffix     => Suffix,
          Suffix_Len => Suffix_Len);
 
-      Parallel_Sponge.Squeeze_Bytes_All
+      Parallel_Sponge.Squeeze_Bytes_Separate
         (Ctx  => T.Ctx,
          Data => Actual_Output);
 
