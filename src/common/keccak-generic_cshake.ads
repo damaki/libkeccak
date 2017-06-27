@@ -45,6 +45,7 @@ is
                   Function_Name : in     String := "")
      with Global => null,
      Depends => (Ctx => (Customization, Function_Name)),
+     Pre => Customization /= "" or Function_Name /= "",
      Post => State_Of(Ctx) = Updating;
    --  Initialize the CSHAKE context.
    --

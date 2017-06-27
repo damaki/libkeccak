@@ -24,6 +24,7 @@ is
                    Customization : in     String;
                    Function_Name : in     String)
      with Global => null,
+     Pre => Customization /= "" or Function_Name /= "",
      Post => State_Of (Ctx) = Updating;
 
 
