@@ -10,7 +10,7 @@ libkeccak implements the following generic constructions:
 * The Duplex construction
 * Hash functions based on the Sponge construction
 * eXtendable Output Functions (XOF) based on the Sponge construction
-* cSHAKE, KMAC, and TupleHash as specified in NIST SP 800-185 [4]
+* cSHAKE, KMAC, TupleHash, and ParallelHash as specified in NIST SP 800-185 [4]
 * KangarooTwelve as specified by the Keccak team [5]
 
 libkeccak also provides concrete implementations of the above constructions,
@@ -22,13 +22,15 @@ as specified in [1,4,5]:
 * XOFs:
   * SHAKE128 and SHAKE256
   * RawSHAKE128 and RawSHAKE256
-  * KangarooTwelve
 * cSHAKE:
   * CSHAKE128 and CSHAKE256
 * KMAC:
   * KMAC128 and KMAC256
 * TupleHash:
   * TupleHash128 and TupleHash256
+* Parallel Hashes:
+  * KangarooTwelve
+  * ParallelHash128 and ParallelHash256
   
 Note that the difference between a hash function an a XOF function is that a
 hash function has a fixed output length (for example, 256 bits), whereas the
@@ -99,6 +101,9 @@ To run the benchmark type:
 The following performance measurements were taken on an Intel Core i7-2630QM
 2.0 GHz (@2.6 GHz with turbo boost) "Sandy Bridge" on 64-bit Linux. The code
 was compiled using GNAT GPL 2017 (20170515) with SSE2 enabled.
+
+The cycles per byte are roughly estimated by dividing the clock speed
+(2.6 GHz) by the number of bytes (128 MiB).
 
 | Algorithm               | Performance |  Cycles Estimate  |
 | ----------------------- | ----------- | ----------------- |
