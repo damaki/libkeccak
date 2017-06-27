@@ -38,7 +38,7 @@ is
                   and State_Of (Ctx) = Updating
                   and Ctx.Partial_Block_Length = 0),
      Post => (State_Of (Ctx) = Updating
-              and Ctx.Nb_Blocks = Ctx'Old.Nb_Blocks
+              and Ctx.Input_Len = Ctx'Old.Input_Len
               and Ctx.Partial_Block_Length = Ctx'Old.Partial_Block_Length
               and Ctx.Block_Size = Ctx'Old.Block_Size);
    --  Generic procedure to process N blocks in parallel.
@@ -98,7 +98,7 @@ is
                   and State_Of (Ctx) = Updating
                   and Ctx.Partial_Block_Length = 0),
      Post => (State_Of (Ctx) = Updating
-              and Ctx.Nb_Blocks = Ctx'Old.Nb_Blocks
+              and Ctx.Input_Len = Ctx'Old.Input_Len
               and Ctx.Partial_Block_Length = Ctx'Old.Partial_Block_Length
               and Ctx.Block_Size = Ctx'Old.Block_Size);
    --  Processes a single block using a serial CSHAKE.
@@ -137,7 +137,7 @@ is
       Data  : in     Types.Byte_Array;
       Added :    out Natural)
      with Pre => ((if Ctx.Partial_Block_Length > 0
-                   then Ctx.Nb_Blocks < Natural'Last)
+                   then Max_Input_Length (Ctx) >= Data'Length)
                   and State_Of (Ctx) = Updating),
      Post => (Added <= Ctx.Block_Size
               and Added <= Data'Length
@@ -193,7 +193,7 @@ is
             CSHAKE_Serial.Init (Ctx.Partial_Block_CSHAKE);
 
             Ctx.Partial_Block_Length := 0;
-            Ctx.Nb_Blocks            := Ctx.Nb_Blocks + 1;
+            Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Free_In_Block);
 
             Added := Free_In_Block;
 
@@ -203,6 +203,7 @@ is
                Message => Data);
 
             Ctx.Partial_Block_Length := Ctx.Partial_Block_Length + Data'Length;
+            Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Data'Length);
 
             Added := Data'Length;
 
@@ -244,7 +245,7 @@ is
    begin
       Ctx.Partial_Block_Length := 0;
       Ctx.Block_Size           := Block_Size;
-      Ctx.Nb_Blocks            := 0;
+      Ctx.Input_Len            := 0;
       Ctx.Finished             := False;
 
       CSHAKE_Serial.Init (Ctx           => Ctx.Outer_CSHAKE,
@@ -262,7 +263,7 @@ is
                      Data : in     Types.Byte_Array)
    is
       Initial_Bytes_Processed : constant Byte_Count := Num_Bytes_Processed (Ctx);
-      Initial_Block_Size      : constant Block_Size_Number := Ctx.Block_Size;
+      Initial_Block_Size      : constant Positive   := Ctx.Block_Size;
 
       Remaining               : Natural;
       Offset                  : Natural;
@@ -293,32 +294,7 @@ is
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + ((Ctx.Block_Size * 8) - 1)));
 
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 8) <= Byte_Count (Remaining)
-               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
-               and then Byte_Count (Ctx.Block_Size * 8) <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 8)
-               <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 8)
-               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 8)
-               <=
-                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
-                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
-
-            pragma Assert
-              (Byte_Count (8)
-               <=
-                 (Byte_Count (Natural'Last)
-                  - Byte_Count (Ctx.Nb_Blocks)));
-
-            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 8;
+            Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Ctx.Block_Size * 8);
 
             Offset    := Offset    + (Ctx.Block_Size * 8);
             Remaining := Remaining - (Ctx.Block_Size * 8);
@@ -349,34 +325,7 @@ is
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + ((Ctx.Block_Size * 4) - 1)));
 
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 4) <= Byte_Count (Remaining)
-               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
-               and then Byte_Count (Ctx.Block_Size * 4) <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 4)
-               <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 4)
-               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 4)
-               <=
-                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
-                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
-
-            pragma Assert
-              (Byte_Count (4)
-               <=
-                 (Byte_Count (Natural'Last)
-                  - Byte_Count (Ctx.Nb_Blocks)));
-
-            pragma Assert (4 <= Natural'Last - Ctx.Nb_Blocks);
-
-            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 4;
+            Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Ctx.Block_Size * 4);
 
             Offset    := Offset    + (Ctx.Block_Size * 4);
             Remaining := Remaining - (Ctx.Block_Size * 4);
@@ -407,34 +356,7 @@ is
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + ((Ctx.Block_Size * 2) - 1)));
 
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 2) <= Byte_Count (Remaining)
-               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
-               and then Byte_Count (Ctx.Block_Size * 2) <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 2)
-               <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 2)
-               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size * 2)
-               <=
-                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
-                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
-
-            pragma Assert
-              (Byte_Count (2)
-               <=
-                 (Byte_Count (Natural'Last)
-                  - Byte_Count (Ctx.Nb_Blocks)));
-
-            pragma Assert (2 <= Natural'Last - Ctx.Nb_Blocks);
-
-            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 2;
+            Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Ctx.Block_Size * 2);
 
             Offset    := Offset    + (Ctx.Block_Size * 2);
             Remaining := Remaining - (Ctx.Block_Size * 2);
@@ -457,34 +379,7 @@ is
               (Ctx  => Ctx,
                Data => Data (Pos .. Pos + (Ctx.Block_Size - 1)));
 
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size) <= Byte_Count (Remaining)
-               and then Byte_Count (Remaining) <= Max_Input_Length (Ctx)
-               and then Byte_Count (Ctx.Block_Size) <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size)
-               <= Max_Input_Length (Ctx));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size)
-               <= ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx)));
-
-            pragma Assert
-              (Byte_Count (Ctx.Block_Size)
-               <=
-                 ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last))
-                  - (Byte_Count (Ctx.Block_Size) * Byte_Count (Ctx.Nb_Blocks))));
-
-            pragma Assert
-              (Byte_Count (1)
-               <=
-                 (Byte_Count (Natural'Last)
-                  - Byte_Count (Ctx.Nb_Blocks)));
-
-            pragma Assert (1 <= Natural'Last - Ctx.Nb_Blocks);
-
-            Ctx.Nb_Blocks := Ctx.Nb_Blocks + 1;
+            Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Ctx.Block_Size);
 
             Offset    := Offset    + Ctx.Block_Size;
             Remaining := Remaining - Ctx.Block_Size;
@@ -497,13 +392,13 @@ is
 
       --  Process remaining data.
          if Remaining > 0 then
-            pragma Assert (Ctx.Nb_Blocks < Natural'Last);
-
             CSHAKE_Serial.Update
               (Ctx     => Ctx.Partial_Block_CSHAKE,
                Message => Data (Data'First + Offset .. Data'Last));
 
             Ctx.Partial_Block_Length := Remaining;
+
+            Ctx.Input_Len := Ctx.Input_Len + Byte_Count (Remaining);
          end if;
       end if;
    end Update;
@@ -512,13 +407,23 @@ is
    procedure Finish (Ctx  : in out Context;
                      Data :    out Types.Byte_Array)
    is
+      Nb_Blocks : Long_Long_Integer;
+
    begin
+      Nb_Blocks := Long_Long_Integer (Ctx.Input_Len) / Long_Long_Integer (Ctx.Block_Size);
+      if Ctx.Partial_Block_Length > 0 then
+         pragma Assert (Ctx.Block_Size > 1);
+         pragma Assert (Nb_Blocks < Long_Long_Integer'Last);
+
+         Nb_Blocks := Nb_Blocks + 1;
+      end if;
+
       Process_Last_Partial_Block (Ctx);
 
       Ctx.Finished := True;
 
       CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
-                            Message => Util.Right_Encode (Ctx.Nb_Blocks));
+                            Message => Util.Right_Encode_Long_Long (Nb_Blocks));
 
       CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
                             Message => Util.Right_Encode (Data'Length));
@@ -531,12 +436,16 @@ is
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
    is
+      Nb_Blocks : Long_Long_Integer;
+
    begin
       if State_Of (Ctx) = Updating then
          Process_Last_Partial_Block (Ctx);
 
+         Nb_Blocks := Long_Long_Integer (Ctx.Input_Len) / Long_Long_Integer (Ctx.Block_Size);
+
          CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
-                               Message => Util.Right_Encode (Ctx.Nb_Blocks));
+                               Message => Util.Right_Encode_Long_Long (Nb_Blocks));
 
          CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
                                Message => Util.Right_Encode (0));

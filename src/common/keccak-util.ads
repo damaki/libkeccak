@@ -66,14 +66,21 @@ is
    --  Example, the length 16#ABCDEF# will be encoded as the byte array
    --  (16#AB#, 16#CD#, 16#EF#, 3)
 
+   function Right_Encode_Long_Long (Length : in Long_Long_Integer) return Types.Byte_Array
+     with
+       Pre => Length >= 0,
+       Post => (Right_Encode_Long_Long'Result'Length in 1 .. (Natural'Size / 8) + 2
+                and Right_Encode_Long_Long'Result'First in 1 .. (Natural'Size / 8) + 2);
+
    function Right_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
      with
        Post => (Right_Encode_Bit_Length'Result'Length in 1 .. Natural'Size + 1
                 and Right_Encode_Bit_Length'Result'First in 1 .. Natural'Size + 1);
 
-   function Right_Encode_K12 (Length : in Natural) return Types.Byte_Array
+   function Right_Encode_K12 (Length : in Long_Long_Integer) return Types.Byte_Array
      with
-       Post => (Right_Encode_K12'Result'Length in 1 .. (Natural'Size / 8) + 2
-                and Right_Encode_K12'Result'First in 1 .. (Natural'Size / 8) + 2);
+       Pre => Length >= 0,
+       Post => (Right_Encode_K12'Result'Length in 1 .. (Long_Long_Integer'Size / 8) + 2
+                and Right_Encode_K12'Result'First in 1 .. (Long_Long_Integer'Size / 8) + 2);
 
 end Keccak.Util;

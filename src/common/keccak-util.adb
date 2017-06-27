@@ -44,6 +44,32 @@ is
       return Encoded(Encoded'Last - N .. Encoded'Last);
    end Left_Encode;
 
+   function Left_Encode_Long_Long(Length : in Long_Long_Integer) return Types.Byte_Array
+   is
+      Encoded : Types.Byte_Array(1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
+
+      X       : Long_Long_Integer := Length;
+      N       : Natural           := 0;
+
+   begin
+
+      for I in Positive range 1 .. (Long_Long_Integer'Size / 8) + 1 loop
+         pragma Loop_Invariant(N = I - 1);
+
+         Encoded(Encoded'Last - N) := Types.Byte(X mod 256);
+
+         X := X / 256;
+         N := N + 1;
+
+         exit when X = 0;
+
+      end loop;
+
+      Encoded(Encoded'Last - N) := Types.Byte(N);
+
+      return Encoded(Encoded'Last - N .. Encoded'Last);
+   end Left_Encode_Long_Long;
+
    function Left_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
    is
       Encoded : Types.Byte_Array(1 .. Natural'Size + 1) := (others => 0);
@@ -101,6 +127,32 @@ is
       return Encoded(Encoded'Last - N .. Encoded'Last);
    end Right_Encode;
 
+   function Right_Encode_Long_Long(Length : in Long_Long_Integer) return Types.Byte_Array
+   is
+      Encoded : Types.Byte_Array(1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
+
+      X       : Long_Long_Integer := Length;
+      N       : Natural := 0;
+
+   begin
+
+      for I in Positive range 1 .. (Long_Long_Integer'Size / 8) + 1 loop
+         pragma Loop_Invariant(N = I - 1);
+
+         Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
+
+         X := X / 256;
+         N := N + 1;
+
+         exit when X = 0;
+
+      end loop;
+
+      Encoded(Encoded'Last) := Types.Byte(N);
+
+      return Encoded(Encoded'Last - N .. Encoded'Last);
+   end Right_Encode_Long_Long;
+
    function Right_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
    is
       Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
@@ -132,16 +184,16 @@ is
       return Encoded(Encoded'Last - N .. Encoded'Last);
    end Right_Encode_Bit_Length;
 
-   function Right_Encode_K12(Length : in Natural) return Types.Byte_Array
+   function Right_Encode_K12(Length : in Long_Long_Integer) return Types.Byte_Array
    is
-      Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
+      Encoded : Types.Byte_Array(1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
 
-      X       : Natural := Length;
+      X       : Long_Long_Integer := Length;
       N       : Natural := 0;
 
    begin
 
-      for I in Positive range 1 .. (Natural'Size / 8) + 1 loop
+      for I in Positive range 1 .. (Long_Long_Integer'Size / 8) + 1 loop
          pragma Loop_Invariant(N = I - 1);
 
          exit when X = 0;

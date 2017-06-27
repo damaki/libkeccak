@@ -62,17 +62,18 @@ is
    type States is (Updating, Extracting, Finished);
 
 
-   subtype Block_Size_Number is Positive range 1 .. Positive'Last / 8;
-
-
    type Byte_Count is new Long_Long_Integer
-   range 0 .. Long_Long_Integer (Natural'Last) * Long_Long_Integer (Block_Size_Number'Last);
+   range 0 .. Long_Long_Integer'Last;
+
+
+   subtype Block_Size_Number is Positive range 1 .. Positive'Last / 8;
 
 
    procedure Init (Ctx           :    out Context;
                    Block_Size    : in     Block_Size_Number;
                    Customization : in     String)
-     with Global => null;
+     with Global => null,
+     Post => State_Of (Ctx) = Updating;
 
 
    procedure Update (Ctx  : in out Context;
@@ -89,6 +90,15 @@ is
      with Global => null,
      Pre => State_Of (Ctx) = Updating,
      Post => State_Of (Ctx) = Finished;
+   --  Extract a fixed number of output bytes.
+   --
+   --  This procedure finalizes the ParallelHash and outputs a fixed number
+   --  of output bytes. The ParallelHash parameter L is the requested output
+   --  length, and is determined by the length of the @Data@ array.
+   --  I.e. Data'Length is used as the ParallelHash parameter L.
+   --
+   --  After calling this procedure the ParallelHash instance cannot be used
+   --  further.
 
 
    procedure Extract (Ctx  : in out Context;
@@ -96,6 +106,14 @@ is
      with Global => null,
      Pre => State_Of (Ctx) in Updating | Extracting,
      Post => State_Of (Ctx) = Extracting;
+   --  Extract an arbitrary number of output bytes.
+   --
+   --  This procedure finalizes the ParallelHash and puts it into XOF mode
+   --  where an arbitary number of bytes can be output. When this parameter
+   --  is called for the first time after inputting data, the value 0 is used
+   --  as the ParallelHash parameter L.
+   --
+   --  This procedure can be called multiple times to produce any output length.
 
 
    function State_Of (Ctx : in Context) return States
@@ -103,13 +121,11 @@ is
 
 
    function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
-     with Global => null,
-     Post => Num_Bytes_Processed'Result <= Byte_Count (Natural'Last) * Byte_Count (Block_Size (Ctx));
+     with Global => null;
 
 
    function Max_Input_Length (Ctx : in Context) return Byte_Count
-     with Global => null,
-     Post => Max_Input_Length'Result <= Byte_Count (Natural'Last) * Byte_Count (Block_Size (Ctx));
+     with Global => null;
 
 
    function Block_Size (Ctx : in Context) return Block_Size_Number
@@ -123,14 +139,12 @@ private
    type Context is record
       Outer_CSHAKE         : CSHAKE_Serial.Context;
       Partial_Block_CSHAKE : CSHAKE_Serial.Context;
+      Input_Len            : Byte_Count;
       Block_Size           : Block_Size_Number;
-      Nb_Blocks            : Natural;
       Partial_Block_Length : Natural;
       Finished             : Boolean;
    end record
-     with Predicate => (Context.Partial_Block_Length < Context.Block_Size
-                        and then (if Context.Nb_Blocks = Natural'Last
-                                  then Context.Partial_Block_Length = 0));
+     with Predicate => Context.Partial_Block_Length < Context.Block_Size;
 
 
    function State_Of (Ctx : in Context) return States
@@ -146,12 +160,11 @@ private
 
 
    function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
-   is (Byte_Count (Ctx.Nb_Blocks) * Byte_Count (Ctx.Block_Size)
-       + Byte_Count (Ctx.Partial_Block_Length));
+   is (Ctx.Input_Len);
 
 
    function Max_Input_Length (Ctx : in Context) return Byte_Count
-   is ((Byte_Count (Ctx.Block_Size) * Byte_Count (Natural'Last)) - Num_Bytes_Processed (Ctx));
+   is (Byte_Count'Last - Num_Bytes_Processed (Ctx));
 
 
    function Block_Size (Ctx : in Context) return Block_Size_Number
