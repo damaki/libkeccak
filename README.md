@@ -77,8 +77,25 @@ Building libkeccak requires an Ada 2012 compiler which understands SPARK 2014
 annotations, such as GCC or AdaCore's GNAT GPL toolset. To run the proofs,
 the SPARK (GPL, Pro, or Discovery) 2017 toolset is required.
 
-To build libkeccak, change to the source directory and type:
+To build libkeccak based on the autodetected CPU architecture, change to the
+repository directory and type:
 <pre><code>make build</code></pre>
+
+You can specify a specific architecture by setting the ARCH and SIMD arguments.
+For example:
+<pre><code>make build ARCH=x86_64 SIMD=SSE2</code></pre>
+
+Currently, the following ARCH and SIMD values are supported:
+| ARCH         | Valid SIMD values    |
+| ------------ | -------------------- |
+| ARCH=generic | SIMD=none            |
+| ARCH=x86_64  | SIMD=none, SIMD=SSE2 |
+
+`ARCH=generic` should be used for any architecture which does not appear in the
+above table. 
+
+Enabling `SIMD=SSE2` will use SSE2 instructions to speed up parallel algorithms
+such as KangarooTwelve and ParallelHash. To disable SSE2 on x86_64, set `SIMD=none`.
 
 To install libkeccak to ``<destination>`` type:
 <pre><code>make install &lt;destination&gt;</code></pre>
