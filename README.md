@@ -87,16 +87,18 @@ For example:
 
 Currently, the following ARCH and SIMD values are supported:
 
-| ARCH         | Valid SIMD values    |
-| ------------ | -------------------- |
-| ARCH=generic | SIMD=none            |
-| ARCH=x86_64  | SIMD=none, SIMD=SSE2 |
+| ARCH    | Valid SIMD values   |
+| ------- | ------------------- |
+| generic | none                |
+| x86_64  | none, SSE2, or AVX2 |
 
 `ARCH=generic` should be used for any architecture which does not appear in the
 above table. 
 
 Enabling `SIMD=SSE2` will use SSE2 instructions to speed up parallel algorithms
-such as KangarooTwelve and ParallelHash. To disable SSE2 on x86_64, set `SIMD=none`.
+such as KangarooTwelve and ParallelHash. Using `SIMD=AVX2` will also enable the
+AVX2 instruction set (in addition to SSE2).
+To disable SSE2 and AVX2 on x86_64, set `SIMD=none`.
 
 To install libkeccak to ``<destination>`` type:
 <pre><code>make install &lt;destination&gt;</code></pre>

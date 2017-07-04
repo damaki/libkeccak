@@ -1,6 +1,6 @@
 project Libkeccak is
    type Arch_Type is ("generic", "x86_64");
-   type SIMD_Type is ("none", "SSE2");
+   type SIMD_Type is ("none", "SSE2", "AVX2");
 
    Arch : Arch_Type := external ("arch", "generic");
    SIMD : SIMD_Type := external ("simd", "none");
@@ -18,8 +18,16 @@ project Libkeccak is
                Arch_Dirs     := Arch_Dirs & ("../src/generic");
 
             when "SSE2" =>
-               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2");
+               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
+                                             "../src/x86_64/SSE2");
                Arch_Switches := Arch_Switches & ("-msse", "-msse2");
+               
+            when "AVX2" =>
+               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
+                                             "../src/x86_64/AVX2_defs",
+                                             "../src/x86_64/AVX2");
+               Arch_Switches := Arch_Switches & ("-msse", "-msse2", "-mavx", "-mavx2");
+               
          end case;
 
    end case;

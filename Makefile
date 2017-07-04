@@ -1,10 +1,18 @@
-UNAME_M := $(shell uname -m)
+UNAME_M    := $(shell uname -m)
+LSCPU_AVX2 := $(shell lscpu | grep -o avx2)
 
 ARCH ?= $(UNAME_M)
 
+# Select default value for SIMD based on the current hardware.
 ifeq ($(ARCH),x86_64)
+
+ifeq ($(LSCPU_AVX2),avx2)
+	SIMD ?= AVX2
+else
 	# default to SSE2 on x86_64 as it's available on all modern hardware
 	SIMD ?= SSE2
+endif
+
 else
 	SIMD ?= none
 endif
