@@ -1,4 +1,5 @@
 OUTPUT_DIR ?= $(CURDIR)/out
+KECCAK_DIR ?= ../lib/share/gpr
 
 ifneq ($(MAKECMDGOALS),clean)
 ifeq ($(KECCAK_DIR),)
