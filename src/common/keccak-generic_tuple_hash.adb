@@ -46,7 +46,7 @@ is
    is
    begin
       CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Left_Encode_Bit_Length(Item'Length));
+                    Message => Left_Encode_NIST_Bit_Length(Item'Length));
 
       CSHAKE.Update(Ctx     => Ctx.Ctx,
                     Message => Item);
@@ -58,7 +58,7 @@ is
    is
    begin
       CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Right_Encode_Bit_Length(Digest'Length));
+                    Message => Right_Encode_NIST_Bit_Length(Digest'Length));
 
       CSHAKE.Extract(Ctx    => Ctx.Ctx,
                      Digest => Digest);
@@ -73,7 +73,7 @@ is
       if State_Of(Ctx) = Updating then
          CSHAKE.Update
            (Ctx     => Ctx.Ctx,
-            Message => Util.Right_Encode(0));
+            Message => Util.Right_Encode_NIST(0));
       end if;
 
       CSHAKE.Extract

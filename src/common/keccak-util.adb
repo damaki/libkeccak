@@ -18,7 +18,7 @@ is
       return String_To_Byte_Array_Conversion (Str);
    end To_Byte_Array;
 
-   function Left_Encode(Length : in Natural) return Types.Byte_Array
+   function Left_Encode_NIST(Length : in Natural) return Types.Byte_Array
    is
       Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
 
@@ -42,9 +42,9 @@ is
       Encoded(Encoded'Last - N) := Types.Byte(N);
 
       return Encoded(Encoded'Last - N .. Encoded'Last);
-   end Left_Encode;
+   end Left_Encode_NIST;
 
-   function Left_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
+   function Left_Encode_NIST_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
    is
       Encoded : Types.Byte_Array(1 .. Natural'Size + 1) := (others => 0);
 
@@ -73,9 +73,9 @@ is
       Encoded(Encoded'Last - N) := Types.Byte(N);
 
       return Encoded(Encoded'Last - N .. Encoded'Last);
-   end Left_Encode_Bit_Length;
+   end Left_Encode_NIST_Bit_Length;
 
-   function Right_Encode(Length : in Natural) return Types.Byte_Array
+   function Right_Encode_NIST(Length : in Natural) return Types.Byte_Array
    is
       Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
 
@@ -99,9 +99,9 @@ is
       Encoded(Encoded'Last) := Types.Byte(N);
 
       return Encoded(Encoded'Last - N .. Encoded'Last);
-   end Right_Encode;
+   end Right_Encode_NIST;
 
-   function Right_Encode_Long_Long(Length : in Long_Long_Integer) return Types.Byte_Array
+   function Right_Encode_NIST_Long_Long(Length : in Long_Long_Integer) return Types.Byte_Array
    is
       Encoded : Types.Byte_Array(1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
 
@@ -125,9 +125,9 @@ is
       Encoded(Encoded'Last) := Types.Byte(N);
 
       return Encoded(Encoded'Last - N .. Encoded'Last);
-   end Right_Encode_Long_Long;
+   end Right_Encode_NIST_Long_Long;
 
-   function Right_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
+   function Right_Encode_NIST_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
    is
       Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
 
@@ -156,7 +156,7 @@ is
       Encoded(Encoded'Last) := Types.Byte(N);
 
       return Encoded(Encoded'Last - N .. Encoded'Last);
-   end Right_Encode_Bit_Length;
+   end Right_Encode_NIST_Bit_Length;
 
    function Right_Encode_K12(Length : in Long_Long_Integer) return Types.Byte_Array
    is

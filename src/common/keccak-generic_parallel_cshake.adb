@@ -143,13 +143,13 @@ is
       Process_Full_Blocks
         (Ctx          => Ctx,
          Block        => Block,
-         Input        => Left_Encode (Rate_Bytes),
+         Input        => Left_Encode_NIST (Rate_Bytes),
          Block_Offset => Block_Offset);
 
       Process_Full_Blocks
         (Ctx          => Ctx,
          Block        => Block,
-         Input        => Left_Encode_Bit_Length(Function_Name'Length),
+         Input        => Left_Encode_NIST_Bit_Length(Function_Name'Length),
          Block_Offset => Block_Offset);
 
       Process_Full_Blocks
@@ -161,7 +161,7 @@ is
       Process_Full_Blocks
         (Ctx          => Ctx,
          Block        => Block,
-         Input        => Left_Encode_Bit_Length(Customization'Length),
+         Input        => Left_Encode_NIST_Bit_Length(Customization'Length),
          Block_Offset => Block_Offset);
 
       Process_Full_Blocks

@@ -256,7 +256,7 @@ is
 
       CSHAKE_Serial.Update
         (Ctx     => Ctx.Outer_CSHAKE,
-         Message => Util.Left_Encode (Block_Size));
+         Message => Util.Left_Encode_NIST (Block_Size));
 
    end Init;
 
@@ -425,10 +425,10 @@ is
       Ctx.Finished := True;
 
       CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
-                            Message => Util.Right_Encode_Long_Long (Nb_Blocks));
+                            Message => Util.Right_Encode_NIST_Long_Long (Nb_Blocks));
 
       CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
-                            Message => Util.Right_Encode_Bit_Length (Data'Length));
+                            Message => Util.Right_Encode_NIST_Bit_Length (Data'Length));
 
       CSHAKE_Serial.Extract (Ctx    => Ctx.Outer_CSHAKE,
                              Digest => Data);
@@ -455,10 +455,10 @@ is
          Process_Last_Partial_Block (Ctx);
 
          CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
-                               Message => Util.Right_Encode_Long_Long (Nb_Blocks));
+                               Message => Util.Right_Encode_NIST_Long_Long (Nb_Blocks));
 
          CSHAKE_Serial.Update (Ctx     => Ctx.Outer_CSHAKE,
-                               Message => Util.Right_Encode (0));
+                               Message => Util.Right_Encode_NIST (0));
       end if;
 
       CSHAKE_Serial.Extract (Ctx    => Ctx.Outer_CSHAKE,

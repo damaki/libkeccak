@@ -37,50 +37,105 @@ is
      Post => (To_Byte_Array'Result'Length = Str'Length
               and To_Byte_Array'Result'First = Str'First
               and To_Byte_Array'Result'Last = Str'Last);
-   -- Return the byte array representation of a string.
+   --  Return the byte array representation of a string.
    --
-   -- @param Str The string to convert to a byte array.
+   --  This function uses an Ada.Unchecked_Conversion internally to convert the
+   --  String to the byte array.
+   --
+   --  @param Str The string to convert to a byte array.
 
-   function Left_Encode(Length : in Natural) return Types.Byte_Array
+
+   function Left_Encode_NIST(Length : in Natural) return Types.Byte_Array
      with
-       Post => (Left_Encode'Result'Length in 1 .. (Natural'Size / 8) + 2
-                and Left_Encode'Result'First in 1 .. (Natural'Size / 8) + 2);
-   --  Encode a length using the left_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
+       Post => (Left_Encode_NIST'Result'Length in 1 .. (Natural'Size / 8) + 2
+                and Left_Encode_NIST'Result'First in 1 .. (Natural'Size / 8) + 2);
+   --  Encode a length using the left_encode(n) method described in
+   --  NIST SP 800-185.
    --
    --  Example, the length 16#ABCDEF# will be encoded as the byte array
    --  (3, 16#AB#, 16#CD#, 16#EF#)
 
-   function Left_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
-     with
-       Post => (Left_Encode_Bit_Length'Result'Length in 1 .. Natural'Size + 1
-                and Left_Encode_Bit_Length'Result'First in 1 .. Natural'Size + 1);
 
-   function Right_Encode (Length : in Natural) return Types.Byte_Array
+   function Left_Encode_NIST_Bit_Length(Byte_Length : in Natural)
+                                        return Types.Byte_Array
      with
-       Post => (Right_Encode'Result'Length in 1 .. (Natural'Size / 8) + 2
-                and Right_Encode'Result'First in 1 .. (Natural'Size / 8) + 2);
-   --  Encode a length using the right_encode(n) method described in the
-   --  proposed CSHAKE document from NIST.
+       Post => (Left_Encode_NIST_Bit_Length'Result'Length
+                  in 1 .. Natural'Size + 1
+
+                and Left_Encode_NIST_Bit_Length'Result'First
+                  in 1 .. Natural'Size + 1);
+   --  A version of left_encode(n) (as defined by NIST) where the output
+   --  represents the input value multiplied by 8.
+   --
+   --  The output of calling Left_Encode_NIST_Bit_Length (N) is equivalent
+   --  to calling Left_Encode_NIST (N * 8). This function is useful to avoid
+   --  doing the multiplication in the call to Left_Encode_NIST and thus
+   --  avoiding the possibility of an integer overflow.
+   --
+   --  @param Byte_Length The length to left_encode. Usually represents a
+   --     quantity of bytes, as the output represents this value multiplied by 8.
+
+
+   function Right_Encode_NIST (Length : in Natural) return Types.Byte_Array
+     with
+       Post => (Right_Encode_NIST'Result'Length
+                  in 1 .. (Natural'Size / 8) + 2
+
+                and Right_Encode_NIST'Result'First
+                  in 1 .. (Natural'Size / 8) + 2);
+   --  Encode a length using the right_encode(n) method described in
+   --  NIST SP 800-185.
    --
    --  Example, the length 16#ABCDEF# will be encoded as the byte array
    --  (16#AB#, 16#CD#, 16#EF#, 3)
 
-   function Right_Encode_Long_Long (Length : in Long_Long_Integer) return Types.Byte_Array
+
+   function Right_Encode_NIST_Long_Long (Length : in Long_Long_Integer)
+                                         return Types.Byte_Array
      with
        Pre => Length >= 0,
-       Post => (Right_Encode_Long_Long'Result'Length in 1 .. (Long_Long_Integer'Size / 8) + 2
-                and Right_Encode_Long_Long'Result'First in 1 .. (Long_Long_Integer'Size / 8) + 2);
+       Post => (Right_Encode_NIST_Long_Long'Result'Length
+                  in 1 .. (Long_Long_Integer'Size / 8) + 2
 
-   function Right_Encode_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
+                and Right_Encode_NIST_Long_Long'Result'First
+                  in 1 .. (Long_Long_Integer'Size / 8) + 2);
+   --  Equivalent to Right_Encode_NIST, except this function accepts a much
+   --  longer input range (as a Long_Long_Integer).
+
+
+   function Right_Encode_NIST_Bit_Length(Byte_Length : in Natural)
+                                         return Types.Byte_Array
      with
-       Post => (Right_Encode_Bit_Length'Result'Length in 1 .. Natural'Size + 1
-                and Right_Encode_Bit_Length'Result'First in 1 .. Natural'Size + 1);
+       Post => (Right_Encode_NIST_Bit_Length'Result'Length
+                  in 1 .. Natural'Size + 1
 
-   function Right_Encode_K12 (Length : in Long_Long_Integer) return Types.Byte_Array
+                and Right_Encode_NIST_Bit_Length'Result'First
+                  in 1 .. Natural'Size + 1);
+   --  A version of right_encode(n) (as defined by NIST) where the output
+   --  represents the input value multiplied by 8.
+   --
+   --  The output of calling Right_Encode_NIST_Bit_Length (N) is equivalent
+   --  to calling Right_Encode_NIST (N * 8). This function is useful to avoid
+   --  doing the multiplication in the call to Right_Encode_NIST and thus
+   --  avoiding the possibility of an integer overflow.
+   --
+   --  @param Byte_Length The length to right_encode. Usually represents a
+   --     quantity of bytes, as the output represents this value multiplied by 8.
+
+
+   function Right_Encode_K12 (Length : in Long_Long_Integer)
+                              return Types.Byte_Array
      with
        Pre => Length >= 0,
-       Post => (Right_Encode_K12'Result'Length in 1 .. (Long_Long_Integer'Size / 8) + 2
-                and Right_Encode_K12'Result'First in 1 .. (Long_Long_Integer'Size / 8) + 2);
+       Post => (Right_Encode_K12'Result'Length
+                  in 1 .. (Long_Long_Integer'Size / 8) + 2
+
+                and Right_Encode_K12'Result'First
+                  in 1 .. (Long_Long_Integer'Size / 8) + 2);
+   --  Version of right_encode(n) as defined by the KangarooTwelve document.
+   --
+   --  The definition of right_encode(n) in the KangarooTwelve document is
+   --  different to the definition in NIST SP 800-185, and they produce different
+   --  outputs.
 
 end Keccak.Util;
