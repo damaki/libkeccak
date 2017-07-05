@@ -1,12 +1,22 @@
 UNAME_M    := $(shell uname -m)
 LSCPU_AVX2 := $(shell lscpu | grep -o avx2)
 
-ARCH ?= $(UNAME_M)
+SUPPORTED_ARCHS = x86_64
 
-# Select default value for SIMD based on the current hardware.
+# If uname -m returns a model that isn't supported, then
+# default to the generic architecture. Otherwise, default
+# to the architecture returned by uname -m
+ifeq ($(filter $(UNAME_M),$(SUPPORTED_ARCHS)),)
+	ARCH ?= generic
+else
+	ARCH ?= $(UNAME_M)
+endif
+
+# Select default value for SIMD based on the current architecture.
 ifeq ($(ARCH),x86_64)
 
 ifeq ($(LSCPU_AVX2),avx2)
+	# default to AVX2 if available
 	SIMD ?= AVX2
 else
 	# default to SSE2 on x86_64 as it's available on all modern hardware
