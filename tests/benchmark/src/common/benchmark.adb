@@ -26,9 +26,10 @@
 -------------------------------------------------------------------------------
 
 with Ada.Command_Line;
-with Ada.Real_Time; use Ada.Real_Time;
-with Ada.Execution_Time;
+with Timing;                        use Timing;
 with Ada.Text_IO;
+with Ada.Long_Float_Text_IO;
+with Interfaces;                    use Interfaces;
 with KangarooTwelve;
 with Keccak.Parallel_Keccak_1600;
 with Keccak.Generic_KangarooTwelve;
@@ -58,74 +59,35 @@ is
    type Byte_Array_Access is access Keccak.Types.Byte_Array;
    Data_Chunk : Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size_MiB*1024*1024);
    
-   ----------------------------------------------------------------------------
-   -- Print_Number
-   --
-   -- Prints a number with the unit B/kiB/MiB/GiB depending on the magnitude
-   -- of the value. E.g. 1_048_576 would be displayed as 1.0 MiB.
-   ----------------------------------------------------------------------------
-   procedure Print_Number(Value  : in Float;
-                          Suffix : in String;
-                          Aft    : in Natural)
+   package Cycles_Count_IO is new Ada.Text_IO.Modular_IO (Cycles_Count);
+   
+   
+   procedure Print_Cycles_Per_Byte (Data_Size : in Natural;
+                                    Cycles    : in Cycles_Count)
    is
-      package Float_IO  is new Ada.Text_IO.Float_IO(Float);
+      CPB : Long_Float;
       
    begin
-      if Value >= 1024.0*1024.0*1024.0 then
-         Float_IO.Put(Value / (1024.0*1024.0*1024.0),
-                      Fore => 0, 
-                      Aft => Aft, 
-                      Exp => 0);
-         Ada.Text_IO.Put(" GiB" & Suffix);
-      elsif Value >= 1024.0*1024.0 then
-         Float_IO.Put(Value / (1024.0*1024.0),
-                      Fore => 0, 
-                      Aft => Aft, 
-                      Exp => 0);
-         Ada.Text_IO.Put(" MiB" & Suffix);
-      elsif Value >= 1024.0 then
-         Float_IO.Put(Value / 1024.0,
-                      Fore => 0, 
-                      Aft => Aft, 
-                      Exp => 0);
-         Ada.Text_IO.Put(" kiB" & Suffix);
-      else
-         Float_IO.Put(Value,
-                      Fore => 0, 
-                      Aft => Aft, 
-                      Exp => 0);
-         Ada.Text_IO.Put(" B" & Suffix);
-      end if;
+      CPB := Long_Float (Cycles) / Long_Float (Data_Size);
       
-   end Print_Number;
-
-   ----------------------------------------------------------------------------
-   -- Print_Time
-   --
-   -- Prints a line displaying: the measurement time, the data size, and
-   -- the performance (bytes per second).
-   --
-   -- E.g. Print_Time(1_048_576, Elapsed) where Elapsed represents a Time_Span
-   -- of 0.123 seconds would be displayed as:
-   -- "0.123000s, 1.0 MiB, 8.130 MiB/s"
-   ----------------------------------------------------------------------------
-   procedure Print_Time(Data_Size : in Natural;
-                        Time      : in Ada.Real_Time.Time_Span)
-   is
-      package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
+      Ada.Long_Float_Text_IO.Put
+        (Item => CPB,
+         Fore => 0,
+         Aft  => 2,
+         Exp  => 0);
       
-   begin
-      Duration_IO.Put(Ada.Real_Time.To_Duration(Time), Fore => 0, Aft => 6);
-      Ada.Text_IO.Put("s, ");
-      
-      Print_Number(Float(Data_Size), "", 0);
-      
-      Ada.Text_IO.Put(", ");
-      
-      Print_Number(Float(Data_Size) / Float(Ada.Real_Time.To_Duration(Time)), "/s", 3);
-      
+      Ada.Text_IO.Put (" cycles/byte");
       Ada.Text_IO.New_Line;
-   end Print_Time;
+   end Print_Cycles_Per_Byte;
+   
+   
+   procedure Print_Cycles (Cycles : in Cycles_Count)
+   is
+   begin
+      Cycles_Count_IO.Put (Cycles, Width => 0);
+      Ada.Text_IO.Put (" cycles");
+      Ada.Text_IO.New_Line;
+   end Print_Cycles;
    
    ----------------------------------------------------------------------------
    -- Hash_Benchmark
@@ -140,19 +102,18 @@ is
    
    procedure Hash_Benchmark
    is
-      use type Ada.Execution_Time.CPU_Time;
-   
       Ctx   : Hash_Package.Context;
       Digest : Hash_Package.Digest_Type;
       
-      Start_Time : Ada.Execution_Time.CPU_Time;
-      End_Time   : Ada.Execution_Time.CPU_Time;
-      
-      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      Start_Time : Timing.Time;
+      Cycles     : Cycles_Count;
+      Min_Cycles : Cycles_Count := Cycles_Count'Last;
       
    begin
+      Ada.Text_IO.Put (Name & ": ");
+      
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Execution_Time.Clock;
+         Start_Measurement (Start_Time);
       
          Hash_Package.Init(Ctx);
          
@@ -160,16 +121,14 @@ is
          
          Hash_Package.Final(Ctx, Digest);
          
-         End_Time := Ada.Execution_Time.Clock;
+         Cycles := End_Measurement (Start_Time);
          
-         Total_Time := Total_Time + (End_Time - Start_Time);
-         
-         Ada.Text_IO.Put(Name & ", ");
-         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
       end loop;
       
-      Ada.Text_IO.Put(Name & " Average for" & Natural'Image (Repeat) & " runs: ");
-      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
    end Hash_Benchmark;
    
    
@@ -186,55 +145,50 @@ is
    
    procedure XOF_Benchmark
    is
-      use type Ada.Execution_Time.CPU_Time;
-   
       Ctx    : XOF_Package.Context;
       
-      Start_Time : Ada.Execution_Time.CPU_Time;
-      End_Time   : Ada.Execution_Time.CPU_Time;
-      
-      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      Start_Time : Timing.Time;
+      Cycles     : Cycles_Count;
+      Min_Cycles : Cycles_Count := Cycles_Count'Last;
       
    begin
+      Ada.Text_IO.Put(Name & " (Absorbing): ");
       
       -- Benchmark Absorbing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Execution_Time.Clock;
+         Start_MEasurement (Start_Time);
       
          XOF_Package.Init(Ctx);
          
          XOF_Package.Update(Ctx, Data_Chunk.all, Data_Chunk.all'Length*8);
          
-         End_Time := Ada.Execution_Time.Clock;
+         Cycles := End_Measurement (Start_Time);
          
-         Total_Time := Total_Time + (End_Time - Start_Time);
-         
-         Ada.Text_IO.Put(Name & " (Absorbing), ");
-         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
       end loop;
       
-      Ada.Text_IO.Put(Name & " (Absorbing) Average for" & Natural'Image (Repeat) & " runs: ");
-      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
-      Ada.Text_IO.New_Line;
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
       
-      Total_Time := Ada.Real_Time.Time_Span_Zero;
+      Min_Cycles := Cycles_Count'Last;
+      
+      Ada.Text_IO.Put(Name & " (Squeezing): ");
       
       -- Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Execution_Time.Clock;
+         Start_Measurement (Start_Time);
       
          XOF_Package.Extract(Ctx, Data_Chunk.all);
          
-         End_Time := Ada.Execution_Time.Clock;
+         Cycles := End_Measurement (Start_Time);
          
-         Total_Time := Total_Time + (End_Time - Start_Time);
-         
-         Ada.Text_IO.Put(Name & " (Squeezing), ");
-         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
       end loop;
       
-      Ada.Text_IO.Put(Name & " (Squeezing) Average for" & Natural'Image (Repeat) & " runs: ");
-      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
    end XOF_Benchmark;
    
    ----------------------------------------------------------------------------
@@ -250,46 +204,36 @@ is
    
    procedure Duplex_Benchmark
    is
-      use type Ada.Execution_Time.CPU_Time;
-      
       Ctx : Duplex.Context;
       
       Out_Data : Keccak.Types.Byte_Array(1 .. 1600/8);
       
-      Start_Time : Ada.Execution_Time.CPU_Time;
-      End_Time   : Ada.Execution_Time.CPU_Time;
-      
-      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
-      
-      Num_Iterations : Natural := (Benchmark_Data_Size_MiB*1024*1024) / ((1600-Capacity)/8);
+      Start_Time : Timing.Time;
+      Cycles     : Cycles_Count;
+      Min_Cycles : Cycles_Count := Cycles_Count'Last;
       
    begin
+      Ada.Text_IO.Put(Name & ": ");
+         
+      Duplex.Init(Ctx, Capacity);
       
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Execution_Time.Clock;
+         Start_Measurement (Start_Time);
          
-         Duplex.Init(Ctx, Capacity);
+         Duplex.Duplex(Ctx,
+                       Data_Chunk.all(1 .. Duplex.Rate_Of(Ctx)/8),
+                       Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits,
+                       Out_Data(1 .. Duplex.Rate_Of(Ctx)/8),
+                       Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits);
          
-         for J in Positive range 1 .. Num_Iterations loop
-            Duplex.Duplex(Ctx,
-                          Data_Chunk.all(1 .. Duplex.Rate_Of(Ctx)/8),
-                          Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits,
-                          Out_Data(1 .. Duplex.Rate_Of(Ctx)/8),
-                          Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits);
-         end loop;
+         Cycles := End_Measurement (Start_Time);
          
-         End_Time := Ada.Execution_Time.Clock;
-         
-         Total_Time := Total_Time + (End_Time - Start_Time);
-         
-         Ada.Text_IO.Put(Name & ", ");
-         Print_Time((Duplex.Rate_Of(Ctx)/8) * Num_Iterations,
-                    End_Time - Start_Time);
-                       
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;       
       end loop;
       
-      Ada.Text_IO.Put(Name & " Average for" & Natural'Image (Repeat) & " runs: ");
-      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
+      Print_Cycles (Min_Cycles);
    
    end Duplex_Benchmark;
    
@@ -307,50 +251,35 @@ is
    
    procedure KeccakF_Benchmark
    is
-      use type Ada.Execution_Time.CPU_Time;
-      
       package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
       package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
             
       State : State_Type;
       
-      Start_Time : Ada.Execution_Time.CPU_Time;
-      End_Time   : Ada.Execution_Time.CPU_Time;
-      
-      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      Start_Time : Timing.Time;
+      Cycles     : Cycles_Count;
+      Min_Cycles : Cycles_Count := Cycles_Count'Last;
       
       Num_Iterations : Natural := 1_000_000;
       
    begin
+      Ada.Text_IO.Put(Name & ": ");
+      
       Init(State);
       
-      for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Execution_Time.Clock;
+      for I in Positive range 1 .. Num_Iterations loop
+         Start_Measurement (Start_Time);
          
-         for J in Positive range 1 .. Num_Iterations loop
-            Permute(State);
-         end loop;
+         Permute(State);
          
-         End_Time := Ada.Execution_Time.Clock;
+         Cycles := End_Measurement (Start_Time);
          
-         Total_Time := Total_Time + (End_Time - Start_Time);
-         
-         Ada.Text_IO.Put(Name & ", ");
-         
-         Integer_IO.Put(Item => Num_Iterations, Width => 0);
-         Ada.Text_IO.Put(" calls, ");
-         
-         Duration_IO.Put((Ada.Real_Time.To_Duration(End_Time - Start_Time) * 1_000_000) / Num_Iterations, Fore => 0);
-         Ada.Text_IO.Put_Line(" us/call");
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
       end loop;
       
-      Ada.Text_IO.Put(Name & " Average for" & Natural'Image (Repeat) & " runs: ");
-
-      Integer_IO.Put(Item => Num_Iterations, Width => 0);
-      Ada.Text_IO.Put(" calls, ");
-
-      Duration_IO.Put((Ada.Real_Time.To_Duration(Total_Time / Repeat) * 1_000_000) / Num_Iterations, Fore => 0);
-      Ada.Text_IO.Put_Line(" us/call");
+      Print_Cycles (Min_Cycles);
       
    end KeccakF_Benchmark;
    
@@ -366,57 +295,51 @@ is
    
    procedure K12_Benchmark
    is
-      use type Ada.Execution_Time.CPU_Time;
-   
       Ctx    : K12.Context;
       
-      Start_Time : Ada.Execution_Time.CPU_Time;
-      End_Time   : Ada.Execution_Time.CPU_Time;
-      
-      Total_Time : Ada.Real_Time.Time_Span := Ada.Real_Time.Time_Span_Zero;
+      Start_Time : Timing.Time;
+      Cycles     : Cycles_Count;
+      Min_Cycles : Cycles_Count := Cycles_Count'Last;
       
    begin
+      Ada.Text_IO.Put(Name & " (Absorbing): ");
       
       -- Benchmark Absorbing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Execution_Time.Clock;
+         Start_Measurement (Start_Time);
       
          K12.Init(Ctx);
          
          K12.Update(Ctx, Data_Chunk.all);
       
-         K12.Finish (Ctx, "Benchmark");
+         K12.Finish (Ctx, "");
          
-         End_Time := Ada.Execution_Time.Clock;
+         Cycles := End_Measurement (Start_Time);
          
-         Total_Time := Total_Time + (End_Time - Start_Time);
-         
-         Ada.Text_IO.Put(Name & " (Updating), ");
-         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
       end loop;
       
-      Ada.Text_IO.Put(Name & " (Absorbing) Average for" & Natural'Image (Repeat) & " runs: ");
-      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
-      Ada.Text_IO.New_Line;
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
       
-      Total_Time := Ada.Real_Time.Time_Span_Zero;
+      Min_Cycles := Cycles_Count'Last;
+      Ada.Text_IO.Put(Name & " (Squeezing): ");
       
       -- Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
-         Start_Time := Ada.Execution_Time.Clock;
+         Start_Measurement (Start_Time);
       
          K12.Extract(Ctx, Data_Chunk.all);
          
-         End_Time := Ada.Execution_Time.Clock;
+         Cycles := End_Measurement (Start_Time);
          
-         Total_Time := Total_Time + (End_Time - Start_Time);
-         
-         Ada.Text_IO.Put(Name & " (Squeezing), ");
-         Print_Time(Data_Chunk.all'Length, End_Time - Start_Time);
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
       end loop;
       
-      Ada.Text_IO.Put(Name & " (Squeezing) Average for" & Natural'Image (Repeat) & " runs: ");
-      Print_Time (Data_Chunk.all'Length, Total_Time / Repeat);
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
    end K12_Benchmark;
    
    ----------------------------------------------------------------------------
@@ -611,131 +534,105 @@ begin
 
    if Benchmarks_Enabled (K12) then
       Benchmark_K12;
-      Ada.Text_IO.New_Line;
    end if;
 
    if Benchmarks_Enabled (SHA3_224) then
       Benchmark_SHA_224;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (SHA3_256) then
       Benchmark_SHA_256;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (SHA3_384) then
       Benchmark_SHA_384;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (SHA3_512) then
       Benchmark_SHA_512;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Keccak_224) then
       Benchmark_Keccak_224;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Keccak_256) then
       Benchmark_Keccak_256;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Keccak_384) then
       Benchmark_Keccak_384;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Keccak_512) then
       Benchmark_Keccak_512;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (SHAKE128) then
       Benchmark_SHAKE128;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (SHAKE256) then
       Benchmark_SHAKE256;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (RawSHAKE128) then
       Benchmark_RawSHAKE128;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (RawSHAKE256) then
       Benchmark_RawSHAKE256;
-     Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Duplex_r1152c448) then
       Benchmark_Duplex_r1152c448;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Duplex_r1088c512) then
       Benchmark_Duplex_r1088c512;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Duplex_r832c768) then
       Benchmark_Duplex_r832c768;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (Duplex_r576c1024) then
       Benchmark_Duplex_r576c1024;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_1600) then
       Benchmark_KeccakF_1600;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_1600_P2_R24) then
       Benchmark_KeccakF_1600_P2_R24;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_1600_P2_R12) then
       Benchmark_KeccakF_1600_P2_R12;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_800) then
       Benchmark_KeccakF_800;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_400) then
       Benchmark_KeccakF_400;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_200) then
       Benchmark_KeccakF_200;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_100) then
       Benchmark_KeccakF_100;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_50) then
       Benchmark_KeccakF_50;
-      Ada.Text_IO.New_Line;
    end if;
    
    if Benchmarks_Enabled (KeccakF_25) then
       Benchmark_KeccakF_25;
-      Ada.Text_IO.New_Line;
    end if;
 end Benchmark;

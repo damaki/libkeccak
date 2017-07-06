@@ -71,10 +71,9 @@ kat: $(KAT_EXECUTABLES)
 	$(OUTPUT_DIR)/kat/keccak_384_kat kat/testvectors/ExtremelyLongMsgKAT_384.txt
 	$(OUTPUT_DIR)/kat/keccak_512_kat kat/testvectors/ExtremelyLongMsgKAT_512.txt
 
-.PHONY: $(OUTPUT_DIR)/benchmark/benchmark
 .PHONY: benchmark
-benchmark: $(OUTPUT_DIR)/benchmark/benchmark
-	$(OUTPUT_DIR)/benchmark/benchmark --all
+benchmark:
+	gprbuild -P benchmark/benchmark.gpr -XLIBKECCAK_BUILD=default
 
 .PHONY:$(OUTPUT_DIR)/unit_tests/test_keccak
 unit_test: $(KECCAK_DIR)/libkeccak.a $(OUTPUT_DIR)/unit_tests/test_keccak
@@ -152,11 +151,9 @@ $(OUTPUT_DIR)/kat/parallelhash_128_kat:
 $(OUTPUT_DIR)/kat/parallelhash_256_kat:
 	gprbuild -aP$(KECCAK_DIR) -P parallelhash_256_kat.gpr
 
-$(OUTPUT_DIR)/benchmark/benchmark:
-	gprbuild -aP$(KECCAK_DIR) -P benchmark.gpr
-
 $(OUTPUT_DIR)/unit_tests/test_keccak:
 	gprbuild -P unit_tests.gpr -Xarch=$(ARCH) -Xsimd=$(SIMD)
 
 clean:
 	rm -rf $(OUTPUT_DIR)
+	gprclean -P benchmark/benchmark.gpr -XLIBKECCAK_BUILD=default
