@@ -24,29 +24,17 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-
-package body Keccak.Generic_KeccakF
+generic
+package Keccak.Generic_KeccakF.Lane_Complementing_Permutation
 is
 
-   procedure Init(A : out State)
-   is
-   begin
-      A := (others => (others => 0));
-   end Init;
+   generic
+      -- Number of rounds.
+      --
+      -- By default, the definition from The Keccak Reference is used.
+      First_Round : Round_Index := 0;
+      Num_Rounds  : Round_Count := 12 + (2*L);
+   procedure Permute (S : in out State)
+     with Global => null;
 
-
-   procedure Init_Complemented (A : out State)
-   is
-   begin
-      A := (0 => (4      => Lane_Type'Last,
-                  others => 0),
-            1 => (0      => Lane_Type'Last,
-                  others => 0),
-            2 => (0|2|3  => Lane_Type'Last,
-                  others => 0),
-            3 => (1      => Lane_Type'Last,
-                  others => 0),
-            4 => (others => 0));
-   end Init_Complemented;
-
-end Keccak.Generic_KeccakF;
+end Keccak.Generic_KeccakF.Lane_Complementing_Permutation;

@@ -152,6 +152,81 @@ is
 
    end Extract_Bytes;
 
+
+   procedure Extract_Bytes_Complemented(A    : in     State;
+                                        Data :    out Keccak.Types.Byte_Array)
+   is
+      use type Keccak.Types.Byte;
+
+      Complement_Mask : constant State :=
+        (0 => (4      => Lane_Type'Last,
+               others => 0),
+         1 => (0      => Lane_Type'Last,
+               others => 0),
+         2 => (0|2|3  => Lane_Type'Last,
+               others => 0),
+         3 => (1      => Lane_Type'Last,
+               others => 0),
+         4 => (others => 0));
+
+      X               : X_Coord := 0;
+      Y               : Y_Coord := 0;
+
+      Remaining_Bytes : Natural := Data'Length;
+      Offset          : Natural := 0;
+
+      Byte            : Keccak.Types.Byte;
+      Lane            : Lane_Type;
+   begin
+      Data := (others => 0); -- workaround for flow analysis.
+
+      -- Process entire bytes
+      while Remaining_Bytes > 0 and Offset < B/8 loop
+         pragma Loop_Variant(Increases => Offset,
+                             Decreases => Remaining_Bytes);
+         pragma Loop_Invariant(Offset + Remaining_Bytes = Data'Length);
+
+         Byte := 0;
+
+         for I in Natural range 0 .. (8/W) - 1 loop
+            Lane := A (X, Y) xor Complement_Mask (X, Y);
+            Byte := Byte or Interfaces.Shift_Left(Keccak.Types.Byte(Lane), I*W);
+
+            X := X + 1;
+            if X = 0 then
+               Y := Y + 1;
+            end if;
+         end loop;
+
+         Data(Data'First + Offset) := Byte;
+
+         Remaining_Bytes := Remaining_Bytes - 1;
+         Offset          := Offset          + 1;
+      end loop;
+
+      if Remaining_Bytes > 0 then
+         pragma Assert(Remaining_Bytes = 1);
+
+         Byte := 0;
+
+         for I in Natural range 0 .. (8/W) - 1 loop
+            Lane := A(X, Y) xor Complement_Mask (X, Y);
+            Byte := Byte or Interfaces.Shift_Left(Keccak.Types.Byte(Lane), I*W);
+
+            X := X + 1;
+            if X = 0 then
+               Y := Y + 1;
+            end if;
+
+            exit when X = 0 and Y = 0;
+         end loop;
+
+         Data(Data'First + Offset) := Byte;
+      end if;
+
+   end Extract_Bytes_Complemented;
+
+
    procedure Extract_Bits(A       : in     State;
                           Data    :    out Keccak.Types.Byte_Array;
                           Bit_Len : in     Natural)
@@ -167,6 +242,23 @@ is
          Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
       end if;
    end Extract_Bits;
+
+
+   procedure Extract_Bits_Complemented(A       : in     State;
+                                       Data    :    out Keccak.Types.Byte_Array;
+                                       Bit_Len : in     Natural)
+   is
+      use type Keccak.Types.Byte;
+
+   begin
+      Extract_Bytes_Complemented(A, Data);
+
+      -- Avoid exposing more bits than requested by masking away higher bits
+      -- in the last byte.
+      if Bit_Len > 0 and Bit_Len mod 8 /= 0 then
+         Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
+      end if;
+   end Extract_Bits_Complemented;
 
 
 end Keccak.Generic_KeccakF.Bit_Lanes;

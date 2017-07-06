@@ -84,6 +84,10 @@ is
    --
    -- Initially, the Keccak state is set to 0.
 
+   procedure Init_Complemented (A : out State)
+     with Global => null,
+     Depends => (A => null);
+
 private
    type X_Coord is mod 5;
    type Y_Coord is mod 5;

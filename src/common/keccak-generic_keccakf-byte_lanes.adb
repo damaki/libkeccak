@@ -162,6 +162,94 @@ is
 
    end Extract_Bytes;
 
+
+
+   procedure Extract_Bytes_Complemented(A    : in     State;
+                                        Data :    out Keccak.Types.Byte_Array)
+   is
+      use type Keccak.Types.Byte;
+
+      Complement_Mask : constant State :=
+        (0 => (4      => Lane_Type'Last,
+               others => 0),
+         1 => (0      => Lane_Type'Last,
+               others => 0),
+         2 => (0|2|3  => Lane_Type'Last,
+               others => 0),
+         3 => (1      => Lane_Type'Last,
+               others => 0),
+         4 => (others => 0));
+
+      X               : X_Coord := 0;
+      Y               : Y_Coord := 0;
+
+      Remaining_Bytes : Natural := Data'Length;
+      Offset          : Natural := 0;
+
+      Lane            : Lane_Type;
+   begin
+      -- Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
+
+      -- Process whole lanes
+      while Remaining_Bytes >= W/8 loop
+         pragma Loop_Variant(Increases => Offset,
+                             Decreases => Remaining_Bytes);
+         pragma Loop_Invariant(Offset mod (W/8) = 0
+                               and Offset + Remaining_Bytes = Data'Length);
+
+         Lane := A(X, Y) xor Complement_Mask (X, Y);
+
+         for I in Natural range 0 .. (W/8) - 1 loop
+            Data(Data'First + Offset + I)
+              := Keccak.Types.Byte(Shift_Right(Lane, I*8) and 16#FF#);
+
+            pragma Annotate (GNATprove, False_Positive,
+                             """Data"" might not be initialized",
+                             "Data is initialized at end of procedure");
+         end loop;
+
+         X := X + 1;
+         if X = 0 then
+            Y := Y + 1;
+         end if;
+
+         Remaining_Bytes := Remaining_Bytes - W/8;
+         Offset          := Offset + W/8;
+      end loop;
+
+      -- Process any remaining data (smaller than 1 lane)
+      if Remaining_Bytes > 0 then
+         Lane := A(X, Y) xor Complement_Mask (X, Y);
+
+         declare
+            Shift          : Natural := 0;
+            Initial_Offset : Natural := Offset with Ghost;
+         begin
+            while Remaining_Bytes > 0 loop
+               pragma Loop_Variant(Increases => Offset,
+                                   Increases => Shift,
+                                   Decreases => Remaining_Bytes);
+               pragma Loop_Invariant(Offset + Remaining_Bytes = Data'Length
+                                     and Shift mod 8 = 0
+                                     and Shift = (Offset - Initial_Offset) * 8);
+
+               Data(Data'First + Offset)
+                 := Keccak.Types.Byte(Shift_Right(Lane, Shift) and 16#FF#);
+
+               pragma Annotate (GNATprove, False_Positive,
+                                """Data"" might not be initialized",
+                                "Data is initialized at end of procedure");
+
+               Shift           := Shift + 8;
+               Offset          := Offset + 1;
+               Remaining_Bytes := Remaining_Bytes - 1;
+            end loop;
+         end;
+      end if;
+
+   end Extract_Bytes_Complemented;
+
+
    procedure Extract_Bits(A       : in     State;
                           Data    :    out Keccak.Types.Byte_Array;
                           Bit_Len : in     Natural)
@@ -177,5 +265,22 @@ is
          Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
       end if;
    end Extract_Bits;
+
+
+   procedure Extract_Bits_Complemented(A       : in     State;
+                                       Data    :    out Keccak.Types.Byte_Array;
+                                       Bit_Len : in     Natural)
+   is
+      use type Keccak.Types.Byte;
+
+   begin
+      Extract_Bytes_Complemented(A, Data);
+
+      -- Avoid exposing more bits than requested by masking away higher bits
+      -- in the last byte.
+      if Bit_Len > 0 and Bit_Len mod 8 /= 0 then
+         Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
+      end if;
+   end Extract_Bits_Complemented;
 
 end Keccak.Generic_KeccakF.Byte_Lanes;

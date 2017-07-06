@@ -28,7 +28,7 @@ with Interfaces;
 with Keccak.Generic_Duplex;
 with Keccak.Generic_KeccakF;
 with Keccak.Generic_KeccakF.Bit_Lanes;
-with Keccak.Generic_KeccakF.Optimized_Permutation;
+with Keccak.Generic_KeccakF.Lane_Complementing_Permutation;
 with Keccak.Padding;
 with Keccak.Generic_Sponge;
 with Keccak.Types;
@@ -36,7 +36,7 @@ with Keccak.Types;
 pragma Elaborate_All(Keccak.Generic_Duplex);
 pragma Elaborate_All(Keccak.Generic_KeccakF);
 pragma Elaborate_All(Keccak.Generic_KeccakF.Bit_Lanes);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Optimized_Permutation);
+pragma Elaborate_All(Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
 pragma Elaborate_All(Keccak.Generic_Sponge);
 
 package Keccak.Keccak_100
@@ -50,7 +50,7 @@ is
       Shift_Right => Keccak.Types.Shift_Right_4,
       Rotate_Left => Keccak.Types.Rotate_Left_4);
 
-   package KeccakF_100_Permutation is new KeccakF_100.Optimized_Permutation;
+   package KeccakF_100_Permutation is new KeccakF_100.Lane_Complementing_Permutation;
 
    -- Keccak-f[100] permutation function with the default number of rounds.
    procedure Permute is new KeccakF_100_Permutation.Permute;
@@ -60,19 +60,19 @@ is
    package Sponge is new Keccak.Generic_Sponge
      (State_Size          => KeccakF_100.B,
       State_Type          => KeccakF_100.State,
-      Init_State          => KeccakF_100.Init,
+      Init_State          => KeccakF_100.Init_Complemented,
       F                   => Permute,
       XOR_Bits_Into_State => KeccakF_100_Lanes.XOR_Bits_Into_State,
-      Extract_Data        => KeccakF_100_Lanes.Extract_Bytes,
+      Extract_Data        => KeccakF_100_Lanes.Extract_Bytes_Complemented,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
 
    package Duplex is new Keccak.Generic_Duplex
      (State_Size          => KeccakF_100.B,
       State_Type          => KeccakF_100.State,
-      Init_State          => KeccakF_100.Init,
+      Init_State          => KeccakF_100.Init_Complemented,
       F                   => Permute,
       XOR_Bits_Into_State => KeccakF_100_Lanes.XOR_Bits_Into_State,
-      Extract_Bits        => KeccakF_100_Lanes.Extract_Bits,
+      Extract_Bits        => KeccakF_100_Lanes.Extract_Bits_Complemented,
       Pad                 => Keccak.Padding.Pad101_Single_Block,
       Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
 

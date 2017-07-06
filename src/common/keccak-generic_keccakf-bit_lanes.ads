@@ -52,9 +52,27 @@ is
 
 
 
+   procedure Extract_Bytes_Complemented(A    : in     State;
+                                        Data :    out Keccak.Types.Byte_Array)
+     with Global => null,
+     Depends => (Data => + A),
+     Pre => Data'Length <= ((B + 7)/8);
+
+
+
    procedure Extract_Bits(A       : in     State;
                           Data    :    out Keccak.Types.Byte_Array;
                           Bit_Len : in     Natural)
+     with Global => null,
+     Depends => (Data => + (A, Bit_Len)),
+     Pre => (Bit_Len <= B
+             and then Data'Length = (Bit_Len + 7) / 8);
+
+
+
+   procedure Extract_Bits_Complemented(A       : in     State;
+                                       Data    :    out Keccak.Types.Byte_Array;
+                                       Bit_Len : in     Natural)
      with Global => null,
      Depends => (Data => + (A, Bit_Len)),
      Pre => (Bit_Len <= B
