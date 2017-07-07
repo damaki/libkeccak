@@ -2,28 +2,36 @@ with "aunit";
 
 project Unit_Tests is
    type Arch_Type is ("generic", "x86_64");
-   type SIMD_Type is ("none", "SSE2");
+   type SIMD_Type is ("none", "SSE2", "AVX2");
    
    Arch : Arch_Type := external ("arch", "generic");
    SIMD : SIMD_Type := external ("simd", "none");
    
    Arch_Dirs     := ();
    Arch_Switches := ();
-   
+
    case Arch is
       when "generic" =>
          Arch_Dirs := Arch_Dirs & ("../src/generic");
-         
+
       when "x86_64" =>
          case SIMD is
-            when "none" => 
+            when "none" =>
                Arch_Dirs     := Arch_Dirs & ("../src/generic");
-            
+
             when "SSE2" =>
-               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2");
+               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
+                                             "../src/x86_64/SSE2");
                Arch_Switches := Arch_Switches & ("-msse", "-msse2");
+               
+            when "AVX2" =>
+               Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
+                                             "../src/x86_64/AVX2_defs",
+                                             "../src/x86_64/AVX2");
+               Arch_Switches := Arch_Switches & ("-msse", "-msse2", "-mavx", "-mavx2");
+               
          end case;
-         
+
    end case;
 
    --libkeccak is built from source to enable compilation with -fprofile-arcs

@@ -43,7 +43,7 @@ is
    is
    begin
       for N in 0 .. Natural'Last / 8 loop
-         Assert (Left_Encode_Bit_Length (N) = Left_Encode (N * 8),
+         Assert (Left_Encode_NIST_Bit_Length (N) = Left_Encode_NIST (N * 8),
                  "Failed for N = " & Natural'Image (N));
       end loop;
    end Test_Left_Encode_Bit_Length_Equivalence;
@@ -52,7 +52,7 @@ is
    is
    begin
       for N in 0 .. Natural'Last / 8 loop
-         Assert (Right_Encode_Bit_Length (N) = Right_Encode (N * 8),
+         Assert (Right_Encode_NIST_Bit_Length (N) = Right_Encode_NIST (N * 8),
                  "Failed for N = " & Natural'Image (N));
       end loop;
    end Test_Right_Encode_Bit_Length_Equivalence;

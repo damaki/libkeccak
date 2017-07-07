@@ -26,7 +26,8 @@
 -------------------------------------------------------------------------------
 
 with Parallel_Sponge_Tests;
-with KangarooTwelve;
+with Keccak.Keccak_1600.Rounds_24;
+with Keccak.Parallel_Keccak_1600.Rounds_24;
 with AUnit.Test_Caller;
 
 package body Parallel_Sponge_Suite
@@ -38,18 +39,18 @@ is
    --  are actually used in the library.
 
    package Parallel_Sponge_1600_P2_Tests is new Parallel_Sponge_Tests
-     (Serial_Sponge   => KangarooTwelve.Sponge_S1,
-      Parallel_Sponge => KangarooTwelve.Sponge_P2,
+     (Serial_Sponge   => Keccak.Keccak_1600.Rounds_24.Sponge,
+      Parallel_Sponge => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P2,
       Capacity        => 256);
 
    package Parallel_Sponge_1600_P4_Tests is new Parallel_Sponge_Tests
-     (Serial_Sponge   => KangarooTwelve.Sponge_S1,
-      Parallel_Sponge => KangarooTwelve.Sponge_P4,
+     (Serial_Sponge   => Keccak.Keccak_1600.Rounds_24.Sponge,
+      Parallel_Sponge => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P4,
       Capacity        => 256);
 
    package Parallel_Sponge_1600_P8_Tests is new Parallel_Sponge_Tests
-     (Serial_Sponge   => KangarooTwelve.Sponge_S1,
-      Parallel_Sponge => KangarooTwelve.Sponge_P8,
+     (Serial_Sponge   => Keccak.Keccak_1600.Rounds_24.Sponge,
+      Parallel_Sponge => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P8,
       Capacity        => 256);
 
    package Caller_1600_P2 is new AUnit.Test_Caller (Parallel_Sponge_1600_P2_Tests.Test);

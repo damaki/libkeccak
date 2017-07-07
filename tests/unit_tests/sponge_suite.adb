@@ -26,13 +26,13 @@
 -------------------------------------------------------------------------------
 
 with Sponge_Tests;
-with Keccak.Keccak_1600;
-with Keccak.Keccak_800;
-with Keccak.Keccak_400;
-with Keccak.Keccak_200;
-with Keccak.Keccak_100;
-with Keccak.Keccak_50;
-with Keccak.Keccak_25;
+with Keccak.Keccak_1600.Rounds_24;
+with Keccak.Keccak_800.Rounds_22;
+with Keccak.Keccak_400.Rounds_20;
+with Keccak.Keccak_200.Rounds_18;
+with Keccak.Keccak_100.Rounds_16;
+with Keccak.Keccak_50.Rounds_14;
+with Keccak.Keccak_25.Rounds_12;
 with AUnit.Test_Caller;
 
 package body Sponge_Suite
@@ -41,25 +41,25 @@ is
    -- rate will be a multiple of 8 (required precondition for Sponge.Init).
    
    package Sponge_1600_Tests is new Sponge_Tests
-      (Keccak.Keccak_1600.Sponge, 512);
+      (Keccak.Keccak_1600.Rounds_24.Sponge, 512);
        
    package Sponge_800_Tests is new Sponge_Tests
-      (Keccak.Keccak_800.Sponge, 512);
+      (Keccak.Keccak_800.Rounds_22.Sponge, 512);
        
    package Sponge_400_Tests is new Sponge_Tests
-      (Keccak.Keccak_400.Sponge, 256);
+      (Keccak.Keccak_400.Rounds_20.Sponge, 256);
        
    package Sponge_200_Tests is new Sponge_Tests
-      (Keccak.Keccak_200.Sponge, 128);
+      (Keccak.Keccak_200.Rounds_18.Sponge, 128);
        
    package Sponge_100_Tests is new Sponge_Tests
-      (Keccak.Keccak_100.Sponge, 60);
+      (Keccak.Keccak_100.Rounds_16.Sponge, 60);
        
    package Sponge_50_Tests is new Sponge_Tests
-      (Keccak.Keccak_50.Sponge, 26);
+      (Keccak.Keccak_50.Rounds_14.Sponge, 26);
        
    package Sponge_25_Tests is new Sponge_Tests
-      (Keccak.Keccak_25.Sponge, 9);
+      (Keccak.Keccak_25.Rounds_12.Sponge, 9);
           
    package Caller_1600 is new AUnit.Test_Caller (Sponge_1600_Tests.Test);
    package Caller_800  is new AUnit.Test_Caller (Sponge_800_Tests.Test);
