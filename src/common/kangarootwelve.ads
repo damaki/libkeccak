@@ -24,9 +24,9 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Keccak.Keccak_1600;
+with Keccak.Keccak_1600.Rounds_12;
 with Keccak.Generic_KangarooTwelve;
-with Keccak.Parallel_Keccak_1600;
+with Keccak.Parallel_Keccak_1600.Rounds_12;
 with Keccak.Generic_Parallel_Sponge;
 with Keccak.Generic_Parallel_XOF;
 with Keccak.Generic_Sponge;
@@ -40,81 +40,27 @@ is
 
    K12_Capacity : constant := 256;
 
-   procedure Permute_R12 is new Keccak.Keccak_1600.KeccakF_1600_Permutation.Permute
-     (First_Round => 12,
-      Num_Rounds  => 12);
-
-   --  Serial sponge based on Keccak-f[1600,12]
-   package Sponge_S1 is new Keccak.Generic_Sponge
-     (State_Size          => 1600,
-      State_Type          => Keccak.Keccak_1600.KeccakF_1600.State,
-      Init_State          => Keccak.Keccak_1600.KeccakF_1600.Init,
-      F                   => Permute_R12,
-      XOR_Bits_Into_State => Keccak.Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
-      Extract_Data        => Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
-      Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
-
-   --  Parallel sponge based on Keccak-f[1600,12]×2
-   package Sponge_P2 is new Keccak.Generic_Parallel_Sponge
-     (State_Size                   => 1600,
-      State_Type                   => Keccak.Parallel_Keccak_1600.Parallel_State_P2,
-      Parallelism                  => 2,
-      Init                         => Keccak.Parallel_Keccak_1600.Init_P2,
-      Permute_All                  => Keccak.Parallel_Keccak_1600.Permute_All_P2_R12,
-      XOR_Bits_Into_State_Separate => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_Separate_P2,
-      XOR_Bits_Into_State_All      => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_All_P2,
-      Extract_Bytes                => Keccak.Parallel_Keccak_1600.Extract_Bytes_P2,
-      Pad                          => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits             => Keccak.Padding.Pad101_Min_Bits);
-
-   --  Parallel sponge based on Keccak-f[1600,12]×4
-   package Sponge_P4 is new Keccak.Generic_Parallel_Sponge
-     (State_Size                   => 1600,
-      State_Type                   => Keccak.Parallel_Keccak_1600.Parallel_State_P4,
-      Parallelism                  => 4,
-      Init                         => Keccak.Parallel_Keccak_1600.Init_P4,
-      Permute_All                  => Keccak.Parallel_Keccak_1600.Permute_All_P4_R12,
-      XOR_Bits_Into_State_Separate => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_Separate_P4,
-      XOR_Bits_Into_State_All      => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_All_P4,
-      Extract_Bytes                => Keccak.Parallel_Keccak_1600.Extract_Bytes_P4,
-      Pad                          => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits             => Keccak.Padding.Pad101_Min_Bits);
-
-   --  Parallel sponge based on Keccak-f[1600,12]×8
-   package Sponge_P8 is new Keccak.Generic_Parallel_Sponge
-     (State_Size                   => 1600,
-      State_Type                   => Keccak.Parallel_Keccak_1600.Parallel_State_P8,
-      Parallelism                  => 8,
-      Init                         => Keccak.Parallel_Keccak_1600.Init_P8,
-      Permute_All                  => Keccak.Parallel_Keccak_1600.Permute_All_P8_R12,
-      XOR_Bits_Into_State_Separate => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_Separate_P8,
-      XOR_Bits_Into_State_All      => Keccak.Parallel_Keccak_1600.XOR_Bits_Into_State_All_P8,
-      Extract_Bytes                => Keccak.Parallel_Keccak_1600.Extract_Bytes_P8,
-      Pad                          => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits             => Keccak.Padding.Pad101_Min_Bits);
-
-
    --  Now we can build a XOF on each parallel sponge
    package XOF_S1 is new Keccak.Generic_XOF
-     (XOF_Sponge  => Sponge_S1,
+     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_12.Sponge,
       Capacity    => K12_Capacity,
       Suffix      => 0, --  Add no suffix here, since suffix is dynamic (01 or 11)
       Suffix_Size => 0);
 
    package XOF_P2 is new Keccak.Generic_Parallel_XOF
-     (Sponge      => Sponge_P2,
+     (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P2,
       Capacity    => K12_Capacity,
       Suffix      => 2#011#,
       Suffix_Size => 3);
 
    package XOF_P4 is new Keccak.Generic_Parallel_XOF
-     (Sponge      => Sponge_P4,
+     (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P4,
       Capacity    => K12_Capacity,
       Suffix      => 2#011#,
       Suffix_Size => 3);
 
    package XOF_P8 is new Keccak.Generic_Parallel_XOF
-     (Sponge      => Sponge_P8,
+     (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P8,
       Capacity    => K12_Capacity,
       Suffix      => 2#011#,
       Suffix_Size => 3);

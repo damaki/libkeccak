@@ -25,18 +25,14 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Interfaces;
-with Keccak.Generic_Duplex;
 with Keccak.Generic_KeccakF;
 with Keccak.Generic_KeccakF.Byte_Lanes;
 with Keccak.Generic_KeccakF.Lane_Complementing_Permutation;
 with Keccak.Padding;
-with Keccak.Generic_Sponge;
 
-pragma Elaborate_All(Keccak.Generic_Duplex);
 pragma Elaborate_All(Keccak.Generic_KeccakF);
 pragma Elaborate_All(Keccak.Generic_KeccakF.Byte_Lanes);
 pragma Elaborate_All(Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
-pragma Elaborate_All(Keccak.Generic_Sponge);
 
 package Keccak.Keccak_200
 with SPARK_Mode => On
@@ -51,29 +47,6 @@ is
 
    package KeccakF_200_Permutation is new KeccakF_200.Lane_Complementing_Permutation;
 
-   -- Keccak-f[200] permutation with the default number of rounds.
-   procedure Permute is new KeccakF_200_Permutation.Permute;
-
    package KeccakF_200_Lanes is new KeccakF_200.Byte_Lanes;
-
-   package Sponge is new Keccak.Generic_Sponge
-     (State_Size          => KeccakF_200.B,
-      State_Type          => KeccakF_200.State,
-      Init_State          => KeccakF_200.Init_Complemented,
-      F                   => Permute,
-      XOR_Bits_Into_State => KeccakF_200_Lanes.XOR_Bits_Into_State,
-      Extract_Data        => KeccakF_200_Lanes.Extract_Bytes_Complemented,
-      Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
-
-   package Duplex is new Keccak.Generic_Duplex
-     (State_Size          => KeccakF_200.B,
-      State_Type          => KeccakF_200.State,
-      Init_State          => KeccakF_200.Init,
-      F                   => Permute,
-      XOR_Bits_Into_State => KeccakF_200_Lanes.XOR_Bits_Into_State,
-      Extract_Bits        => KeccakF_200_Lanes.Extract_Bits_Complemented,
-      Pad                 => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
-
 
 end Keccak.Keccak_200;

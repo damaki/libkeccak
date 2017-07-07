@@ -26,7 +26,7 @@
 -------------------------------------------------------------------------------
 with Keccak.Generic_CSHAKE;
 with Keccak.Generic_XOF;
-with Keccak.Keccak_1600;
+with Keccak.Keccak_1600.Rounds_24;
 
 pragma Elaborate_All(Keccak.Generic_CSHAKE);
 pragma Elaborate_All(Keccak.Generic_XOF);
@@ -35,13 +35,13 @@ package CSHAKE
 with SPARK_Mode => On
 is
    package CSHAKE128_XOF is new Keccak.Generic_XOF
-     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
       Capacity    => 256,
       Suffix      => 2#00#,
       Suffix_Size => 2);
 
    package CSHAKE256_XOF is new Keccak.Generic_XOF
-     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
       Capacity    => 512,
       Suffix      => 2#00#,
       Suffix_Size => 2);

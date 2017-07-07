@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2017, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,30 +24,37 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Interfaces;
-with Keccak.Generic_KeccakF;
-with Keccak.Generic_KeccakF.Bit_Lanes;
-with Keccak.Generic_KeccakF.Lane_Complementing_Permutation;
-with Keccak.Padding;
-with Keccak.Types;
+with Keccak.Generic_Duplex;
+with Keccak.Generic_Sponge;
 
-pragma Elaborate_All(Keccak.Generic_KeccakF);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Bit_Lanes);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
+pragma Elaborate_All(Keccak.Generic_Duplex);
+pragma Elaborate_All(Keccak.Generic_Sponge);
 
-package Keccak.Keccak_50
+package Keccak.Keccak_200.Rounds_12
 with SPARK_Mode => On
 is
 
-   package KeccakF_50 is new Keccak.Generic_KeccakF
-     (L           => 1,
-      Lane_Type   => Keccak.Types.Unsigned_2,
-      Shift_Left  => Keccak.Types.Shift_Left_2,
-      Shift_Right => Keccak.Types.Shift_Right_2,
-      Rotate_Left => Keccak.Types.Rotate_Left_2);
+   procedure Permute is new KeccakF_200_Permutation.Permute
+     (First_Round => 12,
+      Num_Rounds  => 12);
 
-   package KeccakF_50_Permutation is new KeccakF_50.Lane_Complementing_Permutation;
+   package Sponge is new Keccak.Generic_Sponge
+     (State_Size          => KeccakF_200.B,
+      State_Type          => KeccakF_200.State,
+      Init_State          => KeccakF_200.Init_Complemented,
+      F                   => Permute,
+      XOR_Bits_Into_State => KeccakF_200_Lanes.XOR_Bits_Into_State,
+      Extract_Data        => KeccakF_200_Lanes.Extract_Bytes_Complemented,
+      Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
 
-   package KeccakF_50_Lanes is new KeccakF_50.Bit_Lanes;
+   package Duplex is new Keccak.Generic_Duplex
+     (State_Size          => KeccakF_200.B,
+      State_Type          => KeccakF_200.State,
+      Init_State          => KeccakF_200.Init_Complemented,
+      F                   => Permute,
+      XOR_Bits_Into_State => KeccakF_200_Lanes.XOR_Bits_Into_State,
+      Extract_Bits        => KeccakF_200_Lanes.Extract_Bits_Complemented,
+      Pad                 => Keccak.Padding.Pad101_Single_Block,
+      Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
 
-end Keccak.Keccak_50;
+end Keccak.Keccak_200.Rounds_12;

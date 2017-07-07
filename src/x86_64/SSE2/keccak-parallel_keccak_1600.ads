@@ -14,30 +14,22 @@ pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Parallel_Fallback);
 --  @description@
 --
 --  This package must define the following types and procedures:
---    * Permute_S1_R12 - Serial Keccak-p[1600] permutation with 12 rounds.
---    * Permute_S1_R24 - Serial Keccak-p[1600] permutation with 24 rounds.
 --
 --  For 2x parallelism:
 --    * Parallel_State_P2
 --    * Init_P2
---    * Permute_All_P2_R12
---    * Permute_All_P2_R24
 --    * XOR_Bits_Into_State_P2
 --    * Extract_Bytes_P2
 --
 --  For 4x parallelism:
 --    * Parallel_State_P4
 --    * Init_P4
---    * Permute_All_P4_R12
---    * Permute_All_P4_R24
 --    * XOR_Bits_Into_State_P4
 --    * Extract_Bytes_P4
 --
 --  For 8x parallelism:
 --    * Parallel_State_P8
 --    * Init_P8
---    * Permute_All_P8_R12
---    * Permute_All_P8_R24
 --    * XOR_Bits_Into_State_P8
 --    * Extract_Bytes_P8
 --
@@ -71,14 +63,6 @@ is
 
    procedure Init_P2 (S : out KeccakF_1600_P2.Parallel_State)
                       renames KeccakF_1600_P2.Init;
-
-   procedure Permute_All_P2_R12 is new KeccakF_1600_P2.Permute_All
-     (First_Round => 12,
-      Num_Rounds  => 12);
-
-   procedure Permute_All_P2_R24 is new KeccakF_1600_P2.Permute_All
-     (First_Round => 0,
-      Num_Rounds  => 24);
 
    procedure XOR_Bits_Into_State_Separate_P2
      (S           : in out Parallel_State_P2;
@@ -121,12 +105,6 @@ is
    procedure Init_P4 (S : out Parallel_State_P4)
                       renames KeccakF_1600_P4.Init;
 
-   procedure Permute_All_P4_R12 is new KeccakF_1600_P4.Permute_All
-     (Permute_All_P2_R12);
-
-   procedure Permute_All_P4_R24 is new KeccakF_1600_P4.Permute_All
-     (Permute_All_P2_R24);
-
    procedure XOR_Bits_Into_State_Separate_P4
      (S           : in out Parallel_State_P4;
       Data        : in     Types.Byte_Array;
@@ -167,12 +145,6 @@ is
 
    procedure Init_P8 (S : out Parallel_State_P8)
                       renames KeccakF_1600_P8.Init;
-
-   procedure Permute_All_P8_R12 is new KeccakF_1600_P8.Permute_All
-     (Permute_All_P2_R12);
-
-   procedure Permute_All_P8_R24 is new KeccakF_1600_P8.Permute_All
-     (Permute_All_P2_R24);
 
    procedure XOR_Bits_Into_State_Separate_P8
      (S           : in out Parallel_State_P8;

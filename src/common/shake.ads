@@ -25,7 +25,7 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Keccak.Keccak_1600;
+with Keccak.Keccak_1600.Rounds_24;
 with Keccak.Generic_XOF;
 
 pragma Elaborate_All(Keccak.Generic_XOF);
@@ -39,13 +39,13 @@ is
    -- See Section 6.2 of NIST FIPS-202.
 
    package SHAKE128 is new Keccak.Generic_XOF
-     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
       Capacity    => 256,
       Suffix      => 2#11_11#,
       Suffix_Size => 4);
 
    package SHAKE256 is new Keccak.Generic_XOF
-     (XOF_Sponge  => Keccak.Keccak_1600.Sponge,
+     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
       Capacity    => 512,
       Suffix      => 2#11_11#,
       Suffix_Size => 4);

@@ -26,7 +26,7 @@
 -------------------------------------------------------------------------------
 
 with Keccak.Generic_Hash;
-with Keccak.Keccak_1600;
+with Keccak.Keccak_1600.Rounds_24;
 
 pragma Elaborate_All(Keccak.Generic_Hash);
 
@@ -39,25 +39,25 @@ is
    ----------------------------------------------------------------------------
 
    package SHA3_224 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 224,
       Suffix      => 2#10#,
       Suffix_Size => 2);
 
    package SHA3_256 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 256,
       Suffix      => 2#10#,
       Suffix_Size => 2);
 
    package SHA3_384 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 384,
       Suffix      => 2#10#,
       Suffix_Size => 2);
 
    package SHA3_512 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 512,
       Suffix      => 2#10#,
       Suffix_Size => 2);
@@ -67,25 +67,25 @@ is
    ----------------------------------------------------------------------------
    
    package Keccak_224 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 224,
       Suffix      => 0,
       Suffix_Size => 0);
 
    package Keccak_256 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 256,
       Suffix      => 0,
       Suffix_Size => 0);
 
    package Keccak_384 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 384,
       Suffix      => 0,
       Suffix_Size => 0);
 
    package Keccak_512 is new Keccak.Generic_Hash
-     (Hash_Sponge => Keccak.Keccak_1600.Sponge,
+     (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,
       Digest_Size => 512,
       Suffix      => 0,
       Suffix_Size => 0);

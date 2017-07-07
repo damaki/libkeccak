@@ -33,20 +33,32 @@ with Ada.Long_Float_Text_IO;
 with Interfaces;                    use Interfaces;
 with KangarooTwelve;
 with Keccak.Parallel_Keccak_1600;
+with Keccak.Parallel_Keccak_1600.Rounds_24;
+with Keccak.Parallel_Keccak_1600.Rounds_12;
 with Keccak.Generic_KangarooTwelve;
 with Keccak.Generic_KeccakF;
+with Keccak.Generic_Parallel_Hash;
 with Keccak.Keccak_25;
+with Keccak.Keccak_25.Rounds_12;
 with Keccak.Keccak_50;
+with Keccak.Keccak_50.Rounds_14;
 with Keccak.Keccak_100;
+with Keccak.Keccak_100.Rounds_16;
 with Keccak.Keccak_200;
+with Keccak.Keccak_200.Rounds_18;
 with Keccak.Keccak_400;
+with Keccak.Keccak_400.Rounds_20;
 with Keccak.Keccak_800;
+with Keccak.Keccak_800.Rounds_22;
 with Keccak.Keccak_1600;
 with Keccak.Types;
 with Keccak.Generic_XOF;
 with Keccak.Generic_Hash;
 with Keccak.Generic_Duplex;
 with Keccak.Keccak_1600;
+with Keccak.Keccak_1600.Rounds_24;
+with Keccak.Keccak_1600.Rounds_12;
+with Parallel_Hash;
 with SHA3;
 with SHAKE;
 with RawSHAKE;
@@ -358,6 +370,67 @@ is
    end K12_Benchmark;
    
    ----------------------------------------------------------------------------
+   -- ParallelHash_Benchmark
+   --
+   -- Generic procedure to run a benchmark for a ParallelHash 
+   ----------------------------------------------------------------------------
+   generic
+      Name : String;
+      with package ParallelHash is new Keccak.Generic_Parallel_Hash(<>);
+   procedure ParallelHash_Benchmark;
+   
+   procedure ParallelHash_Benchmark
+   is
+      Ctx    : ParallelHash.Context;
+      
+      Start_Time : Timing.Time;
+      Cycles     : Cycles_Count;
+      Min_Cycles : Cycles_Count := Cycles_Count'Last;
+      
+   begin
+      Ada.Text_IO.Put(Name & " (Absorbing): ");
+      
+      Timing.Calibrate;
+      
+      -- Benchmark Absorbing
+      for I in Positive range 1 .. Repeat loop
+         Start_Measurement (Start_Time);
+      
+         ParallelHash.Init(Ctx, 8192, "");
+         
+         ParallelHash.Update(Ctx, Data_Chunk.all);
+      
+         Cycles := End_Measurement (Start_Time);
+         
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
+      end loop;
+      
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      
+      Min_Cycles := Cycles_Count'Last;
+      Ada.Text_IO.Put(Name & " (Squeezing): ");
+      
+      Timing.Calibrate;
+      
+      -- Benchmark squeezing
+      for I in Positive range 1 .. Repeat loop
+         Start_Measurement (Start_Time);
+      
+         ParallelHash.Extract(Ctx, Data_Chunk.all);
+         
+         Cycles := End_Measurement (Start_Time);
+         
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
+      end loop;
+      
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+   end ParallelHash_Benchmark;
+   
+   ----------------------------------------------------------------------------
    -- Benchmark procedure instantiations.
    ----------------------------------------------------------------------------
    
@@ -390,88 +463,95 @@ is
       ("RawSHAKE256", RawSHAKE.RawSHAKE256);
    
    procedure Benchmark_Duplex_r1152c448 is new Duplex_Benchmark
-      ("Duplex r1152c448", 448, Keccak.Keccak_1600.Duplex);
+      ("Duplex r1152c448", 448, Keccak.Keccak_1600.Rounds_24.Duplex);
    procedure Benchmark_Duplex_r1088c512 is new Duplex_Benchmark
-      ("Duplex r1088c512", 512, Keccak.Keccak_1600.Duplex);
+      ("Duplex r1088c512", 512, Keccak.Keccak_1600.Rounds_24.Duplex);
    procedure Benchmark_Duplex_r832c768 is new Duplex_Benchmark
-      ("Duplex r832c768", 768, Keccak.Keccak_1600.Duplex);
+      ("Duplex r832c768", 768, Keccak.Keccak_1600.Rounds_24.Duplex);
    procedure Benchmark_Duplex_r576c1024 is new Duplex_Benchmark
-     ("Duplex r576c1024", 1024, Keccak.Keccak_1600.Duplex);
+     ("Duplex r576c1024", 1024, Keccak.Keccak_1600.Rounds_24.Duplex);
    
    procedure Benchmark_KeccakF_25 is new KeccakF_Benchmark
      ("Keccak-p[25,12]", 
       Keccak.Keccak_25.KeccakF_25.State, 
       Keccak.Keccak_25.KeccakF_25.Init, 
-      Keccak.Keccak_25.Permute);
+      Keccak.Keccak_25.Rounds_12.Permute);
    procedure Benchmark_KeccakF_50 is new KeccakF_Benchmark
      ("Keccak-p[50,14]", 
       Keccak.Keccak_50.KeccakF_50.State, 
       Keccak.Keccak_50.KeccakF_50.Init, 
-      Keccak.Keccak_50.Permute);
+      Keccak.Keccak_50.Rounds_14.Permute);
    procedure Benchmark_KeccakF_100 is new KeccakF_Benchmark
      ("Keccak-p[100,16]", 
       Keccak.Keccak_100.KeccakF_100.State, 
       Keccak.Keccak_100.KeccakF_100.Init, 
-      Keccak.Keccak_100.Permute);
+      Keccak.Keccak_100.Rounds_16.Permute);
    procedure Benchmark_KeccakF_200 is new KeccakF_Benchmark
      ("Keccak-p[200,18]", 
       Keccak.Keccak_200.KeccakF_200.State, 
       Keccak.Keccak_200.KeccakF_200.Init,  
-      Keccak.Keccak_200.Permute);
+      Keccak.Keccak_200.Rounds_18.Permute);
    procedure Benchmark_KeccakF_400 is new KeccakF_Benchmark
      ("Keccak-p[400,20]", 
       Keccak.Keccak_400.KeccakF_400.State, 
       Keccak.Keccak_400.KeccakF_400.Init, 
-      Keccak.Keccak_400.Permute);
+      Keccak.Keccak_400.Rounds_20.Permute);
    procedure Benchmark_KeccakF_800 is new KeccakF_Benchmark
      ("Keccak-p[800,22]",
       Keccak.Keccak_800.KeccakF_800.State, 
       Keccak.Keccak_800.KeccakF_800.Init, 
-      Keccak.Keccak_800.Permute);
+      Keccak.Keccak_800.Rounds_22.Permute);
    procedure Benchmark_KeccakF_1600_R24 is new KeccakF_Benchmark
      ("Keccak-p[1600,24]", 
       Keccak.Keccak_1600.KeccakF_1600.State,
       Keccak.Keccak_1600.KeccakF_1600.Init, 
-      Keccak.Keccak_1600.Permute_R24);
+      Keccak.Keccak_1600.Rounds_24.Permute);
    procedure Benchmark_KeccakF_1600_P2_R24 is new KeccakF_Benchmark
      ("Keccak-p[1600,24]×2", 
       Keccak.Parallel_Keccak_1600.Parallel_State_P2,
       Keccak.Parallel_Keccak_1600.Init_P2, 
-      Keccak.Parallel_Keccak_1600.Permute_All_P2_R24);
+      Keccak.Parallel_Keccak_1600.Rounds_24.Permute_All_P2);
    procedure Benchmark_KeccakF_1600_P4_R24 is new KeccakF_Benchmark
      ("Keccak-p[1600,24]×4", 
       Keccak.Parallel_Keccak_1600.Parallel_State_P4,
       Keccak.Parallel_Keccak_1600.Init_P4, 
-      Keccak.Parallel_Keccak_1600.Permute_All_P4_R24);
+      Keccak.Parallel_Keccak_1600.Rounds_24.Permute_All_P4);
    procedure Benchmark_KeccakF_1600_P8_R24 is new KeccakF_Benchmark
      ("Keccak-p[1600,24]×8", 
       Keccak.Parallel_Keccak_1600.Parallel_State_P8,
       Keccak.Parallel_Keccak_1600.Init_P8, 
-      Keccak.Parallel_Keccak_1600.Permute_All_P8_R24);
+      Keccak.Parallel_Keccak_1600.Rounds_24.Permute_All_P8);
    procedure Benchmark_KeccakF_1600_R12 is new KeccakF_Benchmark
      ("Keccak-p[1600,12]", 
       Keccak.Keccak_1600.KeccakF_1600.State,
       Keccak.Keccak_1600.KeccakF_1600.Init, 
-      KangarooTwelve.Permute_R12);
+      Keccak.Keccak_1600.Rounds_12.Permute);
    procedure Benchmark_KeccakF_1600_P2_R12 is new KeccakF_Benchmark
      ("Keccak-p[1600,12]×2", 
       Keccak.Parallel_Keccak_1600.Parallel_State_P2,
       Keccak.Parallel_Keccak_1600.Init_P2, 
-      Keccak.Parallel_Keccak_1600.Permute_All_P2_R12);
+      Keccak.Parallel_Keccak_1600.Rounds_12.Permute_All_P2);
    procedure Benchmark_KeccakF_1600_P4_R12 is new KeccakF_Benchmark
-     ("Keccak-p[1600,12]×2", 
+     ("Keccak-p[1600,12]×4", 
       Keccak.Parallel_Keccak_1600.Parallel_State_P4,
       Keccak.Parallel_Keccak_1600.Init_P4, 
-      Keccak.Parallel_Keccak_1600.Permute_All_P4_R12);
+      Keccak.Parallel_Keccak_1600.Rounds_12.Permute_All_P4);
    procedure Benchmark_KeccakF_1600_P8_R12 is new KeccakF_Benchmark
-     ("Keccak-p[1600,12]×2", 
+     ("Keccak-p[1600,12]×8", 
       Keccak.Parallel_Keccak_1600.Parallel_State_P8,
       Keccak.Parallel_Keccak_1600.Init_P8, 
-      Keccak.Parallel_Keccak_1600.Permute_All_P8_R12);
+      Keccak.Parallel_Keccak_1600.Rounds_12.Permute_All_P8);
    
    procedure Benchmark_K12 is new K12_Benchmark
      ("KangarooTwelve",
       KangarooTwelve.K12);
+      
+   procedure Benchmark_ParallelHash128 is new ParallelHash_Benchmark
+     ("ParallelHash128",
+      Parallel_Hash.ParallelHash128);
+   procedure Benchmark_ParallelHash256 is new ParallelHash_Benchmark
+     ("ParallelHash256",
+      Parallel_Hash.ParallelHash256);
 
 begin
    Data_Chunk.all := (others => 16#A7#);
@@ -487,6 +567,8 @@ begin
    New_Line;
    
    Benchmark_K12;
+   Benchmark_ParallelHash128;
+   Benchmark_ParallelHash256;
    Benchmark_SHA_224;
    Benchmark_SHA_256;
    Benchmark_SHA_384;
