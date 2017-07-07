@@ -120,43 +120,50 @@ To run the benchmark type:
 
 The following performance measurements were taken on an Intel Core i7-2630QM
 2.0 GHz (@2.6 GHz with turbo boost) "Sandy Bridge" on 64-bit Linux. The code
-was compiled using GNAT GPL 2017 (20170515) with SSE2 enabled.
+was compiled using GNAT GPL 2017 (20170515) with `ARCH=x86_64 SIMD=SSE2`. 
+The measurements shown are the output of the benchmark program.
 
-The cycles per byte are roughly estimated by dividing the clock speed
-(2.6 GHz) by the speed in bytes per second.
+```
+Message size: 524288 bytes
+Performing 200 measurements for each test
 
-| Algorithm               | Performance |  Cycles Estimate  |
-| ----------------------- | ----------- | ----------------- |
-| KangarooTwelve (Absorbing) | 554 MiB/S   | 4.5 cycles/byte   |
-| KangarooTwelve (Squeezing) | 317 MiB/S   | 7.8 cycles/byte   |
-| SHA3-224                | 181 MiB/s   | 13.7 cycles/byte  |
-| SHA3-256                | 172 MiB/s   | 14.4 cycles/byte  |
-| SHA3-384                | 134 MiB/s   | 18.6 cycles/byte  |
-| SHA3-512                | 94 MiB/s    | 26.4 cycles/byte  |
-| Keccak-224              | 182 MiB/s   | 13.7 cycles/byte  |
-| Keccak-256              | 172 MiB/s   | 14.4 cycles/byte  |
-| Keccak-384              | 133 MiB/s   | 18.6 cycles/byte  |
-| Keccak-512              | 94 MiB/s    | 26.4 cycles/byte  |
-| SHAKE128 (Absorbing)    | 210 MiB/s   | 11.8 cycles/byte  |
-| SHAKE128 (Squeezing)    | 194 MiB/s   | 12.8 cycles/byte  |
-| SHAKE256 (Absorbing)    | 172 MiB/s   | 14.4 cycles/byte  |
-| SHAKE256 (Squeezing)    | 162 MiB/s   | 15.3 cycles/byte  |
-| RawSHAKE128 (Absorbing) | 210 MiB/s   | 11.8 cycles/byte  |
-| RawSHAKE128 (Squeezing) | 194 MiB/s   | 12.8 cycles/byte  |
-| RawSHAKE256 (Absorbing) | 172 MiB/s   | 14.4 cycles/byte  |
-| RawSHAKE256 (Squeezing) | 162 MiB/s   | 15.3 cycles/byte  |
-| Duplex (c448)           | 151 MiB/s   | 16.4 cycles/byte  |
-| Duplex (c512)           | 145 MiB/s   | 17.2 cycles/byte  |
-| Duplex (c768)           | 115 MiB/s   | 21.6 cycles/byte  |
-| Duplex (c1024)          | 84 MiB/s    | 29.5 cycles/byte  |
-| Keccak-p\[1600,24\]     | 707 ns/call | 1838 cycles/call  |
-| Keccak-p\[1600,12\]x2   | 415 ns/call | 1079 cycles/call  |
-| Keccak-p\[800,22\]      | 686 ns/call | 1782 cycles/call  |
-| Keccak-p\[400,20\]      | 622 ns/call | 1616 cycles/call  |
-| Keccak-p\[200,18\]      | 534 ns/call | 1388 cycles/call  |
-| Keccak-p\[100,16\]      | 626 ns/call | 1627 cycles/call  |
-| Keccak-p\[50,14\]       | 699 ns/call | 1818 cycles/call  |
-| Keccak-p\[25,12\]       | 296 ns/call | 769 cycles/call   |
+KangarooTwelve (Absorbing): 3.4 cycles/byte
+KangarooTwelve (Squeezing): 5.3 cycles/byte
+SHA3-224: 9.3 cycles/byte
+SHA3-256: 9.8 cycles/byte
+SHA3-384: 12.6 cycles/byte
+SHA3-512: 17.8 cycles/byte
+Keccak-224: 9.3 cycles/byte
+Keccak-256: 9.8 cycles/byte
+Keccak-384: 13.0 cycles/byte
+Keccak-512: 18.4 cycles/byte
+SHAKE128 (Absorbing): 8.3 cycles/byte
+SHAKE128 (Squeezing): 8.9 cycles/byte
+SHAKE256 (Absorbing): 10.1 cycles/byte
+SHAKE256 (Squeezing): 10.3 cycles/byte
+RawSHAKE128 (Absorbing): 8.0 cycles/byte
+RawSHAKE128 (Squeezing): 8.6 cycles/byte
+RawSHAKE256 (Absorbing): 9.8 cycles/byte
+RawSHAKE256 (Squeezing): 10.3 cycles/byte
+Duplex r1152c448: 1604 cycles
+Duplex r1088c512: 1588 cycles
+Duplex r832c768: 1522 cycles
+Duplex r576c1024: 1434 cycles
+Keccak-p\[1600,24\]: 1190 cycles
+Keccak-p\[1600,24\]×2: 1572 cycles
+Keccak-p\[1600,24\]×4: 3090 cycles
+Keccak-p\[1600,24\]×8: 6388 cycles
+Keccak-p\[1600,12\]: 620 cycles
+Keccak-p\[1600,12\]×2: 808 cycles
+Keccak-p\[1600,12\]×2: 1623 cycles
+Keccak-p\[1600,12\]×2: 3202 cycles
+Keccak-p\[800,22\]: 1098 cycles
+Keccak-p\[400,20\]: 1030 cycles
+Keccak-p\[200,18\]: 898 cycles
+Keccak-p\[100,16\]: 1096 cycles
+Keccak-p\[50,14\]: 976 cycles
+Keccak-p\[25,12\]: 464 cycles
+```
 
 # Formal Verification
 
