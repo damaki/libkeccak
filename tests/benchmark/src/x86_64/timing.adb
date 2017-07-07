@@ -43,6 +43,32 @@ is
 
       return Shift_Left (Unsigned_64 (H), 32) or Unsigned_64 (L);
    end RDTSC;
+   
+   
+   procedure Calibrate
+   is
+      T    : Time;
+      Diff : Cycles_Count;
+      Min  : Cycles_Count;
+
+   begin
+      Measurement_Overhead := 0;
+   
+      Start_Measurement (T);
+      Min := End_Measurement (T);
+
+      for N in 1 .. 100 loop
+         Start_Measurement (T);
+         Diff := End_Measurement (T);
+
+         --  Keep the minimum
+         if Diff < Min then
+            Min := Diff;
+         end if;
+      end loop;
+      
+      Measurement_Overhead := Min;
+   end Calibrate;
 
 
    procedure Start_Measurement (T : out Time)
@@ -63,29 +89,5 @@ is
    end End_Measurement;
 
 begin
-
-   --  Find the number of cycles used to perform each measurement.
-   declare
-      M1   : Cycles_Count;
-      M2   : Cycles_Count;
-      Diff : Cycles_Count;
-
-   begin
-      M1 := RDTSC;
-      M2 := RDTSC;
-      Measurement_Overhead := M2 - M1;
-
-      for N in 1 .. 100 loop
-         M1 := RDTSC;
-         M2 := RDTSC;
-
-         Diff := M2 - M1;
-
-         --  Keep the minimum
-         if Diff < Measurement_Overhead then
-            Measurement_Overhead := Diff;
-         end if;
-      end loop;
-   end;
-
+    Calibrate;
 end Timing;

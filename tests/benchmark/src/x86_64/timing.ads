@@ -33,6 +33,8 @@ is
    subtype Cycles_Count is Unsigned_64;
 
    type Time is private;
+   
+   procedure Calibrate;
 
    procedure Start_Measurement (T : out Time)
      with Inline;
