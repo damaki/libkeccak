@@ -26,11 +26,11 @@
 -------------------------------------------------------------------------------
 
 with KAT.Duplex_Runner;
-with Keccak.Keccak_1600;
+with Keccak.Keccak_1600.Rounds_24;
 
 procedure Keccak_Duplex_KAT_r1027c573
 is
-   package Runner is new KAT.Duplex_Runner(Keccak.Keccak_1600.Duplex);
+   package Runner is new KAT.Duplex_Runner(Keccak.Keccak_1600.Rounds_24.Duplex);
 
 begin
    Runner.Run_Tests(573);
