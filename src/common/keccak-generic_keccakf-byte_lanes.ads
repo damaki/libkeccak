@@ -52,6 +52,17 @@ is
    --   cannot be larger than the Keccak-f state size.
 
 
+   procedure XOR_Bits_Into_State(A       : in out Lane_Complemented_State;
+                                 Data    : in     Keccak.Types.Byte_Array;
+                                 Bit_Len : in     Natural)
+     with Inline,
+     Global => null,
+     Depends => (A => + (Data, Bit_Len)),
+     Pre => (Data'Length <= Natural'Last / 8
+             and then Bit_Len <= Data'Length * 8
+             and then Bit_Len <= B);
+
+
 
    procedure Extract_Bytes(A    : in     State;
                            Data :    out Keccak.Types.Byte_Array)
@@ -68,15 +79,17 @@ is
    -- @param Data The bytes from the Keccak-f state are copied to this buffer.
    --   Note that the buffer can be smaller than the state size if fewer bytes
    --   are needed.
+   pragma Annotate
+     (GNATprove, False_Positive,
+      """Data"" might not be initialized",
+      "GNATprove issues a false positive due to the use of loops to initialize Data");
 
 
-   procedure Extract_Bytes_Complemented(A    : in     State;
-                                        Data :    out Keccak.Types.Byte_Array)
+   procedure Extract_Bytes(A    : in     Lane_Complemented_State;
+                           Data :    out Keccak.Types.Byte_Array)
      with Global => null,
      Depends => (Data => + A),
      Pre => Data'Length <= ((B + 7)/8);
-
-
    pragma Annotate
      (GNATprove, False_Positive,
       """Data"" might not be initialized",
@@ -90,8 +103,8 @@ is
      Pre => (Bit_Len <= B
              and then Data'Length = (Bit_Len + 7) / 8);
 
-   procedure Extract_Bits_Complemented(A       : in     State;
-                                       Data    :    out Keccak.Types.Byte_Array;
+   procedure Extract_Bits(A       : in     Lane_Complemented_State;
+                          Data    :    out Keccak.Types.Byte_Array;
                           Bit_Len : in     Natural)
      with Global => null,
      Depends => (Data => + (A, Bit_Len)),

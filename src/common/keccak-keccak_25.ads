@@ -52,29 +52,6 @@ is
 
    package KeccakF_25_Permutation is new KeccakF_25.Lane_Complementing_Permutation;
 
-   -- Keccak-f[25] permutation with the default number of rounds.
-   procedure Permute is new KeccakF_25_Permutation.Permute;
-
    package KeccakF_25_Lanes is new KeccakF_25.Bit_Lanes;
-
-   package Sponge is new Keccak.Generic_Sponge
-     (State_Size          => KeccakF_25.B,
-      State_Type          => KeccakF_25.State,
-      Init_State          => KeccakF_25.Init_Complemented,
-      F                   => Permute,
-      XOR_Bits_Into_State => KeccakF_25_Lanes.XOR_Bits_Into_State,
-      Extract_Data        => KeccakF_25_Lanes.Extract_Bytes_Complemented,
-      Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
-
-   package Duplex is new Keccak.Generic_Duplex
-     (State_Size          => KeccakF_25.B,
-      State_Type          => KeccakF_25.State,
-      Init_State          => KeccakF_25.Init_Complemented,
-      F                   => Permute,
-      XOR_Bits_Into_State => KeccakF_25_Lanes.XOR_Bits_Into_State,
-      Extract_Bits        => KeccakF_25_Lanes.Extract_Bits_Complemented,
-      Pad                 => Keccak.Padding.Pad101_Single_Block,
-      Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
-
 
 end Keccak.Keccak_25;

@@ -87,6 +87,17 @@ is
    end XOR_Bits_Into_State;
 
 
+   procedure XOR_Bits_Into_State(A       : in out Lane_Complemented_State;
+                                 Data    : in     Keccak.Types.Byte_Array;
+                                 Bit_Len : in     Natural)
+   is
+   begin
+      XOR_Bits_Into_State
+        (A       => State (A),
+         Data    => Data,
+         Bit_Len => Bit_Len);
+   end XOR_Bits_Into_State;
+
 
    procedure Extract_Bytes(A    : in     State;
                            Data :    out Keccak.Types.Byte_Array)
@@ -164,12 +175,12 @@ is
 
 
 
-   procedure Extract_Bytes_Complemented(A    : in     State;
-                                        Data :    out Keccak.Types.Byte_Array)
+   procedure Extract_Bytes(A    : in     Lane_Complemented_State;
+                           Data :    out Keccak.Types.Byte_Array)
    is
       use type Keccak.Types.Byte;
 
-      Complement_Mask : constant State :=
+      Complement_Mask : constant Lane_Complemented_State :=
         (0 => (4      => Lane_Type'Last,
                others => 0),
          1 => (0      => Lane_Type'Last,
@@ -179,6 +190,12 @@ is
          3 => (1      => Lane_Type'Last,
                others => 0),
          4 => (others => 0));
+      --  Some lanes need to be complemented (bitwise NOT) when reading them
+      --  from the Keccak-f state. We do this by storing a mask of all 1's
+      --  for those lanes that need to be complemented (and all 0's for the
+      --  other lanes). We then XOR against the corresponding entry in this
+      --  Complement_Mask to complement only the required lanes (as XOR'ing
+      --  against all 1's has the same effect as bitwise NOT).
 
       X               : X_Coord := 0;
       Y               : Y_Coord := 0;
@@ -247,7 +264,7 @@ is
          end;
       end if;
 
-   end Extract_Bytes_Complemented;
+   end Extract_Bytes;
 
 
    procedure Extract_Bits(A       : in     State;
@@ -267,20 +284,20 @@ is
    end Extract_Bits;
 
 
-   procedure Extract_Bits_Complemented(A       : in     State;
-                                       Data    :    out Keccak.Types.Byte_Array;
-                                       Bit_Len : in     Natural)
+   procedure Extract_Bits(A       : in     Lane_Complemented_State;
+                          Data    :    out Keccak.Types.Byte_Array;
+                          Bit_Len : in     Natural)
    is
       use type Keccak.Types.Byte;
 
    begin
-      Extract_Bytes_Complemented(A, Data);
+      Extract_Bytes (A, Data);
 
       -- Avoid exposing more bits than requested by masking away higher bits
       -- in the last byte.
       if Bit_Len > 0 and Bit_Len mod 8 /= 0 then
          Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
       end if;
-   end Extract_Bits_Complemented;
+   end Extract_Bits;
 
 end Keccak.Generic_KeccakF.Byte_Lanes;

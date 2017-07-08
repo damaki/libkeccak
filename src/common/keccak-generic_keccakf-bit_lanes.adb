@@ -93,6 +93,18 @@ is
    end XOR_Bits_Into_State;
 
 
+   procedure XOR_Bits_Into_State(A       : in out Lane_Complemented_State;
+                                 Data    : in     Keccak.Types.Byte_Array;
+                                 Bit_Len : in     Natural)
+   is
+   begin
+      XOR_Bits_Into_State
+        (A       => State (A),
+         Data    => Data,
+         Bit_Len => Bit_Len);
+   end XOR_Bits_Into_State;
+
+
    procedure Extract_Bytes(A    : in     State;
                            Data :    out Keccak.Types.Byte_Array)
    is
@@ -153,12 +165,12 @@ is
    end Extract_Bytes;
 
 
-   procedure Extract_Bytes_Complemented(A    : in     State;
-                                        Data :    out Keccak.Types.Byte_Array)
+   procedure Extract_Bytes(A    : in     Lane_Complemented_State;
+                           Data :    out Keccak.Types.Byte_Array)
    is
       use type Keccak.Types.Byte;
 
-      Complement_Mask : constant State :=
+      Complement_Mask : constant Lane_Complemented_State :=
         (0 => (4      => Lane_Type'Last,
                others => 0),
          1 => (0      => Lane_Type'Last,
@@ -224,7 +236,7 @@ is
          Data(Data'First + Offset) := Byte;
       end if;
 
-   end Extract_Bytes_Complemented;
+   end Extract_Bytes;
 
 
    procedure Extract_Bits(A       : in     State;
@@ -244,21 +256,21 @@ is
    end Extract_Bits;
 
 
-   procedure Extract_Bits_Complemented(A       : in     State;
-                                       Data    :    out Keccak.Types.Byte_Array;
-                                       Bit_Len : in     Natural)
+   procedure Extract_Bits(A       : in     Lane_Complemented_State;
+                          Data    :    out Keccak.Types.Byte_Array;
+                          Bit_Len : in     Natural)
    is
       use type Keccak.Types.Byte;
 
    begin
-      Extract_Bytes_Complemented(A, Data);
+      Extract_Bytes (A, Data);
 
       -- Avoid exposing more bits than requested by masking away higher bits
       -- in the last byte.
       if Bit_Len > 0 and Bit_Len mod 8 /= 0 then
          Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
       end if;
-   end Extract_Bits_Complemented;
+   end Extract_Bits;
 
 
 end Keccak.Generic_KeccakF.Bit_Lanes;

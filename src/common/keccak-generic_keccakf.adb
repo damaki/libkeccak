@@ -35,7 +35,7 @@ is
    end Init;
 
 
-   procedure Init_Complemented (A : out State)
+   procedure Init (A : out Lane_Complemented_State)
    is
    begin
       A := (0 => (4      => Lane_Type'Last,
@@ -47,6 +47,6 @@ is
             3 => (1      => Lane_Type'Last,
                   others => 0),
             4 => (others => 0));
-   end Init_Complemented;
+   end Init;
 
 end Keccak.Generic_KeccakF;

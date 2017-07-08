@@ -40,20 +40,20 @@ is
 
    package Sponge is new Keccak.Generic_Sponge
      (State_Size          => KeccakF_25.B,
-      State_Type          => KeccakF_25.State,
-      Init_State          => KeccakF_25.Init_Complemented,
+      State_Type          => KeccakF_25.Lane_Complemented_State,
+      Init_State          => KeccakF_25.Init,
       F                   => Permute,
       XOR_Bits_Into_State => KeccakF_25_Lanes.XOR_Bits_Into_State,
-      Extract_Data        => KeccakF_25_Lanes.Extract_Bytes_Complemented,
+      Extract_Data        => KeccakF_25_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
 
    package Duplex is new Keccak.Generic_Duplex
      (State_Size          => KeccakF_25.B,
-      State_Type          => KeccakF_25.State,
-      Init_State          => KeccakF_25.Init_Complemented,
+      State_Type          => KeccakF_25.Lane_Complemented_State,
+      Init_State          => KeccakF_25.Init,
       F                   => Permute,
       XOR_Bits_Into_State => KeccakF_25_Lanes.XOR_Bits_Into_State,
-      Extract_Bits        => KeccakF_25_Lanes.Extract_Bits_Complemented,
+      Extract_Bits        => KeccakF_25_Lanes.Extract_Bits,
       Pad                 => Keccak.Padding.Pad101_Single_Block,
       Min_Padding_Bits    => Keccak.Padding.Pad101_Min_Bits);
 

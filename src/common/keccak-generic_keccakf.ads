@@ -75,7 +75,18 @@ is
 
    type Round_Index is new Natural range 0 .. 23;
 
+
    type State is private;
+   --  Keccak-f[B] state, where B is the state size in bits (e.g. 1600 bits).
+
+
+   type Lane_Complemented_State is private;
+   --  State type used for the lane complementing implementation.
+   --
+   --  A distinct type is used here to prevent confusion in using the wrong
+   --  subprograms with the wrong type, as specific implementations are needed
+   --  to handle the lane complemented Keccak-f state.
+
 
    procedure Init(A : out State)
      with Global => null,
@@ -84,14 +95,20 @@ is
    --
    -- Initially, the Keccak state is set to 0.
 
-   procedure Init_Complemented (A : out State)
+
+   procedure Init (A : out Lane_Complemented_State)
      with Global => null,
      Depends => (A => null);
+   -- Initialize the Keccak-f state.
+   --
+   -- Initially, the Keccak state is set to 0.
 
 private
    type X_Coord is mod 5;
    type Y_Coord is mod 5;
 
    type State is array(X_Coord, Y_Coord) of Lane_Type;
+
+   type Lane_Complemented_State is new State;
 
 end Keccak.Generic_KeccakF;
