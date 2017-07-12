@@ -49,7 +49,7 @@ project Libkeccak is
    end Prove;
 
    package Compiler is
-      for Default_Switches ("ada") use Arch_Switches & ("-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnatp", "-ffunction-sections", "-fdata-sections");
+      for Default_Switches ("ada") use Arch_Switches & ("-march=native", "-mtune=native", "-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnatp", "-ffunction-sections", "-fdata-sections");
    end Compiler;
 
    package Ide is
