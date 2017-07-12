@@ -31,7 +31,7 @@ project Benchmark is
       case Libkeccak_Build is
 
          when "default" =>
-            for Switches ("ada") use ("-s", "-Wl,--gc-sections");
+            for Switches ("ada") use ("-Wl,--gc-sections", "-g");
       end case;
    end Linker;
 

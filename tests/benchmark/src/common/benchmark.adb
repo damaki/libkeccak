@@ -473,37 +473,37 @@ is
    
    procedure Benchmark_KeccakF_25 is new KeccakF_Benchmark
      ("Keccak-p[25,12]", 
-      Keccak.Keccak_25.KeccakF_25.State, 
+      Keccak.Keccak_25.KeccakF_25.Lane_Complemented_State, 
       Keccak.Keccak_25.KeccakF_25.Init, 
       Keccak.Keccak_25.Rounds_12.Permute);
    procedure Benchmark_KeccakF_50 is new KeccakF_Benchmark
      ("Keccak-p[50,14]", 
-      Keccak.Keccak_50.KeccakF_50.State, 
+      Keccak.Keccak_50.KeccakF_50.Lane_Complemented_State, 
       Keccak.Keccak_50.KeccakF_50.Init, 
       Keccak.Keccak_50.Rounds_14.Permute);
    procedure Benchmark_KeccakF_100 is new KeccakF_Benchmark
      ("Keccak-p[100,16]", 
-      Keccak.Keccak_100.KeccakF_100.State, 
+      Keccak.Keccak_100.KeccakF_100.Lane_Complemented_State, 
       Keccak.Keccak_100.KeccakF_100.Init, 
       Keccak.Keccak_100.Rounds_16.Permute);
    procedure Benchmark_KeccakF_200 is new KeccakF_Benchmark
      ("Keccak-p[200,18]", 
-      Keccak.Keccak_200.KeccakF_200.State, 
+      Keccak.Keccak_200.KeccakF_200.Lane_Complemented_State, 
       Keccak.Keccak_200.KeccakF_200.Init,  
       Keccak.Keccak_200.Rounds_18.Permute);
    procedure Benchmark_KeccakF_400 is new KeccakF_Benchmark
      ("Keccak-p[400,20]", 
-      Keccak.Keccak_400.KeccakF_400.State, 
+      Keccak.Keccak_400.KeccakF_400.Lane_Complemented_State, 
       Keccak.Keccak_400.KeccakF_400.Init, 
       Keccak.Keccak_400.Rounds_20.Permute);
    procedure Benchmark_KeccakF_800 is new KeccakF_Benchmark
      ("Keccak-p[800,22]",
-      Keccak.Keccak_800.KeccakF_800.State, 
+      Keccak.Keccak_800.KeccakF_800.Lane_Complemented_State, 
       Keccak.Keccak_800.KeccakF_800.Init, 
       Keccak.Keccak_800.Rounds_22.Permute);
    procedure Benchmark_KeccakF_1600_R24 is new KeccakF_Benchmark
      ("Keccak-p[1600,24]", 
-      Keccak.Keccak_1600.KeccakF_1600.State,
+      Keccak.Keccak_1600.KeccakF_1600.Lane_Complemented_State,
       Keccak.Keccak_1600.KeccakF_1600.Init, 
       Keccak.Keccak_1600.Rounds_24.Permute);
    procedure Benchmark_KeccakF_1600_P2_R24 is new KeccakF_Benchmark
@@ -523,7 +523,7 @@ is
       Keccak.Parallel_Keccak_1600.Rounds_24.Permute_All_P8);
    procedure Benchmark_KeccakF_1600_R12 is new KeccakF_Benchmark
      ("Keccak-p[1600,12]", 
-      Keccak.Keccak_1600.KeccakF_1600.State,
+      Keccak.Keccak_1600.KeccakF_1600.Lane_Complemented_State,
       Keccak.Keccak_1600.KeccakF_1600.Init, 
       Keccak.Keccak_1600.Rounds_12.Permute);
    procedure Benchmark_KeccakF_1600_P2_R12 is new KeccakF_Benchmark
