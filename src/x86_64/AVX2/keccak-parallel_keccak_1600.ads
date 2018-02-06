@@ -95,7 +95,7 @@ is
       VXXI_Index   => Arch.AVX2.V4DI_Vectors.V4DI_Index,
       VXXI         => Arch.AVX2.V4DI_Vectors.V4DI,
       VXXI_View    => Arch.AVX2.V4DI_Vectors.V4DI_View,
-      Vector_Width => 2,
+      Vector_Width => 4,
       Load         => Arch.AVX2.V4DI_Vectors.Load,
       Store        => Arch.AVX2.V4DI_Vectors.Store,
       "xor"        => Arch.AVX2.V4DI_Vectors."xor",

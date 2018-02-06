@@ -702,7 +702,7 @@ is
    is
       use type Keccak.Types.Byte;
 
-      Stride          : constant Natural := Data'Length / 2;
+      Stride          : constant Natural := Data'Length / Num_Parallel_Instances;
 
       X               : X_Coord := 0;
       Y               : Y_Coord := 0;
@@ -721,13 +721,19 @@ is
          pragma Loop_Variant(Increases => Offset,
                              Decreases => Remaining_Bytes);
          pragma Loop_Invariant(Offset mod (W/8) = 0
-                               and Offset + Remaining_Bytes = Byte_Len);
+                               and Offset + Remaining_Bytes = Byte_Len
+                               and Offset <= Stride - Data_Offset);
 
          for I in 0 .. Num_Parallel_Instances - 1 loop
             SI := VXXI_Index_Offset_From_First (I);
             Lane := S(X, Y) (SI);
 
+            pragma Assert (Data_Offset + Offset + (Stride * I) <= Data'Length - W/8);
+
             for J in Natural range 0 .. (W/8) - 1 loop
+               pragma Assert (Data_Offset + Offset + W/8 <= Stride);
+               pragma Assert (Stride = Data'Length / Vector_Width);
+
                Data(Data'First + Data_Offset + Offset + J + (Stride * I))
                  := Keccak.Types.Byte(Shift_Right(Lane, J*8) and 16#FF#);
 
@@ -759,9 +765,12 @@ is
                                    Decreases => Remaining_Bytes);
                pragma Loop_Invariant(Offset + Remaining_Bytes = Byte_Len
                                      and Shift mod 8 = 0
-                                     and Shift = (Offset - Initial_Offset) * 8);
+                                     and Shift = (Offset - Initial_Offset) * 8
+                                     and Offset <= Stride - Data_Offset);
 
                for I in 0 .. Num_Parallel_Instances - 1 loop
+                  pragma Assert (Data_Offset + Offset + (Stride * I) < Data'Length);
+
                   SI := VXXI_Index_Offset_From_First (I);
 
                   Data(Data'First + Data_Offset + Offset + (Stride * I))
