@@ -56,7 +56,7 @@ is
 
    package KeccakF_1600_P2
    is new Keccak.Generic_Parallel_Permutation_Serial_Fallback
-     (Permutation_State   => Keccak_1600.KeccakF_1600.State,
+     (Permutation_State   => Keccak_1600.KeccakF_1600.Lane_Complemented_State,
       Init                => Keccak_1600.KeccakF_1600.Init,
       XOR_Bits_Into_State => Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bytes       => Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
@@ -95,7 +95,7 @@ is
 
    package KeccakF_1600_P4
    is new Keccak.Generic_Parallel_Permutation_Serial_Fallback
-     (Permutation_State   => Keccak_1600.KeccakF_1600.State,
+     (Permutation_State   => Keccak_1600.KeccakF_1600.Lane_Complemented_State,
       Init                => Keccak_1600.KeccakF_1600.Init,
       XOR_Bits_Into_State => Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bytes       => Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
@@ -134,7 +134,7 @@ is
 
    package KeccakF_1600_P8
    is new Keccak.Generic_Parallel_Permutation_Serial_Fallback
-     (Permutation_State   => Keccak_1600.KeccakF_1600.State,
+     (Permutation_State   => Keccak_1600.KeccakF_1600.Lane_Complemented_State,
       Init                => Keccak_1600.KeccakF_1600.Init,
       XOR_Bits_Into_State => Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bytes       => Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
