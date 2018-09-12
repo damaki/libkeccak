@@ -35,8 +35,7 @@ is
    function To_Byte_Array (Str : in String) return Types.Byte_Array
      with Inline,
      Post => (To_Byte_Array'Result'Length = Str'Length
-              and To_Byte_Array'Result'First = Str'First
-              and To_Byte_Array'Result'Last = Str'Last);
+              and To_Byte_Array'Result'First = 0);
    --  Return the byte array representation of a string.
    --
    --  This function uses an Ada.Unchecked_Conversion internally to convert the

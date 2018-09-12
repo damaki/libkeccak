@@ -100,10 +100,14 @@ is
                          In_Data            : in     Keccak.Types.Byte_Array;
                          In_Data_Bit_Length : in     Natural)
    is
-      Block   : Keccak.Types.Byte_Array(0 .. (State_Size + 7)/8 - 1) := (others => 0);
+      Block    : Keccak.Types.Byte_Array(0 .. (State_Size + 7)/8 - 1) := (others => 0);
+      
+      Nb_Bytes : constant Natural := (In_Data_Bit_Length + 7)/8;
       
    begin
-      Block(0 .. In_Data'Length - 1) := In_Data;
+      
+      Block(0 ..  Nb_Bytes - 1) := 
+        In_Data (In_Data'First .. In_Data'First + Nb_Bytes - 1);
       
       Pad(Block(0 .. ((Rate_Of(Ctx) + 7) / 8) - 1),
           In_Data_Bit_Length,

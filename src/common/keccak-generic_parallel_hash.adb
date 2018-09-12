@@ -285,8 +285,8 @@ is
          while Remaining >= Ctx.Block_Size * 8 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
             pragma Loop_Invariant (State_Of (Ctx) = Updating);
-            pragma Loop_Invariant (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
-            pragma Loop_Invariant (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
+            pragma Loop_Invariant (Ctx.Input_Len = Initial_Bytes_Processed + Byte_Count (Offset));
+            pragma Loop_Invariant (Byte_Count (Remaining) <= Byte_Count'Last - Ctx.Input_Len);
             pragma Loop_Invariant (Ctx.Partial_Block_Length = 0);
             pragma Loop_Invariant (Ctx.Block_Size = Initial_Block_Size);
 
@@ -316,8 +316,8 @@ is
          while Remaining >= Ctx.Block_Size * 4 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
             pragma Loop_Invariant (State_Of (Ctx) = Updating);
-            pragma Loop_Invariant (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
-            pragma Loop_Invariant (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
+            pragma Loop_Invariant (Ctx.Input_Len = Initial_Bytes_Processed + Byte_Count (Offset));
+            pragma Loop_Invariant (Byte_Count (Remaining) <= Byte_Count'Last - Ctx.Input_Len);
             pragma Loop_Invariant (Ctx.Partial_Block_Length = 0);
             pragma Loop_Invariant (Ctx.Block_Size = Initial_Block_Size);
 
@@ -347,8 +347,8 @@ is
          while Remaining >= Ctx.Block_Size * 2 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
             pragma Loop_Invariant (State_Of (Ctx) = Updating);
-            pragma Loop_Invariant (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
-            pragma Loop_Invariant (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
+            pragma Loop_Invariant (Ctx.Input_Len = Initial_Bytes_Processed + Byte_Count (Offset));
+            pragma Loop_Invariant (Byte_Count (Remaining) <= Byte_Count'Last - Ctx.Input_Len);
             pragma Loop_Invariant (Ctx.Partial_Block_Length = 0);
             pragma Loop_Invariant (Ctx.Block_Size = Initial_Block_Size);
 

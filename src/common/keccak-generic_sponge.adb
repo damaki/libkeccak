@@ -60,7 +60,7 @@ is
       
       Data_Last           : Keccak.Types.Index_Number;
       
-      Initial_Bit_Rate    : Positive := Rate_Of(Ctx);
+      Initial_Bit_Rate    : constant Positive := Rate_Of(Ctx);
       
    begin
       if Initial_Data_Len > 0 then
@@ -104,18 +104,19 @@ is
 
             -- Process complete blocks
             while Remaining_Bits >= Initial_Bit_Rate loop
+               pragma Loop_Invariant(Offset + Remaining_Bytes = Initial_Data_Len
+                                     and Remaining_Bytes <= Data'Length
+                                     and Remaining_Bytes = (Remaining_Bits + 7) / 8
+                                     and (Bit_Length mod 8) = (Remaining_Bits mod 8)
+                                     and Ctx.Curr_State = Absorbing
+                                     and Rate_Of(Ctx) = Initial_Bit_Rate);
                pragma Loop_Variant(Decreases => Remaining_Bytes,
                                    Decreases => Remaining_Bits,
                                    Increases => Offset);
-               pragma Loop_Invariant(Offset + Remaining_Bytes = Initial_Data_Len
-                                     and Remaining_Bytes = (Remaining_Bits + 7) / 8
-                                     and (Bit_Length mod 8) = (Remaining_Bits mod 8)
-                                     and State_Of(Ctx) = Absorbing
-                                     and Rate_Of(Ctx) = Initial_Bit_Rate);
-
+               
                XOR_Bits_Into_State(Ctx.State,
                                    Data(Data'First + Offset ..
-                                       Data'First + (Offset + (Ctx.Rate - 1))),
+                                        Data'First + Offset + (Ctx.Rate - 1)),
                                    Initial_Bit_Rate);
                F(Ctx.State);
 
@@ -330,7 +331,7 @@ is
       Remaining : Natural := Digest'Length;
       Offset    : Natural := 0;
       
-      Initial_Rate : Positive := Rate_Of(Ctx) with Ghost;
+      Initial_Rate : constant Positive := Rate_Of(Ctx) with Ghost;
    begin
       Digest := (others => 0); -- workaround for flow analysis
 
@@ -384,15 +385,15 @@ is
       pragma Assert(Rate_Of(Ctx) = Initial_Rate);
       
       -- Process full blocks
-      while Remaining >= Ctx.Rate loop
+      while Remaining >= Ctx.Rate loop   
+         pragma Loop_Invariant((Offset + Remaining = Digest'Length)
+                               and Ctx.Curr_State = Squeezing
+                               and Ctx.Rate = Ctx'Loop_Entry.Rate);
          pragma Loop_Variant(Increases => Offset,
                              Decreases => Remaining);
-         pragma Loop_Invariant((Offset + Remaining = Digest'Length)
-                               and State_Of(Ctx) = Squeezing
-                               and Rate_Of(Ctx) = Initial_Rate);
       
          Digest(Digest'First + Offset ..
-                  Digest'First + ((Offset + Ctx.Rate) - 1))
+                  Digest'First + Offset + (Ctx.Rate - 1))
              := Ctx.Block(0 .. Ctx.Rate - 1);
          
          F(Ctx.State);

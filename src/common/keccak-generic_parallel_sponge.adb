@@ -79,6 +79,8 @@ is
       Ctx.Rate  := (State_Size - Ctx.Capacity) / 8;
       Ctx.State := Absorbing;
       Init (Ctx.Permutation_State);
+
+      pragma Assert (State_Of (Ctx) = Absorbing);
    end Init;
 
 
@@ -404,6 +406,8 @@ is
       Permute_All (Ctx.Permutation_State);
 
       Ctx.State := Squeezing;
+
+      pragma Assert (State_Of (Ctx) = Squeezing);
    end Add_Padding;
 
 

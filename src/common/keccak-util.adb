@@ -8,7 +8,7 @@ is
    is
 
       subtype Fixed_String is String (Str'Range);
-      subtype Fixed_Byte_Array is Types.Byte_Array (Str'Range);
+      subtype Fixed_Byte_Array is Types.Byte_Array (0 .. Str'Length - 1);
 
       function String_To_Byte_Array_Conversion is new Ada.Unchecked_Conversion
         (Source => Fixed_String,
