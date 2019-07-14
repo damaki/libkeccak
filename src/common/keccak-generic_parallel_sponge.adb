@@ -61,6 +61,7 @@ is
    is
    begin
       pragma Assert (Offset + Remaining = Length);
+      pragma Assert (Remaining mod Rate = Length mod Rate);
    end Lemma_Remaining_Mod_Rate_Preserve;
 
 
@@ -441,7 +442,7 @@ is
 
          pragma Annotate
            (GNATprove, False_Positive,
-            """Data"" might not be initialized",
+            """Data"" is not initialized",
             "The array will be wholly initialized at the end of this procedure");
 
          Permute_All (Ctx.Permutation_State);

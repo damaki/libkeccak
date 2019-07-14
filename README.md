@@ -75,7 +75,7 @@ Libkeccak is licensed under the 3-clause BSD license.
 
 Building libkeccak requires an Ada 2012 compiler which understands SPARK 2014
 annotations, such as GCC or AdaCore's GNAT GPL toolset. To run the proofs,
-the SPARK (GPL, Pro, or Discovery) 2017 toolset is required.
+the SPARK (Community or Pro) 2019 toolset is required.
 
 To build libkeccak based on the autodetected CPU architecture, change to the
 repository directory and type:
