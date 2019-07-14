@@ -3,10 +3,10 @@ with "aunit";
 project Unit_Tests is
    type Arch_Type is ("generic", "x86_64");
    type SIMD_Type is ("none", "SSE2", "AVX2");
-   
+
    Arch : Arch_Type := external ("arch", "generic");
    SIMD : SIMD_Type := external ("simd", "none");
-   
+
    Arch_Dirs     := ();
    Arch_Switches := ();
 
@@ -23,13 +23,13 @@ project Unit_Tests is
                Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
                                              "../src/x86_64/SSE2");
                Arch_Switches := Arch_Switches & ("-msse", "-msse2");
-               
+
             when "AVX2" =>
                Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
                                              "../src/x86_64/AVX2_defs",
                                              "../src/x86_64/AVX2");
                Arch_Switches := Arch_Switches & ("-msse", "-msse2", "-mavx", "-mavx2");
-               
+
          end case;
 
    end case;
@@ -45,7 +45,7 @@ project Unit_Tests is
    end Builder;
 
    package Compiler is
-      for Default_Switches ("ada") use ("-g", "-gnata", "-gnatwe", "-fprofile-arcs", "-ftest-coverage", "-O", "-gnat12");
+      for Default_Switches ("ada") use ("-g", "-gnata", "-gnatwe", "-fprofile-arcs", "-ftest-coverage", "-O", "-gnat12") & Arch_Switches;
    end Compiler;
 
    package Linker is
@@ -53,4 +53,3 @@ project Unit_Tests is
    end Linker;
 
 end Unit_Tests;
-
