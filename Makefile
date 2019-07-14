@@ -37,7 +37,7 @@ proof:
 	gnatprove -P build/libkeccak.gpr -Xarch=$(ARCH) -Xsimd=$(SIMD)
 
 doc: build
-	gnatdoc -P build/libkeccak.gpr
+	gnatdoc -P build/libkeccak.gpr -Xarch=$(ARCH) -Xsimd=$(SIMD)
 
 build/libkeccak.a:
 	gprbuild $(GNATMAKE_OPTS) -p -P build/libkeccak -Xarch=$(ARCH) -Xsimd=$(SIMD)
@@ -56,7 +56,7 @@ coverage: install_local
 .PHONY: benchmark
 benchmark: install_local
 	$(MAKE) -C tests benchmark
-	
+
 install: build
 ifeq ($(PREFIX),)
 	gprinstall -Xarch=$(ARCH) -Xsimd=$(SIMD) -f -p -P build/libkeccak.gpr
@@ -66,11 +66,11 @@ endif
 
 install_local: build
 	gprinstall -Xarch=$(ARCH) -Xsimd=$(SIMD) -f -p -P build/libkeccak.gpr --prefix=lib
-	
+
 test_clean:
 	$(MAKE) -C tests clean
 
 clean: test_clean
 	rm -rf obj lib
 
-.PHONY: clean all build doc install_local 
+.PHONY: clean all build doc install_local

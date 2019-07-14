@@ -21,13 +21,13 @@ project Libkeccak is
                Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
                                              "../src/x86_64/SSE2");
                Arch_Switches := Arch_Switches & ("-msse", "-msse2");
-               
+
             when "AVX2" =>
                Arch_Dirs     := Arch_Dirs & ("../src/x86_64/SSE2_defs",
                                              "../src/x86_64/AVX2_defs",
                                              "../src/x86_64/AVX2");
                Arch_Switches := Arch_Switches & ("-msse", "-msse2", "-mavx", "-mavx2");
-               
+
          end case;
 
    end case;
@@ -52,9 +52,8 @@ project Libkeccak is
       for Default_Switches ("ada") use Arch_Switches & ("-march=native", "-mtune=native", "-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnatp", "-ffunction-sections", "-fdata-sections");
    end Compiler;
 
-   package Ide is
+   package Documentation is
       for Documentation_Dir use "../doc/libkeccak_" & Arch & "_" & SIMD;
-   end Ide;
+   end Documentation;
 
 end Libkeccak;
-
