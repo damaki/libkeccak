@@ -73,7 +73,7 @@ kat: $(KAT_EXECUTABLES)
 
 .PHONY: benchmark
 benchmark:
-	gprbuild -P benchmark/benchmark.gpr -XLIBKECCAK_BUILD=default
+	gprbuild -p -P benchmark/benchmark.gpr -XLIBKECCAK_BUILD=default
 
 .PHONY:$(OUTPUT_DIR)/unit_tests/test_keccak
 unit_test: $(KECCAK_DIR)/libkeccak.a $(OUTPUT_DIR)/unit_tests/test_keccak
