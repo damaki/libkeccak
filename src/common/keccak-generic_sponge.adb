@@ -30,6 +30,16 @@ with Interfaces; use Interfaces;
 package body Keccak.Generic_Sponge
 is
 
+   procedure Finalize(Ctx : in out Context)
+     with Depends => (Ctx => Ctx),
+     Pre => State_Of(Ctx) = Absorbing,
+     Post => (State_Of(Ctx) = Squeezing
+              and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
+   --  Moves the sponge from the Absorbing state into the Squeezing state.
+   --
+   --  Any remaining bits in the input queue are absorbed, then the padding
+   --  rule is applied and the first bytes are extracted for squeezing.
+
    ------------
    --  Init  --
    ------------
@@ -285,9 +295,6 @@ is
    --  Any remaining bits in the input queue are absorbed, then the padding
    --  rule is applied and the first bytes are extracted for squeezing.
    procedure Finalize(Ctx : in out Context)
-     with Depends => (Ctx => Ctx),
-     Post => (State_Of(Ctx) = Squeezing
-              and Rate_Of(Ctx) = Rate_Of(Ctx'Old))
    is
       Next_Block : Keccak.Types.Byte_Array(0 .. (State_Size / 8) - 1) := (others => 0);
       Spilled    : Boolean;

@@ -193,7 +193,7 @@ private
    is (In_Queue_Bit_Length(Ctx) mod 8 = 0
        and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
 
-   function State_Of(Ctx : in Context) return StateS
+   function State_Of(Ctx : in Context) return States
    is (if Hash_Sponge.State_Of(Ctx.Sponge_Ctx) = Hash_Sponge.Squeezing then Finished
        elsif Can_Absorb(Ctx) and not Ctx.Update_Complete then Updating
        else Ready_To_Finish);

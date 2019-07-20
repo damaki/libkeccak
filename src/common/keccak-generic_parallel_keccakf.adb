@@ -105,13 +105,70 @@ is
       Esa, Ese, Esi, Eso, Esu : VXXI;
 
       procedure Copy_From_State
-        with Global => (Input  => S,
-                        Output => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu)),
-        Inline
+        with Inline,
+        Global => (Input  => S,
+                   Output => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu));
+
+      procedure Copy_To_State_From_A
+        with Inline,
+        Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu),
+                   Output => S);
+
+      procedure Copy_To_State_From_E
+        with Inline,
+        Global => (Input  => (Eba, Ebe, Ebi, Ebo, Ebu,
+                              Ega, Ege, Egi, Ego, Egu,
+                              Eka, Eke, Eki, Eko, Eku,
+                              Ema, Eme, Emi, Emo, Emu,
+                              Esa, Ese, Esi, Eso, Esu),
+                   Output => S);
+
+      procedure Prepare_Theta
+        with Inline,
+        Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu),
+                   Output => (Ca, Ce, Ci, Co, Cu));
+
+      procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (RI : in Round_Index)
+        with Inline,
+        Global => (In_Out => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu,
+                              Ca, Ce, Ci, Co, Cu),
+                   Output => (Eba, Ebe, Ebi, Ebo, Ebu,
+                              Ega, Ege, Egi, Ego, Egu,
+                              Eka, Eke, Eki, Eko, Eku,
+                              Ema, Eme, Emi, Emo, Emu,
+                              Esa, Ese, Esi, Eso, Esu));
+
+      procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (RI : in Round_Index)
+        with Inline,
+        Global => (In_Out => (Eba, Ebe, Ebi, Ebo, Ebu,
+                              Ega, Ege, Egi, Ego, Egu,
+                              Eka, Eke, Eki, Eko, Eku,
+                              Ema, Eme, Emi, Emo, Emu,
+                              Esa, Ese, Esi, Eso, Esu,
+                              Ca, Ce, Ci, Co, Cu),
+                   Output => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu));
+
+      procedure Copy_From_State
       is
       begin
          Aba := Load (S (0,0));
@@ -143,13 +200,6 @@ is
 
 
       procedure Copy_To_State_From_A
-        with Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu),
-                        Output => S),
-        Inline
       is
       begin
          S := (0 => (0 => Store (Aba),
@@ -182,13 +232,6 @@ is
 
 
       procedure Copy_To_State_From_E
-        with Global => (Input  => (Eba, Ebe, Ebi, Ebo, Ebu,
-                                   Ega, Ege, Egi, Ego, Egu,
-                                   Eka, Eke, Eki, Eko, Eku,
-                                   Ema, Eme, Emi, Emo, Emu,
-                                   Esa, Ese, Esi, Eso, Esu),
-                        Output => S),
-        Inline
       is
       begin
          S := (0 => (0 => Store (Eba),
@@ -220,13 +263,6 @@ is
       end Copy_To_State_From_E;
 
       procedure Prepare_Theta
-        with Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu),
-                        Output => (Ca, Ce, Ci, Co, Cu)),
-          Inline
       is
       begin
          Ca := Aba xor Aga xor Aka xor Ama xor Asa;
@@ -237,18 +273,6 @@ is
       end Prepare_Theta;
 
       procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (RI : in Round_Index)
-        with Global => (In_Out => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu,
-                                   Ca, Ce, Ci, Co, Cu),
-                        Output => (Eba, Ebe, Ebi, Ebo, Ebu,
-                                   Ega, Ege, Egi, Ego, Egu,
-                                   Eka, Eke, Eki, Eko, Eku,
-                                   Ema, Eme, Emi, Emo, Emu,
-                                   Esa, Ese, Esi, Eso, Esu)),
-        Inline
       is
          Da, De, Di, D0, Du : VXXI;
 
@@ -374,18 +398,6 @@ is
       end Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE;
 
       procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (RI : in Round_Index)
-        with Global => (In_Out => (Eba, Ebe, Ebi, Ebo, Ebu,
-                                   Ega, Ege, Egi, Ego, Egu,
-                                   Eka, Eke, Eki, Eko, Eku,
-                                   Ema, Eme, Emi, Emo, Emu,
-                                   Esa, Ese, Esi, Eso, Esu,
-                                   Ca, Ce, Ci, Co, Cu),
-                        Output => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu)),
-        Inline
       is
          Da, De, Di, D0, Du : VXXI;
 

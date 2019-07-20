@@ -28,6 +28,10 @@
 package body Keccak.Generic_Parallel_Sponge
 is
 
+   --------------
+   --  Lemmas  --
+   --------------
+
    pragma Warnings (Off, "postcondition does not check the outcome");
 
    procedure Lemma_Remaining_Mod_Rate_Preserve
@@ -73,6 +77,18 @@ is
       pragma Assert ((Offset + Rate) mod Rate = 0);
    end Lemma_Offset_Mod_Rate_Preserve;
 
+   -------------------
+   --  Add_Padding  --
+   -------------------
+
+   procedure Add_Padding (Ctx : in out Context)
+     with Global => null,
+     Pre => State_Of (Ctx) = Absorbing,
+     Post => State_Of (Ctx) = Squeezing;
+
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx : out Context)
    is
@@ -84,6 +100,9 @@ is
       pragma Assert (State_Of (Ctx) = Absorbing);
    end Init;
 
+   -----------------------------
+   --  Absorb_Bytes_Separate  --
+   -----------------------------
 
    procedure Absorb_Bytes_Separate (Ctx        : in out Context;
                                     Data       : in     Types.Byte_Array)
@@ -163,6 +182,9 @@ is
 
    end Absorb_Bytes_Separate;
 
+   ------------------------
+   --  Absorb_Bytes_All  --
+   ------------------------
 
    procedure Absorb_Bytes_All (Ctx        : in out Context;
                                Data       : in     Types.Byte_Array)
@@ -226,6 +248,9 @@ is
 
    end Absorb_Bytes_All;
 
+   ------------------------------------
+   --  Absorb_Bytes_All_With_Suffix  --
+   ------------------------------------
 
    procedure Absorb_Bytes_All_With_Suffix
      (Ctx        : in out Context;
@@ -292,6 +317,9 @@ is
 
    end Absorb_Bytes_All_With_Suffix;
 
+   -----------------------------------------
+   --  Absorb_Bytes_Separate_With_Suffix  --
+   -----------------------------------------
 
    procedure Absorb_Bytes_Separate_With_Suffix
      (Ctx        : in out Context;
@@ -380,11 +408,11 @@ is
 
    end Absorb_Bytes_Separate_With_Suffix;
 
+   -------------------
+   --  Add_Padding  --
+   -------------------
 
    procedure Add_Padding (Ctx : in out Context)
-     with Global => null,
-     Pre => State_Of (Ctx) = Absorbing,
-     Post => State_Of (Ctx) = Squeezing
    is
       Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
 
@@ -415,6 +443,9 @@ is
       pragma Assert (State_Of (Ctx) = Squeezing);
    end Add_Padding;
 
+   ------------------------------
+   --  Squeeze_Bytes_Separate  --
+   ------------------------------
 
    procedure Squeeze_Bytes_Separate (Ctx        : in out Context;
                                      Data       :    out Types.Byte_Array)
