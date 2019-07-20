@@ -570,6 +570,8 @@ is
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
+      Lane             : Lane_Type;
+
       SI               : VXXI_Index;
 
    begin
@@ -591,8 +593,9 @@ is
             exit Outer_Loop when Remaining_Bits < W;
 
             for I in 0 .. Num_Parallel_Instances - 1 loop
-               SI := VXXI_Index_Offset_From_First (I);
-               S(X,Y)(SI) := S(X,Y)(SI) xor Bytes_To_Lane (Data, Data_Offset + Offset + (Stride * I));
+               Lane := Bytes_To_Lane (Data, Data_Offset + Offset + (Stride * I));
+               SI   := VXXI_Index_Offset_From_First (I);
+               S(X,Y)(SI) := S(X,Y)(SI) xor Lane;
             end loop;
 
             Offset         := Offset          + W/8;
@@ -611,11 +614,13 @@ is
             Y                : Y_Coord   := Y_Coord ((Bit_Len / W)  /  5);
             Remaining_Bytes  : Natural   := (Remaining_Bits + 7) / 8;
             Lanes            : array (0 .. Num_Parallel_Instances) of Lane_Type := (others => 0);
+            Pos              : Types.Index_Number;
 
          begin
             for I in Natural range 0 .. Remaining_Bytes - 1 loop
                for J in 0 .. Num_Parallel_Instances - 1 loop
-                  Lanes (J) := Lanes (J) or Shift_Left(Lane_Type(Data(Data'First + Data_Offset + Offset + I + (Stride * J))), I*8);
+                  Pos       := Data'First + Data_Offset + Offset + I + (Stride * J);
+                  Lanes (J) := Lanes (J) or Shift_Left(Lane_Type(Data(Pos)), I*8);
                end loop;
             end loop;
 

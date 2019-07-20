@@ -228,7 +228,8 @@ is
 
             --  Prove postcondition
             pragma Assert_And_Cut(State_Of(Ctx) = Absorbing
-                                  and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
+                                  and (In_Queue_Bit_Length(Ctx) mod 8) =
+                                     ((Bit_Length + Suffix_Len) mod 8)
                                   and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)
                                   and Rate_Of(Ctx) = Initial_Rate);
 
@@ -261,7 +262,8 @@ is
 
             --  Prove Postcondition
             pragma Assert_And_Cut(State_Of(Ctx) = Absorbing
-                                  and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
+                                  and (In_Queue_Bit_Length(Ctx) mod 8) =
+                                     ((Bit_Length + Suffix_Len) mod 8)
                                   and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)
                                   and Rate_Of(Ctx) = Initial_Rate);
 

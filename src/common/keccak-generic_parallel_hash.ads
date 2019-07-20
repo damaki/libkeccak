@@ -85,7 +85,8 @@ is
      Pre => (State_Of (Ctx) = Updating
              and Byte_Count (Data'Length) <= Max_Input_Length (Ctx)),
      Post => (State_Of (Ctx) = Updating
-              and Num_Bytes_Processed (Ctx) = Num_Bytes_Processed (Ctx'Old) + Byte_Count (Data'Length));
+              and Num_Bytes_Processed (Ctx) =
+                Num_Bytes_Processed (Ctx'Old) + Byte_Count (Data'Length));
 
 
    procedure Finish (Ctx  : in out Context;

@@ -81,7 +81,6 @@ is
       """Data"" might not be initialized",
       "GNATprove issues a false positive due to the use of loops to initialize Data");
 
-
    procedure Extract_Bytes(A    : in     Lane_Complemented_State;
                            Data :    out Keccak.Types.Byte_Array)
      with Global => null,

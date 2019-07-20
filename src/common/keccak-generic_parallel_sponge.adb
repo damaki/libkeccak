@@ -92,13 +92,15 @@ is
 
       Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
 
+      Buffer_Size : constant Natural := Rate_Bytes * Num_Parallel_Instances;
+
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
       Buf_First  : Types.Index_Number;
       Buf_Last   : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. (Rate_Bytes * Num_Parallel_Instances) - 1) := (others => 0);
+      Buffer     : Types.Byte_Array (0 .. Buffer_Size - 1) := (others => 0);
 
    begin
       while Remaining >= Ctx.Rate loop
@@ -301,13 +303,15 @@ is
 
       Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
 
+      Buffer_Size : constant Natural := Rate_Bytes * Num_Parallel_Instances;
+
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
       Buf_First  : Types.Index_Number;
       Buf_Last   : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. (Rate_Bytes * Num_Parallel_Instances) - 1) := (others => 0);
+      Buffer     : Types.Byte_Array (0 .. Buffer_Size - 1) := (others => 0);
 
    begin
       Ctx.State := Squeezing;
