@@ -1,28 +1,28 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Interfaces;
 
@@ -118,9 +118,9 @@ is
 
       Byte            : Keccak.Types.Byte;
    begin
-      Data := (others => 0); -- workaround for flow analysis.
+      Data := (others => 0); --  workaround for flow analysis.
 
-      -- Process entire bytes
+      --  Process entire bytes
       while Remaining_Bytes > 0 and Offset < B/8 loop
          pragma Loop_Variant(Increases => Offset,
                              Decreases => Remaining_Bytes);
@@ -190,9 +190,9 @@ is
       Byte            : Keccak.Types.Byte;
       Lane            : Lane_Type;
    begin
-      Data := (others => 0); -- workaround for flow analysis.
+      Data := (others => 0); --  workaround for flow analysis.
 
-      -- Process entire bytes
+      --  Process entire bytes
       while Remaining_Bytes > 0 and Offset < B/8 loop
          pragma Loop_Variant(Increases => Offset,
                              Decreases => Remaining_Bytes);
@@ -248,8 +248,8 @@ is
    begin
       Extract_Bytes(A, Data);
 
-      -- Avoid exposing more bits than requested by masking away higher bits
-      -- in the last byte.
+      --  Avoid exposing more bits than requested by masking away higher bits
+      --  in the last byte.
       if Bit_Len > 0 and Bit_Len mod 8 /= 0 then
          Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
       end if;
@@ -265,8 +265,8 @@ is
    begin
       Extract_Bytes (A, Data);
 
-      -- Avoid exposing more bits than requested by masking away higher bits
-      -- in the last byte.
+      --  Avoid exposing more bits than requested by masking away higher bits
+      --  in the last byte.
       if Bit_Len > 0 and Bit_Len mod 8 /= 0 then
          Data(Data'Last) := Data(Data'Last) and (2**(Bit_Len mod 8) - 1);
       end if;

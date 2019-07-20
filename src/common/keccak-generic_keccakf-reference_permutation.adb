@@ -1,40 +1,40 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Interfaces;
 
 package body Keccak.Generic_KeccakF.Reference_Permutation
 is
 
-   -- Keccak Theta operation
+   --  Keccak Theta operation
    --
-   -- See Algorithm 1 in Section 3.2.1 of NIST FIPS-202
+   --  See Algorithm 1 in Section 3.2.1 of NIST FIPS-202
    --
-   -- @param A The Keccak input state.
-   -- @param AR The Keccak output state after the Theta operation.
+   --  @param A The Keccak input state.
+   --  @param AR The Keccak output state after the Theta operation.
    procedure Theta(A  : in     State;
                    AR :    out State)
    is
@@ -71,13 +71,12 @@ is
 
    end Theta;
 
-   ----------------------------------------------------------------------------
-   -- Keccak Rho operation
+   --  Keccak Rho operation
    --
-   -- See Algorithm 2 in Section 3.2.2 of NIST FIPS-202
+   --  See Algorithm 2 in Section 3.2.2 of NIST FIPS-202
    --
-   -- @param A The Keccak input state.
-   -- @param AR The Keccak output state after the Rho operation.
+   --  @param A The Keccak input state.
+   --  @param AR The Keccak output state after the Rho operation.
    procedure Rho(A  : in     State;
                  AR :    out State)
    is
@@ -115,12 +114,12 @@ is
             );
    end Rho;
 
-   -- Keccak Pi operation
+   --  Keccak Pi operation
    --
-   -- See Algorithm 3 in Section 3.2.3 of NIST FIPS-202.
+   --  See Algorithm 3 in Section 3.2.3 of NIST FIPS-202.
    --
-   -- @param A The Keccak input state.
-   -- @param AR The Keccak output state after the Pi operation.
+   --  @param A The Keccak input state.
+   --  @param AR The Keccak output state after the Pi operation.
    procedure Pi(A  : in     State;
                 AR :    out State)
    is
@@ -158,11 +157,11 @@ is
             );
    end Pi;
 
-   -- Keccak Rho and Pi operations merged
+   --  Keccak Rho and Pi operations merged
    --
-   -- See Algorithms 2 and 3 in Sections 3.2.2 and 3.2.3 of NIST FIPS-202.
+   --  See Algorithms 2 and 3 in Sections 3.2.2 and 3.2.3 of NIST FIPS-202.
    --
-   -- @param A The Keccak state to permute with the Rho and Pi operations.
+   --  @param A The Keccak state to permute with the Rho and Pi operations.
    procedure Rho_Pi (A  : in out State)
    is
    begin
@@ -199,13 +198,13 @@ is
            );
    end Rho_Pi;
 
-   -- Keccak Chi and Iota operations
+   --  Keccak Chi and Iota operations
    --
-   -- See Algorithms 4 and 5 in Sections 3.2.4 and 3.2.5 of NIST FIPS-202.
+   --  See Algorithms 4 and 5 in Sections 3.2.4 and 3.2.5 of NIST FIPS-202.
    --
-   -- @param A The Keccak input state
-   -- @param AR The Keccak output state after the Chi and Iota operations.
-   -- @param RI The current round number/index
+   --  @param A The Keccak input state
+   --  @param AR The Keccak output state after the Chi and Iota operations.
+   --  @param RI The current round number/index
    procedure Chi_Iota(A  : in     State;
                       AR :    out State;
                       RI : in     Round_Index)
@@ -242,8 +241,8 @@ is
          16#8000_0000_8000_8008#
         );
    begin
-      -- Process the first set of Y separately to XOR the round constant
-      -- with the first lane (this is the Iota part).
+      --  Process the first set of Y separately to XOR the round constant
+      --  with the first lane (this is the Iota part).
       AR(0, 0) := A(0, 0) xor ( (not A(1, 0)) and A(2, 0) ) xor Lane_Type(RC(RI) and (2**W - 1));
 
       pragma Annotate(GNATprove, False_Positive,
@@ -263,7 +262,6 @@ is
          AR(4, Y) := A(4, Y) xor ( (not A(0, Y)) and A(1, Y) );
       end loop;
    end Chi_Iota;
-
 
    procedure Permute(A : in out State)
    is

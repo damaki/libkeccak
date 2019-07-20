@@ -1,28 +1,28 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 package body Keccak.Generic_Parallel_KeccakF
 is
@@ -574,7 +574,7 @@ is
 
    begin
 
-      -- Process whole lanes (e.g. 64 bits for Keccak-f[1600]).
+      --  Process whole lanes (e.g. 64 bits for Keccak-f[1600]).
       Outer_Loop:
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
@@ -604,7 +604,7 @@ is
       pragma Assert ((Offset * 8) + Remaining_Bits = Bit_Len);
       pragma Assert (Remaining_Bits < W);
 
-      -- Process any remaining data (smaller than 1 lane - 64 bits)
+      --  Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
             X                : X_Coord   := X_Coord ((Bit_Len / W) mod 5);
@@ -638,7 +638,7 @@ is
       Offset           : Natural := 0;
 
    begin
-      -- Process whole lanes (64 bits).
+      --  Process whole lanes (64 bits).
       Outer_Loop:
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
@@ -671,7 +671,7 @@ is
          end loop;
       end loop Outer_Loop;
 
-      -- Process any remaining data (smaller than 1 lane - 64 bits)
+      --  Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
             X                : X_Coord   := X_Coord ((Bit_Len / W) mod 5);
@@ -714,9 +714,9 @@ is
 
       SI              : VXXI_Index;
    begin
-      -- Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
+      --  Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
 
-      -- Process whole lanes
+      --  Process whole lanes
       while Remaining_Bytes >= W/8 loop
          pragma Loop_Variant(Increases => Offset,
                              Decreases => Remaining_Bytes);
@@ -752,7 +752,7 @@ is
          Offset          := Offset + W/8;
       end loop;
 
-      -- Process any remaining data (smaller than 1 lane)
+      --  Process any remaining data (smaller than 1 lane)
       if Remaining_Bytes > 0 then
          declare
             Lanes          : constant VXXI_View := S(X, Y);

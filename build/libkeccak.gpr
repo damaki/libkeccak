@@ -8,6 +8,10 @@ project Libkeccak is
    Arch_Dirs     := ();
    Arch_Switches := ();
 
+   Style_Switches := ("-gnaty3aAbc");
+
+   Warning_Switches := ("-gnatwe");
+
    case Arch is
       when "generic" =>
          Arch_Dirs := Arch_Dirs & ("../src/generic");
@@ -49,7 +53,17 @@ project Libkeccak is
    end Prove;
 
    package Compiler is
-      for Default_Switches ("ada") use Arch_Switches & ("-march=native", "-mtune=native", "-O2", "-funroll-loops", "-gnatn", "-gnat12", "-gnatf", "-gnatp", "-ffunction-sections", "-fdata-sections");
+      for Default_Switches ("ada") use Warning_Switches & Style_Switches & Arch_Switches &
+         ("-march=native",
+          "-mtune=native",
+          "-O2",
+          "-funroll-loops",
+          "-gnatn",
+          "-gnat12",
+          "-gnatf",
+          "-gnatp",
+          "-ffunction-sections",
+          "-fdata-sections");
    end Compiler;
 
    package Documentation is
