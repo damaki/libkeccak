@@ -35,40 +35,40 @@ is
    --  Pad101_Single_Block  --
    ---------------------------
 
-   procedure Pad101_Single_Block(Block          : in out Keccak.Types.Byte_Array;
-                                 Num_Used_Bits  : in     Natural;
-                                 Max_Bit_Length : in     Natural)
+   procedure Pad101_Single_Block (Block          : in out Keccak.Types.Byte_Array;
+                                  Num_Used_Bits  : in     Natural;
+                                  Max_Bit_Length : in     Natural)
    is
       Last_Bit : Keccak.Types.Byte;
 
    begin
       --  Append first 1 bit
-      Block(Block'First + Num_Used_Bits/8)
-        := (Block(Block'First + Num_Used_Bits/8) and (2**(Num_Used_Bits mod 8) - 1))
-        or Shift_Left(1, Num_Used_Bits mod 8);
+      Block (Block'First + (Num_Used_Bits / 8))
+        := (Block (Block'First + (Num_Used_Bits / 8)) and (2**(Num_Used_Bits mod 8) - 1))
+        or Shift_Left (1, Num_Used_Bits mod 8);
 
       --  Append zeroes
-      Block(Block'First + (Num_Used_Bits/8) + 1 .. Block'Last) := (others => 0);
+      Block (Block'First + (Num_Used_Bits / 8) + 1 .. Block'Last) := (others => 0);
 
       --  Append last 1 bit
       if Max_Bit_Length mod 8 = 0 then
          Last_Bit := 2#1000_0000#;
       else
-         Last_Bit := Shift_Right(2#1000_0000#, 8 - (Max_Bit_Length mod 8));
+         Last_Bit := Shift_Right (2#1000_0000#, 8 - (Max_Bit_Length mod 8));
       end if;
 
-      Block(Block'Last) := Block(Block'Last) or Last_Bit;
+      Block (Block'Last) := Block (Block'Last) or Last_Bit;
    end Pad101_Single_Block;
 
    ---------------------------
    --  Pad101_Multi_Blocks  --
    ---------------------------
 
-   procedure Pad101_Multi_Blocks(First_Block    : in out Keccak.Types.Byte_Array;
-                                 Num_Used_Bits  : in     Natural;
-                                 Max_Bit_Length : in     Natural;
-                                 Next_Block     :    out Keccak.Types.Byte_Array;
-                                 Spilled        :    out Boolean)
+   procedure Pad101_Multi_Blocks (First_Block    : in out Keccak.Types.Byte_Array;
+                                  Num_Used_Bits  : in     Natural;
+                                  Max_Bit_Length : in     Natural;
+                                  Next_Block     :    out Keccak.Types.Byte_Array;
+                                  Spilled        :    out Boolean)
    is
       Num_Free_Bits : Natural := Max_Bit_Length - Num_Used_Bits;
 
@@ -81,10 +81,10 @@ is
       if Max_Bit_Length mod 8 = 0 then
          Last_Bit := 2#1000_0000#;
       else
-         Last_Bit := Shift_Right(2#1000_0000#, 8 - (Max_Bit_Length mod 8));
+         Last_Bit := Shift_Right (2#1000_0000#, 8 - (Max_Bit_Length mod 8));
       end if;
 
-      First_Bit := Shift_Left(1, Num_Used_Bits mod 8);
+      First_Bit := Shift_Left (1, Num_Used_Bits mod 8);
 
       if Num_Free_Bits >= 2 then
          --  This is the case where there are at least 2 bits free in the first
@@ -98,16 +98,16 @@ is
          Spilled := False;
 
          --  Append first 1 bit
-         First_Block(First_Block'First + Num_Used_Bits/8)
-           := (First_Block(First_Block'First + Num_Used_Bits/8) and (First_Bit - 1))
+         First_Block (First_Block'First + (Num_Used_Bits / 8))
+           := (First_Block (First_Block'First + (Num_Used_Bits / 8)) and (First_Bit - 1))
            or First_Bit;
 
          --  Append zeroes
-         First_Block(First_Block'First + Num_Used_Bits/8 + 1 .. First_Block'Last)
+         First_Block (First_Block'First + (Num_Used_Bits / 8) + 1 .. First_Block'Last)
            := (others => 0);
 
          --  Append last 1 bit
-         First_Block(First_Block'Last) := First_Block(First_Block'Last) or Last_Bit;
+         First_Block (First_Block'Last) := First_Block (First_Block'Last) or Last_Bit;
 
       else
          --  This is the case where there is only 1 bit free in the first block.
@@ -120,16 +120,16 @@ is
 
          Spilled := True;
 
-         pragma Assert(Num_Free_Bits = 1);
+         pragma Assert (Num_Free_Bits = 1);
 
          --  First 1 bit
-         First_Block(First_Block'Last)
-           := (First_Block(First_Block'Last) and (First_Bit - 1)) or First_Bit;
+         First_Block (First_Block'Last)
+           := (First_Block (First_Block'Last) and (First_Bit - 1)) or First_Bit;
 
          --  Next_Block is already padded with zeroes (see above).
 
          --  Append last 1 bit
-         Next_Block(Next_Block'Last) := Last_Bit;
+         Next_Block (Next_Block'Last) := Last_Bit;
 
       end if;
 

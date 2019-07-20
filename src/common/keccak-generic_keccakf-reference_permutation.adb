@@ -35,38 +35,39 @@ is
    --
    --  @param A The Keccak input state.
    --  @param AR The Keccak output state after the Theta operation.
-   procedure Theta(A  : in     State;
-                   AR :    out State)
+   procedure Theta (A  : in     State;
+                    AR :    out State)
    is
       C_L : Lane_Type;
       C_R : Lane_Type;
       D   : Lane_Type;
+
    begin
       for X in X_Coord loop
-         C_L := A(X - 1, 0) xor
-           A(X - 1, 1) xor
-           A(X - 1, 2) xor
-           A(X - 1, 3) xor
-           A(X - 1, 4);
+         C_L := A (X - 1, 0) xor
+           A (X - 1, 1) xor
+           A (X - 1, 2) xor
+           A (X - 1, 3) xor
+           A (X - 1, 4);
 
-         C_R := A(X + 1, 0) xor
-           A(X + 1, 1) xor
-           A(X + 1, 2) xor
-           A(X + 1, 3) xor
-           A(X + 1, 4);
+         C_R := A (X + 1, 0) xor
+           A (X + 1, 1) xor
+           A (X + 1, 2) xor
+           A (X + 1, 3) xor
+           A (X + 1, 4);
 
-         D := C_L xor Rotate_Left(C_R, 1);
+         D := C_L xor Rotate_Left (C_R, 1);
 
-         AR(X, 0) := A(X, 0) xor D;
+         AR (X, 0) := A (X, 0) xor D;
 
-         pragma Annotate(GNATprove, False_Positive,
-                         """AR"" might not be initialized",
-                         "AR is initialized after full loop");
+         pragma Annotate (GNATprove, False_Positive,
+                          """AR"" might not be initialized",
+                          "AR is initialized after full loop");
 
-         AR(X, 1) := A(X, 1) xor D;
-         AR(X, 2) := A(X, 2) xor D;
-         AR(X, 3) := A(X, 3) xor D;
-         AR(X, 4) := A(X, 4) xor D;
+         AR (X, 1) := A (X, 1) xor D;
+         AR (X, 2) := A (X, 2) xor D;
+         AR (X, 3) := A (X, 3) xor D;
+         AR (X, 4) := A (X, 4) xor D;
       end loop;
 
    end Theta;
@@ -77,39 +78,39 @@ is
    --
    --  @param A The Keccak input state.
    --  @param AR The Keccak output state after the Rho operation.
-   procedure Rho(A  : in     State;
-                 AR :    out State)
+   procedure Rho (A  : in     State;
+                  AR :    out State)
    is
    begin
-      AR := (0 => (0 => A(0, 0),
-                   1 => Rotate_Left(A(0, 1), 36  mod W),
-                   2 => Rotate_Left(A(0, 2), 3   mod W),
-                   3 => Rotate_Left(A(0, 3), 105 mod W),
-                   4 => Rotate_Left(A(0, 4), 210 mod W)
+      AR := (0 => (0 => A (0, 0),
+                   1 => Rotate_Left (A (0, 1), 36  mod W),
+                   2 => Rotate_Left (A (0, 2), 3   mod W),
+                   3 => Rotate_Left (A (0, 3), 105 mod W),
+                   4 => Rotate_Left (A (0, 4), 210 mod W)
                   ),
-             1 => (0 => Rotate_Left(A(1, 0), 1   mod W),
-                   1 => Rotate_Left(A(1, 1), 300 mod W),
-                   2 => Rotate_Left(A(1, 2), 10  mod W),
-                   3 => Rotate_Left(A(1, 3), 45  mod W),
-                   4 => Rotate_Left(A(1, 4), 66  mod W)
+             1 => (0 => Rotate_Left (A (1, 0), 1   mod W),
+                   1 => Rotate_Left (A (1, 1), 300 mod W),
+                   2 => Rotate_Left (A (1, 2), 10  mod W),
+                   3 => Rotate_Left (A (1, 3), 45  mod W),
+                   4 => Rotate_Left (A (1, 4), 66  mod W)
                   ),
-             2 => (0 => Rotate_Left(A(2, 0), 190 mod W),
-                   1 => Rotate_Left(A(2, 1), 6   mod W),
-                   2 => Rotate_Left(A(2, 2), 171 mod W),
-                   3 => Rotate_Left(A(2, 3), 15  mod W),
-                   4 => Rotate_Left(A(2, 4), 253 mod W)
+             2 => (0 => Rotate_Left (A (2, 0), 190 mod W),
+                   1 => Rotate_Left (A (2, 1), 6   mod W),
+                   2 => Rotate_Left (A (2, 2), 171 mod W),
+                   3 => Rotate_Left (A (2, 3), 15  mod W),
+                   4 => Rotate_Left (A (2, 4), 253 mod W)
                   ),
-             3 => (0 => Rotate_Left(A(3, 0), 28  mod W),
-                   1 => Rotate_Left(A(3, 1), 55  mod W),
-                   2 => Rotate_Left(A(3, 2), 153 mod W),
-                   3 => Rotate_Left(A(3, 3), 21  mod W),
-                   4 => Rotate_Left(A(3, 4), 120 mod W)
+             3 => (0 => Rotate_Left (A (3, 0), 28  mod W),
+                   1 => Rotate_Left (A (3, 1), 55  mod W),
+                   2 => Rotate_Left (A (3, 2), 153 mod W),
+                   3 => Rotate_Left (A (3, 3), 21  mod W),
+                   4 => Rotate_Left (A (3, 4), 120 mod W)
                   ),
-             4 => (0 => Rotate_Left(A(4, 0), 91  mod W),
-                   1 => Rotate_Left(A(4, 1), 276 mod W),
-                   2 => Rotate_Left(A(4, 2), 231 mod W),
-                   3 => Rotate_Left(A(4, 3), 136 mod W),
-                   4 => Rotate_Left(A(4, 4), 78  mod W)
+             4 => (0 => Rotate_Left (A (4, 0), 91  mod W),
+                   1 => Rotate_Left (A (4, 1), 276 mod W),
+                   2 => Rotate_Left (A (4, 2), 231 mod W),
+                   3 => Rotate_Left (A (4, 3), 136 mod W),
+                   4 => Rotate_Left (A (4, 4), 78  mod W)
                   )
             );
    end Rho;
@@ -120,39 +121,39 @@ is
    --
    --  @param A The Keccak input state.
    --  @param AR The Keccak output state after the Pi operation.
-   procedure Pi(A  : in     State;
-                AR :    out State)
+   procedure Pi (A  : in     State;
+                 AR :    out State)
    is
    begin
-      AR := (0 => (0 => A(0, 0),
-                   1 => A(3, 0),
-                   2 => A(1, 0),
-                   3 => A(4, 0),
-                   4 => A(2, 0)
+      AR := (0 => (0 => A (0, 0),
+                   1 => A (3, 0),
+                   2 => A (1, 0),
+                   3 => A (4, 0),
+                   4 => A (2, 0)
                   ),
-             1 => (0 => A(1, 1),
-                   1 => A(4, 1),
-                   2 => A(2, 1),
-                   3 => A(0, 1),
-                   4 => A(3, 1)
+             1 => (0 => A (1, 1),
+                   1 => A (4, 1),
+                   2 => A (2, 1),
+                   3 => A (0, 1),
+                   4 => A (3, 1)
                   ),
-             2 => (0 => A(2, 2),
-                   1 => A(0, 2),
-                   2 => A(3, 2),
-                   3 => A(1, 2),
-                   4 => A(4, 2)
+             2 => (0 => A (2, 2),
+                   1 => A (0, 2),
+                   2 => A (3, 2),
+                   3 => A (1, 2),
+                   4 => A (4, 2)
                   ),
-             3 => (0 => A(3, 3),
-                   1 => A(1, 3),
-                   2 => A(4, 3),
-                   3 => A(2, 3),
-                   4 => A(0, 3)
+             3 => (0 => A (3, 3),
+                   1 => A (1, 3),
+                   2 => A (4, 3),
+                   3 => A (2, 3),
+                   4 => A (0, 3)
                   ),
-             4 => (0 => A(4, 4),
-                   1 => A(2, 4),
-                   2 => A(0, 4),
-                   3 => A(3, 4),
-                   4 => A(1, 4)
+             4 => (0 => A (4, 4),
+                   1 => A (2, 4),
+                   2 => A (0, 4),
+                   3 => A (3, 4),
+                   4 => A (1, 4)
                   )
             );
    end Pi;
@@ -165,35 +166,35 @@ is
    procedure Rho_Pi (A  : in out State)
    is
    begin
-      A := (0 => (0 => A(0, 0),
-                  1 => Rotate_Left(A(3, 0), 28  mod W),
-                  2 => Rotate_Left(A(1, 0), 1   mod W),
-                  3 => Rotate_Left(A(4, 0), 91  mod W),
-                  4 => Rotate_Left(A(2, 0), 190 mod W)
+      A := (0 => (0 => A (0, 0),
+                  1 => Rotate_Left (A (3, 0), 28  mod W),
+                  2 => Rotate_Left (A (1, 0), 1   mod W),
+                  3 => Rotate_Left (A (4, 0), 91  mod W),
+                  4 => Rotate_Left (A (2, 0), 190 mod W)
                  ),
-            1 => (0 => Rotate_Left(A(1, 1), 300 mod W),
-                  1 => Rotate_Left(A(4, 1), 276 mod W),
-                  2 => Rotate_Left(A(2, 1), 6   mod W),
-                  3 => Rotate_Left(A(0, 1), 36  mod W),
-                  4 => Rotate_Left(A(3, 1), 55  mod W)
+            1 => (0 => Rotate_Left (A (1, 1), 300 mod W),
+                  1 => Rotate_Left (A (4, 1), 276 mod W),
+                  2 => Rotate_Left (A (2, 1), 6   mod W),
+                  3 => Rotate_Left (A (0, 1), 36  mod W),
+                  4 => Rotate_Left (A (3, 1), 55  mod W)
                  ),
-            2 => (0 => Rotate_Left(A(2, 2), 171 mod W),
-                  1 => Rotate_Left(A(0, 2), 3   mod W),
-                  2 => Rotate_Left(A(3, 2), 153 mod W),
-                  3 => Rotate_Left(A(1, 2), 10  mod W),
-                  4 => Rotate_Left(A(4, 2), 231 mod W)
+            2 => (0 => Rotate_Left (A (2, 2), 171 mod W),
+                  1 => Rotate_Left (A (0, 2), 3   mod W),
+                  2 => Rotate_Left (A (3, 2), 153 mod W),
+                  3 => Rotate_Left (A (1, 2), 10  mod W),
+                  4 => Rotate_Left (A (4, 2), 231 mod W)
                  ),
-            3 => (0 => Rotate_Left(A(3, 3), 21  mod W),
-                  1 => Rotate_Left(A(1, 3), 45  mod W),
-                  2 => Rotate_Left(A(4, 3), 136 mod W),
-                  3 => Rotate_Left(A(2, 3), 15  mod W),
-                  4 => Rotate_Left(A(0, 3), 105 mod W)
+            3 => (0 => Rotate_Left (A (3, 3), 21  mod W),
+                  1 => Rotate_Left (A (1, 3), 45  mod W),
+                  2 => Rotate_Left (A (4, 3), 136 mod W),
+                  3 => Rotate_Left (A (2, 3), 15  mod W),
+                  4 => Rotate_Left (A (0, 3), 105 mod W)
                  ),
-            4 => (0 => Rotate_Left(A(4, 4), 78  mod W),
-                  1 => Rotate_Left(A(2, 4), 253 mod W),
-                  2 => Rotate_Left(A(0, 4), 210 mod W),
-                  3 => Rotate_Left(A(3, 4), 120 mod W),
-                  4 => Rotate_Left(A(1, 4), 66  mod W)
+            4 => (0 => Rotate_Left (A (4, 4), 78  mod W),
+                  1 => Rotate_Left (A (2, 4), 253 mod W),
+                  2 => Rotate_Left (A (0, 4), 210 mod W),
+                  3 => Rotate_Left (A (3, 4), 120 mod W),
+                  4 => Rotate_Left (A (1, 4), 66  mod W)
                  )
            );
    end Rho_Pi;
@@ -205,13 +206,13 @@ is
    --  @param A The Keccak input state
    --  @param AR The Keccak output state after the Chi and Iota operations.
    --  @param RI The current round number/index
-   procedure Chi_Iota(A  : in     State;
-                      AR :    out State;
-                      RI : in     Round_Index)
+   procedure Chi_Iota (A  : in     State;
+                       AR :    out State;
+                       RI : in     Round_Index)
    is
       use type Interfaces.Unsigned_64;
 
-      type Round_Constants is array(Round_Index) of Interfaces.Unsigned_64;
+      type Round_Constants is array (Round_Index) of Interfaces.Unsigned_64;
 
       RC : constant Round_Constants :=
         (
@@ -243,35 +244,37 @@ is
    begin
       --  Process the first set of Y separately to XOR the round constant
       --  with the first lane (this is the Iota part).
-      AR(0, 0) := A(0, 0) xor ( (not A(1, 0)) and A(2, 0) ) xor Lane_Type(RC(RI) and (2**W - 1));
+      AR (0, 0) := (A (0, 0)
+                    xor ((not A (1, 0)) and A (2, 0))
+                    xor Lane_Type (RC (RI) and (2**W - 1)));
 
-      pragma Annotate(GNATprove, False_Positive,
-                      """AR"" might not be initialized",
-                      "AR is initialized by the end of this procedure");
+      pragma Annotate (GNATprove, False_Positive,
+                       """AR"" might not be initialized",
+                       "AR is initialized by the end of this procedure");
 
-      AR(1, 0) := A(1, 0) xor ( (not A(2, 0)) and A(3, 0) );
-      AR(2, 0) := A(2, 0) xor ( (not A(3, 0)) and A(4, 0) );
-      AR(3, 0) := A(3, 0) xor ( (not A(4, 0)) and A(0, 0) );
-      AR(4, 0) := A(4, 0) xor ( (not A(0, 0)) and A(1, 0) );
+      AR (1, 0) := A (1, 0) xor ((not A (2, 0)) and A (3, 0));
+      AR (2, 0) := A (2, 0) xor ((not A (3, 0)) and A (4, 0));
+      AR (3, 0) := A (3, 0) xor ((not A (4, 0)) and A (0, 0));
+      AR (4, 0) := A (4, 0) xor ((not A (0, 0)) and A (1, 0));
 
       for Y in Y_Coord range 1 .. Y_Coord'Last loop
-         AR(0, Y) := A(0, Y) xor ( (not A(1, Y)) and A(2, Y) );
-         AR(1, Y) := A(1, Y) xor ( (not A(2, Y)) and A(3, Y) );
-         AR(2, Y) := A(2, Y) xor ( (not A(3, Y)) and A(4, Y) );
-         AR(3, Y) := A(3, Y) xor ( (not A(4, Y)) and A(0, Y) );
-         AR(4, Y) := A(4, Y) xor ( (not A(0, Y)) and A(1, Y) );
+         AR (0, Y) := A (0, Y) xor ((not A (1, Y)) and A (2, Y));
+         AR (1, Y) := A (1, Y) xor ((not A (2, Y)) and A (3, Y));
+         AR (2, Y) := A (2, Y) xor ((not A (3, Y)) and A (4, Y));
+         AR (3, Y) := A (3, Y) xor ((not A (4, Y)) and A (0, Y));
+         AR (4, Y) := A (4, Y) xor ((not A (0, Y)) and A (1, Y));
       end loop;
    end Chi_Iota;
 
-   procedure Permute(A : in out State)
+   procedure Permute (A : in out State)
    is
       Temp : State;
 
    begin
-      for I in Round_Index range First_Round .. First_Round + Round_Index(Num_Rounds - 1) loop
-         Theta(A, Temp);
-         Rho_Pi(Temp);
-         Chi_Iota(Temp, A, I);
+      for I in Round_Index range First_Round .. First_Round + Round_Index (Num_Rounds - 1) loop
+         Theta (A, Temp);
+         Rho_Pi (Temp);
+         Chi_Iota (Temp, A, I);
       end loop;
    end Permute;
 

@@ -27,10 +27,10 @@
 with Keccak.Generic_CSHAKE;
 with Keccak.Types;
 
-pragma Elaborate_All(Keccak.Generic_CSHAKE);
+pragma Elaborate_All (Keccak.Generic_CSHAKE);
 
 generic
-   with package KMAC_CSHAKE is new Keccak.Generic_CSHAKE(<>);
+   with package KMAC_CSHAKE is new Keccak.Generic_CSHAKE (<>);
 package Keccak.Generic_KMAC
 is
 
@@ -38,12 +38,12 @@ is
 
    type States is (Updating, Extracting, Finished);
 
-   procedure Init(Ctx           :    out Context;
-                  Key           : in     Types.Byte_Array;
-                  Customization : in     String)
+   procedure Init (Ctx           :    out Context;
+                   Key           : in     Types.Byte_Array;
+                   Customization : in     String)
      with Global => null,
      Depends => (Ctx => (Key, Customization)),
-     Post => State_Of(Ctx) = Updating;
+     Post => State_Of (Ctx) = Updating;
    --  Initialize the KMAC context.
    --
    --  In cases where many KMAC computations are performed with the same
@@ -59,13 +59,12 @@ is
    --  @param Customization An optional customization string to provide domain
    --     separation for different usages of KMAC.
 
-
-   procedure Update(Ctx     : in out Context;
-                    Message : in     Types.Byte_Array)
+   procedure Update (Ctx     : in out Context;
+                     Message : in     Types.Byte_Array)
      with Global => null,
-     Depends => (Ctx => + Message),
-     Pre => State_Of(Ctx) = Updating,
-     Post => State_Of(Ctx) = Updating;
+     Depends => (Ctx =>+ Message),
+     Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Updating;
    --  Process data with KMAC.
    --
    --  Note that this function can be called multiple times to process an
@@ -75,13 +74,12 @@ is
    --
    --  @param Message The byte array containing the bytes to process.
 
-
-   procedure Finish(Ctx : in out Context;
-                    MAC :    out Types.Byte_Array)
+   procedure Finish (Ctx : in out Context;
+                     MAC :    out Types.Byte_Array)
      with Global => null,
      Depends => ((Ctx, MAC) => (Ctx, MAC)),
-     Pre => State_Of(Ctx) = Updating,
-     Post => State_Of(Ctx) = Finished;
+     Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Finished;
    --  Finish the KMAC computation and generate the MAC.
    --
    --  After calling this procedure the context can no longer be used. However,
@@ -105,13 +103,12 @@ is
    --  @param MAC The computed MAC is written to this array. The length of
    --     this array can be arbitrary.
 
-
-   procedure Extract(Ctx : in out Context;
-                     MAC :    out Types.Byte_Array)
+   procedure Extract (Ctx : in out Context;
+                      MAC :    out Types.Byte_Array)
      with Global => null,
      Depends => ((Ctx, MAC) => (Ctx, MAC)),
-     Pre => State_Of(Ctx) in Updating | Extracting,
-     Post => State_Of(Ctx) = Extracting;
+     Pre => State_Of (Ctx) in Updating | Extracting,
+     Post => State_Of (Ctx) = Extracting;
    --  Finish the KMAC computation generate XOF output bytes.
    --
    --  After calling this procudure no more data can be input into the KMAC
@@ -120,16 +117,13 @@ is
    --  This function can be called multiple times to produce an arbitrary
    --  number of output bytes.
 
-
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
      with Global => null;
    --  Get the current state of the context.
    --
    --  The context can only be used whilst it is in the "Updating" state.
    --  Otherwise, once the context is finished then it can no longer be used,
    --  and it must be reset in order to be re-used for a new KMAC computation.
-
-
 
    function Rate return Positive
      with Global => null,
@@ -149,9 +143,9 @@ private
       Finished   : Boolean;
    end record;
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
    is (if Ctx.Finished then Finished
-       elsif KMAC_CSHAKE.State_Of(Ctx.CSHAKE_Ctx) = KMAC_CSHAKE.Updating then
+       elsif KMAC_CSHAKE.State_Of (Ctx.CSHAKE_Ctx) = KMAC_CSHAKE.Updating then
           Updating
        else Extracting);
 

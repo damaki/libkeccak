@@ -32,7 +32,7 @@ is
    --  Init  --
    ------------
 
-   procedure Init(A : out State)
+   procedure Init (A : out State)
    is
    begin
       A := (others => (others => 0));
@@ -45,15 +45,15 @@ is
    procedure Init (A : out Lane_Complemented_State)
    is
    begin
-      A := (0 => (4      => Lane_Type'Last,
-                  others => 0),
-            1 => (0      => Lane_Type'Last,
-                  others => 0),
-            2 => (0|2|3  => Lane_Type'Last,
-                  others => 0),
-            3 => (1      => Lane_Type'Last,
-                  others => 0),
-            4 => (others => 0));
+      A := (0 => (4         => Lane_Type'Last,
+                  others    => 0),
+            1 => (0         => Lane_Type'Last,
+                  others    => 0),
+            2 => (0 | 2 | 3 => Lane_Type'Last,
+                  others    => 0),
+            3 => (1         => Lane_Type'Last,
+                  others    => 0),
+            4 => (others    => 0));
    end Init;
 
 end Keccak.Generic_KeccakF;

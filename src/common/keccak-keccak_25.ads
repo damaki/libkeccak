@@ -33,11 +33,11 @@ with Keccak.Padding;
 with Keccak.Generic_Sponge;
 with Keccak.Types;
 
-pragma Elaborate_All(Keccak.Generic_Duplex);
-pragma Elaborate_All(Keccak.Generic_KeccakF);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Bit_Lanes);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
-pragma Elaborate_All(Keccak.Generic_Sponge);
+pragma Elaborate_All (Keccak.Generic_Duplex);
+pragma Elaborate_All (Keccak.Generic_KeccakF);
+pragma Elaborate_All (Keccak.Generic_KeccakF.Bit_Lanes);
+pragma Elaborate_All (Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
+pragma Elaborate_All (Keccak.Generic_Sponge);
 
 package Keccak.Keccak_25
 with SPARK_Mode => On

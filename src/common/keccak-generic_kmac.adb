@@ -29,26 +29,26 @@ with Keccak.Util;
 package body Keccak.Generic_KMAC
 is
 
-   procedure Init(Ctx           :    out Context;
-                  Key           : in     Types.Byte_Array;
-                  Customization : in     String)
+   procedure Init (Ctx           :    out Context;
+                   Key           : in     Types.Byte_Array;
+                   Customization : in     String)
    is
       Rate_Bytes : constant Positive := Rate / 8;
 
       Encoded_Key_Length : constant Types.Byte_Array
-        := Util.Left_Encode_NIST_Bit_Length(Key'Length);
+        := Util.Left_Encode_NIST_Bit_Length (Key'Length);
 
       Encoded_Rate       : constant Types.Byte_Array
-        := Util.Left_Encode_NIST(Rate_Bytes);
+        := Util.Left_Encode_NIST (Rate_Bytes);
 
       Zeroes : constant Types.Byte_Array (1 .. Rate_Bytes) := (others => 0);
 
       Padding_Length : Natural;
 
    begin
-      KMAC_CSHAKE.Init(Ctx           => Ctx.CSHAKE_Ctx,
-                       Customization => Customization,
-                       Function_Name => "KMAC");
+      KMAC_CSHAKE.Init (Ctx           => Ctx.CSHAKE_Ctx,
+                        Customization => Customization,
+                        Function_Name => "KMAC");
 
       Ctx.Finished := False;
 
@@ -77,16 +77,16 @@ is
       end if;
    end Init;
 
-   procedure Update(Ctx     : in out Context;
-                    Message : in     Types.Byte_Array)
+   procedure Update (Ctx     : in out Context;
+                     Message : in     Types.Byte_Array)
    is
    begin
-      KMAC_CSHAKE.Update(Ctx     => Ctx.CSHAKE_Ctx,
-                         Message => Message);
+      KMAC_CSHAKE.Update (Ctx     => Ctx.CSHAKE_Ctx,
+                          Message => Message);
    end Update;
 
-   procedure Finish(Ctx : in out Context;
-                    MAC :    out Types.Byte_Array)
+   procedure Finish (Ctx : in out Context;
+                     MAC :    out Types.Byte_Array)
    is
    begin
       Ctx.Finished := True;
@@ -94,21 +94,21 @@ is
       --  Encode and process the output length
       KMAC_CSHAKE.Update
         (Ctx     => Ctx.CSHAKE_Ctx,
-         Message => Util.Right_Encode_NIST_Bit_Length(MAC'Length));
+         Message => Util.Right_Encode_NIST_Bit_Length (MAC'Length));
 
       KMAC_CSHAKE.Extract
         (Ctx    => Ctx.CSHAKE_Ctx,
          Digest => MAC);
    end Finish;
 
-   procedure Extract(Ctx : in out Context;
-                     MAC :    out Types.Byte_Array)
+   procedure Extract (Ctx : in out Context;
+                      MAC :    out Types.Byte_Array)
    is
    begin
-      if State_Of(Ctx) = Updating then
+      if State_Of (Ctx) = Updating then
          KMAC_CSHAKE.Update
            (Ctx     => Ctx.CSHAKE_Ctx,
-            Message => Util.Right_Encode_NIST(0));
+            Message => Util.Right_Encode_NIST (0));
       end if;
 
       KMAC_CSHAKE.Extract

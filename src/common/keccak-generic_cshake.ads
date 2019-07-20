@@ -27,10 +27,10 @@
 with Keccak.Types; use Keccak.Types;
 with Keccak.Generic_XOF;
 
-pragma Elaborate_All(Keccak.Generic_XOF);
+pragma Elaborate_All (Keccak.Generic_XOF);
 
 generic
-   with package XOF is new Keccak.Generic_XOF(<>);
+   with package XOF is new Keccak.Generic_XOF (<>);
    --  The extendable output function on which the CSHAKE instance is
    --  constructed.
 package Keccak.Generic_CSHAKE
@@ -40,13 +40,13 @@ is
 
    type States is (Updating, Ready_To_Extract, Extracting);
 
-   procedure Init(Ctx           :    out Context;
-                  Customization : in     String := "";
-                  Function_Name : in     String := "")
+   procedure Init (Ctx           :    out Context;
+                   Customization : in     String := "";
+                   Function_Name : in     String := "")
      with Global => null,
      Depends => (Ctx => (Customization, Function_Name)),
      Pre => Customization /= "" or Function_Name /= "",
-     Post => State_Of(Ctx) = Updating;
+     Post => State_Of (Ctx) = Updating;
    --  Initialize the CSHAKE context.
    --
    --  Note that the Customization and Function_Name strings are optional, but
@@ -79,13 +79,13 @@ is
    --     constructions based on CSHAKE. For other non-NIST usages this string
    --     should be the empty string.
 
-   procedure Update(Ctx     : in out Context;
-                    Message : in     Byte_Array)
+   procedure Update (Ctx     : in out Context;
+                     Message : in     Byte_Array)
      with Global => null,
      Inline,
-     Depends => (Ctx => + Message),
-     Pre => State_Of(Ctx) = Updating,
-     Post => State_Of(Ctx) = Updating;
+     Depends => (Ctx =>+ Message),
+     Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Updating;
    --  Process bytes with CSHAKE.
    --
    --  This procedure can only be called when the Ctx is in the Updating state.
@@ -96,16 +96,16 @@ is
    --  @param Message The data to process with CSHAKE.
 
 
-   procedure Update(Ctx        : in out Context;
-                    Message    : in     Byte_Array;
-                    Bit_Length : in     Natural)
+   procedure Update (Ctx        : in out Context;
+                     Message    : in     Byte_Array;
+                     Bit_Length : in     Natural)
      with Global => null,
-     Depends => (Ctx => + (Message, Bit_Length)),
-     Pre => (State_Of(Ctx) = Updating
+     Depends => (Ctx =>+ (Message, Bit_Length)),
+     Pre => (State_Of (Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
-     Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
-                        others               => State_Of(Ctx) = Ready_To_Extract);
+     Contract_Cases => (Bit_Length mod 8 = 0 => State_Of (Ctx) = Updating,
+                        others               => State_Of (Ctx) = Ready_To_Extract);
    --  Process bits with CSHAKE.
    --
    --  This procedure can only be called when the Ctx is in the Updating state.
@@ -113,11 +113,11 @@ is
    --  This function may be called multiple times only if the Bit_Length is not
    --  a multiple of 8 bits. Otherwise, further calls to
 
-   procedure Extract(Ctx    : in out Context;
-                     Digest :    out Byte_Array)
+   procedure Extract (Ctx    : in out Context;
+                      Digest :    out Byte_Array)
      with Global => null,
      Depends => ((Ctx, Digest) => (Ctx, Digest)),
-     Post => State_Of(Ctx) = Extracting;
+     Post => State_Of (Ctx) = Extracting;
    --  Produce output bytes.
    --
    --  Note that after Extract has been called it is no longer possible to
@@ -131,7 +131,7 @@ is
    --  @param Digest The output bytes are written to this byte array. The
    --     length of this array determines the number of bytes to produce.
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
      with Global => null;
    --  Get the current state of a context.
 
@@ -152,7 +152,7 @@ private
       XOF_Ctx       : XOF.Context;
    end record;
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
    is (case XOF.State_Of (Ctx.XOF_Ctx) is
           when XOF.Updating         => Updating,
           when XOF.Ready_To_Extract => Ready_To_Extract,

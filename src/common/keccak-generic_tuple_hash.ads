@@ -28,7 +28,7 @@ with Keccak.Generic_CSHAKE;
 with Keccak.Types;          use Keccak.Types;
 
 generic
-   with package CSHAKE is new Generic_CSHAKE(<>);
+   with package CSHAKE is new Generic_CSHAKE (<>);
 package Keccak.Generic_Tuple_Hash
 is
 
@@ -36,34 +36,34 @@ is
 
    type States is (Updating, Extracting, Finished);
 
-   procedure Init(Ctx           :    out Context;
-                  Customization : in     String := "")
+   procedure Init (Ctx           :    out Context;
+                   Customization : in     String := "")
      with Global => null,
      Depends => (Ctx => Customization),
-     Post => State_Of(Ctx) = Updating;
+     Post => State_Of (Ctx) = Updating;
 
-   procedure Update_Tuple_Item(Ctx  : in out Context;
-                               Item : in     Byte_Array)
+   procedure Update_Tuple_Item (Ctx  : in out Context;
+                                Item : in     Byte_Array)
      with Global => null,
-     Depends => (Ctx => + Item),
-     Pre => State_Of(Ctx) = Updating,
-     Post => State_Of(Ctx) = Updating;
+     Depends => (Ctx =>+ Item),
+     Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Updating;
 
-   procedure Finish(Ctx     : in out Context;
-                    Digest  :    out Byte_Array)
-     with Global => null,
-     Depends => ((Ctx, Digest) => (Ctx, Digest)),
-     Pre => State_Of(Ctx) = Updating,
-     Post => State_Of(Ctx) = Finished;
-
-   procedure Extract(Ctx    : in out Context;
-                     Digest :    out Byte_Array)
+   procedure Finish (Ctx     : in out Context;
+                     Digest  :    out Byte_Array)
      with Global => null,
      Depends => ((Ctx, Digest) => (Ctx, Digest)),
-     Pre => State_Of(Ctx) in Updating | Extracting,
-     Post => State_Of(Ctx) = Extracting;
+     Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Finished;
 
-   function State_Of(Ctx : in Context) return States
+   procedure Extract (Ctx    : in out Context;
+                      Digest :    out Byte_Array)
+     with Global => null,
+     Depends => ((Ctx, Digest) => (Ctx, Digest)),
+     Pre => State_Of (Ctx) in Updating | Extracting,
+     Post => State_Of (Ctx) = Extracting;
+
+   function State_Of (Ctx : in Context) return States
      with Global => null;
 
 private
@@ -74,9 +74,9 @@ private
       Finished : Boolean;
    end record;
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
    is (if Ctx.Finished then Finished
-       elsif CSHAKE.State_Of(Ctx.Ctx) = CSHAKE.Updating then Updating
+       elsif CSHAKE.State_Of (Ctx.Ctx) = CSHAKE.Updating then Updating
        else Extracting);
 
 end Keccak.Generic_Tuple_Hash;

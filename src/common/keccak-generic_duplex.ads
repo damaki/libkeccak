@@ -35,25 +35,25 @@ generic
    type State_Type is private;
 
    --  Procedure to initialize the state.
-   with procedure Init_State(A : out State_Type);
+   with procedure Init_State (A : out State_Type);
 
    --  Procedure to permute the state.
-   with procedure F(A : in out State_Type);
+   with procedure F (A : in out State_Type);
 
    --  Procedure to XOR bits into the generic state.
-   with procedure XOR_Bits_Into_State(A       : in out State_Type;
-                                      Data    : in     Keccak.Types.Byte_Array;
-                                      Bit_Len : in     Natural);
+   with procedure XOR_Bits_Into_State (A       : in out State_Type;
+                                       Data    : in     Keccak.Types.Byte_Array;
+                                       Bit_Len : in     Natural);
 
    --  Procedure to copy bytes from the generic state.
-   with procedure Extract_Bits(A       : in     State_Type;
-                               Data    :    out Keccak.Types.Byte_Array;
-                               Bit_Len : in     Natural);
+   with procedure Extract_Bits (A       : in     State_Type;
+                                Data    :    out Keccak.Types.Byte_Array;
+                                Bit_Len : in     Natural);
 
    --  Procedure to apply the padding rule to a block of bytes.
-   with procedure Pad(Block          : in out Keccak.Types.Byte_Array;
-                      Num_Used_Bits  : in     Natural;
-                      Max_Bit_Length : in     Natural);
+   with procedure Pad (Block          : in out Keccak.Types.Byte_Array;
+                       Num_Used_Bits  : in     Natural;
+                       Max_Bit_Length : in     Natural);
 
    --  The minimum number of bits that are added to the message  by the padding
    --  rule. The duplex constructon ensures that this amount of bits is free
@@ -72,12 +72,12 @@ is
 
    type Context is private;
 
-   procedure Init(Ctx      :    out Context;
-                  Capacity : in     Positive)
+   procedure Init (Ctx      :    out Context;
+                   Capacity : in     Positive)
      with Global => null,
      Depends => (Ctx => Capacity),
      Pre => (Capacity < (State_Size - Min_Padding_Bits)),
-     Post => Rate_Of(Ctx) = State_Size - Capacity;
+     Post => Rate_Of (Ctx) = State_Size - Capacity;
    --  Initialize the context.
    --
    --  After initialization, the rate is equal to the State_Size - Capacity.
@@ -94,14 +94,14 @@ is
 
 
 
-   function Rate_Of(Ctx : in Context) return Rate_Number
+   function Rate_Of (Ctx : in Context) return Rate_Number
      with Global => null;
    --  Get the rate of the context.
    --
    --  @return The rate (in bits). This is always less than the State_Size
 
 
-   function Max_Input_Length(Ctx : in Context) return Positive
+   function Max_Input_Length (Ctx : in Context) return Positive
      with Global => null;
    --  Get the maximum number of input bits that can be provided
    --  to duplex invocations.
@@ -114,19 +114,19 @@ is
 
 
 
-   procedure Duplex(Ctx                 : in out Context;
-                    In_Data             : in     Keccak.Types.Byte_Array;
-                    In_Data_Bit_Length  : in     Natural;
-                    Out_Data            :    out Keccak.Types.Byte_Array;
-                    Out_Data_Bit_Length : in     Natural)
+   procedure Duplex (Ctx                 : in out Context;
+                     In_Data             : in     Keccak.Types.Byte_Array;
+                     In_Data_Bit_Length  : in     Natural;
+                     Out_Data            :    out Keccak.Types.Byte_Array;
+                     Out_Data_Bit_Length : in     Natural)
      with Global => null,
      Depends => (Ctx      => (Ctx, In_Data, In_Data_Bit_Length),
                  Out_Data => (Ctx, In_Data, In_Data_Bit_Length, Out_Data, Out_Data_Bit_Length)),
-     Pre => (In_Data_Bit_Length <= Max_Input_Length(Ctx)
+     Pre => (In_Data_Bit_Length <= Max_Input_Length (Ctx)
              and then In_Data'Length >= (In_Data_Bit_Length + 7) / 8
-             and then Out_Data_Bit_Length <= Rate_Of(Ctx)
+             and then Out_Data_Bit_Length <= Rate_Of (Ctx)
              and then Out_Data'Length = (Out_Data_Bit_Length + 7) / 8),
-     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
+     Post => (Rate_Of (Ctx) = Rate_Of (Ctx'Old));
    --  Run a single duplex block.
    --
    --  @param Ctx The duplex context.
@@ -137,15 +137,15 @@ is
    --  In_Data array. This length must be smaller than the rate, and must leave
    --  enough space for the padding bits.
 
-   procedure Duplex_Blank(Ctx                 : in out Context;
-                          Out_Data            :    out Keccak.Types.Byte_Array;
-                          Out_Data_Bit_Length : in     Natural)
+   procedure Duplex_Blank (Ctx                 : in out Context;
+                           Out_Data            :    out Keccak.Types.Byte_Array;
+                           Out_Data_Bit_Length : in     Natural)
      with Global => null,
      Depends => (Ctx      => Ctx,
                  Out_Data => (Ctx, Out_Data, Out_Data_Bit_Length)),
-     Pre => (Out_Data_Bit_Length <= Rate_Of(Ctx)
-             and then Out_Data'Length = (Out_Data_Bit_Length + 7)/8),
-     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
+     Pre => (Out_Data_Bit_Length <= Rate_Of (Ctx)
+             and then Out_Data'Length = (Out_Data_Bit_Length + 7) / 8),
+     Post => (Rate_Of (Ctx) = Rate_Of (Ctx'Old));
    --  Perform a duplex call without input.
    --
    --  This procedure is equivalent to a call to the Duplex procedure where
@@ -156,14 +156,14 @@ is
    --  8 bits then any unused bits in the last byte of a complete output block
    --  are set to 0.
 
-   procedure Duplex_Mute(Ctx                : in out Context;
-                         In_Data            : in     Keccak.Types.Byte_Array;
-                         In_Data_Bit_Length : in     Natural)
+   procedure Duplex_Mute (Ctx                : in out Context;
+                          In_Data            : in     Keccak.Types.Byte_Array;
+                          In_Data_Bit_Length : in     Natural)
      with Global => null,
-     Depends => (Ctx => + (In_Data, In_Data_Bit_Length)),
-     Pre => (In_Data_Bit_Length <= Max_Input_Length(Ctx)
+     Depends => (Ctx =>+ (In_Data, In_Data_Bit_Length)),
+     Pre => (In_Data_Bit_Length <= Max_Input_Length (Ctx)
              and then In_Data'Length >= (In_Data_Bit_Length + 7) / 8),
-     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old));
+     Post => (Rate_Of (Ctx) = Rate_Of (Ctx'Old));
    --  Perform a duplex call without output.
    --
    --  This procedure is equivalent to a call to the Duplex procedure where
@@ -182,10 +182,10 @@ private
       Rate  : Rate_Number;
    end record;
 
-   function Rate_Of(Ctx : in Context) return Rate_Number
+   function Rate_Of (Ctx : in Context) return Rate_Number
    is (Ctx.Rate);
 
-   function Max_Input_Length(Ctx : in Context) return Positive
-   is (Rate_Of(Ctx) - Min_Padding_Bits);
+   function Max_Input_Length (Ctx : in Context) return Positive
+   is (Rate_Of (Ctx) - Min_Padding_Bits);
 
 end Keccak.Generic_Duplex;

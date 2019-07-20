@@ -28,8 +28,8 @@ with Keccak.Generic_CSHAKE;
 with Keccak.Generic_XOF;
 with Keccak.Keccak_1600.Rounds_24;
 
-pragma Elaborate_All(Keccak.Generic_CSHAKE);
-pragma Elaborate_All(Keccak.Generic_XOF);
+pragma Elaborate_All (Keccak.Generic_CSHAKE);
+pragma Elaborate_All (Keccak.Generic_XOF);
 
 --  @summary
 --  Defines concrete instantiations of cSHAKE128 and cSHAKE256.

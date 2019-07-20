@@ -31,7 +31,7 @@ package Tuple_Hash
 with SPARK_Mode => On
 is
 
-   package Tuple_Hash_128 is new Keccak.Generic_Tuple_Hash(CSHAKE.CSHAKE128);
-   package Tuple_Hash_256 is new Keccak.Generic_Tuple_Hash(CSHAKE.CSHAKE256);
+   package Tuple_Hash_128 is new Keccak.Generic_Tuple_Hash (CSHAKE.CSHAKE128);
+   package Tuple_Hash_256 is new Keccak.Generic_Tuple_Hash (CSHAKE.CSHAKE256);
 
 end Tuple_Hash;

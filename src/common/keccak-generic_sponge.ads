@@ -35,26 +35,26 @@ generic
    type State_Type is private;
 
    --  Procedure to initialize the state
-   with procedure Init_State(A : out State_Type);
+   with procedure Init_State (A : out State_Type);
 
    --  Procedure to permute the state
-   with procedure F(A : in out State_Type);
+   with procedure F (A : in out State_Type);
 
    --  Procedure to XOR bits into the internal state.
-   with procedure XOR_Bits_Into_State(A       : in out State_Type;
-                                      Data    : in     Keccak.Types.Byte_Array;
-                                      Bit_Len : in Natural);
+   with procedure XOR_Bits_Into_State (A       : in out State_Type;
+                                       Data    : in     Keccak.Types.Byte_Array;
+                                       Bit_Len : in Natural);
 
    --  Extracts a block of output from the state
-   with procedure Extract_Data(A     : in     State_Type;
-                               Data  :    out Keccak.Types.Byte_Array);
+   with procedure Extract_Data (A     : in     State_Type;
+                                Data  :    out Keccak.Types.Byte_Array);
 
    --  Padding rule
-   with procedure Pad(First_Block    : in out Keccak.Types.Byte_Array;
-                      Num_Used_Bits  : in     Natural;
-                      Max_Bit_Length : in     Natural;
-                      Next_Block     :    out Keccak.Types.Byte_Array;
-                      Spilled        :    out Boolean);
+   with procedure Pad (First_Block    : in out Keccak.Types.Byte_Array;
+                       Num_Used_Bits  : in     Natural;
+                       Max_Bit_Length : in     Natural;
+                       Next_Block     :    out Keccak.Types.Byte_Array;
+                       Spilled        :    out Boolean);
 
    --  @summary
    --  This package implements the sponge construction.
@@ -99,14 +99,14 @@ is
    -- Sponge procedures  --
    ------------------------
 
-   procedure Init(Ctx             :    out Context;
-                  Capacity        : in     Positive)
+   procedure Init (Ctx             :    out Context;
+                   Capacity        : in     Positive)
      with Global => null,
      Depends => (Ctx => Capacity),
      Pre => (((State_Size - Capacity) mod 8 = 0) and (Capacity < State_Size)),
-     Post => ((State_Of(Ctx) = Absorbing)
-              and (Rate_Of(Ctx) = State_Size - Capacity)
-              and In_Queue_Bit_Length(Ctx) = 0);
+     Post => ((State_Of (Ctx) = Absorbing)
+              and (Rate_Of (Ctx) = State_Size - Capacity)
+              and In_Queue_Bit_Length (Ctx) = 0);
    --  Initialize the context with the specified capacity.
    --
    --  The following example demonstrates initializing a sponge with a capacity
@@ -126,7 +126,7 @@ is
    --    * Must be strictly smaller than the State_Size
    --    * Must be a multiple of 8 (this is a requirement for this implementation)
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
      with Global => null;
    --  Gets the current state of the sponge.
    --
@@ -141,7 +141,7 @@ is
    --
    --  @return The current state of the sponge.
 
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
+   function Rate_Of (Ctx : in Context) return Rate_Bits_Number
      with Global => null;
    --  Gets the currently configured rate of the sponge.
    --
@@ -149,20 +149,20 @@ is
    --
    --  @return The sponge's rate, in bits.
 
-   procedure Absorb(Ctx        : in out Context;
-                    Data       : in     Keccak.Types.Byte_Array;
-                    Bit_Length : in     Natural)
+   procedure Absorb (Ctx        : in out Context;
+                     Data       : in     Keccak.Types.Byte_Array;
+                     Bit_Length : in     Natural)
      with Global => null,
-     Depends => (Ctx => + (Data, Bit_Length)),
-     Pre => (State_Of(Ctx) = Absorbing
+     Depends => (Ctx =>+ (Data, Bit_Length)),
+     Pre => (State_Of (Ctx) = Absorbing
              and then Bit_Length <= Natural'Last - 7
              and then (Bit_Length + 7) / 8 <= Data'Length
-             and then In_Queue_Bit_Length(Ctx) mod 8 = 0
-             and then In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)),
-     Post => (State_Of(Ctx) = Absorbing
-              and Rate_Of(Ctx) = Rate_Of(Ctx'Old)
-              and (In_Queue_Bit_Length(Ctx) mod 8) = (Bit_Length mod 8)
-              and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
+             and then In_Queue_Bit_Length (Ctx) mod 8 = 0
+             and then In_Queue_Bit_Length (Ctx) < Rate_Of (Ctx)),
+     Post => (State_Of (Ctx) = Absorbing
+              and Rate_Of (Ctx) = Rate_Of (Ctx'Old)
+              and (In_Queue_Bit_Length (Ctx) mod 8) = (Bit_Length mod 8)
+              and In_Queue_Bit_Length (Ctx) < Rate_Of (Ctx));
    --  Absorb (input) bits into the sponge.
    --
    --  This procedure can be called multiple times to absorb large amounts of
@@ -177,22 +177,22 @@ is
    --    this many bits. E.g. if Bit_Length is 20 then Data'Length must be at
    --    least 3 bytes.
 
-   procedure Absorb_With_Suffix(Ctx        : in out Context;
-                                Message    : in     Keccak.Types.Byte_Array;
-                                Bit_Length : in     Natural;
-                                Suffix     : in     Keccak.Types.Byte;
-                                Suffix_Len : in     Natural)
+   procedure Absorb_With_Suffix (Ctx        : in out Context;
+                                 Message    : in     Keccak.Types.Byte_Array;
+                                 Bit_Length : in     Natural;
+                                 Suffix     : in     Keccak.Types.Byte;
+                                 Suffix_Len : in     Natural)
      with Global => null,
-     Pre => (State_Of(Ctx) = Absorbing
+     Pre => (State_Of (Ctx) = Absorbing
              and then Suffix_Len <= 8
              and then Bit_Length <= Natural'Last - 8
              and then (Bit_Length + 7) / 8 <= Message'Length
-             and then In_Queue_Bit_Length(Ctx) mod 8 = 0
-             and then In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx)),
-     Post => (State_Of(Ctx) = Absorbing
-              and Rate_Of(Ctx) = Rate_Of(Ctx'Old)
-              and (In_Queue_Bit_Length(Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
-              and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
+             and then In_Queue_Bit_Length (Ctx) mod 8 = 0
+             and then In_Queue_Bit_Length (Ctx) < Rate_Of (Ctx)),
+     Post => (State_Of (Ctx) = Absorbing
+              and Rate_Of (Ctx) = Rate_Of (Ctx'Old)
+              and (In_Queue_Bit_Length (Ctx) mod 8) = ((Bit_Length + Suffix_Len) mod 8)
+              and In_Queue_Bit_Length (Ctx) < Rate_Of (Ctx));
    --  Concatenate up to 8 suffix bits to a message, then absorb the resulting
    --  concatenated data into the sponge.
    --
@@ -223,14 +223,12 @@ is
    --    Up to 8 additional bits can be absorbed, and Suffix_Len can be set to 0
    --    if no additional bits should be absorbed.
 
-
-
-   procedure Squeeze(Ctx    : in out Context;
-                     Digest :    out Keccak.Types.Byte_Array)
+   procedure Squeeze (Ctx    : in out Context;
+                      Digest :    out Keccak.Types.Byte_Array)
      with Global => null,
      Depends => ((Ctx, Digest) => (Ctx, Digest)),
-     Post => (State_Of(Ctx) = Squeezing
-              and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
+     Post => (State_Of (Ctx) = Squeezing
+              and Rate_Of (Ctx) = Rate_Of (Ctx'Old));
    --  Squeeze (output) bits from the sponge.
    --
    --  Squeeze can be called multiple times to extract an arbitrary amount of
@@ -244,9 +242,7 @@ is
    --  @param Digest This array is filled with bytes squeezed from the sponge.
    --    This array can be of any length.
 
-
-
-   function In_Queue_Bit_Length(Ctx : in Context) return Natural
+   function In_Queue_Bit_Length (Ctx : in Context) return Natural
      with Global => null,
      Post => In_Queue_Bit_Length'Result < State_Size;
    --  Get the number of bits which are waiting in the input queue, and have
@@ -260,13 +256,13 @@ private
    --  The rate number here represents bytes, not bits.
    --  This makes it easier to handle in proof, since bytes are
    --  always a multiple of 8 bits.
-   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7)/8) - 1;
+   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7) / 8) - 1;
 
-   subtype Byte_Absorption_Number is Natural range 0 .. ((State_Size + 7)/8) - 1;
+   subtype Byte_Absorption_Number is Natural range 0 .. ((State_Size + 7) / 8) - 1;
 
    subtype Bit_Absorption_Number  is Natural range 0 .. State_Size - 1;
 
-   subtype Block_Type is Keccak.Types.Byte_Array(Byte_Absorption_Number);
+   subtype Block_Type is Keccak.Types.Byte_Array (Byte_Absorption_Number);
 
    subtype Suffix_Bits_Number is Natural range 0 .. 8;
 
@@ -303,13 +299,13 @@ private
    -- Sponge Expression functions  --
    ----------------------------------
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
    is (Ctx.Curr_State);
 
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
-   is (Positive(Ctx.Rate) * 8);
+   function Rate_Of (Ctx : in Context) return Rate_Bits_Number
+   is (Positive (Ctx.Rate) * 8);
 
-   function In_Queue_Bit_Length(Ctx : in Context) return Natural
+   function In_Queue_Bit_Length (Ctx : in Context) return Natural
    is (Ctx.Bits_Absorbed);
 
 end Keccak.Generic_Sponge;

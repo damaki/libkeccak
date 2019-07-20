@@ -93,7 +93,7 @@ is
    W : constant Positive := 2**L;
    --  Lane size (in bits, i.e. 8, 16, 32, or 64)
 
-   B : constant Positive := W*25;
+   B : constant Positive := W * 25;
    --  Keccak-f state size (in bits).
 
    Num_Parallel_Instances : constant Positive := Vector_Width;
@@ -185,7 +185,7 @@ is
       Data        : in     Types.Byte_Array;
       Bit_Len     : in     Natural)
      with Global => null,
-     Depends => (S => + (Data, Bit_Len)),
+     Depends => (S =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= B);

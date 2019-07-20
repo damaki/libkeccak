@@ -40,7 +40,7 @@ with Keccak.Generic_Sponge;
 with Keccak.Types;
 
 generic
-   with package Hash_Sponge is new Keccak.Generic_Sponge(<>);
+   with package Hash_Sponge is new Keccak.Generic_Sponge (<>);
 
    --  Output digest size in bits. E.g. for SHA3-256 Digest_Size=256
    Digest_Size : Positive;
@@ -73,9 +73,9 @@ is
    subtype Byte_Array   is Keccak.Types.Byte_Array;
 
    subtype Digest_Index is Keccak.Types.Index_Number
-   range 0 .. (Keccak.Types.Index_Number(Digest_Size) / 8) - 1;
+   range 0 .. (Keccak.Types.Index_Number (Digest_Size) / 8) - 1;
 
-   subtype Digest_Type is Keccak.Types.Byte_Array(Digest_Index);
+   subtype Digest_Type is Keccak.Types.Byte_Array (Digest_Index);
 
    subtype Rate_Bits_Number is Hash_Sponge.Rate_Bits_Number;
 
@@ -99,25 +99,25 @@ is
    --  Hash procedures  --
    -----------------------
 
-   procedure Init(Ctx : out Context)
+   procedure Init (Ctx : out Context)
      with Global => null,
      Depends => (Ctx => null),
-     Post => State_Of(Ctx) = Updating;
+     Post => State_Of (Ctx) = Updating;
    --  Initializes the hash context.
    --
    --  The context is initially in the Updating state.
 
-   procedure Update(Ctx        : in out Context;
-                    Message    : in     Byte_Array;
-                    Bit_Length : in     Natural)
+   procedure Update (Ctx        : in out Context;
+                     Message    : in     Byte_Array;
+                     Bit_Length : in     Natural)
      with Global => null,
-     Depends => (Ctx => + (Message, Bit_Length)),
-     Pre => (State_Of(Ctx) = Updating
+     Depends => (Ctx =>+ (Message, Bit_Length)),
+     Pre => (State_Of (Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
-     Post => (Rate_Of(Ctx) = Rate_Of(Ctx'Old)),
-     Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
-                        others               => State_Of(Ctx) = Ready_To_Finish);
+     Post => (Rate_Of (Ctx) = Rate_Of (Ctx'Old)),
+     Contract_Cases => (Bit_Length mod 8 = 0 => State_Of (Ctx) = Updating,
+                        others               => State_Of (Ctx) = Ready_To_Finish);
    --  Add bit-oriented messages to the hash computation
    --
    --  This procedure can be called multiple times to process
@@ -132,12 +132,12 @@ is
    --  @param Bit_Length The number of bits to hash from the Message array.
    --  Any additional bits in the Message array past this length are ignored.
 
-   procedure Update(Ctx     : in out Context;
-                    Message : in     Byte_Array)
+   procedure Update (Ctx     : in out Context;
+                     Message : in     Byte_Array)
      with Global => null,
-     Depends => (Ctx => + Message),
-     Pre => State_Of(Ctx) = Updating,
-     Post => State_Of(Ctx) = Updating;
+     Depends => (Ctx =>+ Message),
+     Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Updating;
    --  Add byte-oriented messages to the hash computation.
    --
    --  This procedure can be called multiple times to process large amounts
@@ -146,13 +146,13 @@ is
    --  @param Ctx The hash context to update.
    --  @param Message The bytes to hash.
 
-   procedure Final(Ctx    : in out Context;
-                   Digest :    out Digest_Type)
+   procedure Final (Ctx    : in out Context;
+                    Digest :    out Digest_Type)
      with Global => null,
      Depends => ((Digest, Ctx) => Ctx),
-     Pre => State_Of(Ctx) in Updating | Ready_To_Finish,
-     Post => (State_Of(Ctx) = Finished
-              and Rate_Of(Ctx) = Rate_Of(Ctx'Old));
+     Pre => State_Of (Ctx) in Updating | Ready_To_Finish,
+     Post => (State_Of (Ctx) = Finished
+              and Rate_Of (Ctx) = Rate_Of (Ctx'Old));
    --  Finish the hash context and get the digest (hash).
    --
    --  Note that after Final is called the context cannot be used
@@ -163,13 +163,13 @@ is
    --  @param Ctx The hash context.
    --  @param Digest The computed digest (hash) is output in this parameter.
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
      with Global => null;
    --  Get the current state of the context.
    --
    --  @return The context's current state.
 
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
+   function Rate_Of (Ctx : in Context) return Rate_Bits_Number
      with Global => null;
    --  Get the current rate (in bits) of the context.
    --
@@ -183,19 +183,19 @@ private
       Update_Complete : Boolean;
    end record;
 
-   function In_Queue_Bit_Length(Ctx : in Context) return Natural
-   is (Hash_Sponge.In_Queue_Bit_Length(Ctx.Sponge_Ctx));
+   function In_Queue_Bit_Length (Ctx : in Context) return Natural
+   is (Hash_Sponge.In_Queue_Bit_Length (Ctx.Sponge_Ctx));
 
-   function Rate_Of(Ctx : in Context) return Rate_Bits_Number
-   is (Hash_Sponge.Rate_Of(Ctx.Sponge_Ctx));
+   function Rate_Of (Ctx : in Context) return Rate_Bits_Number
+   is (Hash_Sponge.Rate_Of (Ctx.Sponge_Ctx));
 
-   function Can_Absorb(Ctx : in Context) return Boolean
-   is (In_Queue_Bit_Length(Ctx) mod 8 = 0
-       and In_Queue_Bit_Length(Ctx) < Rate_Of(Ctx));
+   function Can_Absorb (Ctx : in Context) return Boolean
+   is (In_Queue_Bit_Length (Ctx) mod 8 = 0
+       and In_Queue_Bit_Length (Ctx) < Rate_Of (Ctx));
 
-   function State_Of(Ctx : in Context) return States
-   is (if Hash_Sponge.State_Of(Ctx.Sponge_Ctx) = Hash_Sponge.Squeezing then Finished
-       elsif Can_Absorb(Ctx) and not Ctx.Update_Complete then Updating
+   function State_Of (Ctx : in Context) return States
+   is (if Hash_Sponge.State_Of (Ctx.Sponge_Ctx) = Hash_Sponge.Squeezing then Finished
+       elsif Can_Absorb (Ctx) and not Ctx.Update_Complete then Updating
        else Ready_To_Finish);
 
 end Keccak.Generic_Hash;

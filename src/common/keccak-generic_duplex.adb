@@ -32,11 +32,11 @@ is
    --  Init  --
    ------------
 
-   procedure Init(Ctx      :    out Context;
-                  Capacity : in     Positive)
+   procedure Init (Ctx      :    out Context;
+                   Capacity : in     Positive)
    is
    begin
-      Init_State(Ctx.State);
+      Init_State (Ctx.State);
 
       Ctx.Rate := State_Size - Capacity;
    end Init;
@@ -45,89 +45,89 @@ is
    --  Duplex  --
    --------------
 
-   procedure Duplex(Ctx                 : in out Context;
-                    In_Data             : in     Keccak.Types.Byte_Array;
-                    In_Data_Bit_Length  : in     Natural;
-                    Out_Data            :    out Keccak.Types.Byte_Array;
-                    Out_Data_Bit_Length : in     Natural)
+   procedure Duplex (Ctx                 : in out Context;
+                     In_Data             : in     Keccak.Types.Byte_Array;
+                     In_Data_Bit_Length  : in     Natural;
+                     Out_Data            :    out Keccak.Types.Byte_Array;
+                     Out_Data_Bit_Length : in     Natural)
    is
       use type Keccak.Types.Byte;
 
-      Block     : Keccak.Types.Byte_Array(0 .. (State_Size + 7)/8 - 1) := (others => 0);
+      Block     : Keccak.Types.Byte_Array (0 .. (State_Size + 7) / 8 - 1) := (others => 0);
 
       Num_Bytes : constant Natural := (In_Data_Bit_Length + 7) / 8;
 
    begin
       if Num_Bytes > 0 then
-         Block(0 .. Num_Bytes - 1)
-           := In_Data(In_Data'First .. In_Data'First + (Num_Bytes - 1));
+         Block (0 .. Num_Bytes - 1)
+           := In_Data (In_Data'First .. In_Data'First + (Num_Bytes - 1));
       end if;
 
-      Pad(Block(0 .. ((Rate_Of(Ctx) + 7) / 8) - 1),
+      Pad (Block (0 .. ((Rate_Of (Ctx) + 7) / 8) - 1),
           In_Data_Bit_Length,
-          Rate_Of(Ctx));
+          Rate_Of (Ctx));
 
-      XOR_Bits_Into_State(Ctx.State,
-                          Block(0 .. ((Ctx.Rate + 7) / 8) - 1),
-                          Rate_Of(Ctx));
+      XOR_Bits_Into_State (Ctx.State,
+                           Block (0 .. ((Ctx.Rate + 7) / 8) - 1),
+                           Rate_Of (Ctx));
 
-      F(Ctx.State);
+      F (Ctx.State);
 
-      Extract_Bits(Ctx.State, Out_Data, Out_Data_Bit_Length);
+      Extract_Bits (Ctx.State, Out_Data, Out_Data_Bit_Length);
    end Duplex;
 
    --------------------
    --  Duplex_Blank  --
    --------------------
 
-   procedure Duplex_Blank(Ctx                 : in out Context;
-                          Out_Data            :    out Keccak.Types.Byte_Array;
-                          Out_Data_Bit_Length : in     Natural)
+   procedure Duplex_Blank (Ctx                 : in out Context;
+                           Out_Data            :    out Keccak.Types.Byte_Array;
+                           Out_Data_Bit_Length : in     Natural)
    is
       use type Keccak.Types.Byte;
 
-      Block   : Keccak.Types.Byte_Array(0 .. (State_Size + 7)/8 - 1) := (others => 0);
+      Block   : Keccak.Types.Byte_Array (0 .. (State_Size + 7) / 8 - 1) := (others => 0);
 
    begin
-      Pad(Block(0 .. ((Rate_Of(Ctx) + 7) / 8) - 1),
+      Pad (Block (0 .. ((Rate_Of (Ctx) + 7) / 8) - 1),
           0,
-          Rate_Of(Ctx));
+          Rate_Of (Ctx));
 
-      XOR_Bits_Into_State(Ctx.State,
-                          Block(0 .. ((Ctx.Rate + 7) / 8) - 1),
-                          Rate_Of(Ctx));
+      XOR_Bits_Into_State (Ctx.State,
+                           Block (0 .. ((Ctx.Rate + 7) / 8) - 1),
+                           Rate_Of (Ctx));
 
-      F(Ctx.State);
+      F (Ctx.State);
 
-      Extract_Bits(Ctx.State, Out_Data, Out_Data_Bit_Length);
+      Extract_Bits (Ctx.State, Out_Data, Out_Data_Bit_Length);
    end Duplex_Blank;
 
    -------------------
    --  Duplex_Mute  --
    -------------------
 
-   procedure Duplex_Mute(Ctx                : in out Context;
-                         In_Data            : in     Keccak.Types.Byte_Array;
-                         In_Data_Bit_Length : in     Natural)
+   procedure Duplex_Mute (Ctx                : in out Context;
+                          In_Data            : in     Keccak.Types.Byte_Array;
+                          In_Data_Bit_Length : in     Natural)
    is
-      Block    : Keccak.Types.Byte_Array(0 .. (State_Size + 7)/8 - 1) := (others => 0);
+      Block    : Keccak.Types.Byte_Array (0 .. (State_Size + 7) / 8 - 1) := (others => 0);
 
-      Nb_Bytes : constant Natural := (In_Data_Bit_Length + 7)/8;
+      Nb_Bytes : constant Natural := (In_Data_Bit_Length + 7) / 8;
 
    begin
 
-      Block(0 ..  Nb_Bytes - 1) :=
+      Block (0 ..  Nb_Bytes - 1) :=
         In_Data (In_Data'First .. In_Data'First + Nb_Bytes - 1);
 
-      Pad(Block(0 .. ((Rate_Of(Ctx) + 7) / 8) - 1),
+      Pad (Block (0 .. ((Rate_Of (Ctx) + 7) / 8) - 1),
           In_Data_Bit_Length,
-          Rate_Of(Ctx));
+          Rate_Of (Ctx));
 
-      XOR_Bits_Into_State(Ctx.State,
-                          Block(0 .. ((Ctx.Rate + 7) / 8) - 1),
-                          Rate_Of(Ctx));
+      XOR_Bits_Into_State (Ctx.State,
+                           Block (0 .. ((Ctx.Rate + 7) / 8) - 1),
+                           Rate_Of (Ctx));
 
-      F(Ctx.State);
+      F (Ctx.State);
    end Duplex_Mute;
 
 end Keccak.Generic_Duplex;

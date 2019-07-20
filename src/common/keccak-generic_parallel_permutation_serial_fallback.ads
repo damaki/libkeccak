@@ -98,7 +98,7 @@ is
       Data        : in     Types.Byte_Array;
       Bit_Len     : in     Natural)
      with Global => null,
-     Depends => (S => + (Data, Bit_Len)),
+     Depends => (S =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= State_Size);

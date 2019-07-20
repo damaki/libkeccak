@@ -113,7 +113,7 @@ is
    is
       Serial_Ctx : XOF_Serial.Context;
 
-      CV: Types.Byte_Array (1 .. CV_Size_Bytes);
+      CV : Types.Byte_Array (1 .. CV_Size_Bytes);
 
    begin
       --  Process N blocks in parallel and produce N changing values.

@@ -29,41 +29,41 @@ with Keccak.Util;
 package body Keccak.Generic_CSHAKE
 is
 
-   procedure Init(Ctx           :    out Context;
-                  Customization : in     String := "";
-                  Function_Name : in     String := "")
+   procedure Init (Ctx           :    out Context;
+                   Customization : in     String := "";
+                   Function_Name : in     String := "")
    is
 
       Rate_Bytes : constant Positive := Rate / 8;
 
       Encoded_Customization_Length : constant Byte_Array
-        := Util.Left_Encode_NIST_Bit_Length(Customization'Length);
+        := Util.Left_Encode_NIST_Bit_Length (Customization'Length);
 
       Encoded_Function_Name_Length : constant Byte_Array
-        := Util.Left_Encode_NIST_Bit_Length(Function_Name'Length);
+        := Util.Left_Encode_NIST_Bit_Length (Function_Name'Length);
 
       Encoded_Rate                 : constant Byte_Array
         := Util.Left_Encode_NIST (Rate_Bytes);
 
-      Zeroes : constant Types.Byte_Array(1 .. Rate_Bytes) := (others => 0);
+      Zeroes : constant Types.Byte_Array (1 .. Rate_Bytes) := (others => 0);
 
       Padding_Length : Natural;
 
    begin
-      XOF.Init(Ctx.XOF_Ctx);
+      XOF.Init (Ctx.XOF_Ctx);
 
-      XOF.Update(Ctx     => Ctx.XOF_Ctx,
-                 Message => Encoded_Rate);
+      XOF.Update (Ctx     => Ctx.XOF_Ctx,
+                  Message => Encoded_Rate);
 
-      XOF.Update(Ctx     => Ctx.XOF_Ctx,
-                 Message => Encoded_Function_Name_Length);
-      XOF.Update(Ctx     => Ctx.XOF_Ctx,
-                 Message => Util.To_Byte_Array(Function_Name));
+      XOF.Update (Ctx     => Ctx.XOF_Ctx,
+                  Message => Encoded_Function_Name_Length);
+      XOF.Update (Ctx     => Ctx.XOF_Ctx,
+                  Message => Util.To_Byte_Array (Function_Name));
 
-      XOF.Update(Ctx     => Ctx.XOF_Ctx,
-                 Message => Encoded_Customization_Length);
-      XOF.Update(Ctx     => Ctx.XOF_Ctx,
-                 Message => Util.To_Byte_Array(Customization));
+      XOF.Update (Ctx     => Ctx.XOF_Ctx,
+                  Message => Encoded_Customization_Length);
+      XOF.Update (Ctx     => Ctx.XOF_Ctx,
+                  Message => Util.To_Byte_Array (Customization));
 
       Padding_Length :=
         Encoded_Rate'Length mod Rate_Bytes +
@@ -75,31 +75,31 @@ is
       Padding_Length := Rate_Bytes - (Padding_Length mod Rate_Bytes);
 
       if Padding_Length mod Rate_Bytes /= 0 then
-         XOF.Update(Ctx        => Ctx.XOF_Ctx,
-                    Message    => Zeroes(1 .. Padding_Length));
+         XOF.Update (Ctx        => Ctx.XOF_Ctx,
+                     Message    => Zeroes (1 .. Padding_Length));
       end if;
    end Init;
 
-   procedure Update(Ctx     : in out Context;
-                    Message : in     Byte_Array)
+   procedure Update (Ctx     : in out Context;
+                     Message : in     Byte_Array)
    is
    begin
-      XOF.Update(Ctx.XOF_Ctx, Message);
+      XOF.Update (Ctx.XOF_Ctx, Message);
    end Update;
 
-   procedure Update(Ctx        : in out Context;
-                    Message    : in     Byte_Array;
-                    Bit_Length : in     Natural)
+   procedure Update (Ctx        : in out Context;
+                     Message    : in     Byte_Array;
+                     Bit_Length : in     Natural)
    is
    begin
-      XOF.Update(Ctx.XOF_Ctx, Message, Bit_Length);
+      XOF.Update (Ctx.XOF_Ctx, Message, Bit_Length);
    end Update;
 
-   procedure Extract(Ctx    : in out Context;
-                     Digest :    out Byte_Array)
+   procedure Extract (Ctx    : in out Context;
+                      Digest :    out Byte_Array)
    is
    begin
-      XOF.Extract(Ctx.XOF_Ctx, Digest);
+      XOF.Extract (Ctx.XOF_Ctx, Digest);
    end Extract;
 
 end Keccak.Generic_CSHAKE;

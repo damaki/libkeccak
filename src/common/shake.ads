@@ -28,7 +28,7 @@
 with Keccak.Keccak_1600.Rounds_24;
 with Keccak.Generic_XOF;
 
-pragma Elaborate_All(Keccak.Generic_XOF);
+pragma Elaborate_All (Keccak.Generic_XOF);
 
 package SHAKE
 with SPARK_Mode => On

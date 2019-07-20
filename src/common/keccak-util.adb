@@ -30,6 +30,10 @@ package body Keccak.Util
 with SPARK_Mode => On
 is
 
+   ---------------------
+   --  To_Byte_Array  --
+   ---------------------
+
    function To_Byte_Array (Str : in String) return Types.Byte_Array
    is
 
@@ -44,9 +48,13 @@ is
       return String_To_Byte_Array_Conversion (Str);
    end To_Byte_Array;
 
-   function Left_Encode_NIST(Length : in Natural) return Types.Byte_Array
+   ------------------------
+   --  Left_Encode_NIST  --
+   ------------------------
+
+   function Left_Encode_NIST (Length : in Natural) return Types.Byte_Array
    is
-      Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
+      Encoded : Types.Byte_Array (1 .. (Natural'Size / 8) + 2) := (others => 0);
 
       X       : Natural := Length;
       N       : Natural := 0;
@@ -54,9 +62,9 @@ is
    begin
 
       for I in Positive range 1 .. (Natural'Size / 8) + 1 loop
-         pragma Loop_Invariant(N = I - 1);
+         pragma Loop_Invariant (N = I - 1);
 
-         Encoded(Encoded'Last - N) := Types.Byte(X mod 256);
+         Encoded (Encoded'Last - N) := Types.Byte (X mod 256);
 
          X := X / 256;
          N := N + 1;
@@ -65,45 +73,53 @@ is
 
       end loop;
 
-      Encoded(Encoded'Last - N) := Types.Byte(N);
+      Encoded (Encoded'Last - N) := Types.Byte (N);
 
-      return Encoded(Encoded'Last - N .. Encoded'Last);
+      return Encoded (Encoded'Last - N .. Encoded'Last);
    end Left_Encode_NIST;
 
-   function Left_Encode_NIST_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
+   -----------------------------------
+   --  Left_Encode_NIST_Bit_Length  --
+   -----------------------------------
+
+   function Left_Encode_NIST_Bit_Length (Byte_Length : in Natural) return Types.Byte_Array
    is
-      Encoded : Types.Byte_Array(1 .. Natural'Size + 1) := (others => 0);
+      Encoded : Types.Byte_Array (1 .. Natural'Size + 1) := (others => 0);
 
       X       : Natural := Byte_Length;
       N       : Natural := 0;
 
    begin
 
-      Encoded(Encoded'Last - N) := Types.Byte(X mod 256) * 8;
+      Encoded (Encoded'Last - N) := Types.Byte (X mod 256) * 8;
 
       X := X / 32;
       N := N + 1;
 
       for I in Positive range 2 .. Natural'Size loop
-         pragma Loop_Invariant(N = I - 1);
+         pragma Loop_Invariant (N = I - 1);
 
          exit when X = 0;
 
-         Encoded(Encoded'Last - N) := Types.Byte(X mod 256);
+         Encoded (Encoded'Last - N) := Types.Byte (X mod 256);
 
          X := X / 256;
          N := N + 1;
 
       end loop;
 
-      Encoded(Encoded'Last - N) := Types.Byte(N);
+      Encoded (Encoded'Last - N) := Types.Byte (N);
 
-      return Encoded(Encoded'Last - N .. Encoded'Last);
+      return Encoded (Encoded'Last - N .. Encoded'Last);
    end Left_Encode_NIST_Bit_Length;
 
-   function Right_Encode_NIST(Length : in Natural) return Types.Byte_Array
+   -------------------------
+   --  Right_Encode_NIST  --
+   -------------------------
+
+   function Right_Encode_NIST (Length : in Natural) return Types.Byte_Array
    is
-      Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
+      Encoded : Types.Byte_Array (1 .. (Natural'Size / 8) + 2) := (others => 0);
 
       X       : Natural := Length;
       N       : Natural := 0;
@@ -111,9 +127,9 @@ is
    begin
 
       for I in Positive range 1 .. (Natural'Size / 8) + 1 loop
-         pragma Loop_Invariant(N = I - 1);
+         pragma Loop_Invariant (N = I - 1);
 
-         Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
+         Encoded (Encoded'Last - (N + 1)) := Types.Byte (X mod 256);
 
          X := X / 256;
          N := N + 1;
@@ -122,14 +138,18 @@ is
 
       end loop;
 
-      Encoded(Encoded'Last) := Types.Byte(N);
+      Encoded (Encoded'Last) := Types.Byte (N);
 
-      return Encoded(Encoded'Last - N .. Encoded'Last);
+      return Encoded (Encoded'Last - N .. Encoded'Last);
    end Right_Encode_NIST;
 
-   function Right_Encode_NIST_Long_Long(Length : in Long_Long_Integer) return Types.Byte_Array
+   -----------------------------------
+   --  Right_Encode_NIST_Long_Long  --
+   -----------------------------------
+
+   function Right_Encode_NIST_Long_Long (Length : in Long_Long_Integer) return Types.Byte_Array
    is
-      Encoded : Types.Byte_Array(1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
+      Encoded : Types.Byte_Array (1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
 
       X       : Long_Long_Integer := Length;
       N       : Natural := 0;
@@ -137,9 +157,9 @@ is
    begin
 
       for I in Positive range 1 .. (Long_Long_Integer'Size / 8) + 1 loop
-         pragma Loop_Invariant(N = I - 1);
+         pragma Loop_Invariant (N = I - 1);
 
-         Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
+         Encoded (Encoded'Last - (N + 1)) := Types.Byte (X mod 256);
 
          X := X / 256;
          N := N + 1;
@@ -148,45 +168,53 @@ is
 
       end loop;
 
-      Encoded(Encoded'Last) := Types.Byte(N);
+      Encoded (Encoded'Last) := Types.Byte (N);
 
-      return Encoded(Encoded'Last - N .. Encoded'Last);
+      return Encoded (Encoded'Last - N .. Encoded'Last);
    end Right_Encode_NIST_Long_Long;
 
-   function Right_Encode_NIST_Bit_Length(Byte_Length : in Natural) return Types.Byte_Array
+   ------------------------------------
+   --  Right_Encode_NIST_Bit_Length  --
+   ------------------------------------
+
+   function Right_Encode_NIST_Bit_Length (Byte_Length : in Natural) return Types.Byte_Array
    is
-      Encoded : Types.Byte_Array(1 .. (Natural'Size / 8) + 2) := (others => 0);
+      Encoded : Types.Byte_Array (1 .. (Natural'Size / 8) + 2) := (others => 0);
 
       X       : Natural := Byte_Length;
       N       : Natural := 0;
 
    begin
 
-      Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256) * 8;
+      Encoded (Encoded'Last - (N + 1)) := Types.Byte (X mod 256) * 8;
 
       X := X / 32;
       N := N + 1;
 
       for I in Positive range 2 .. (Natural'Size / 8) + 1 loop
-         pragma Loop_Invariant(N = I - 1);
+         pragma Loop_Invariant (N = I - 1);
 
          exit when X = 0;
 
-         Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
+         Encoded (Encoded'Last - (N + 1)) := Types.Byte (X mod 256);
 
          X := X / 256;
          N := N + 1;
 
       end loop;
 
-      Encoded(Encoded'Last) := Types.Byte(N);
+      Encoded (Encoded'Last) := Types.Byte (N);
 
-      return Encoded(Encoded'Last - N .. Encoded'Last);
+      return Encoded (Encoded'Last - N .. Encoded'Last);
    end Right_Encode_NIST_Bit_Length;
 
-   function Right_Encode_K12(Length : in Long_Long_Integer) return Types.Byte_Array
+   ------------------------
+   --  Right_Encode_K12  --
+   ------------------------
+
+   function Right_Encode_K12 (Length : in Long_Long_Integer) return Types.Byte_Array
    is
-      Encoded : Types.Byte_Array(1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
+      Encoded : Types.Byte_Array (1 .. (Long_Long_Integer'Size / 8) + 2) := (others => 0);
 
       X       : Long_Long_Integer := Length;
       N       : Natural := 0;
@@ -194,20 +222,20 @@ is
    begin
 
       for I in Positive range 1 .. (Long_Long_Integer'Size / 8) + 1 loop
-         pragma Loop_Invariant(N = I - 1);
+         pragma Loop_Invariant (N = I - 1);
 
          exit when X = 0;
 
-         Encoded(Encoded'Last - (N + 1)) := Types.Byte(X mod 256);
+         Encoded (Encoded'Last - (N + 1)) := Types.Byte (X mod 256);
 
          X := X / 256;
          N := N + 1;
 
       end loop;
 
-      Encoded(Encoded'Last) := Types.Byte(N);
+      Encoded (Encoded'Last) := Types.Byte (N);
 
-      return Encoded(Encoded'Last - N .. Encoded'Last);
+      return Encoded (Encoded'Last - N .. Encoded'Last);
    end Right_Encode_K12;
 
 end Keccak.Util;

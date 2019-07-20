@@ -27,8 +27,8 @@
 with Keccak.Generic_Duplex;
 with Keccak.Generic_Sponge;
 
-pragma Elaborate_All(Keccak.Generic_Duplex);
-pragma Elaborate_All(Keccak.Generic_Sponge);
+pragma Elaborate_All (Keccak.Generic_Duplex);
+pragma Elaborate_All (Keccak.Generic_Sponge);
 
 package Keccak.Keccak_1600.Rounds_12
 with SPARK_Mode => On

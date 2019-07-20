@@ -46,16 +46,16 @@ generic
    type Lane_Type is mod <>;
 
    --  Bit-wise left shift for Lane_Type.
-   with function Shift_Left(Value  : in Lane_Type;
-                            Amount : in Natural) return Lane_Type;
+   with function Shift_Left (Value  : in Lane_Type;
+                             Amount : in Natural) return Lane_Type;
 
    --  Bit-wise right shift for Lane_Type.
-   with function Shift_Right(Value  : in Lane_Type;
-                             Amount : in Natural) return Lane_Type;
+   with function Shift_Right (Value  : in Lane_Type;
+                              Amount : in Natural) return Lane_Type;
 
    --  Bit-wise left rotate for Lane_Type.
-   with function Rotate_Left(Value  : in Lane_Type;
-                             Amount : in Natural) return Lane_Type;
+   with function Rotate_Left (Value  : in Lane_Type;
+                              Amount : in Natural) return Lane_Type;
 
    --  @summary
    --  Generic implementation of the Keccak-f permutations.
@@ -66,7 +66,7 @@ generic
 package Keccak.Generic_KeccakF
 is
    W : constant Positive := 2**L; --  Lane size in bits
-   B : constant Positive := W*25; --  State size in bits (1600, 800, etc...)
+   B : constant Positive := W * 25; --  State size in bits (1600, 800, etc...)
 
    pragma Assert (Lane_Type'Modulus = 2**W,
                   "Value for L is incompatible with the specified lane type");
@@ -88,7 +88,7 @@ is
    --  to handle the lane complemented Keccak-f state.
 
 
-   procedure Init(A : out State)
+   procedure Init (A : out State)
      with Global => null,
      Depends => (A => null);
    --  Initialize the Keccak-f state.
@@ -107,7 +107,7 @@ private
    type X_Coord is mod 5;
    type Y_Coord is mod 5;
 
-   type State is array(X_Coord, Y_Coord) of Lane_Type;
+   type State is array (X_Coord, Y_Coord) of Lane_Type;
 
    type Lane_Complemented_State is new State;
 

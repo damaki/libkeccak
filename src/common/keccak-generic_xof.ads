@@ -41,7 +41,7 @@ with Keccak.Types;
 
 --  Basis for the eXtendable Output Functions (XOF).
 generic
-   with package XOF_Sponge is new Keccak.Generic_Sponge(<>);
+   with package XOF_Sponge is new Keccak.Generic_Sponge (<>);
 
    --  Sponge capacity.
    --
@@ -74,10 +74,10 @@ is
    --  XOF procedures  --
    ----------------------
 
-   procedure Init(Ctx : out Context)
+   procedure Init (Ctx : out Context)
      with Global => null,
      Depends => (Ctx => null),
-     Post => State_Of(Ctx) = Updating;
+     Post => State_Of (Ctx) = Updating;
    --  Initializes the XOF.
    --
    --  Initially, the XOF is in the Updating state; data can be input into the
@@ -85,16 +85,16 @@ is
    --
    --  @param Ctx The context to initialize.
 
-   procedure Update(Ctx        : in out Context;
-                    Message    : in     Byte_Array;
-                    Bit_Length : in     Natural)
+   procedure Update (Ctx        : in out Context;
+                     Message    : in     Byte_Array;
+                     Bit_Length : in     Natural)
      with Global => null,
-     Depends => (Ctx => + (Message, Bit_Length)),
-     Pre => (State_Of(Ctx) = Updating
+     Depends => (Ctx =>+ (Message, Bit_Length)),
+     Pre => (State_Of (Ctx) = Updating
              and then (Message'Length < Natural'Last / 8)
              and then Bit_Length <= Message'Length * 8),
-     Contract_Cases => (Bit_Length mod 8 = 0 => State_Of(Ctx) = Updating,
-                        others               => State_Of(Ctx) = Ready_To_Extract);
+     Contract_Cases => (Bit_Length mod 8 = 0 => State_Of (Ctx) = Updating,
+                        others               => State_Of (Ctx) = Ready_To_Extract);
    --  Input bit-oriented data into the XOF.
    --
    --  This function can be called multiple times to input large amounts of
@@ -115,12 +115,12 @@ is
    --    bits are ignored. All calls to Update before the last call must have
    --    Bit_Length as a multiple of 8 bits. The last call to Update can have
    --    Bit_Length with any value.
-   procedure Update(Ctx     : in out Context;
-                    Message : in     Byte_Array)
+   procedure Update (Ctx     : in out Context;
+                     Message : in     Byte_Array)
      with Global => null,
-     Depends => (Ctx => + Message),
-     Pre => State_Of(Ctx) = Updating,
-     Post => State_Of(Ctx) = Updating;
+     Depends => (Ctx =>+ Message),
+     Pre => State_Of (Ctx) = Updating,
+     Post => State_Of (Ctx) = Updating;
    --  Input byte-oriented data into the XOF.
    --
    --  This procedure can be called multiple times to process large amounts
@@ -129,11 +129,11 @@ is
    --  @param Ctx The hash context to update.
    --  @param Message The bytes to input into the XOF.
 
-   procedure Extract(Ctx    : in out Context;
-                     Digest :    out Byte_Array)
+   procedure Extract (Ctx    : in out Context;
+                      Digest :    out Byte_Array)
      with Global => null,
      Depends => ((Digest, Ctx) => (Ctx, Digest)),
-     Post => State_Of(Ctx) = Extracting;
+     Post => State_Of (Ctx) = Extracting;
    --  Extract bytes from the XOF.
    --
    --  Each call to Extract can read an arbitrary number of bytes from the XOF.
@@ -144,7 +144,7 @@ is
    --  @param Digest The bytes from the XOF are output into this array. The
    --    length of the array determines the number of bytes that are extracted.
 
-   function State_Of(Ctx : in Context) return States
+   function State_Of (Ctx : in Context) return States
      with Global => null;
    --  @return The current state of the XOF context.
 
@@ -164,14 +164,14 @@ private
    function Rate return Positive
    is (XOF_Sponge.Block_Size_Bits - Capacity);
 
-   function Can_Absorb(Ctx : in Context) return Boolean
-   is (XOF_Sponge.In_Queue_Bit_Length(Ctx.Sponge_Ctx) mod 8 = 0
-       and (XOF_Sponge.In_Queue_Bit_Length(Ctx.Sponge_Ctx) <
-              XOF_Sponge.Rate_Of(Ctx.Sponge_Ctx)));
+   function Can_Absorb (Ctx : in Context) return Boolean
+   is (XOF_Sponge.In_Queue_Bit_Length (Ctx.Sponge_Ctx) mod 8 = 0
+       and (XOF_Sponge.In_Queue_Bit_Length (Ctx.Sponge_Ctx) <
+              XOF_Sponge.Rate_Of (Ctx.Sponge_Ctx)));
 
-   function State_Of(Ctx : in Context) return States
-   is (if XOF_Sponge.State_Of(Ctx.Sponge_Ctx) = XOF_Sponge.Squeezing then Extracting
-       elsif Ctx.Update_Complete or (not Can_Absorb(Ctx)) then Ready_To_Extract
+   function State_Of (Ctx : in Context) return States
+   is (if XOF_Sponge.State_Of (Ctx.Sponge_Ctx) = XOF_Sponge.Squeezing then Extracting
+       elsif Ctx.Update_Complete or (not Can_Absorb (Ctx)) then Ready_To_Extract
        else Updating);
 
 end Keccak.Generic_XOF;

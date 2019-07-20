@@ -45,8 +45,8 @@ is
       --
       --  By default, the definition from The Keccak Reference is used.
       First_Round : Round_Index := 0;
-      Num_Rounds  : Round_Count := 12 + (2*L);
-   procedure Permute(A : in out State)
+      Num_Rounds  : Round_Count := 12 + (2 * L);
+   procedure Permute (A : in out State)
      with Global => null,
      Depends => (A => A);
    --  Permute the Keccak state.
@@ -55,20 +55,20 @@ is
 
 private
 
-   procedure Theta(A  : in     State;
-                   AR :    out State)
+   procedure Theta (A  : in     State;
+                    AR :    out State)
      with Global => null,
      Depends => (AR => A),
      Inline;
 
-   procedure Rho(A  : in     State;
+   procedure Rho (A  : in     State;
+                  AR :    out State)
+     with Global => null,
+     Depends => (AR => A),
+     Inline;
+
+   procedure Pi (A  : in     State;
                  AR :    out State)
-     with Global => null,
-     Depends => (AR => A),
-     Inline;
-
-   procedure Pi(A  : in     State;
-                AR :    out State)
      with Global => null,
      Depends => (AR => A),
      Inline;
@@ -78,9 +78,9 @@ private
      Depends => (A => A),
      Inline;
 
-   procedure Chi_Iota(A  : in     State;
-                      AR :    out State;
-                      RI : in     Round_Index)
+   procedure Chi_Iota (A  : in     State;
+                       AR :    out State;
+                       RI : in     Round_Index)
      with Global => null,
      Depends => (AR => (A, RI)),
      Inline;

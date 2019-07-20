@@ -40,14 +40,14 @@ is
    Pad101_Min_Bits : constant := 2;
    --  The pad10*1 rule appends at least 2 bits
 
-   procedure Pad101_Multi_Blocks(First_Block    : in out Keccak.Types.Byte_Array;
-                                 Num_Used_Bits  : in     Natural;
-                                 Max_Bit_Length : in     Natural;
-                                 Next_Block     :    out Keccak.Types.Byte_Array;
-                                 Spilled        :    out Boolean)
+   procedure Pad101_Multi_Blocks (First_Block    : in out Keccak.Types.Byte_Array;
+                                  Num_Used_Bits  : in     Natural;
+                                  Max_Bit_Length : in     Natural;
+                                  Next_Block     :    out Keccak.Types.Byte_Array;
+                                  Spilled        :    out Boolean)
      with Global => null,
-     Depends => (First_Block => + (Num_Used_Bits, Max_Bit_Length),
-                 Next_Block  => + (Num_Used_Bits, Max_Bit_Length),
+     Depends => (First_Block =>+ (Num_Used_Bits, Max_Bit_Length),
+                 Next_Block  =>+ (Num_Used_Bits, Max_Bit_Length),
                  Spilled     => (Num_Used_Bits, Max_Bit_Length)),
      Pre => (Next_Block'Length = First_Block'Length
              and then First_Block'Length <= Natural'Last / 8
@@ -83,11 +83,11 @@ is
    --    First_Block for all of the padding bits. When Spilled is False then
    --    Next_Block is not used.
 
-   procedure Pad101_Single_Block(Block          : in out Keccak.Types.Byte_Array;
-                                 Num_Used_Bits  : in     Natural;
-                                 Max_Bit_Length : in     Natural)
+   procedure Pad101_Single_Block (Block          : in out Keccak.Types.Byte_Array;
+                                  Num_Used_Bits  : in     Natural;
+                                  Max_Bit_Length : in     Natural)
      with Global => null,
-     Depends => (Block => + (Num_Used_Bits, Max_Bit_Length)),
+     Depends => (Block =>+ (Num_Used_Bits, Max_Bit_Length)),
      Pre => (Block'Length <= Natural'Last / 8
              and then Max_Bit_Length <= Natural'Last - 7
              and then Block'Length = (Max_Bit_Length + 7) / 8

@@ -56,10 +56,10 @@ generic
       Data        : in     Types.Byte_Array;
       Bit_Len     : in     Natural);
 
-   with procedure Extract_Bytes(S           : in     State_Type;
-                                Data        : in out Keccak.Types.Byte_Array;
-                                Data_Offset : in     Natural;
-                                Byte_Len    : in     Natural);
+   with procedure Extract_Bytes (S           : in     State_Type;
+                                 Data        : in out Keccak.Types.Byte_Array;
+                                 Data_Offset : in     Natural;
+                                 Byte_Len    : in     Natural);
    --  Extracts a bytes of output from the state
 
    with procedure Pad (Block          : in out Keccak.Types.Byte_Array;
@@ -99,7 +99,7 @@ is
      with Global => null,
      Pre => (Ctx.Capacity < State_Size
              and then (State_Size - Ctx.Capacity) mod 8 = 0),
-     Post => State_Of(Ctx) = Absorbing;
+     Post => State_Of (Ctx) = Absorbing;
 
 
    procedure Absorb_Bytes_Separate (Ctx        : in out Context;
@@ -197,7 +197,7 @@ private
    --  The rate number here represents bytes, not bits.
    --  This makes it easier to handle in proof, since bytes are
    --  always a multiple of 8 bits.
-   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7)/8) - 1;
+   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7) / 8) - 1;
 
 
    type Context (Capacity : Positive) is record

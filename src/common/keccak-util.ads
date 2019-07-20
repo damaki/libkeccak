@@ -44,7 +44,7 @@ is
    --  @param Str The string to convert to a byte array.
 
 
-   function Left_Encode_NIST(Length : in Natural) return Types.Byte_Array
+   function Left_Encode_NIST (Length : in Natural) return Types.Byte_Array
      with
        Post => (Left_Encode_NIST'Result'Length in 1 .. (Natural'Size / 8) + 2
                 and Left_Encode_NIST'Result'First in 1 .. (Natural'Size / 8) + 2);
@@ -55,8 +55,8 @@ is
    --  (3, 16#AB#, 16#CD#, 16#EF#)
 
 
-   function Left_Encode_NIST_Bit_Length(Byte_Length : in Natural)
-                                        return Types.Byte_Array
+   function Left_Encode_NIST_Bit_Length (Byte_Length : in Natural)
+                                         return Types.Byte_Array
      with
        Post => (Left_Encode_NIST_Bit_Length'Result'Length
                   in 1 .. Natural'Size + 1
@@ -102,8 +102,8 @@ is
    --  longer input range (as a Long_Long_Integer).
 
 
-   function Right_Encode_NIST_Bit_Length(Byte_Length : in Natural)
-                                         return Types.Byte_Array
+   function Right_Encode_NIST_Bit_Length (Byte_Length : in Natural)
+                                          return Types.Byte_Array
      with
        Post => (Right_Encode_NIST_Bit_Length'Result'Length
                   in 1 .. Natural'Size + 1

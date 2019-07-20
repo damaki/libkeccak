@@ -28,7 +28,7 @@
 with Keccak.Generic_Hash;
 with Keccak.Keccak_1600.Rounds_24;
 
-pragma Elaborate_All(Keccak.Generic_Hash);
+pragma Elaborate_All (Keccak.Generic_Hash);
 
 package SHA3
 with SPARK_Mode => On

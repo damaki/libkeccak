@@ -30,9 +30,9 @@ is
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
                            Offset : in Natural) return Lane_Type
      with Inline,
-     Pre => (Data'Length >= W/8
+     Pre => (Data'Length >= W / 8
              and then Offset < Data'Length
-             and then Data'Length - Offset >= W/8);
+             and then Data'Length - Offset >= W / 8);
 
 
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
@@ -40,8 +40,8 @@ is
    is
       Lane : Lane_Type := 0;
    begin
-      for I in 0 .. (W/8) - 1 loop
-         Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)), I*8);
+      for I in 0 .. (W / 8) - 1 loop
+         Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)), I * 8);
       end loop;
       return Lane;
    end Bytes_To_Lane;
@@ -62,11 +62,11 @@ is
 
    procedure Permute_All (S : in out Parallel_State)
    is
-      type Round_Constants is array(Round_Index) of VXXI_View;
+      type Round_Constants is array (Round_Index) of VXXI_View;
 
       RC : constant Round_Constants :=
         (
-           (others => 16#0000_0000_0000_0001#),
+         (others => 16#0000_0000_0000_0001#),
          (others => 16#0000_0000_0000_8082#),
          (others => 16#8000_0000_0000_808A#),
          (others => 16#8000_0000_8000_8000#),
@@ -171,31 +171,31 @@ is
       procedure Copy_From_State
       is
       begin
-         Aba := Load (S (0,0));
-         Abe := Load (S (1,0));
-         Abi := Load (S (2,0));
-         Abo := Load (S (3,0));
-         Abu := Load (S (4,0));
-         Aga := Load (S (0,1));
-         Age := Load (S (1,1));
-         Agi := Load (S (2,1));
-         Ago := Load (S (3,1));
-         Agu := Load (S (4,1));
-         Aka := Load (S (0,2));
-         Ake := Load (S (1,2));
-         Aki := Load (S (2,2));
-         Ako := Load (S (3,2));
-         Aku := Load (S (4,2));
-         Ama := Load (S (0,3));
-         Ame := Load (S (1,3));
-         Ami := Load (S (2,3));
-         Amo := Load (S (3,3));
-         Amu := Load (S (4,3));
-         Asa := Load (S (0,4));
-         Ase := Load (S (1,4));
-         Asi := Load (S (2,4));
-         Aso := Load (S (3,4));
-         Asu := Load (S (4,4));
+         Aba := Load (S (0, 0));
+         Abe := Load (S (1, 0));
+         Abi := Load (S (2, 0));
+         Abo := Load (S (3, 0));
+         Abu := Load (S (4, 0));
+         Aga := Load (S (0, 1));
+         Age := Load (S (1, 1));
+         Agi := Load (S (2, 1));
+         Ago := Load (S (3, 1));
+         Agu := Load (S (4, 1));
+         Aka := Load (S (0, 2));
+         Ake := Load (S (1, 2));
+         Aki := Load (S (2, 2));
+         Ako := Load (S (3, 2));
+         Aku := Load (S (4, 2));
+         Ama := Load (S (0, 3));
+         Ame := Load (S (1, 3));
+         Ami := Load (S (2, 3));
+         Amo := Load (S (3, 3));
+         Amu := Load (S (4, 3));
+         Asa := Load (S (0, 4));
+         Ase := Load (S (1, 4));
+         Asi := Load (S (2, 4));
+         Aso := Load (S (3, 4));
+         Asu := Load (S (4, 4));
       end Copy_From_State;
 
 
@@ -295,20 +295,20 @@ is
          Bbe := Rotate_Left (Age, 300 mod W);
          Aki := Aki xor Di;
          Bbi := Rotate_Left (Aki, 171  mod W);
-         Eba := Bba xor And_Not(Bbe, Bbi);
+         Eba := Bba xor And_Not (Bbe, Bbi);
          Eba := Eba xor Load (RC (RI));
          Ca := Eba;
          Amo := Amo xor D0;
          Bbo := Rotate_Left (Amo, 21 mod W);
-         Ebe := Bbe xor And_Not(Bbi, Bbo);
+         Ebe := Bbe xor And_Not (Bbi, Bbo);
          Ce := Ebe;
          Asu := Asu xor Du;
          Bbu := Rotate_Left (Asu, 78 mod W);
-         Ebi := Bbi xor And_Not(Bbo, Bbu);
+         Ebi := Bbi xor And_Not (Bbo, Bbu);
          Ci := Ebi;
-         Ebo := Bbo xor And_Not(Bbu, Bba);
+         Ebo := Bbo xor And_Not (Bbu, Bba);
          Co := Ebo;
-         Ebu := Bbu xor And_Not(Bba, Bbe);
+         Ebu := Bbu xor And_Not (Bba, Bbe);
          Cu := Ebu;
 
          Abo := Abo xor D0;
@@ -317,19 +317,19 @@ is
          Bge := Rotate_Left (Agu, 276 mod W);
          Aka := Aka xor Da;
          Bgi := Rotate_Left (Aka, 3 mod W);
-         Ega := Bga xor And_Not(Bge, Bgi);
+         Ega := Bga xor And_Not (Bge, Bgi);
          Ca  := Ca xor Ega;
          Ame := Ame xor De;
          Bgo := Rotate_Left (Ame, 45 mod W);
-         Ege := Bge xor And_Not(Bgi, Bgo);
+         Ege := Bge xor And_Not (Bgi, Bgo);
          Ce  := Ce xor Ege;
          Asi := Asi xor Di;
          Bgu := Rotate_Left (Asi, 253 mod W);
-         Egi := Bgi xor And_Not(Bgo, Bgu);
+         Egi := Bgi xor And_Not (Bgo, Bgu);
          Ci  := Ci xor Egi;
-         Ego := Bgo xor And_Not(Bgu, Bga);
+         Ego := Bgo xor And_Not (Bgu, Bga);
          Co  := Co xor Ego;
-         Egu := Bgu xor And_Not(Bga, Bge);
+         Egu := Bgu xor And_Not (Bga, Bge);
          Cu  := Cu xor Egu;
 
          Abe := Abe xor De;
@@ -338,19 +338,19 @@ is
          Bke := Rotate_Left (Agi, 6 mod W);
          Ako := Ako xor D0;
          Bki := Rotate_Left (Ako, 153 mod W);
-         Eka := Bka xor And_Not(Bke, Bki);
+         Eka := Bka xor And_Not (Bke, Bki);
          Ca  := Ca xor Eka;
          Amu := Amu xor Du;
          Bko := Rotate_Left (Amu, 136 mod W);
-         Eke := Bke xor And_Not(Bki, Bko);
+         Eke := Bke xor And_Not (Bki, Bko);
          Ce  := Ce xor Eke;
          Asa := Asa xor Da;
          Bku := Rotate_Left (Asa, 210 mod W);
-         Eki := Bki xor And_Not(Bko, Bku);
+         Eki := Bki xor And_Not (Bko, Bku);
          Ci  := Ci xor Eki;
-         Eko := Bko xor And_Not(Bku, Bka);
+         Eko := Bko xor And_Not (Bku, Bka);
          Co  := Co xor Eko;
-         Eku := Bku xor And_Not(Bka, Bke);
+         Eku := Bku xor And_Not (Bka, Bke);
          Cu  := Cu xor Eku;
 
          Abu := Abu xor Du;
@@ -359,19 +359,19 @@ is
          Bme := Rotate_Left (Aga, 36 mod W);
          Ake := Ake xor De;
          Bmi := Rotate_Left (Ake, 10 mod W);
-         Ema := Bma xor And_Not(Bme, Bmi);
+         Ema := Bma xor And_Not (Bme, Bmi);
          Ca  := Ca xor Ema;
          Ami := Ami xor Di;
          Bmo := Rotate_Left (Ami, 15 mod W);
-         Eme := Bme xor And_Not(Bmi, Bmo);
+         Eme := Bme xor And_Not (Bmi, Bmo);
          Ce  := Ce xor Eme;
          Aso := Aso xor D0;
          Bmu := Rotate_Left (Aso, 120 mod W);
-         Emi := Bmi xor And_Not(Bmo, Bmu);
+         Emi := Bmi xor And_Not (Bmo, Bmu);
          Ci  := Ci xor Emi;
-         Emo := Bmo xor And_Not(Bmu, Bma);
+         Emo := Bmo xor And_Not (Bmu, Bma);
          Co  := Co xor Emo;
-         Emu := Bmu xor And_Not(Bma, Bme);
+         Emu := Bmu xor And_Not (Bma, Bme);
          Cu  := Cu xor Emu;
 
          Abi := Abi xor Di;
@@ -380,19 +380,19 @@ is
          Bse := Rotate_Left (Ago, 55 mod W);
          Aku := Aku xor Du;
          Bsi := Rotate_Left (Aku, 231 mod W);
-         Esa := Bsa xor And_Not(Bse, Bsi);
+         Esa := Bsa xor And_Not (Bse, Bsi);
          Ca  := Ca xor Esa;
          Ama := Ama xor Da;
          Bso := Rotate_Left (Ama, 105 mod W);
-         Ese := Bse xor And_Not(Bsi, Bso);
+         Ese := Bse xor And_Not (Bsi, Bso);
          Ce  := Ce xor Ese;
          Ase := Ase xor De;
          Bsu := Rotate_Left (Ase, 66 mod W);
-         Esi := Bsi xor And_Not(Bso, Bsu);
+         Esi := Bsi xor And_Not (Bso, Bsu);
          Ci  := Ci xor Esi;
-         Eso := Bso xor And_Not(Bsu, Bsa);
+         Eso := Bso xor And_Not (Bsu, Bsa);
          Co  := Co xor Eso;
-         Esu := Bsu xor And_Not(Bsa, Bse);
+         Esu := Bsu xor And_Not (Bsa, Bse);
          Cu  := Cu xor Esu;
 
       end Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE;
@@ -408,11 +408,11 @@ is
          Bsa, Bse, Bsi, Bso, Bsu : VXXI;
 
       begin
-         Da := Cu xor Rotate_Left(Ce, 1);
-         De := Ca xor Rotate_Left(Ci, 1);
-         Di := Ce xor Rotate_Left(Co, 1);
-         D0 := Ci xor Rotate_Left(Cu, 1);
-         Du := Co xor Rotate_Left(Ca, 1);
+         Da := Cu xor Rotate_Left (Ce, 1);
+         De := Ca xor Rotate_Left (Ci, 1);
+         Di := Ce xor Rotate_Left (Co, 1);
+         D0 := Ci xor Rotate_Left (Cu, 1);
+         Du := Co xor Rotate_Left (Ca, 1);
 
          Eba := Eba xor Da;
          Bba := Eba;
@@ -420,20 +420,20 @@ is
          Bbe := Rotate_Left (Ege, 300 mod W);
          Eki := Eki xor Di;
          Bbi := Rotate_Left (Eki, 171  mod W);
-         Aba := Bba xor And_Not(Bbe, Bbi);
+         Aba := Bba xor And_Not (Bbe, Bbi);
          Aba := Aba xor Load (RC (RI));
          Ca := Aba;
          Emo := Emo xor D0;
          Bbo := Rotate_Left (Emo, 21 mod W);
-         Abe := Bbe xor And_Not(Bbi, Bbo);
+         Abe := Bbe xor And_Not (Bbi, Bbo);
          Ce := Abe;
          Esu := Esu xor Du;
          Bbu := Rotate_Left (Esu, 78 mod W);
-         Abi := Bbi xor And_Not(Bbo, Bbu);
+         Abi := Bbi xor And_Not (Bbo, Bbu);
          Ci := Abi;
-         Abo := Bbo xor And_Not(Bbu, Bba);
+         Abo := Bbo xor And_Not (Bbu, Bba);
          Co := Abo;
-         Abu := Bbu xor And_Not(Bba, Bbe);
+         Abu := Bbu xor And_Not (Bba, Bbe);
          Cu := Abu;
 
          Ebo := Ebo xor D0;
@@ -442,19 +442,19 @@ is
          Bge := Rotate_Left (Egu, 276 mod W);
          Eka := Eka xor Da;
          Bgi := Rotate_Left (Eka, 3 mod W);
-         Aga := Bga xor And_Not(Bge, Bgi);
+         Aga := Bga xor And_Not (Bge, Bgi);
          Ca := Ca xor Aga;
          Eme := Eme xor De;
          Bgo := Rotate_Left (Eme, 45 mod W);
-         Age := Bge xor And_Not(Bgi, Bgo);
+         Age := Bge xor And_Not (Bgi, Bgo);
          Ce := Ce xor Age;
          Esi := Esi xor Di;
          Bgu := Rotate_Left (Esi, 253 mod W);
-         Agi := Bgi xor And_Not(Bgo, Bgu);
+         Agi := Bgi xor And_Not (Bgo, Bgu);
          Ci := Ci xor Agi;
-         Ago := Bgo xor And_Not(Bgu, Bga);
+         Ago := Bgo xor And_Not (Bgu, Bga);
          Co := Co xor Ago;
-         Agu := Bgu xor And_Not(Bga, Bge);
+         Agu := Bgu xor And_Not (Bga, Bge);
          Cu := Cu xor Agu;
 
          Ebe := Ebe xor De;
@@ -463,19 +463,19 @@ is
          Bke := Rotate_Left (Egi, 6 mod W);
          Eko := Eko xor D0;
          Bki := Rotate_Left (Eko, 153 mod W);
-         Aka := Bka xor And_Not(Bke, Bki);
+         Aka := Bka xor And_Not (Bke, Bki);
          Ca := Ca xor Aka;
          Emu := Emu xor Du;
          Bko := Rotate_Left (Emu, 136 mod W);
-         Ake := Bke xor And_Not(Bki, Bko);
+         Ake := Bke xor And_Not (Bki, Bko);
          Ce := Ce xor Ake;
          Esa := Esa xor Da;
          Bku := Rotate_Left (Esa, 210 mod W);
-         Aki := Bki xor And_Not(Bko, Bku);
+         Aki := Bki xor And_Not (Bko, Bku);
          Ci := Ci xor Aki;
-         Ako := Bko xor And_Not(Bku, Bka);
+         Ako := Bko xor And_Not (Bku, Bka);
          Co := Co xor Ako;
-         Aku := Bku xor And_Not(Bka, Bke);
+         Aku := Bku xor And_Not (Bka, Bke);
          Cu := Cu xor Aku;
 
          Ebu := Ebu xor Du;
@@ -484,19 +484,19 @@ is
          Bme := Rotate_Left (Ega, 36 mod W);
          Eke := Eke xor De;
          Bmi := Rotate_Left (Eke, 10 mod W);
-         Ama := Bma xor And_Not(Bme, Bmi);
+         Ama := Bma xor And_Not (Bme, Bmi);
          Ca := Ca xor Ama;
          Emi := Emi xor Di;
          Bmo := Rotate_Left (Emi, 15 mod W);
-         Ame := Bme xor And_Not(Bmi, Bmo);
+         Ame := Bme xor And_Not (Bmi, Bmo);
          Ce := Ce xor Ame;
          Eso := Eso xor D0;
          Bmu := Rotate_Left (Eso, 120 mod W);
-         Ami := Bmi xor And_Not(Bmo, Bmu);
+         Ami := Bmi xor And_Not (Bmo, Bmu);
          Ci := Ci xor Ami;
-         Amo := Bmo xor And_Not(Bmu, Bma);
+         Amo := Bmo xor And_Not (Bmu, Bma);
          Co := Co xor Amo;
-         Amu := Bmu xor And_Not(Bma, Bme);
+         Amu := Bmu xor And_Not (Bma, Bme);
          Cu := Cu xor Amu;
 
          Ebi := Ebi xor Di;
@@ -505,19 +505,19 @@ is
          Bse := Rotate_Left (Ego, 55 mod W);
          Eku := Eku xor Du;
          Bsi := Rotate_Left (Eku, 231 mod W);
-         Asa := Bsa xor And_Not(Bse, Bsi);
+         Asa := Bsa xor And_Not (Bse, Bsi);
          Ca := Ca xor Asa;
          Ema := Ema xor Da;
          Bso := Rotate_Left (Ema, 105 mod W);
-         Ase := Bse xor And_Not(Bsi, Bso);
+         Ase := Bse xor And_Not (Bsi, Bso);
          Ce := Ce xor Ase;
          Ese := Ese xor De;
          Bsu := Rotate_Left (Ese, 66 mod W);
-         Asi := Bsi xor And_Not(Bso, Bsu);
+         Asi := Bsi xor And_Not (Bso, Bsu);
          Ci := Ci xor Asi;
-         Aso := Bso xor And_Not(Bsu, Bsa);
+         Aso := Bso xor And_Not (Bsu, Bsa);
          Co := Co xor Aso;
-         Asu := Bsu xor And_Not(Bsa, Bse);
+         Asu := Bsu xor And_Not (Bsa, Bse);
          Cu := Cu xor Asu;
 
       end Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA;
@@ -589,17 +589,17 @@ is
    begin
 
       --  Process whole lanes (e.g. 64 bits for Keccak-f[1600]).
-      Outer_Loop:
+      Outer_Loop :
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-         pragma Loop_Invariant (Offset mod (W/8) = 0);
-         pragma Loop_Invariant (Offset = Natural (Y) * (W/8) * 5);
+         pragma Loop_Invariant (Offset mod (W / 8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (W / 8) * 5);
          pragma Loop_Invariant (Offset <= Stride - Data_Offset);
 
          for X in X_Coord loop
             pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-            pragma Loop_Invariant (Offset mod (W/8) = 0);
-            pragma Loop_Invariant (Offset = (Natural (Y) * (W/8) * 5) + (Natural (X) * (W/8)));
+            pragma Loop_Invariant (Offset mod (W / 8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (W / 8) * 5) + (Natural (X) * (W / 8)));
             pragma Loop_Invariant (Offset <= Stride - Data_Offset);
 
             exit Outer_Loop when Remaining_Bits < W;
@@ -607,10 +607,10 @@ is
             for I in 0 .. Num_Parallel_Instances - 1 loop
                Lane := Bytes_To_Lane (Data, Data_Offset + Offset + (Stride * I));
                SI   := VXXI_Index_Offset_From_First (I);
-               S(X,Y)(SI) := S(X,Y)(SI) xor Lane;
+               S (X, Y)(SI) := S (X, Y)(SI) xor Lane;
             end loop;
 
-            Offset         := Offset          + W/8;
+            Offset         := Offset          + W / 8;
             Remaining_Bits := Remaining_Bits  - W;
 
          end loop;
@@ -632,13 +632,13 @@ is
             for I in Natural range 0 .. Remaining_Bytes - 1 loop
                for J in 0 .. Num_Parallel_Instances - 1 loop
                   Pos       := Data'First + Data_Offset + Offset + I + (Stride * J);
-                  Lanes (J) := Lanes (J) or Shift_Left(Lane_Type(Data(Pos)), I*8);
+                  Lanes (J) := Lanes (J) or Shift_Left (Lane_Type (Data (Pos)), I * 8);
                end loop;
             end loop;
 
             for I in 0 .. Num_Parallel_Instances - 1 loop
                SI := VXXI_Index_Offset_From_First (I);
-               S(X,Y)(SI) := S(X,Y)(SI) xor Lanes (I);
+               S (X, Y)(SI) := S (X, Y)(SI) xor Lanes (I);
             end loop;
          end;
       end if;
@@ -656,33 +656,33 @@ is
 
    begin
       --  Process whole lanes (64 bits).
-      Outer_Loop:
+      Outer_Loop :
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-         pragma Loop_Invariant (Offset mod (W/8) = 0);
-         pragma Loop_Invariant (Offset = Natural (Y) * (W/8) * 5);
+         pragma Loop_Invariant (Offset mod (W / 8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (W / 8) * 5);
 
          for X in X_Coord loop
             pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-            pragma Loop_Invariant (Offset mod (W/8) = 0);
-            pragma Loop_Invariant (Offset = (Natural (Y) * (W/8) * 5) + (Natural (X) * (W/8)));
+            pragma Loop_Invariant (Offset mod (W / 8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (W / 8) * 5) + (Natural (X) * (W / 8)));
 
             exit Outer_Loop when Remaining_Bits < W;
 
             declare
                Lane : Lane_Type := 0;
             begin
-               for I in Natural range 0 .. (W/8) - 1 loop
-                  Lane := Lane or Shift_Left(Lane_Type(Data(Data'First + Offset + I)),
-                                             I*8);
+               for I in Natural range 0 .. (W / 8) - 1 loop
+                  Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)),
+                                             I * 8);
                end loop;
 
                for I in VXXI_Index loop
-                  S(X, Y)(I) := S(X, Y)(I) xor Lane;
+                  S (X, Y)(I) := S (X, Y)(I) xor Lane;
                end loop;
             end;
 
-            Offset          := Offset          + W/8;
+            Offset          := Offset          + W / 8;
             Remaining_Bits  := Remaining_Bits  - W;
 
          end loop;
@@ -698,13 +698,13 @@ is
 
          begin
             for I in Natural range 0 .. Remaining_Bytes - 1 loop
-               Word := Word or Shift_Left(Lane_Type(Data(Data'First + Offset + I)), I*8);
+               Word := Word or Shift_Left (Lane_Type (Data (Data'First + Offset + I)), I * 8);
             end loop;
 
             Word := Word and (2**Remaining_Bits) - 1;
 
             for I in VXXI_Index loop
-               S(X, Y)(I) := S(X, Y)(I) xor Word;
+               S (X, Y)(I) := S (X, Y)(I) xor Word;
             end loop;
          end;
       end if;
@@ -712,10 +712,10 @@ is
 
 
 
-   procedure Extract_Bytes(S           : in     Parallel_State;
-                           Data        : in out Keccak.Types.Byte_Array;
-                           Data_Offset : in     Natural;
-                           Byte_Len    : in     Natural)
+   procedure Extract_Bytes (S           : in     Parallel_State;
+                            Data        : in out Keccak.Types.Byte_Array;
+                            Data_Offset : in     Natural;
+                            Byte_Len    : in     Natural)
    is
       use type Keccak.Types.Byte;
 
@@ -734,25 +734,25 @@ is
       --  Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
 
       --  Process whole lanes
-      while Remaining_Bytes >= W/8 loop
-         pragma Loop_Variant(Increases => Offset,
-                             Decreases => Remaining_Bytes);
-         pragma Loop_Invariant(Offset mod (W/8) = 0
-                               and Offset + Remaining_Bytes = Byte_Len
-                               and Offset <= Stride - Data_Offset);
+      while Remaining_Bytes >= W / 8 loop
+         pragma Loop_Variant (Increases => Offset,
+                              Decreases => Remaining_Bytes);
+         pragma Loop_Invariant (Offset mod (W / 8) = 0
+                                and Offset + Remaining_Bytes = Byte_Len
+                                and Offset <= Stride - Data_Offset);
 
          for I in 0 .. Num_Parallel_Instances - 1 loop
             SI := VXXI_Index_Offset_From_First (I);
-            Lane := S(X, Y) (SI);
+            Lane := S (X, Y) (SI);
 
-            pragma Assert (Data_Offset + Offset + (Stride * I) <= Data'Length - W/8);
+            pragma Assert (Data_Offset + Offset + (Stride * I) <= Data'Length - W / 8);
 
-            for J in Natural range 0 .. (W/8) - 1 loop
-               pragma Assert (Data_Offset + Offset + W/8 <= Stride);
+            for J in Natural range 0 .. (W / 8) - 1 loop
+               pragma Assert (Data_Offset + Offset + W / 8 <= Stride);
                pragma Assert (Stride = Data'Length / Vector_Width);
 
-               Data(Data'First + Data_Offset + Offset + J + (Stride * I))
-                 := Keccak.Types.Byte(Shift_Right(Lane, J*8) and 16#FF#);
+               Data (Data'First + Data_Offset + Offset + J + (Stride * I))
+                 := Keccak.Types.Byte (Shift_Right (Lane, J * 8) and 16#FF#);
 
                pragma Annotate (GNATprove, False_Positive,
                                 """Data"" might not be initialized",
@@ -765,33 +765,33 @@ is
             Y := Y + 1;
          end if;
 
-         Remaining_Bytes := Remaining_Bytes - W/8;
-         Offset          := Offset + W/8;
+         Remaining_Bytes := Remaining_Bytes - W / 8;
+         Offset          := Offset + W / 8;
       end loop;
 
       --  Process any remaining data (smaller than 1 lane)
       if Remaining_Bytes > 0 then
          declare
-            Lanes          : constant VXXI_View := S(X, Y);
+            Lanes          : constant VXXI_View := S (X, Y);
             Shift          :          Natural   := 0;
             Initial_Offset :          Natural   := Offset with Ghost;
          begin
             while Remaining_Bytes > 0 loop
-               pragma Loop_Variant(Increases => Offset,
-                                   Increases => Shift,
-                                   Decreases => Remaining_Bytes);
-               pragma Loop_Invariant(Offset + Remaining_Bytes = Byte_Len
-                                     and Shift mod 8 = 0
-                                     and Shift = (Offset - Initial_Offset) * 8
-                                     and Offset <= Stride - Data_Offset);
+               pragma Loop_Variant (Increases => Offset,
+                                    Increases => Shift,
+                                    Decreases => Remaining_Bytes);
+               pragma Loop_Invariant (Offset + Remaining_Bytes = Byte_Len
+                                      and Shift mod 8 = 0
+                                      and Shift = (Offset - Initial_Offset) * 8
+                                      and Offset <= Stride - Data_Offset);
 
                for I in 0 .. Num_Parallel_Instances - 1 loop
                   pragma Assert (Data_Offset + Offset + (Stride * I) < Data'Length);
 
                   SI := VXXI_Index_Offset_From_First (I);
 
-                  Data(Data'First + Data_Offset + Offset + (Stride * I))
-                    := Keccak.Types.Byte(Shift_Right(Lanes(SI), Shift) and 16#FF#);
+                  Data (Data'First + Data_Offset + Offset + (Stride * I))
+                    := Keccak.Types.Byte (Shift_Right (Lanes (SI), Shift) and 16#FF#);
                end loop;
 
                Shift           := Shift + 8;

@@ -31,9 +31,9 @@ with Keccak.Generic_KeccakF.Lane_Complementing_Permutation;
 with Keccak.Padding;
 with Keccak.Types;
 
-pragma Elaborate_All(Keccak.Generic_KeccakF);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Bit_Lanes);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
+pragma Elaborate_All (Keccak.Generic_KeccakF);
+pragma Elaborate_All (Keccak.Generic_KeccakF.Bit_Lanes);
+pragma Elaborate_All (Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
 
 package Keccak.Keccak_100
 with SPARK_Mode => On

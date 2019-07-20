@@ -29,51 +29,51 @@ with Keccak.Util; use Keccak.Util;
 package body Keccak.Generic_Tuple_Hash
 is
 
-   procedure Init(Ctx           :    out Context;
-                  Customization : in     String := "")
+   procedure Init (Ctx           :    out Context;
+                   Customization : in     String := "")
    is
    begin
       Ctx.Finished := False;
 
-      CSHAKE.Init(Ctx           => Ctx.Ctx,
-                  Customization => Customization,
-                  Function_Name => "TupleHash");
+      CSHAKE.Init (Ctx           => Ctx.Ctx,
+                   Customization => Customization,
+                   Function_Name => "TupleHash");
    end Init;
 
 
-   procedure Update_Tuple_Item(Ctx  : in out Context;
-                               Item : in     Byte_Array)
+   procedure Update_Tuple_Item (Ctx  : in out Context;
+                                Item : in     Byte_Array)
    is
    begin
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Left_Encode_NIST_Bit_Length(Item'Length));
+      CSHAKE.Update (Ctx     => Ctx.Ctx,
+                     Message => Left_Encode_NIST_Bit_Length (Item'Length));
 
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Item);
+      CSHAKE.Update (Ctx     => Ctx.Ctx,
+                     Message => Item);
    end Update_Tuple_Item;
 
 
-   procedure Finish(Ctx     : in out Context;
-                    Digest  :    out Byte_Array)
+   procedure Finish (Ctx     : in out Context;
+                     Digest  :    out Byte_Array)
    is
    begin
-      CSHAKE.Update(Ctx     => Ctx.Ctx,
-                    Message => Right_Encode_NIST_Bit_Length(Digest'Length));
+      CSHAKE.Update (Ctx     => Ctx.Ctx,
+                     Message => Right_Encode_NIST_Bit_Length (Digest'Length));
 
-      CSHAKE.Extract(Ctx    => Ctx.Ctx,
-                     Digest => Digest);
+      CSHAKE.Extract (Ctx    => Ctx.Ctx,
+                      Digest => Digest);
 
       Ctx.Finished := True;
    end Finish;
 
-   procedure Extract(Ctx    : in out Context;
-                     Digest :    out Byte_Array)
+   procedure Extract (Ctx    : in out Context;
+                      Digest :    out Byte_Array)
    is
    begin
-      if State_Of(Ctx) = Updating then
+      if State_Of (Ctx) = Updating then
          CSHAKE.Update
            (Ctx     => Ctx.Ctx,
-            Message => Util.Right_Encode_NIST(0));
+            Message => Util.Right_Encode_NIST (0));
       end if;
 
       CSHAKE.Extract

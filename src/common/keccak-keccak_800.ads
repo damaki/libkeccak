@@ -30,9 +30,9 @@ with Keccak.Generic_KeccakF.Byte_Lanes;
 with Keccak.Generic_KeccakF.Lane_Complementing_Permutation;
 with Keccak.Padding;
 
-pragma Elaborate_All(Keccak.Generic_KeccakF);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Byte_Lanes);
-pragma Elaborate_All(Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
+pragma Elaborate_All (Keccak.Generic_KeccakF);
+pragma Elaborate_All (Keccak.Generic_KeccakF.Byte_Lanes);
+pragma Elaborate_All (Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
 
 package Keccak.Keccak_800
 with SPARK_Mode => On

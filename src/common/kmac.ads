@@ -27,13 +27,13 @@
 with CSHAKE;
 with Keccak.Generic_KMAC;
 
-pragma Elaborate_All(Keccak.Generic_KMAC);
+pragma Elaborate_All (Keccak.Generic_KMAC);
 
 package KMAC
 with SPARK_Mode => On
 is
 
-   package KMAC128 is new Keccak.Generic_KMAC(CSHAKE.CSHAKE128);
-   package KMAC256 is new Keccak.Generic_KMAC(CSHAKE.CSHAKE256);
+   package KMAC128 is new Keccak.Generic_KMAC (CSHAKE.CSHAKE128);
+   package KMAC256 is new Keccak.Generic_KMAC (CSHAKE.CSHAKE256);
 
 end KMAC;

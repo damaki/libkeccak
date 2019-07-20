@@ -33,11 +33,11 @@ is
      (W mod 8 = 0,
       "Byte_Lanes can only be used with lane sizes that are a multiple of 8");
 
-   procedure XOR_Bits_Into_State(A       : in out State;
-                                 Data    : in     Keccak.Types.Byte_Array;
-                                 Bit_Len : in     Natural)
+   procedure XOR_Bits_Into_State (A       : in out State;
+                                  Data    : in     Keccak.Types.Byte_Array;
+                                  Bit_Len : in     Natural)
      with Global => null,
-     Depends => (A => + (Data, Bit_Len)),
+     Depends => (A =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= B);
@@ -51,21 +51,21 @@ is
    --    value cannot be larger than the bit-length of the 'Data' array, and
    --    cannot be larger than the Keccak-f state size.
 
-   procedure XOR_Bits_Into_State(A       : in out Lane_Complemented_State;
-                                 Data    : in     Keccak.Types.Byte_Array;
-                                 Bit_Len : in     Natural)
+   procedure XOR_Bits_Into_State (A       : in out Lane_Complemented_State;
+                                  Data    : in     Keccak.Types.Byte_Array;
+                                  Bit_Len : in     Natural)
      with Inline,
      Global => null,
-     Depends => (A => + (Data, Bit_Len)),
+     Depends => (A =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= B);
 
-   procedure Extract_Bytes(A    : in     State;
-                           Data :    out Keccak.Types.Byte_Array)
+   procedure Extract_Bytes (A    : in     State;
+                            Data :    out Keccak.Types.Byte_Array)
      with Global => null,
-     Depends => (Data => + A),
-     Pre => Data'Length <= ((B + 7)/8);
+     Depends => (Data =>+ A),
+     Pre => Data'Length <= ((B + 7) / 8);
    --  Extract bytes from the Keccak-f state.
    --
    --  This procedure can be used to read the Keccak-f state, for example: to
@@ -81,29 +81,29 @@ is
       """Data"" might not be initialized",
       "GNATprove issues a false positive due to the use of loops to initialize Data");
 
-   procedure Extract_Bytes(A    : in     Lane_Complemented_State;
-                           Data :    out Keccak.Types.Byte_Array)
+   procedure Extract_Bytes (A    : in     Lane_Complemented_State;
+                            Data :    out Keccak.Types.Byte_Array)
      with Global => null,
-     Depends => (Data => + A),
-     Pre => Data'Length <= ((B + 7)/8);
+     Depends => (Data =>+ A),
+     Pre => Data'Length <= ((B + 7) / 8);
    pragma Annotate
      (GNATprove, False_Positive,
       """Data"" might not be initialized",
       "GNATprove issues a false positive due to the use of loops to initialize Data");
 
-   procedure Extract_Bits(A       : in     State;
-                          Data    :    out Keccak.Types.Byte_Array;
-                          Bit_Len : in     Natural)
+   procedure Extract_Bits (A       : in     State;
+                           Data    :    out Keccak.Types.Byte_Array;
+                           Bit_Len : in     Natural)
      with Global => null,
-     Depends => (Data => + (A, Bit_Len)),
+     Depends => (Data =>+ (A, Bit_Len)),
      Pre => (Bit_Len <= B
              and then Data'Length = (Bit_Len + 7) / 8);
 
-   procedure Extract_Bits(A       : in     Lane_Complemented_State;
-                          Data    :    out Keccak.Types.Byte_Array;
-                          Bit_Len : in     Natural)
+   procedure Extract_Bits (A       : in     Lane_Complemented_State;
+                           Data    :    out Keccak.Types.Byte_Array;
+                           Bit_Len : in     Natural)
      with Global => null,
-     Depends => (Data => + (A, Bit_Len)),
+     Depends => (Data =>+ (A, Bit_Len)),
      Pre => (Bit_Len <= B
              and then Data'Length = (Bit_Len + 7) / 8);
 
