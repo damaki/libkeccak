@@ -175,7 +175,6 @@ is
          Asu := S (4, 4);
       end Copy_From_State;
 
-
       procedure Copy_To_State_From_A
       is
       begin
@@ -206,7 +205,6 @@ is
                      4 => Asu)
               );
       end Copy_To_State_From_A;
-
 
       procedure Copy_To_State_From_E
       is

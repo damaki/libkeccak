@@ -46,7 +46,6 @@ generic
    Parallelism : Positive;
    --  Specifies the number of simulated parallel instances.
 
-
    --  @brief@
    --  Serial fallback implementation of the parallel permutation API.
    --
@@ -73,12 +72,10 @@ is
    procedure Init (S : out Parallel_State)
      with Global => null;
 
-
    generic
       with procedure Permute (A : in out Permutation_State);
    procedure Permute_All (S : in out Parallel_State)
      with Global => null;
-
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -92,7 +89,6 @@ is
              and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
              and then Bit_Len <= State_Size);
 
-
    procedure XOR_Bits_Into_State_All
      (S           : in out Parallel_State;
       Data        : in     Types.Byte_Array;
@@ -103,7 +99,6 @@ is
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= State_Size);
 
-
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;
                             Data_Offset : in     Natural;
@@ -113,6 +108,5 @@ is
              and then Data_Offset <= Data'Length / Num_Parallel_Instances
              and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset
              and then Byte_Len <= State_Size / 8);
-
 
 end Keccak.Generic_Parallel_Permutation_Serial_Fallback;

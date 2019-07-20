@@ -50,47 +50,38 @@ is
       pragma Machine_Attribute (V4DI, "vector_type");
       pragma Machine_Attribute (V4DI, "may_alias");
 
-
       type V4DI_View is array (V4DI_Index) of Unsigned_64
         with Alignment => 32;
-
 
       function Load is new Ada.Unchecked_Conversion
         (Source => V4DI_View,
          Target => V4DI);
 
-
       function Store is new Ada.Unchecked_Conversion
         (Source => V4DI,
          Target => V4DI_View);
-
 
       function "and" (A, B : in V4DI) return V4DI
         with Global => null;
       pragma Import (Intrinsic, "and", "__builtin_ia32_andsi256");
 
-
       function "xor" (A, B : in V4DI) return V4DI
         with Global => null;
       pragma Import (Intrinsic, "xor", "__builtin_ia32_pxor256");
 
-
       function And_Not (A, B : in V4DI) return V4DI
         with Global => null;
       pragma Import (Intrinsic, And_Not, "__builtin_ia32_andnotsi256");
-
 
       function Shift_Left (A      : in V4DI;
                            Amount : in Natural) return V4DI
         with Global => null;
       pragma Import (Intrinsic, Shift_Left, "__builtin_ia32_psllqi256");
 
-
       function Shift_Right (A      : in V4DI;
                             Amount : in Natural) return V4DI
         with Global => null;
       pragma Import (Intrinsic, Shift_Right, "__builtin_ia32_psrlqi256");
-
 
       function Rotate_Left (A      : in V4DI;
                             Amount : in Natural) return V4DI

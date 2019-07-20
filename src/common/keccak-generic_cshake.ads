@@ -95,7 +95,6 @@ is
    --
    --  @param Message The data to process with CSHAKE.
 
-
    procedure Update (Ctx        : in out Context;
                      Message    : in     Byte_Array;
                      Bit_Length : in     Natural)

@@ -29,6 +29,9 @@ with Keccak.Util; use Keccak.Util;
 package body Keccak.Generic_Parallel_CSHAKE
 is
 
+   ---------------------------
+   --  Process_Full_Blocks  --
+   ---------------------------
 
    procedure Process_Full_Blocks
      (Ctx          : in out Context;
@@ -43,6 +46,9 @@ is
      Post => (Block_Offset < Block'Length
               and State_Of (Ctx) = Updating);
 
+   ---------------------------
+   --  Process_Full_Blocks  --
+   ---------------------------
 
    procedure Process_Full_Blocks
      (Ctx          : in out Context;
@@ -93,7 +99,6 @@ is
          end if;
       end if;
 
-
       pragma Assert_And_Cut
         (Input_Offset + Input_Remaining = Input'Length
          and Block_Offset < Block'Length
@@ -101,7 +106,6 @@ is
          and State_Of (Ctx) = Updating
          and XOF.State_Of (Ctx.XOF_Ctx) = XOF.Updating
          and (if Input_Remaining > 0 then Block_Offset = 0));
-
 
       --  Now process as many full blocks from Input as we can.
       Num_Full_Blocks := Input_Remaining / Block'Length;
@@ -116,7 +120,6 @@ is
          Input_Remaining := Input_Remaining - Length;
       end if;
 
-
       pragma Assert_And_Cut
         (Input_Offset + Input_Remaining = Input'Length
          and Block_Offset < Block'Length
@@ -124,7 +127,6 @@ is
          and State_Of (Ctx) = Updating
          and (if Input_Remaining > 0 then Block_Offset = 0)
          and Input_Remaining < Block'Length);
-
 
       --  Store any leftover bytes in the block
       if Input_Remaining > 0 then
@@ -137,6 +139,9 @@ is
 
    end Process_Full_Blocks;
 
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx           :    out Context;
                    Customization : in     String;
@@ -147,7 +152,6 @@ is
       Block        : Types.Byte_Array (0 .. Rate_Bytes - 1) := (others => 0);
 
       Block_Offset : Natural;
-
 
    begin
       XOF.Init (Ctx.XOF_Ctx);
@@ -205,6 +209,9 @@ is
 
    end Init;
 
+   -----------------------
+   --  Update_Separate  --
+   -----------------------
 
    procedure Update_Separate (Ctx  : in out Context;
                               Data : in     Types.Byte_Array)
@@ -213,6 +220,9 @@ is
       XOF.Update_Separate (Ctx.XOF_Ctx, Data);
    end Update_Separate;
 
+   -----------------------
+   --  Extract_Separate --
+   -----------------------
 
    procedure Extract_Separate (Ctx  : in out Context;
                                Data :    out Types.Byte_Array)

@@ -195,5 +195,4 @@ is
       Byte_Len    : in     Natural)
       renames KeccakF_1600_P8.Extract_Bytes;
 
-
 end Keccak.Parallel_Keccak_1600;

@@ -58,26 +58,20 @@ is
    pragma Assert (SHAKE_Parallel_4.Num_Parallel_Instances = 4);
    pragma Assert (SHAKE_Parallel_8.Num_Parallel_Instances = 8);
 
-
    type Context is private;
 
-
    type States is (Updating, Extracting, Finished);
-
 
    type Byte_Count is new Long_Long_Integer
    range 0 .. Long_Long_Integer'Last;
 
-
    subtype Block_Size_Number is Positive range 1 .. Positive'Last / 8;
-
 
    procedure Init (Ctx           :    out Context;
                    Block_Size    : in     Block_Size_Number;
                    Customization : in     String)
      with Global => null,
      Post => State_Of (Ctx) = Updating;
-
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
@@ -87,7 +81,6 @@ is
      Post => (State_Of (Ctx) = Updating
               and Num_Bytes_Processed (Ctx) =
                 Num_Bytes_Processed (Ctx'Old) + Byte_Count (Data'Length));
-
 
    procedure Finish (Ctx  : in out Context;
                      Data :    out Types.Byte_Array)
@@ -104,7 +97,6 @@ is
    --  After calling this procedure the ParallelHash instance cannot be used
    --  further.
 
-
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
      with Global => null,
@@ -119,18 +111,14 @@ is
    --
    --  This procedure can be called multiple times to produce any output length.
 
-
    function State_Of (Ctx : in Context) return States
      with Global => null;
-
 
    function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
      with Global => null;
 
-
    function Max_Input_Length (Ctx : in Context) return Byte_Count
      with Global => null;
-
 
    function Block_Size (Ctx : in Context) return Block_Size_Number
      with Global => null;
@@ -139,7 +127,6 @@ private
 
    use type CSHAKE_Serial.States;
    use type SHAKE_Serial.States;
-
 
    type Context is record
       Outer_CSHAKE         : CSHAKE_Serial.Context;
@@ -150,7 +137,6 @@ private
       Finished             : Boolean;
    end record
      with Predicate => Context.Partial_Block_Length < Context.Block_Size;
-
 
    function State_Of (Ctx : in Context) return States
    is (if (Ctx.Finished
@@ -163,17 +149,13 @@ private
 
        else Extracting);
 
-
    function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
    is (Ctx.Input_Len);
-
 
    function Max_Input_Length (Ctx : in Context) return Byte_Count
    is (Byte_Count'Last - Num_Bytes_Processed (Ctx));
 
-
    function Block_Size (Ctx : in Context) return Block_Size_Number
    is (Ctx.Block_Size);
-
 
 end Keccak.Generic_Parallel_Hash;

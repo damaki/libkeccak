@@ -50,5 +50,4 @@ is
       Suffix      => 2#11_11#,
       Suffix_Size => 4);
 
-
 end SHAKE;

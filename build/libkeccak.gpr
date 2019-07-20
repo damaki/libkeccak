@@ -8,7 +8,7 @@ project Libkeccak is
    Arch_Dirs     := ();
    Arch_Switches := ();
 
-   Style_Switches := ("-gnaty3aAbcdefhiklL6M100nrSst");
+   Style_Switches := ("-gnaty3aAbcdefhiklL6M100nrSstu");
 
    Warning_Switches := ("-gnatwe");
 

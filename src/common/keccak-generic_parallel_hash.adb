@@ -29,6 +29,10 @@ with Keccak.Util;
 package body Keccak.Generic_Parallel_Hash
 is
 
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
+
    generic
       with package SHAKE_Parallel_N is new Keccak.Generic_Parallel_XOF (<>);
    procedure Generic_Process_Parallel_Blocks
@@ -50,6 +54,9 @@ is
    --
    --  @param Data Byte array containing N blocks.
 
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
 
    procedure Generic_Process_Parallel_Blocks
      (Ctx  : in out Context;
@@ -80,6 +87,9 @@ is
          Message    => CV_N);
    end Generic_Process_Parallel_Blocks;
 
+   ------------------------------
+   --  Generic Instantiations  --
+   ------------------------------
 
    procedure Process_8_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (SHAKE_Parallel_8);
@@ -90,6 +100,9 @@ is
    procedure Process_2_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (SHAKE_Parallel_2);
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -103,6 +116,9 @@ is
               and Ctx.Block_Size = Ctx'Old.Block_Size);
    --  Processes a single block using a serial CSHAKE.
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -131,6 +147,9 @@ is
          Message    => CV);
    end Process_1_Block;
 
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -157,6 +176,10 @@ is
 
         Ctx.Partial_Block_Length > 0 and Data'Length > 0 =>
           Added > 0);
+
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -215,6 +238,9 @@ is
       end if;
    end Add_To_Partial_Block;
 
+   ----------------------------------
+   --  Process_Last_Partial_Block  --
+   ----------------------------------
 
    procedure Process_Last_Partial_Block (Ctx : in out Context)
      with Global => null,
@@ -222,6 +248,9 @@ is
      Post => (State_Of (Ctx) = Updating
               and Ctx.Partial_Block_Length = 0);
 
+   ----------------------------------
+   --  Process_Last_Partial_Block  --
+   ----------------------------------
 
    procedure Process_Last_Partial_Block (Ctx : in out Context)
    is
@@ -237,6 +266,9 @@ is
       end if;
    end Process_Last_Partial_Block;
 
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx           :    out Context;
                    Block_Size    : in     Block_Size_Number;
@@ -260,6 +292,9 @@ is
 
    end Init;
 
+   --------------
+   --  Update  --
+   --------------
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
@@ -311,7 +346,6 @@ is
             and Ctx.Block_Size = Initial_Block_Size
             and Remaining < Ctx.Block_Size * 8);
 
-
       --  Process blocks of 4 in parallel
          while Remaining >= Ctx.Block_Size * 4 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
@@ -341,7 +375,6 @@ is
             and Ctx.Partial_Block_Length = 0
             and Ctx.Block_Size = Initial_Block_Size
             and Remaining < Ctx.Block_Size * 4);
-
 
       --  Process blocks of 2 in parallel
          while Remaining >= Ctx.Block_Size * 2 loop
@@ -405,6 +438,9 @@ is
       end if;
    end Update;
 
+   --------------
+   --  Finish  --
+   --------------
 
    procedure Finish (Ctx  : in out Context;
                      Data :    out Types.Byte_Array)
@@ -434,6 +470,9 @@ is
                              Digest => Data);
    end Finish;
 
+   ---------------
+   --  Extract  --
+   ---------------
 
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)

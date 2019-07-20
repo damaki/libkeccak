@@ -29,6 +29,10 @@ with Interfaces;
 package body Keccak.Generic_KeccakF.Bit_Lanes
 is
 
+   ---------------------------
+   --  XOR_Bits_Into_State  --
+   ---------------------------
+
    procedure XOR_Bits_Into_State (A       : in out State;
                                   Data    : in     Keccak.Types.Byte_Array;
                                   Bit_Len : in     Natural)
@@ -92,6 +96,9 @@ is
       end if;
    end XOR_Bits_Into_State;
 
+   ---------------------------
+   --  XOR_Bits_Into_State  --
+   ---------------------------
 
    procedure XOR_Bits_Into_State (A       : in out Lane_Complemented_State;
                                   Data    : in     Keccak.Types.Byte_Array;
@@ -104,6 +111,9 @@ is
          Bit_Len => Bit_Len);
    end XOR_Bits_Into_State;
 
+   ---------------------
+   --  Extract_Bytes  --
+   ---------------------
 
    procedure Extract_Bytes (A    : in     State;
                             Data :    out Keccak.Types.Byte_Array)
@@ -164,6 +174,9 @@ is
 
    end Extract_Bytes;
 
+   ---------------------
+   --  Extract_Bytes  --
+   ---------------------
 
    procedure Extract_Bytes (A    : in     Lane_Complemented_State;
                             Data :    out Keccak.Types.Byte_Array)
@@ -238,6 +251,9 @@ is
 
    end Extract_Bytes;
 
+   --------------------
+   --  Extract_Bits  --
+   --------------------
 
    procedure Extract_Bits (A       : in     State;
                            Data    :    out Keccak.Types.Byte_Array;
@@ -255,6 +271,9 @@ is
       end if;
    end Extract_Bits;
 
+   --------------------
+   --  Extract_Bits  --
+   --------------------
 
    procedure Extract_Bits (A       : in     Lane_Complemented_State;
                            Data    :    out Keccak.Types.Byte_Array;
@@ -271,6 +290,5 @@ is
          Data (Data'Last) := Data (Data'Last) and (2**(Bit_Len mod 8) - 1);
       end if;
    end Extract_Bits;
-
 
 end Keccak.Generic_KeccakF.Bit_Lanes;

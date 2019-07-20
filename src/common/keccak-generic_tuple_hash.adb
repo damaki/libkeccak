@@ -29,6 +29,10 @@ with Keccak.Util; use Keccak.Util;
 package body Keccak.Generic_Tuple_Hash
 is
 
+   ------------
+   --  Init  --
+   ------------
+
    procedure Init (Ctx           :    out Context;
                    Customization : in     String := "")
    is
@@ -40,6 +44,9 @@ is
                    Function_Name => "TupleHash");
    end Init;
 
+   -------------------------
+   --  Update_Tuple_Item  --
+   -------------------------
 
    procedure Update_Tuple_Item (Ctx  : in out Context;
                                 Item : in     Byte_Array)
@@ -52,6 +59,9 @@ is
                      Message => Item);
    end Update_Tuple_Item;
 
+   --------------
+   --  Finish  --
+   --------------
 
    procedure Finish (Ctx     : in out Context;
                      Digest  :    out Byte_Array)
@@ -65,6 +75,10 @@ is
 
       Ctx.Finished := True;
    end Finish;
+
+   ---------------
+   --  Extract  --
+   ---------------
 
    procedure Extract (Ctx    : in out Context;
                       Digest :    out Byte_Array)

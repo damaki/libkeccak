@@ -92,14 +92,11 @@ is
    --  For example, if the minmum number of padding is 2 bits, and the state
    --  size is 1600 bits, then the capacity cannot exceed 1597 bits.
 
-
-
    function Rate_Of (Ctx : in Context) return Rate_Number
      with Global => null;
    --  Get the rate of the context.
    --
    --  @return The rate (in bits). This is always less than the State_Size
-
 
    function Max_Input_Length (Ctx : in Context) return Positive
      with Global => null;
@@ -111,8 +108,6 @@ is
    --
    --  @return The maximum number of input bits that are accepted for
    --  duplex operations.
-
-
 
    procedure Duplex (Ctx                 : in out Context;
                      In_Data             : in     Keccak.Types.Byte_Array;

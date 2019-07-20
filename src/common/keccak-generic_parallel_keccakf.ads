@@ -98,36 +98,28 @@ is
 
    Num_Parallel_Instances : constant Positive := Vector_Width;
 
-
    pragma Assert (W mod 8 = 0,
                   "Generic_Parallel_KeccakF only supports L in 3 .. 6");
 
    pragma Assert (Vector_Width in 1 .. VXXI_View'Length,
                   "Vector_Width exceeds vector type's width");
 
-
    type Parallel_State is private;
-
 
    Initialized_State : constant Parallel_State;
 
-
    type Round_Index is range 0 .. 23;
-
 
    subtype Round_Count is Positive range 1 .. 24;
 
-
    procedure Init (S : out Parallel_State)
      with Global => null;
-
 
    generic
       First_Round : Round_Index := 0;
       Num_Rounds  : Round_Count := 24;
    procedure Permute_All (S : in out Parallel_State)
      with Global => null;
-
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -179,7 +171,6 @@ is
    --
    --  @param Bit_Len The number of bits to XOR into each state.
 
-
    procedure XOR_Bits_Into_State_All
      (S           : in out Parallel_State;
       Data        : in     Types.Byte_Array;
@@ -215,7 +206,6 @@ is
    --  @param Data The array containing the data to XOR into each parallel state.
    --
    --  @param Bit_Len The length of the data, in bits.
-
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;

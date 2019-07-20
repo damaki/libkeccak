@@ -46,17 +46,13 @@ is
 
    type Context is private;
 
-
    type States is (Updating, Extracting, Finished);
 
-
    subtype Rate_Bits_Number is Sponge.Rate_Bits_Number;
-
 
    procedure Init (Ctx : out Context)
      with Global => null,
      Post => State_Of (Ctx) = Updating;
-
 
    procedure Update_Separate (Ctx  : in out Context;
                               Data : in     Types.Byte_Array)
@@ -71,7 +67,6 @@ is
         others
         => State_Of (Ctx) = Extracting);
 
-
    procedure Update_All (Ctx        : in out Context;
                          Data       : in     Types.Byte_Array)
      with Global => null,
@@ -79,7 +74,6 @@ is
      Contract_Cases =>
        (Data'Length mod (Rate / 8) = 0 => State_Of (Ctx) = Updating,
         others                         => State_Of (Ctx) = Extracting);
-
 
    procedure Extract_Separate (Ctx  : in out Context;
                                Data :    out Types.Byte_Array)
@@ -93,14 +87,11 @@ is
         others
         => State_Of (Ctx) = Finished);
 
-
    function State_Of (Ctx : in Context) return States
      with Global => null;
 
-
    function Rate return Rate_Bits_Number
      with Global => null;
-
 
 private
    use type Sponge.States;
@@ -110,13 +101,11 @@ private
    end record
      with Predicate => Sponge.Rate_Of (Context.Sponge_Ctx) = Rate;
 
-
    function State_Of (Ctx : in Context) return States
    is (case Sponge.State_Of (Ctx.Sponge_Ctx) is
           when Sponge.Absorbing => Updating,
           when Sponge.Squeezing => Extracting,
           when Sponge.Finished  => Finished);
-
 
    function Rate return Rate_Bits_Number
    is (Sponge.Block_Size_Bits - Capacity);

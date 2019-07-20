@@ -29,10 +29,18 @@ with Keccak.Util;
 package body Keccak.Generic_KangarooTwelve
 is
 
+   --------------------------
+   --  Suffix definitions  --
+   --------------------------
+
    Suffix_110_62  : constant Types.Byte_Array (1 .. 8) := (1 => 2#011#, others => 0);
    Suffix_110     : constant Types.Byte_Array (1 .. 1) := (1 => 2#011#);
    Suffix_11      : constant Types.Byte_Array (1 .. 1) := (1 => 2#11#);
    Suffix_FFFF_01 : constant Types.Byte_Array (1 .. 3) := (16#FF#, 16#FF#, 2#10#);
+
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
 
    generic
       with package XOF_Parallel_N is new Keccak.Generic_Parallel_XOF (<>);
@@ -54,6 +62,9 @@ is
    --
    --  @param Data Byte array containing N blocks.
 
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
 
    procedure Generic_Process_Parallel_Blocks
      (Ctx  : in out Context;
@@ -84,6 +95,9 @@ is
          Message    => CV_N);
    end Generic_Process_Parallel_Blocks;
 
+   ------------------------------
+   --  Generic instantiations  --
+   ------------------------------
 
    procedure Process_8_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (XOF_Parallel_8);
@@ -94,6 +108,9 @@ is
    procedure Process_2_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (XOF_Parallel_2);
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -106,6 +123,9 @@ is
               and Ctx.Partial_Block_Length = Ctx'Old.Partial_Block_Length);
    --  Processes a single block using a serial XOF.
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -135,6 +155,9 @@ is
          Message    => CV);
    end Process_1_Block;
 
+   --------------------------
+   --  Add_To_First_Block  --
+   --------------------------
 
    procedure Add_To_First_Block
      (Ctx   : in out Context;
@@ -156,6 +179,9 @@ is
    --  Other blocks (after the first one) are hashed separately to produce
    --  chaining values.
 
+   --------------------------
+   --  Add_To_First_Block  --
+   --------------------------
 
    procedure Add_To_First_Block
      (Ctx   : in out Context;
@@ -172,7 +198,6 @@ is
             XOF_Serial.Update
               (Ctx     => Ctx.Outer_XOF,
                Message => Data (Data'First .. Data'First + (Free_In_Block - 1)));
-
 
             --  Add suffix '110^62' bits
             XOF_Serial.Update
@@ -227,6 +252,9 @@ is
       end if;
    end Add_To_First_Block;
 
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -252,6 +280,10 @@ is
 
         Ctx.Partial_Block_Length > 0 and Data'Length > 0 =>
           Added > 0);
+
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -316,6 +348,9 @@ is
       end if;
    end Add_To_Partial_Block;
 
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx : out Context)
    is
@@ -328,6 +363,9 @@ is
       XOF_Serial.Init (Ctx.Partial_Block_XOF);
    end Init;
 
+   --------------
+   --  Update  --
+   --------------
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
@@ -372,7 +410,6 @@ is
             Remaining := Remaining - (Block_Size_Bytes * 8);
          end loop;
 
-
       --  Process blocks of 4 in parallel
          while Remaining >= Block_Size_Bytes * 4 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
@@ -393,7 +430,6 @@ is
             Remaining := Remaining - (Block_Size_Bytes * 4);
          end loop;
 
-
       --  Process blocks of 2 in parallel
          while Remaining >= Block_Size_Bytes * 2 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
@@ -413,7 +449,6 @@ is
             Offset    := Offset    + (Block_Size_Bytes * 2);
             Remaining := Remaining - (Block_Size_Bytes * 2);
          end loop;
-
 
       --  Process single blocks
          if Remaining >= Block_Size_Bytes then
@@ -448,6 +483,9 @@ is
       end if;
    end Update;
 
+   --------------
+   --  Finish  --
+   --------------
 
    procedure Finish (Ctx           : in out Context;
                      Customization : in     String)
@@ -518,6 +556,9 @@ is
       end if;
    end Finish;
 
+   ---------------
+   --  Extract  --
+   ---------------
 
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)

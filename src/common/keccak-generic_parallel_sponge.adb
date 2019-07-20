@@ -46,7 +46,6 @@ is
              and then Offset mod Rate = 0),
      Post => ((Remaining mod Rate = 0) = (Length mod Rate = 0));
 
-
    procedure Lemma_Offset_Mod_Rate_Preserve
      (Offset : in Natural;
       Rate   : in Positive)
@@ -58,7 +57,6 @@ is
 
    pragma Warnings (On, "postcondition does not check the outcome");
 
-
    procedure Lemma_Remaining_Mod_Rate_Preserve
      (Offset, Remaining, Length : in Natural;
       Rate                      : in Positive)
@@ -67,7 +65,6 @@ is
       pragma Assert (Offset + Remaining = Length);
       pragma Assert (Remaining mod Rate = Length mod Rate);
    end Lemma_Remaining_Mod_Rate_Preserve;
-
 
    procedure Lemma_Offset_Mod_Rate_Preserve
      (Offset : in Natural;

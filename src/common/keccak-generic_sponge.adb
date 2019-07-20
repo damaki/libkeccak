@@ -320,7 +320,6 @@ is
            Next_Block (0 .. Ctx.Rate - 1),
            Spilled);
 
-
       XOR_Bits_Into_State (Ctx.State,
                            Ctx.Block (0 .. Ctx.Rate - 1),
                            Rate_Of (Ctx));

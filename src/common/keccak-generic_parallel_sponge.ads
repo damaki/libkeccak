@@ -50,7 +50,6 @@ generic
       Bit_Len     : in     Natural);
    --  XOR bits into a specific instance of the permutation state.
 
-
    with procedure XOR_Bits_Into_State_All
      (S           : in out State_Type;
       Data        : in     Types.Byte_Array;
@@ -76,9 +75,7 @@ package Keccak.Generic_Parallel_Sponge
 is
    Num_Parallel_Instances : constant Positive := Parallelism;
 
-
    Block_Size_Bits        : constant Positive := State_Size;
-
 
    subtype Rate_Bits_Number is Positive range 1 .. State_Size - 1
      with Dynamic_Predicate => Rate_Bits_Number mod 8 = 0;
@@ -88,19 +85,15 @@ is
    --  state (i.e. there must be at least 1 bit of "capacity"). Furthermore,
    --  this implementation restricts the Rate to a multiple of 8 bits.
 
-
    type Context (Capacity : Positive) is private;
 
-
    type States is (Absorbing, Squeezing, Finished);
-
 
    procedure Init (Ctx : out Context)
      with Global => null,
      Pre => (Ctx.Capacity < State_Size
              and then (State_Size - Ctx.Capacity) mod 8 = 0),
      Post => State_Of (Ctx) = Absorbing;
-
 
    procedure Absorb_Bytes_Separate (Ctx        : in out Context;
                                     Data       : in     Types.Byte_Array)
@@ -133,7 +126,6 @@ is
    --  the data will be absorbed, but the @Context@ will advance to the
    --  Squeezing state and no more data can be absorbed.
 
-
    procedure Absorb_Bytes_All (Ctx        : in out Context;
                                Data       : in     Types.Byte_Array)
      with Global => null,
@@ -141,7 +133,6 @@ is
      Contract_Cases =>
        (Data'Length mod (Rate_Of (Ctx) / 8) = 0 => State_Of (Ctx) = Absorbing,
         others                                  => State_Of (Ctx) = Squeezing);
-
 
    procedure Absorb_Bytes_Separate_With_Suffix
      (Ctx        : in out Context;
@@ -155,7 +146,6 @@ is
              and State_Of (Ctx) = Absorbing),
      Post => State_Of (Ctx) = Squeezing;
 
-
    procedure Absorb_Bytes_All_With_Suffix
      (Ctx        : in out Context;
       Data       : in     Types.Byte_Array;
@@ -165,7 +155,6 @@ is
      Pre => (State_Of (Ctx) = Absorbing
              and Suffix_Len in 0 .. 8 - Min_Padding_Bits),
      Post => State_Of (Ctx) = Squeezing;
-
 
    procedure Squeeze_Bytes_Separate (Ctx        : in out Context;
                                      Data       :    out Types.Byte_Array)
@@ -185,12 +174,9 @@ is
       """Data"" might not be initialized",
       "GNATprove issues a false positive due to the use of loops to initialize Data");
 
-
    function State_Of (Ctx : in Context) return States;
 
-
    function Rate_Of (Ctx : in Context) return Rate_Bits_Number;
-
 
 private
 
@@ -198,7 +184,6 @@ private
    --  This makes it easier to handle in proof, since bytes are
    --  always a multiple of 8 bits.
    subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7) / 8) - 1;
-
 
    type Context (Capacity : Positive) is record
       Permutation_State : State_Type;
@@ -210,13 +195,10 @@ private
         and then (State_Size - Context.Capacity) mod 8 = 0
         and then Context.Rate * 8 = State_Size - Context.Capacity);
 
-
    function State_Of (Ctx : in Context) return States
    is (Ctx.State);
 
-
    function Rate_Of (Ctx : in Context) return Rate_Bits_Number
    is (Ctx.Rate * 8);
-
 
 end Keccak.Generic_Parallel_Sponge;

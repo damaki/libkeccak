@@ -30,6 +30,4 @@
 package Keccak
 with SPARK_Mode => On
 is
-
-
 end Keccak;

@@ -53,24 +53,19 @@ is
    pragma Assert (XOF_Parallel_4.Num_Parallel_Instances = 4);
    pragma Assert (XOF_Parallel_8.Num_Parallel_Instances = 8);
 
-
    Block_Size_Bytes : constant := 8192;
    --  Size of each parallel block.
    --  This is set to 8 kiB in the K12 documentation.
 
    type Context is private;
 
-
    type States is (Updating, Ready_To_Extract, Extracting);
 
-
    type Byte_Count is new Long_Long_Integer range 0 .. Long_Long_Integer'Last;
-
 
    procedure Init (Ctx : out Context)
      with Global => null,
      Post => State_Of (Ctx) = Updating;
-
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
@@ -81,7 +76,6 @@ is
               and Num_Bytes_Processed (Ctx) =
                 Num_Bytes_Processed (Ctx'Old) + Byte_Count (Data'Length));
 
-
    procedure Finish (Ctx           : in out Context;
                      Customization : in     String)
      with Global => null,
@@ -91,21 +85,17 @@ is
               <= Max_Input_Length (Ctx))),
      Post => State_Of (Ctx) = Ready_To_Extract;
 
-
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
      with Global => null,
      Pre => State_Of (Ctx) in Ready_To_Extract | Extracting,
      Post => State_Of (Ctx) = Extracting;
 
-
    function State_Of (Ctx : in Context) return States
      with Global => null;
 
-
    function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
      with Global => null;
-
 
    function Max_Input_Length (Ctx : in Context) return Byte_Count;
 
@@ -119,7 +109,6 @@ private
 
    subtype Partial_Block_Length_Number is Natural range 0 .. Block_Size_Bytes - 1;
 
-
    type Context is record
       Outer_XOF            : XOF_Serial.Context;
       Partial_Block_XOF    : XOF_Serial.Context;
@@ -127,7 +116,6 @@ private
       Partial_Block_Length : Partial_Block_Length_Number;
       Finished             : Boolean;
    end record;
-
 
    function State_Of (Ctx : in Context) return States
    is (if (XOF_Serial.State_Of (Ctx.Outer_XOF) = XOF_Serial.Updating
@@ -141,13 +129,10 @@ private
 
        else Extracting);
 
-
    function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
    is (Ctx.Input_Len);
 
-
    function Max_Input_Length (Ctx : in Context) return Byte_Count
    is (Byte_Count'Last - Num_Bytes_Processed (Ctx));
-
 
 end Keccak.Generic_KangarooTwelve;

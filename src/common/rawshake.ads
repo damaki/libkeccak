@@ -50,5 +50,4 @@ is
       Suffix      => 2#11#,
       Suffix_Size => 2);
 
-
 end RawSHAKE;

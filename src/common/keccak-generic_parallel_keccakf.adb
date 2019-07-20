@@ -27,6 +27,10 @@
 package body Keccak.Generic_Parallel_KeccakF
 is
 
+   ---------------------
+   --  Bytes_To_Lane  --
+   ---------------------
+
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
                            Offset : in Natural) return Lane_Type
      with Inline,
@@ -34,6 +38,9 @@ is
              and then Offset < Data'Length
              and then Data'Length - Offset >= W / 8);
 
+   ---------------------
+   --  Bytes_To_Lane  --
+   ---------------------
 
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
                            Offset : in Natural) return Lane_Type
@@ -46,12 +53,18 @@ is
       return Lane;
    end Bytes_To_Lane;
 
+   ------------------------------------
+   --  VXXI_Index_Offset_From_First  --
+   ------------------------------------
 
    function VXXI_Index_Offset_From_First (Offset : in Natural) return VXXI_Index
    is (VXXI_Index (Integer (VXXI_Index'First) + Offset))
    with Inline,
    Pre => Offset < Integer (VXXI_Index'Last) - Integer (VXXI_Index'First) + 1;
 
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (S : out Parallel_State)
    is
@@ -59,6 +72,9 @@ is
       S := (others => (others => (others => 0)));
    end Init;
 
+   -------------------
+   --  Permute_All  --
+   -------------------
 
    procedure Permute_All (S : in out Parallel_State)
    is
@@ -198,7 +214,6 @@ is
          Asu := Load (S (4, 4));
       end Copy_From_State;
 
-
       procedure Copy_To_State_From_A
       is
       begin
@@ -229,7 +244,6 @@ is
                      4 => Store (Asu))
               );
       end Copy_To_State_From_A;
-
 
       procedure Copy_To_State_From_E
       is
@@ -568,6 +582,9 @@ is
 
    end Permute_All;
 
+   ------------------------------------
+   --  XOR_Bits_Into_State_Separate  --
+   ------------------------------------
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -644,6 +661,9 @@ is
       end if;
    end XOR_Bits_Into_State_Separate;
 
+   -------------------------------
+   --  XOR_Bits_Into_State_All  --
+   -------------------------------
 
    procedure XOR_Bits_Into_State_All (S       : in out Parallel_State;
                                       Data    : in     Keccak.Types.Byte_Array;
@@ -710,7 +730,9 @@ is
       end if;
    end XOR_Bits_Into_State_All;
 
-
+   ---------------------
+   --  Extract_Bytes  --
+   ---------------------
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Keccak.Types.Byte_Array;

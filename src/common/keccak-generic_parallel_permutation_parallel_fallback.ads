@@ -109,12 +109,10 @@ is
    procedure Init (S : out Parallel_State)
      with Global => null;
 
-
    generic
       with procedure Permute (S : in out Permutation_State);
    procedure Permute_All (S : in out Parallel_State)
      with Global => null;
-
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -128,7 +126,6 @@ is
              and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
              and then Bit_Len <= State_Size);
 
-
    procedure XOR_Bits_Into_State_All
      (S           : in out Parallel_State;
       Data        : in     Types.Byte_Array;
@@ -138,7 +135,6 @@ is
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= State_Size);
-
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;

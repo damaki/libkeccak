@@ -27,6 +27,10 @@
 package body Keccak.Generic_Parallel_Permutation_Parallel_Fallback
 is
 
+   ------------
+   --  Init  --
+   ------------
+
    procedure Init (S : out Parallel_State)
    is
    begin
@@ -40,6 +44,9 @@ is
       end loop;
    end Init;
 
+   -------------------
+   --  Permute_All  --
+   -------------------
 
    procedure Permute_All (S : in out Parallel_State)
    is
@@ -49,6 +56,9 @@ is
       end loop;
    end Permute_All;
 
+   ------------------------------------
+   --  XOR_Bits_Into_State_Separate  --
+   ------------------------------------
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -74,6 +84,9 @@ is
       end if;
    end XOR_Bits_Into_State_Separate;
 
+   -------------------------------
+   --  XOR_Bits_Into_State_All  --
+   -------------------------------
 
    procedure XOR_Bits_Into_State_All
      (S           : in out Parallel_State;
@@ -89,6 +102,9 @@ is
       end loop;
    end XOR_Bits_Into_State_All;
 
+   ---------------------
+   --  Extract_Bytes  --
+   ---------------------
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;

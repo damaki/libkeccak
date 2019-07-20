@@ -27,12 +27,19 @@
 package body Keccak.Generic_Parallel_XOF
 is
 
+   ------------
+   --  Init  --
+   ------------
+
    procedure Init (Ctx : out Context)
    is
    begin
       Sponge.Init (Ctx.Sponge_Ctx);
    end Init;
 
+   -----------------------
+   --  Update_Separate  --
+   -----------------------
 
    procedure Update_Separate (Ctx  : in out Context;
                               Data : in     Types.Byte_Array)
@@ -51,6 +58,9 @@ is
       end if;
    end Update_Separate;
 
+   ------------------
+   --  Update_All  --
+   ------------------
 
    procedure Update_All (Ctx        : in out Context;
                          Data       : in     Types.Byte_Array)
@@ -68,6 +78,9 @@ is
       end if;
    end Update_All;
 
+   ------------------------
+   --  Extract_Separate  --
+   ------------------------
 
    procedure Extract_Separate (Ctx  : in out Context;
                                Data :    out Types.Byte_Array)

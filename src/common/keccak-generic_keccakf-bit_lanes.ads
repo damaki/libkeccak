@@ -42,7 +42,6 @@ is
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= B);
 
-
    procedure XOR_Bits_Into_State (A       : in out Lane_Complemented_State;
                                   Data    : in     Keccak.Types.Byte_Array;
                                   Bit_Len : in     Natural)
@@ -53,23 +52,17 @@ is
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= B);
 
-
-
    procedure Extract_Bytes (A    : in     State;
                             Data :    out Keccak.Types.Byte_Array)
      with Global => null,
      Depends => (Data =>+ A),
      Pre => Data'Length <= ((B + 7) / 8);
 
-
-
    procedure Extract_Bytes (A    : in     Lane_Complemented_State;
                             Data :    out Keccak.Types.Byte_Array)
      with Global => null,
      Depends => (Data =>+ A),
      Pre => Data'Length <= ((B + 7) / 8);
-
-
 
    procedure Extract_Bits (A       : in     State;
                            Data    :    out Keccak.Types.Byte_Array;
@@ -78,8 +71,6 @@ is
      Depends => (Data =>+ (A, Bit_Len)),
      Pre => (Bit_Len <= B
              and then Data'Length = (Bit_Len + 7) / 8);
-
-
 
    procedure Extract_Bits (A       : in     Lane_Complemented_State;
                            Data    :    out Keccak.Types.Byte_Array;
