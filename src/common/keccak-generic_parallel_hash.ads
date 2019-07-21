@@ -121,7 +121,7 @@ is
    function Max_Input_Length (Ctx : in Context) return Byte_Count
      with Global => null;
 
-   function Block_Size (Ctx : in Context) return Block_Size_Number
+   function Block_Size_Of (Ctx : in Context) return Block_Size_Number
      with Global => null;
 
 private
@@ -156,7 +156,7 @@ private
    function Max_Input_Length (Ctx : in Context) return Byte_Count
    is (Byte_Count'Last - Num_Bytes_Processed (Ctx));
 
-   function Block_Size (Ctx : in Context) return Block_Size_Number
+   function Block_Size_Of (Ctx : in Context) return Block_Size_Number
    is (Ctx.Block_Size);
 
 end Keccak.Generic_Parallel_Hash;

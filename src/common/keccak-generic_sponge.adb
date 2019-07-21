@@ -68,7 +68,8 @@ is
       Offset              : Natural := 0;
       Remaining_Bits      : Natural := Bit_Length;
       Remaining_Bytes     : Natural := (Bit_Length + 7) / 8;
-      Initial_Data_Len    : Natural := Remaining_Bytes;
+
+      Initial_Data_Len    : constant Natural := Remaining_Bytes;
 
       Free_Bytes_In_Block : Natural;
       Free_Bits_In_Block  : Natural;
@@ -172,14 +173,12 @@ is
                                  Suffix     : in     Keccak.Types.Byte;
                                  Suffix_Len : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Suffix_Array        : Keccak.Types.Byte_Array (0 .. 0) := (0 => Suffix);
 
-      Message_Byte_Length : Natural := (Bit_Length + 7) / 8;
+      Message_Byte_Length : constant Natural := (Bit_Length + 7) / 8;
       Message_Last        : Keccak.Types.Index_Number;
 
-      Initial_Rate        : Positive := Rate_Of (Ctx) with Ghost;
+      Initial_Rate        : constant Positive := Rate_Of (Ctx) with Ghost;
 
    begin
       if Bit_Length = 0 and Suffix_Len > 0 then

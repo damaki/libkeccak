@@ -45,7 +45,7 @@ is
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
-      Initial_Byte_Len : Natural := (Bit_Len + 7) / 8 with Ghost;
+      Initial_Byte_Len : constant Natural := (Bit_Len + 7) / 8 with Ghost;
 
    begin
       while Remaining_Bits >= 8 loop
@@ -54,8 +54,9 @@ is
          pragma Loop_Invariant (Offset + ((Remaining_Bits + 7) / 8) = Initial_Byte_Len);
 
          declare
-            Byte : Keccak.Types.Byte := Data (Data'First + Offset);
+            Byte : constant Keccak.Types.Byte := Data (Data'First + Offset);
             Lane : Lane_Type;
+
          begin
             for I in Natural range 0 .. (8 / W) - 1 loop
                Lane := Lane_Type (Interfaces.Shift_Right (Byte, I * W) and (2**W - 1));

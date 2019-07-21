@@ -58,7 +58,7 @@ is
    is
       use type XOF.States;
 
-      Block_Remaining : Natural := Block'Length - Block_Offset;
+      Block_Length    : constant Natural := Block'Length - Block_Offset;
       Input_Remaining : Natural := Input'Length;
       Input_Offset    : Natural := 0;
 
@@ -73,7 +73,7 @@ is
          --  Merge first bytes of Input with the last bytes currently in
          --  the block.
 
-         if Input_Remaining < Block_Remaining then
+         if Input_Remaining < Block_Length then
             --  Not enough for a full block.
 
             Block (Block_Offset .. Block_Offset + Input_Remaining - 1) :=
@@ -87,12 +87,12 @@ is
             --  We have enough for a full block
 
             Block (Block_Offset .. Block'Last) :=
-              Input (Input'First .. Input'First + Block_Remaining - 1);
+              Input (Input'First .. Input'First + Block_Length - 1);
 
             XOF.Update_All (Ctx.XOF_Ctx, Block);
 
-            Input_Offset    := Input_Offset    + Block_Remaining;
-            Input_Remaining := Input_Remaining - Block_Remaining;
+            Input_Offset    := Input_Offset    + Block_Length;
+            Input_Remaining := Input_Remaining - Block_Length;
 
             Block_Offset    := 0;
 

@@ -47,7 +47,7 @@ is
                      Message    : in     Byte_Array;
                      Bit_Length : in     Natural)
    is
-      Num_Bytes : Natural := (Bit_Length + 7) / 8;
+      Num_Bytes : constant Natural := (Bit_Length + 7) / 8;
 
    begin
       pragma Assert (Num_Bytes <= Message'Length);
@@ -119,7 +119,7 @@ is
    procedure Final (Ctx     : in out Context;
                     Digest  :    out Digest_Type)
    is
-      Empty : Keccak.Types.Byte_Array (0 .. -1) := (others => 0);
+      Empty : constant Keccak.Types.Byte_Array (0 .. -1) := (others => 0);
 
    begin
       if State_Of (Ctx) = Updating then

@@ -10,7 +10,7 @@ project Libkeccak is
 
    Style_Switches := ("-gnaty3aAbcdefhiklL6M100nrSstu");
 
-   Warning_Switches := ("-gnatwe");
+   Warning_Switches := ("-gnatwc.cefghijklmoqrtvwxyz");
 
    case Arch is
       when "generic" =>

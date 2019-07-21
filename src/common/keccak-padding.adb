@@ -70,7 +70,7 @@ is
                                   Next_Block     :    out Keccak.Types.Byte_Array;
                                   Spilled        :    out Boolean)
    is
-      Num_Free_Bits : Natural := Max_Bit_Length - Num_Used_Bits;
+      Num_Free_Bits : constant Natural := Max_Bit_Length - Num_Used_Bits;
 
       Last_Bit  : Keccak.Types.Byte;
       First_Bit : Keccak.Types.Byte;
