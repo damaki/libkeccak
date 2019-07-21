@@ -531,7 +531,7 @@ is
                  (Ctx    => Ctx.Partial_Block_XOF,
                   Digest => CV);
 
-               pragma Warnings (GNATprove, Off);
+               pragma Warnings (GNATprove, On);
 
                XOF_Serial.Update
                  (Ctx     => Ctx.Outer_XOF,

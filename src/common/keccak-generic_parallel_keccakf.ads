@@ -26,19 +26,35 @@
 -------------------------------------------------------------------------------
 with Keccak.Types;
 
+--  @summary
+--  Implements an optimized Keccak-f permutation based on SIMD instruction sets
+--  such as SSE, NEON, and AVX.
+--
+--  @description
+--  This package provides a basis for parallel implementations of Keccak
+--  for processing N separate permutations in parallel, where N is the number
+--  of vector components in the SIMD instruction set used.
+--
+--  When instantiating this package, subprograms and types are provided as
+--  formal generic parameters which implement each of the required operations
+--  for the target instruction set.
+--
+--  @group Parallel Keccak-f
 generic
    L : in Positive;
    --  The binary logarithm of the lane size.
    --
-   --  This determines the Keccak-f state size. Possible values are:
+   --  This determines the Keccak-f state size. Allowed values are:
    --  * L=3 => 8-bit lanes,  Keccak-f[200]
    --  * L=4 => 16-bit lanes, Keccak-f[400]
    --  * L=5 => 32-bit lanes, Keccak-f[800]
    --  * L=6 => 64-bit lanes, Keccak-f[1600]
 
    type Lane_Type is mod <>;
+   --  Lane type e.g. Unsigned_64.
 
    type VXXI_Index is range <>;
+   --  Index type into the vector component.
 
    type VXXI is private;
    --  Vector type.
@@ -76,18 +92,6 @@ generic
    with function Shift_Right (A      : in Lane_Type;
                               Amount : in Natural) return Lane_Type;
 
-   --  @brief@
-   --  Implements an optimized Keccak algorithm based on SIMD instruction sets
-   --  such as SSE, NEON, and AVX.
-   --
-   --  @description@
-   --  This package provides a basis for parallel implementations of Keccak
-   --  for processing N separate permutations in parallel, where N is the number
-   --  of vector components in the SIMD instruction set used.
-   --
-   --  When instantiating this package, subprograms and types are provided as
-   --  formal generic parameters which implement each of the required operations
-   --  for the target instruction set.
 package Keccak.Generic_Parallel_KeccakF
 is
    W : constant Positive := 2**L;
@@ -114,12 +118,17 @@ is
 
    procedure Init (S : out Parallel_State)
      with Global => null;
+   --  Initialise the Keccak state to all zeroes.
 
    generic
       First_Round : Round_Index := 0;
       Num_Rounds  : Round_Count := 24;
    procedure Permute_All (S : in out Parallel_State)
      with Global => null;
+   --  Applies the Keccak-f permutation function to all N parallel states.
+   --
+   --  This generic function is a Keccak-p permutation which is
+   --  instantiated, with the number rounds, into a Keccak-f instance.
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -139,17 +148,17 @@ is
    --  the number of parallel instances. For example, for Keccak-f[1600]�2 the
    --  @Data@ array is split into 2 chunks as shown below:
    --
-   --    DO    BL             DO    BL
-   --  |--->|<---->|        |--->|<---->|
-   --  +-----------------------------------------+
-   --  |                    |                    | Data
-   --  +-----------------------------------------+
-   --       |      |             |      |
-   --       | XOR  |             | XOR  |
-   --       |  v   |             |  v   |
-   --       +-----------+        +-----------+
-   --       |  state 0  |        |  state 1  |
-   --       +-----------+        +-----------+
+   --     . DO    BL             DO    BL
+   --     |--->|<---->|        |--->|<---->|
+   --     +-----------------------------------------+
+   --     |                    |                    | Data
+   --     +-----------------------------------------+
+   --     .    |      |             |      |
+   --     .    | XOR  |             | XOR  |
+   --     .    |  v   |             |  v   |
+   --     .    +-----------+        +-----------+
+   --     .    |  state 0  |        |  state 1  |
+   --     .    +-----------+        +-----------+
    --
    --  Where DO = Data_Offset and BL = Bit_Len
    --
@@ -185,17 +194,17 @@ is
    --  The @Data@ array contains the data to be XORed into all parallel
    --  instances. For example, for Keccak-f[1600]�2 this would be as follows:
    --
-   --                   BL
-   --             |<--------->|
-   --             +----------------+
-   --             |                | Data
-   --             +----------------+
-   --                     /\
-   --                XOR /  \ XOR
-   --                 v /    \ v
-   --          +-----------+-----------+
-   --          |  state 0  |  state 1  |
-   --          +-----------+-----------+
+   --     .        BL
+   --     .  |<--------->|
+   --     .  +----------------+
+   --     .  |                | Data
+   --     .  +----------------+
+   --     .          /\
+   --     .     XOR /  \ XOR
+   --     .      v /    \ v
+   --     +-----------+-----------+
+   --     |  state 0  |  state 1  |
+   --     +-----------+-----------+
    --
    --  Where BL = Bit_Len
    --
@@ -224,17 +233,17 @@ is
    --  An example is shown below for Keccak-f[1600]�2 (i.e. 2 parallel
    --  instances):
    --
-   --    DO    BL             DO    BL
-   --  |--->|<---->|        |--->|<---->|
-   --  +-----------------------------------------+
-   --  |                    |                    | Data
-   --  +-----------------------------------------+
-   --       |  ^   |             |  ^   |
-   --       | Read |             | Read |
-   --       |      |             |      |
-   --       +-----------+        +-----------+
-   --       |  state 0  |        |  state 1  |
-   --       +-----------+        +-----------+
+   --     . DO    BL             DO    BL
+   --     |--->|<---->|        |--->|<---->|
+   --     +-----------------------------------------+
+   --     |                    |                    | Data
+   --     +-----------------------------------------+
+   --     .    |  ^   |             |  ^   |
+   --     .    | Read |             | Read |
+   --     .    |      |             |      |
+   --     .    +-----------+        +-----------+
+   --     .    |  state 0  |        |  state 1  |
+   --     .    +-----------+        +-----------+
    --
    --  The bytes are always read from the beginning of the Keccak state.
    --

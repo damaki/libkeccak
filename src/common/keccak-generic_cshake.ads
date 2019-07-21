@@ -29,16 +29,44 @@ with Keccak.Generic_XOF;
 
 pragma Elaborate_All (Keccak.Generic_XOF);
 
+--  @summary
+--  Implements cSHAKE on top of any generic eXtedable Output Function (XOF).
+--
+--  @description
+--  This API is used as follows:
+--
+--  1 Initialise a new context by calling Init. Customization strings can be
+--    optionally given to Init to provide domain separation between different
+--    uses of cSHAKE.
+--
+--  2 Call Update one or more times to input an arbitrary amount of data into cSHAKE.
+--
+--  3 Call Extract one or more times to produce an arbitrary number of output bytes.
+--
+--  @group cSHAKE
 generic
+
    with package XOF is new Keccak.Generic_XOF (<>);
    --  The extendable output function on which the CSHAKE instance is
    --  constructed.
+
 package Keccak.Generic_CSHAKE
 is
 
    type Context is private;
 
    type States is (Updating, Ready_To_Extract, Extracting);
+   --  The possible states for the context.
+   --
+   --  @value Updating When in this state the context can be fed
+   --  with input data by calling the Update procedure.
+   --
+   --  @value Ready_To_Extract When in this state the Update procedure can
+   --  no longer be called (i.e. no more data can be input to the context),
+   --  and the context is ready to generate output data.
+   --
+   --  @value Extracting When in this state the context can produce output
+   --  bytes by calling the Extract procedure.
 
    procedure Init (Ctx           :    out Context;
                    Customization : in     String := "";
@@ -60,14 +88,14 @@ is
    --  many times as necessary for the different computations. The following
    --  example creates two contexts initialised to the same value:
    --
-   --    declare
-   --       Ctx1 : Context;
-   --       Ctx2 : Context;
-   --    begin
-   --       Init (Ctx1, "Example", "");
+   --     declare
+   --        Ctx1 : Context;
+   --        Ctx2 : Context;
+   --     begin
+   --        Init (Ctx1, "Example", "");
    --
-   --       Ctx2 := Ctx1;
-   --    end;
+   --        Ctx2 := Ctx1;
+   --     end;
    --
    --  @param Ctx The context to initialize.
    --
@@ -109,8 +137,9 @@ is
    --
    --  This procedure can only be called when the Ctx is in the Updating state.
    --
-   --  This function may be called multiple times only if the Bit_Length is not
-   --  a multiple of 8 bits. Otherwise, further calls to
+   --  This procedure may be called multiple times to process long messages,
+   --  as long as the Bit_Length is a multiple of 8 for all calls except the
+   --  last call, which may use any Bit_Length value.
 
    procedure Extract (Ctx    : in out Context;
                       Digest :    out Byte_Array)

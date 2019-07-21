@@ -27,6 +27,7 @@
 with CSHAKE;
 with Keccak.Generic_Tuple_Hash;
 
+--  @group TupleHash
 package Tuple_Hash
 with SPARK_Mode => On
 is

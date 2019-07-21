@@ -39,6 +39,8 @@ pragma Elaborate_All (Keccak.Generic_KeccakF.Bit_Lanes);
 pragma Elaborate_All (Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
 pragma Elaborate_All (Keccak.Generic_Sponge);
 
+--  @summary
+--  Instantiation of Keccak with a state size of 25 bits (1-bit lanes).
 package Keccak.Keccak_25
 with SPARK_Mode => On
 is

@@ -29,6 +29,7 @@ with Keccak.Generic_KMAC;
 
 pragma Elaborate_All (Keccak.Generic_KMAC);
 
+--  @group KMAC
 package KMAC
 with SPARK_Mode => On
 is

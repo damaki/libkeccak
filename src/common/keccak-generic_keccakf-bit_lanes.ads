@@ -25,6 +25,10 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
+--  @summary
+--  Subprograms for operating on Keccak-f states with a line size less than 8 bits.
+--
+--  @group Keccak-f
 generic
 package Keccak.Generic_KeccakF.Bit_Lanes
 is

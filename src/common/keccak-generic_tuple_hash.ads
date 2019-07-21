@@ -27,6 +27,7 @@
 with Keccak.Generic_CSHAKE;
 with Keccak.Types;          use Keccak.Types;
 
+--  @group TupleHash
 generic
    with package CSHAKE is new Generic_CSHAKE (<>);
 package Keccak.Generic_Tuple_Hash

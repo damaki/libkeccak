@@ -26,6 +26,14 @@
 -------------------------------------------------------------------------------
 with Keccak.Types;
 
+--  @summary
+--  Generic implementation of the Keccak-f permutations.
+--
+--  @description
+--  This generic package implements the Keccak-f permutations for bit sizes of:
+--  25, 50, 100, 200, 400, 800, and 1600 bits.
+--
+--  @group Keccak-f
 generic
    --  The binary logarithm of the lane size.
    --
@@ -57,15 +65,9 @@ generic
    with function Rotate_Left (Value  : in Lane_Type;
                               Amount : in Natural) return Lane_Type;
 
-   --  @summary
-   --  Generic implementation of the Keccak-f permutations.
-   --
-   --  @description
-   --  This generic package implements the Keccak-f permutations for bit sizes of:
-   --  25, 50, 100, 200, 400, 800, and 1600 bits.
 package Keccak.Generic_KeccakF
 is
-   W : constant Positive := 2**L; --  Lane size in bits
+   W : constant Positive := 2**L;   --  Lane size in bits
    B : constant Positive := W * 25; --  State size in bits (1600, 800, etc...)
 
    pragma Assert (Lane_Type'Modulus = 2**W,

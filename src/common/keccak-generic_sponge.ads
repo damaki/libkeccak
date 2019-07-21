@@ -27,6 +27,28 @@
 
 with Keccak.Types;
 
+--  @summary
+--  Implements the sponge construction.
+--
+--  @description
+--  The sponge construction is defined in Section 2.2 of "Cryptographic Sponge
+--  Functions" (see also Section 4 of NIST FIPS 202).
+--
+--  This package is generic and can be used with any fixed-length transformation
+--  permutation (such as Keccak). The following formal generics are required to
+--  define the state, and the operations on the state which are required by the
+--  sponge:
+--  * The type of the state is defined by the 'State' parameter.
+--  * The bit-length of the state is defined by the 'State_Size' parameter.
+--  * The 'Init_State' procedure initializes the state to zeroes.
+--  * The 'XOR_Bits_Into_State' procedure XORs bits into the state.
+--  * The 'F' procedure permutes the state.
+--  * The 'Extract_Data' procedure converts all or part of the state into a byte
+--    array.
+--
+--  Additionally, the 'Pad' procedure provides the padding rule, which adds
+--  padding bits into a block of data (the padding may spill over into another
+--  block if there is not enough free bits in the first provided block).
 generic
    --  Size of the Sponge state in bits (e.g. 1600 for Keccak[1600])
    State_Size : Positive;
@@ -56,28 +78,6 @@ generic
                        Next_Block     :    out Keccak.Types.Byte_Array;
                        Spilled        :    out Boolean);
 
-   --  @summary
-   --  This package implements the sponge construction.
-   --
-   --  @description
-   --  The sponge construction is defined in Section 2.2 of "Cryptographic Sponge
-   --  Functions" (see also Section 4 of NIST FIPS 202).
-   --
-   --  This package is generic and can be used with any fixed-length transformation
-   --  permutation (such as Keccak). The following formal generics are required to
-   --  define the state, and the operations on the state which are required by the
-   --  sponge:
-   --  * The type of the state is defined by the 'State' parameter.
-   --  * The bit-length of the state is defined by the 'State_Size' parameter.
-   --  * The 'Init_State' procedure initializes the state to zeroes.
-   --  * The 'XOR_Bits_Into_State' procedure XORs bits into the state.
-   --  * The 'F' procedure permutes the state.
-   --  * The 'Extract_Data' procedure converts all or part of the state into a byte
-   --    array.
-   --
-   --  Additionally, the 'Pad' procedure provides the padding rule, which adds
-   --  padding bits into a block of data (the padding may spill over into another
-   --  block if there is not enough free bits in the first provided block).
 package Keccak.Generic_Sponge
 is
 

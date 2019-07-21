@@ -34,6 +34,8 @@ pragma Elaborate_All (Keccak.Generic_KeccakF);
 pragma Elaborate_All (Keccak.Generic_KeccakF.Byte_Lanes);
 pragma Elaborate_All (Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
 
+--  @summary
+--  Instantiation of Keccak with a state size of 200 bits (8-bit lanes).
 package Keccak.Keccak_200
 with SPARK_Mode => On
 is

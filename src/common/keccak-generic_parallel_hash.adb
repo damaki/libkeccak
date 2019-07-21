@@ -48,7 +48,7 @@ is
    --  Generic procedure to process N blocks in parallel.
    --
    --  This procedure process N blocks in parallel to produce N chaining values
-   --  (CV). The CVs are then processed in the outer (serial) CSHAKE.
+   --  (CV). The CVs are then processed in the outer (serial) cSHAKE.
    --
    --  @param Ctx The KangarooTwelve context.
    --
@@ -64,20 +64,20 @@ is
    is
       N : constant Positive := SHAKE_Parallel_N.Num_Parallel_Instances;
 
-      Par_Ctx : SHAKE_Parallel_N.Context;
+      Parallel_Ctx : SHAKE_Parallel_N.Context;
 
       CV_N : Types.Byte_Array (1 .. CV_Size_Bytes * N);
 
    begin
       --  Process N blocks in parallel and produce N chaining values.
-      SHAKE_Parallel_N.Init (Par_Ctx);
-      SHAKE_Parallel_N.Update_Separate  (Par_Ctx, Data);
+      SHAKE_Parallel_N.Init (Parallel_Ctx);
+      SHAKE_Parallel_N.Update_Separate  (Parallel_Ctx, Data);
 
       pragma Warnings (GNATprove, Off,
-                       "unused assignment to ""Par_Ctx""",
+                       "unused assignment to ""Parallel_Ctx""",
                        Reason => "No further data needs to be extracted");
 
-      SHAKE_Parallel_N.Extract_Separate (Par_Ctx, CV_N);
+      SHAKE_Parallel_N.Extract_Separate (Parallel_Ctx, CV_N);
 
       pragma Warnings (GNATprove, On);
 

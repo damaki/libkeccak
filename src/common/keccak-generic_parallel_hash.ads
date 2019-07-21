@@ -32,6 +32,7 @@ with Keccak.Types;
 generic
 
    CV_Size_Bytes : Positive;
+   --  Length of the Chaining Values, in bytes.
 
    with package CSHAKE_Serial is new Keccak.Generic_CSHAKE (<>);
    --  This CSHAKE must be configured with NO SUFFIX BITS.

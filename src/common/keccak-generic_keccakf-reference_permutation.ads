@@ -25,8 +25,8 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
---  @brief
---  A reference implementation of the Keccak-f permitation.
+--  @summary
+--  A reference implementation of the Keccak-f permutation.
 --
 --  @description
 --  This package implements Keccak-p for an arbitrary lane size by following
@@ -36,6 +36,8 @@
 --  This isn't the fastest implementation of Keccak, but is easier to verify
 --  against the specification and provides a reference implementation to which
 --  optimised implementations can be tested against for correctness.
+--
+--  @group Keccak-f
 generic
 package Keccak.Generic_KeccakF.Reference_Permutation
 is

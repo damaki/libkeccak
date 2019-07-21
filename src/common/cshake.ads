@@ -33,25 +33,45 @@ pragma Elaborate_All (Keccak.Generic_XOF);
 
 --  @summary
 --  Defines concrete instantiations of cSHAKE128 and cSHAKE256.
+--
+--  @description
+--  There are two variants of cSHAKE instantiated as defined by NIST SP 800-185:
+--  * cSHAKE128
+--  * cSHAKE256
+--
+--  @group cSHAKE
 package CSHAKE
 with SPARK_Mode => On
 is
-   package CSHAKE128_XOF is new Keccak.Generic_XOF
-     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
-      Capacity    => 256,
-      Suffix      => 2#00#,
-      Suffix_Size => 2);
 
-   package CSHAKE256_XOF is new Keccak.Generic_XOF
-     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
-      Capacity    => 512,
-      Suffix      => 2#00#,
-      Suffix_Size => 2);
+   --  @summary
+   --  Implementation-defined entities used to define cSHAKE128 and cSHAKE256.
+   ---
+   --  @private
+   package Implementation is
+
+      --  These XOF definitions differ from SHAKE128 and SHAKE256 only in their
+      --  suffixes. SHAKE uses 2#1111# and cSHAKE uses 2#00#, providing domain
+      --  separation between the two.
+
+      package CSHAKE128_XOF is new Keccak.Generic_XOF
+      (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
+         Capacity    => 256,
+         Suffix      => 2#00#,
+         Suffix_Size => 2);
+
+      package CSHAKE256_XOF is new Keccak.Generic_XOF
+      (XOF_Sponge  => Keccak.Keccak_1600.Rounds_24.Sponge,
+         Capacity    => 512,
+         Suffix      => 2#00#,
+         Suffix_Size => 2);
+
+   end Implementation;
 
    package CSHAKE128 is new Keccak.Generic_CSHAKE
-     (XOF => CSHAKE128_XOF);
+     (XOF => Implementation.CSHAKE128_XOF);
 
    package CSHAKE256 is new Keccak.Generic_CSHAKE
-     (XOF => CSHAKE256_XOF);
+     (XOF => Implementation.CSHAKE256_XOF);
 
 end CSHAKE;

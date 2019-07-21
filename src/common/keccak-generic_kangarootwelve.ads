@@ -28,6 +28,23 @@ with Keccak.Generic_XOF;
 with Keccak.Generic_Parallel_XOF;
 with Keccak.Types;
 
+--  @summary
+--  Generic implementation of the KangarooTwelve hash algorithm.
+--
+--  @description
+--  This API is used as follows:
+--
+--  1 Initialise a new context by calling Init.
+--
+--  2 Call Update one or more times to input an arbitrary amount of data.
+--
+--  3 Call Finish after all input data has been processed. An optional
+--    customisation string can be given to provide domain separation
+--    between different uses of KangarooTwelve.
+--
+--  4 Call Extract one or more times to produce an arbitrary number of output bytes.
+--
+--  @group KangarooTwelve
 generic
 
    with package XOF_Serial is new Keccak.Generic_XOF (<>);
@@ -60,12 +77,25 @@ is
    type Context is private;
 
    type States is (Updating, Ready_To_Extract, Extracting);
+   --  The possible states for the context.
+   --
+   --  @value Updating When in this state the context can be fed
+   --  with input data by calling the Update procedure.
+   --
+   --  @value Ready_To_Extract When in this state the Update procedure can
+   --  no longer be called (i.e. no more data can be input to the context),
+   --  and the context is ready to generate output data.
+   --
+   --  @value Extracting When in this state the context can produce output
+   --  bytes by calling the Extract procedure.
 
    type Byte_Count is new Long_Long_Integer range 0 .. Long_Long_Integer'Last;
+   --  Represents a quantity of bytes.
 
    procedure Init (Ctx : out Context)
      with Global => null,
      Post => State_Of (Ctx) = Updating;
+   --  Initialise the KangarooTwelve state.
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
@@ -75,6 +105,20 @@ is
      Post => (State_Of (Ctx) = Updating
               and Num_Bytes_Processed (Ctx) =
                 Num_Bytes_Processed (Ctx'Old) + Byte_Count (Data'Length));
+   --  Process input bytes.
+   --
+   --  This may be called multiple times to process long messages.
+   --
+   --  The total number of input bytes that can be processed cannot
+   --  exceed Byte_Count'Last (a subtype of Long_Long_Integer). This is
+   --  because KangarooTwelve feeds the total input length into the
+   --  calculation. The total number of input bytes processed so far
+   --  can be retrieved by calling the Num_Bytes_Processed function,
+   --  and the maximum allowed input size remaining can be retrieved
+   --  by calling Max_Input_Length.
+   --
+   --  @param Ctx The KangarooTwelve context.
+   --  @param Data The input bytes to process. The entire array is processed.
 
    procedure Finish (Ctx           : in out Context;
                      Customization : in     String)
@@ -84,20 +128,45 @@ is
               (Byte_Count (Customization'Length) + Byte_Count (Long_Long_Integer'Size / 8) + 2
               <= Max_Input_Length (Ctx))),
      Post => State_Of (Ctx) = Ready_To_Extract;
+   --  Prepare the KangarooTwelve context to produce output.
+   --
+   --  This is called once only, after all input bytes have been
+   --  processed, and must be called before calling Extract.
+   --
+   --  An optional Customization string can be applied to provide
+   --  domain separation between different KangarooTwelve instances.
+   --  I.e. processing the exact same input data twice, but with
+   --  different customization strings will result in unrelated outputs.
+   --
+   --  @param Ctx The KangarooTwelve context.
+   --  @param Customization An optional customization string for domain
+   --    separation. If not needed, then an empty string can be used.
 
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
      with Global => null,
      Pre => State_Of (Ctx) in Ready_To_Extract | Extracting,
      Post => State_Of (Ctx) = Extracting;
+   --  Get output bytes.
+   --
+   --  This can be called multiple times to produce very long outputs.
+   --
+   --  The Finish procedure must be called before the first call to Extract.
 
    function State_Of (Ctx : in Context) return States
      with Global => null;
+   --  Get the current state of the context.
 
    function Num_Bytes_Processed (Ctx : in Context) return Byte_Count
-     with Global => null;
+     with Inline,
+     Global => null;
+   --  Get the total number of input bytes processed so far.
 
-   function Max_Input_Length (Ctx : in Context) return Byte_Count;
+   function Max_Input_Length (Ctx : in Context) return Byte_Count
+     with Inline,
+     Global => null;
+   --  Get the maximum input length that may be provided to as input
+   --  to KangarooTwelve. This decreases as input bytes are processed.
 
 private
 

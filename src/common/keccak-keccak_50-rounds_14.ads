@@ -30,6 +30,8 @@ with Keccak.Generic_Sponge;
 pragma Elaborate_All (Keccak.Generic_Duplex);
 pragma Elaborate_All (Keccak.Generic_Sponge);
 
+--  @summary
+--  Instantiation of Keccak-p[50,14], with a Sponge and Duplex built on top of it.
 package Keccak.Keccak_50.Rounds_14
 with SPARK_Mode => On
 is

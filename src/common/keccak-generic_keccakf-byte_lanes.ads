@@ -25,6 +25,11 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
+--  @summary
+--  Subprograms for operating on Keccak-f states with a line size greater than
+--  or equal to 8 bits.
+--
+--  @group Keccak-f
 generic
 package Keccak.Generic_KeccakF.Byte_Lanes
 is
@@ -43,13 +48,25 @@ is
              and then Bit_Len <= B);
    --  XOR bits into the Keccak-f state.
    --
+   --  The data is XOR'ed into the first Bit_Len bits of the state.
+   --
+   --     |<-------->| Bit_Len
+   --     +----------+
+   --     |          | Data
+   --     +----------+
+   --     |    XOR   |
+   --     V          V
+   --     +----------------------+
+   --     |                      | Keccak State
+   --     +----------------------+
+   --
    --  @param A The Keccak-f state which is XORed with the Data.
    --
    --  @param Data Byte array containing the data to XOR into the state.
    --
    --  @param Bit_Len The number of bits to XOR into the Keccak-f state. This
-   --    value cannot be larger than the bit-length of the 'Data' array, and
-   --    cannot be larger than the Keccak-f state size.
+   --     value cannot be larger than the bit-length of the 'Data' array, and
+   --     cannot be larger than the Keccak-f state size.
 
    procedure XOR_Bits_Into_State (A       : in out Lane_Complemented_State;
                                   Data    : in     Keccak.Types.Byte_Array;
@@ -60,16 +77,45 @@ is
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= B);
+   --  XOR bits into the lane complemented version of the Keccak-f state.
+   --
+   --  The data is XOR'ed into the first Bit_Len bits of the state.
+   --
+   --     |<-------->| Bit_Len
+   --     +----------+
+   --     |          | Data
+   --     +----------+
+   --     |    XOR   |
+   --     V          V
+   --     +----------------------+
+   --     |                      | Keccak State
+   --     +----------------------+
+   --
+   --  @param A The Keccak-f state which is XORed with the Data.
+   --
+   --  @param Data Byte array containing the data to XOR into the state.
+   --
+   --  @param Bit_Len The number of bits to XOR into the Keccak-f state. This
+   --     value cannot be larger than the bit-length of the 'Data' array, and
+   --     cannot be larger than the Keccak-f state size.
 
    procedure Extract_Bytes (A    : in     State;
                             Data :    out Keccak.Types.Byte_Array)
      with Global => null,
      Depends => (Data =>+ A),
      Pre => Data'Length <= ((B + 7) / 8);
-   --  Extract bytes from the Keccak-f state.
+   --  Copy bytes from the Keccak-f state.
    --
-   --  This procedure can be used to read the Keccak-f state, for example: to
-   --  read the Keccak-f state after it is permuted.
+   --  The bytes are extracted starting at the beginning of the Keccak state.
+   --
+   --     +----------------------+
+   --     |                      | Keccak State
+   --     +----------------------+
+   --     |          |
+   --     V          V
+   --     +----------+
+   --     |          | Data
+   --     +----------+
    --
    --  @param A The Keccak-f state to read.
    --
@@ -86,6 +132,24 @@ is
      with Global => null,
      Depends => (Data =>+ A),
      Pre => Data'Length <= ((B + 7) / 8);
+   --  Copy bytes from the lane complemented Keccak-f state.
+   --
+   --  The bytes are extracted starting at the beginning of the Keccak state.
+   --
+   --     +----------------------+
+   --     |                      | Keccak State
+   --     +----------------------+
+   --     |          |
+   --     V          V
+   --     +----------+
+   --     |          | Data
+   --     +----------+
+   --
+   --  @param A The Keccak-f state to read.
+   --
+   --  @param Data The bytes from the Keccak-f state are copied to this buffer.
+   --    Note that the buffer can be smaller than the state size if fewer bytes
+   --    are needed.
    pragma Annotate
      (GNATprove, False_Positive,
       """Data"" might not be initialized",
@@ -94,6 +158,25 @@ is
    procedure Extract_Bits (A       : in     State;
                            Data    :    out Keccak.Types.Byte_Array;
                            Bit_Len : in     Natural)
+   --  Copy bits from the Keccak-f state.
+   --
+   --  The bits are extracted starting at the beginning of the Keccak state.
+   --
+   --     +----------------------+
+   --     |                      | Keccak State
+   --     +----------------------+
+   --     |          |
+   --     V          V
+   --     +----------+
+   --     |          | Data
+   --     +----------+
+   --     |<-------->| Bit_Len
+   --
+   --  @param A The Keccak-f state to read.
+   --
+   --  @param Data The bits from the Keccak-f state are copied to this buffer.
+   --    Note that the buffer can be smaller than the state size if fewer bits
+   --    are needed.
      with Global => null,
      Depends => (Data =>+ (A, Bit_Len)),
      Pre => (Bit_Len <= B
@@ -106,5 +189,24 @@ is
      Depends => (Data =>+ (A, Bit_Len)),
      Pre => (Bit_Len <= B
              and then Data'Length = (Bit_Len + 7) / 8);
+   --  Copy bits from the lane complemented Keccak-f state.
+   --
+   --  The bits are extracted starting at the beginning of the Keccak state.
+   --
+   --     +----------------------+
+   --     |                      | Keccak State
+   --     +----------------------+
+   --     |          |
+   --     V          V
+   --     +----------+
+   --     |          | Data
+   --     +----------+
+   --     |<-------->| Bit_Len
+   --
+   --  @param A The Keccak-f state to read.
+   --
+   --  @param Data The bits from the Keccak-f state are copied to this buffer.
+   --    Note that the buffer can be smaller than the state size if fewer bits
+   --    are needed.
 
 end Keccak.Generic_KeccakF.Byte_Lanes;

@@ -25,12 +25,14 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
---  @brief
---  An optimised implementation of Keccak-f.
+--  @summary
+--  An optimised implementation of the Keccak-f permutation.
 --
 --  @description
 --  This implementation of Keccak-f is based on the optimised implementation
 --  from the Keccak code package.
+--
+--  @group Keccak-f
 generic
 package Keccak.Generic_KeccakF.Optimized_Permutation
 is

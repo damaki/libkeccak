@@ -36,43 +36,52 @@ with Interfaces;
 
 --  @summary
 --  Defines the KangarooTwelve instance.
+--
+--  @group KangarooTwelve
 package KangarooTwelve
 with SPARK_Mode => On
 is
 
-   K12_Capacity : constant := 256;
+   --  @summary
+   --  Implementation-defined packages for creating a K12 instance.
+   --
+   --  @private
+   package Implementation is
 
-   --  Now we can build a XOF on each parallel sponge
-   package XOF_S1 is new Keccak.Generic_XOF
-     (XOF_Sponge  => Keccak.Keccak_1600.Rounds_12.Sponge,
-      Capacity    => K12_Capacity,
-      Suffix      => 0, --  Add no suffix here, since suffix is dynamic (01 or 11)
-      Suffix_Size => 0);
+      K12_Capacity : constant := 256;
+      --  Capacity in bits (security parameter) for KangarooTwelve.
 
-   package XOF_P2 is new Keccak.Generic_Parallel_XOF
-     (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P2,
-      Capacity    => K12_Capacity,
-      Suffix      => 2#011#,
-      Suffix_Size => 3);
+      --  Now we can build a XOF on each parallel sponge
+      package XOF_S1 is new Keccak.Generic_XOF
+      (XOF_Sponge  => Keccak.Keccak_1600.Rounds_12.Sponge,
+         Capacity    => K12_Capacity,
+         Suffix      => 0, --  Add no suffix here, since suffix is dynamic (01 or 11)
+         Suffix_Size => 0);
 
-   package XOF_P4 is new Keccak.Generic_Parallel_XOF
-     (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P4,
-      Capacity    => K12_Capacity,
-      Suffix      => 2#011#,
-      Suffix_Size => 3);
+      package XOF_P2 is new Keccak.Generic_Parallel_XOF
+      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P2,
+         Capacity    => K12_Capacity,
+         Suffix      => 2#011#,
+         Suffix_Size => 3);
 
-   package XOF_P8 is new Keccak.Generic_Parallel_XOF
-     (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P8,
-      Capacity    => K12_Capacity,
-      Suffix      => 2#011#,
-      Suffix_Size => 3);
+      package XOF_P4 is new Keccak.Generic_Parallel_XOF
+      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P4,
+         Capacity    => K12_Capacity,
+         Suffix      => 2#011#,
+         Suffix_Size => 3);
 
-   --  Finally, we can build our KangarooTwelve instance using the different
-   --  levels of parallel XOFs
+      package XOF_P8 is new Keccak.Generic_Parallel_XOF
+      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P8,
+         Capacity    => K12_Capacity,
+         Suffix      => 2#011#,
+         Suffix_Size => 3);
+
+   end Implementation;
+
    package K12 is new Keccak.Generic_KangarooTwelve
-     (XOF_Serial     => XOF_S1,
-      XOF_Parallel_2 => XOF_P2,
-      XOF_Parallel_4 => XOF_P4,
-      XOF_Parallel_8 => XOF_P8);
+     (XOF_Serial     => Implementation.XOF_S1,
+      XOF_Parallel_2 => Implementation.XOF_P2,
+      XOF_Parallel_4 => Implementation.XOF_P4,
+      XOF_Parallel_8 => Implementation.XOF_P8);
 
 end KangarooTwelve;

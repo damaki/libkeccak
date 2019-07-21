@@ -32,6 +32,8 @@
 
 with Interfaces;
 
+--  @summary
+--  Common type definitions.
 package Keccak.Types
 with SPARK_Mode => On
 is

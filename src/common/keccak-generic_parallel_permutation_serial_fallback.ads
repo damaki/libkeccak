@@ -26,6 +26,17 @@
 -------------------------------------------------------------------------------
 with Keccak.Types;
 
+--  @summary
+--  Serial fallback implementation of the parallel permutation API.
+--
+--  @description
+--  This package implements subprograms for a parallel permutation API,
+--  but implements the permutation serially.
+--
+--  For example, this package can be used to simulate Keccak-p[1600,24]�8
+--  by serially invoking 8 separate instances of Keccak-p[1600,24].
+--
+--  @group Parallel Keccak-f
 generic
    type Permutation_State is private;
 
@@ -46,15 +57,6 @@ generic
    Parallelism : Positive;
    --  Specifies the number of simulated parallel instances.
 
-   --  @brief@
-   --  Serial fallback implementation of the parallel permutation API.
-   --
-   --  @description@
-   --  This package implements subprograms for a parallel permutation API,
-   --  but implements the permutation serially.
-   --
-   --  For example, this package can be used to simulate Keccak-p[1600,24]�8
-   --  by serially invoking 8 separate instances of Keccak-p[1600,24].
 package Keccak.Generic_Parallel_Permutation_Serial_Fallback
 is
    Num_Parallel_Instances : constant Positive := Parallelism;

@@ -25,48 +25,53 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
--------------------------------------------------------------------------------
---  This package provides a generic implementation for SHA3 & Keccak hashing.
---  It is the basis for each of the four SHA3 hashing algorithms
---  described in Section 6.1 of NIST FIPS-202 (August 2015).
---
---  The package provides three main procedures:
---     * Init to initialize the hash state
---     * Update to append data to the hashing algorithm
---     * Final to get the digest (hash).
--------------------------------------------------------------------------------
-
 with Keccak.Generic_Sponge;
 with Keccak.Types;
 
+--  @summary
+--  A generic implementation of a hash algorithm based on the Sponge
+--  cryptographic primitive.
+--
+--  @description
+--  This package is the basis for each of the four SHA-3 hashing algorithms
+--  described in Section 6.1 of NIST FIPS-202 (August 2015).
+--
+--  This API is used as follows:
+--
+--  1 Initialise a context by calling Init.
+--
+--  2 Call Update one or more times to input an arbitrary number of bytes into
+--    the hash algorithm.
+--
+--  3 Call Final to generate the final hash digest.
+--
+--  @group Hash
 generic
    with package Hash_Sponge is new Keccak.Generic_Sponge (<>);
 
-   --  Output digest size in bits. E.g. for SHA3-256 Digest_Size=256
    Digest_Size : Positive;
+   --  Output digest size in bits. E.g. for SHA3-256 Digest_Size=256
 
+   Capacity : Positive := Digest_Size * 2;
    --  The capacity of the hash. By default the capacity is twice the digest size.
    --
    --  The Rate is calculated as Hash_Sponge.State_Size - Capacity, and the value
    --  for the capacity must be chosen so that the rate is a multiple of 8.
-   Capacity : Positive := Digest_Size * 2;
 
+   Suffix      : Keccak.Types.Byte;
    --  Up to 8 bits that are appended to the message before padding bits.
    --
    --  The least significant bit is the first bit that is appended.
-   Suffix      : Keccak.Types.Byte;
 
+   Suffix_Size : Natural;
    --  The number of bits in the Suffix to append. This must be a value
    --  in the range 0 .. 8.
-   Suffix_Size : Natural;
 
-   --  @summary
-   --  A generic implementation of a hashing algorithm based on the Sponge
-   --  cryptographic primitive.
 package Keccak.Generic_Hash
 is
    --  Import common types from Keccak.Types to avoid users of the
    --  package to be dependent on Keccak.Types.
+
    subtype Byte is Keccak.Types.Byte;
 
    subtype Index_Number is Keccak.Types.Index_Number;
@@ -79,19 +84,19 @@ is
 
    subtype Rate_Bits_Number is Hash_Sponge.Rate_Bits_Number;
 
+   type States is (Updating, Ready_To_Finish, Finished);
    --  The possible states for the context.
    --
-   --  @value Updating When in this state the context can be updated
-   --  with additional data by calling the Update procedure.
+   --  @value Updating When in this state the context can be fed
+   --  with input data by calling the Update procedure.
    --
    --  @value Ready_To_Finish When in this state the Update procedure can
-   --  no longer be called (i.e. no more data can be added to the state),
+   --  no longer be called (i.e. no more data can be input to the context),
    --  and the context is ready to compute the final hash value.
    --
    --  @value Finished When in this state the final hash value has been computed
-   --  and the context can not be used further. However, the context can be
+   --  and the context can not be used further. However, the context could be
    --  re-initialized and used again for a new hash computation.
-   type States is (Updating, Ready_To_Finish, Finished);
 
    type Context is private;
 
@@ -123,7 +128,7 @@ is
    --  This procedure can be called multiple times to process
    --  large amounts of data in chunks. However, for all calls before the last
    --  call the Bit_Length parameter must be a multiple of 8. Once Update has
-   --  been called where Bit_Length is not a multiple of 8 then the context
+   --  been called where Bit_Length is not a multiple of 8, then the context
    --  moves to the Ready_To_Finish state where it can no longer accept calls
    --  to Update.
    --

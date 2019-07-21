@@ -30,13 +30,17 @@ with Keccak.Keccak_1600.Rounds_24;
 
 pragma Elaborate_All (Keccak.Generic_Hash);
 
+--  @summary
+--  Instantiates SHA-3 and Keccak hashes as defined in NIST FIPS PUB 202.
+
+--  @group Hash
 package SHA3
 with SPARK_Mode => On
 is
 
-   --------------------------
-   --  SHA3 Hash Packages  --
-   --------------------------
+   ---------------------------
+   --  SHA-3 Hash Packages  --
+   ---------------------------
 
    package SHA3_224 is new Keccak.Generic_Hash
      (Hash_Sponge => Keccak.Keccak_1600.Rounds_24.Sponge,

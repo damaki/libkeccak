@@ -29,6 +29,10 @@ with Keccak.Util;
 package body Keccak.Generic_CSHAKE
 is
 
+   ------------
+   --  Init  --
+   ------------
+
    procedure Init (Ctx           :    out Context;
                    Customization : in     String := "";
                    Function_Name : in     String := "")
@@ -80,12 +84,20 @@ is
       end if;
    end Init;
 
+   --------------
+   --  Update  --
+   --------------
+
    procedure Update (Ctx     : in out Context;
                      Message : in     Byte_Array)
    is
    begin
       XOF.Update (Ctx.XOF_Ctx, Message);
    end Update;
+
+   --------------
+   --  Update  --
+   --------------
 
    procedure Update (Ctx        : in out Context;
                      Message    : in     Byte_Array;
@@ -94,6 +106,10 @@ is
    begin
       XOF.Update (Ctx.XOF_Ctx, Message, Bit_Length);
    end Update;
+
+   ---------------
+   --  Extract  --
+   ---------------
 
    procedure Extract (Ctx    : in out Context;
                       Digest :    out Byte_Array)

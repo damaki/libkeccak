@@ -35,12 +35,11 @@ with Interfaces;
 pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Parallel_Fallback);
 pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Serial_Fallback);
 
---  @brief@
+--  @summary
 --  Defines procedures for running Keccak-f permutations in parallel for
 --  2x, 4x, and 8x parallelism, as well as serial permutations.
 --
---  @description@
---
+--  @description
 --  This package must define the following types and procedures:
 --    * Permute_S1_R12 - Serial Keccak-p[1600] permutation with 12 rounds.
 --    * Permute_S1_R24 - Serial Keccak-p[1600] permutation with 24 rounds.

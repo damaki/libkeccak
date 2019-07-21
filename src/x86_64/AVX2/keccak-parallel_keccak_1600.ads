@@ -34,12 +34,11 @@ with Interfaces;
 pragma Elaborate_All (Keccak.Generic_Parallel_KeccakF);
 pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Parallel_Fallback);
 
---  @brief@
+--  @summary
 --  Defines procedures for running Keccak-f permutations in parallel for
 --  2x, 4x, and 8x parallelism, as well as serial permutations.
 --
---  @description@
---
+--  @description
 --  This package must define the following types and procedures:
 --  For 2x parallelism:
 --    * Parallel_State_P2

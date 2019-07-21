@@ -29,6 +29,36 @@ with Keccak.Types;
 
 pragma Elaborate_All (Keccak.Generic_CSHAKE);
 
+--  @summary
+--  Generic implementation of KMAC as described in NIST SP 800-185.
+--
+--  @description
+--  This package implements the KMAC algorithm on top of any instantiation
+--  of the Generic_CSHAKE package. For example, KMAC128 is implemented on
+--  top of cSHAKE128.
+--
+--  This API is used as follows:
+--
+--  1 Call Init to initialise a new context. The private key and an optional
+--    customisation string (for domain separation) are provided here.
+--
+--  2 Call Update one or more times to input an arbitrary amount of data into
+--    the KMAC context.
+--
+--  3 Call either Finish or Extract to produce the desired type of output
+--    (KMAC or KMACXOF):
+--
+--  * Finish is used to produce a single output of arbitrary length (KMAC).
+--    The requested output length affects the output. For example, requesting
+--    a 10-byte output will produce an unrelated hash to requesting a 20-byte
+--    output.
+--
+--  * Extract can be called one or more times to produce an arbitrary number
+--    of output bytes (KMACXOF). In this case, the total output length is
+--    unknown in advance so the output does not change based on the overall length.
+--    For example, a 10-byte output is the truncated version of a 20-byte output.
+--
+--  @group KMAC
 generic
    with package KMAC_CSHAKE is new Keccak.Generic_CSHAKE (<>);
 package Keccak.Generic_KMAC
@@ -37,6 +67,17 @@ is
    type Context is private;
 
    type States is (Updating, Extracting, Finished);
+   --  The possible states for the context.
+   --
+   --  @value Updating When in this state the context can be fed
+   --  with input data by calling the Update procedure.
+   --
+   --  @value Extracting When in this state the context is producing output
+   --  bytes by calling the Extract procedure.
+   --
+   --  @value Finished This state is entered after the Finish procedure has
+   --  been called. When in this state, the context is finished and can no
+   --  longer be used further.
 
    procedure Init (Ctx           :    out Context;
                    Key           : in     Types.Byte_Array;

@@ -41,7 +41,7 @@ generic
    --  Initializes the parallel permutation states.
 
    with procedure Permute_All (S : in out State_Type);
-   --  Apply the permutation function to each state in parallel.
+   --  Applies the permutation function to each state in parallel.
 
    with procedure XOR_Bits_Into_State_Separate
      (S           : in out State_Type;
@@ -94,6 +94,7 @@ is
      Pre => (Ctx.Capacity < State_Size
              and then (State_Size - Ctx.Capacity) mod 8 = 0),
      Post => State_Of (Ctx) = Absorbing;
+   --  Initialise the sponge.
 
    procedure Absorb_Bytes_Separate (Ctx        : in out Context;
                                     Data       : in     Types.Byte_Array)
@@ -107,15 +108,20 @@ is
 
         others
         => State_Of (Ctx) = Squeezing);
-   --  Absorb bytes into all parallel instances.
+   --  Split a buffer and asborb each chunk into separate parallel instances.
    --
-   --  The @Data@ buffer is split into N equal sized chunks, where N is the
-   --  number of parallel instances. For example, with Keccak-f[1600]�4, the
-   --  @Data@ will be split into four chunks of equal length:
+   --  The Data buffer is split into N equal-sized chunks, where N is the
+   --  number of parallel instances. For example, with Keccak-f[1600]x4, the
+   --  Data will be split into four chunks of equal length:
    --
-   --  +-----------+-----------+-----------+-----------+
-   --  |     0     |     1     |     2     |     3     |
-   --  +-----------+-----------+-----------+-----------+
+   --     +-----------+-----------+-----------+-----------+
+   --     |     0     |     1     |     2     |     3     | Data (split into N chunks)
+   --     +-----------+-----------+-----------+-----------+
+   --           |           |           |           | Absorb
+   --           V           V           V           V
+   --     +-----------+-----------+-----------+-----------+
+   --     |     0     |     1     |     2     |     3     | Context (N parallel instances)
+   --     +-----------+-----------+-----------+-----------+
    --
    --  Chunk 0 will be absorbed into the first parallel instance; chunk 1 will
    --  be absorbed into the second parallel instance, and so on...
@@ -123,7 +129,7 @@ is
    --  This procedure can be called multiple times to absorb an arbitrary
    --  amount of data, provided that the length of each chunk is a multiple
    --  of the rate. If the chunk length is not a multiple of the rate then
-   --  the data will be absorbed, but the @Context@ will advance to the
+   --  the data will be absorbed, but the Context will advance to the
    --  Squeezing state and no more data can be absorbed.
 
    procedure Absorb_Bytes_All (Ctx        : in out Context;
@@ -133,6 +139,23 @@ is
      Contract_Cases =>
        (Data'Length mod (Rate_Of (Ctx) / 8) = 0 => State_Of (Ctx) = Absorbing,
         others                                  => State_Of (Ctx) = Squeezing);
+   --  Absorb the same data into all parallel instances.
+   --
+   --     .                +--------------+
+   --     .                |              | Data
+   --     .                +--------------+
+   --     .       .---------' /       \  '--------.
+   --     .      /           /         \           \ Absorb
+   --     .     V           V           V           V
+   --     +-----------+-----------+-----------+-----------+
+   --     |     0     |     1     |     2     |     3     | Context (N parallel instances)
+   --     +-----------+-----------+-----------+-----------+
+   --
+   --  This procedure can be called multiple times to absorb an arbitrary
+   --  amount of data, provided that the length of each chunk is a multiple
+   --  of the rate. If the chunk length is not a multiple of the rate then
+   --  the data will be absorbed, but the Context will advance to the
+   --  Squeezing state and no more data can be absorbed.
 
    procedure Absorb_Bytes_Separate_With_Suffix
      (Ctx        : in out Context;
@@ -145,6 +168,8 @@ is
              and Suffix_Len in 0 .. 8 - Min_Padding_Bits
              and State_Of (Ctx) = Absorbing),
      Post => State_Of (Ctx) = Squeezing;
+   --  Same as Absorb_Bytes_Separate, but suffix bits are also appended to
+   --  each chunk during absorption.
 
    procedure Absorb_Bytes_All_With_Suffix
      (Ctx        : in out Context;
@@ -155,9 +180,11 @@ is
      Pre => (State_Of (Ctx) = Absorbing
              and Suffix_Len in 0 .. 8 - Min_Padding_Bits),
      Post => State_Of (Ctx) = Squeezing;
+   --  Same as Absorb_Bytes_All, but suffix bits are also appended to the data
+   --  during absorption.
 
-   procedure Squeeze_Bytes_Separate (Ctx        : in out Context;
-                                     Data       :    out Types.Byte_Array)
+   procedure Squeeze_Bytes_Separate (Ctx  : in out Context;
+                                     Data :    out Types.Byte_Array)
      with Global => null,
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and State_Of (Ctx) in Absorbing | Squeezing),
@@ -165,25 +192,42 @@ is
      Contract_Cases =>
        ((Data'Length / Num_Parallel_Instances) mod (Rate_Of (Ctx) / 8) = 0
         => State_Of (Ctx) = Squeezing,
-
         others
         => State_Of (Ctx) = Finished);
-
+   --  Get output bytes from all parallel instances.
+   --
+   --     +-----------+-----------+-----------+-----------+
+   --     |     0     |     1     |     2     |     3     | Context (N parallel instances)
+   --     +-----------+-----------+-----------+-----------+
+   --           |           |           |           | Extract
+   --           V           V           V           V
+   --     +-----------+-----------+-----------+-----------+
+   --     |     0     |     1     |     2     |     3     | Data (split into N chunks)
+   --     +-----------+-----------+-----------+-----------+
+   --
+   --  This function may be called multiple times to generate a large amount of
+   --  output data, as long as the length of the Data buffer is a multiple of
+   --  N * Rate, where N is Num_Parallel_Instances and Rate is the Rate parameter
+   --  in bytes. If the Data buffer length does not meet this criterea, then
+   --  the context enters the Finished state and no more output bytes can be
+   --  produced.
    pragma Annotate
      (GNATprove, False_Positive,
       """Data"" might not be initialized",
       "GNATprove issues a false positive due to the use of loops to initialize Data");
 
    function State_Of (Ctx : in Context) return States;
+   --  Get the current state of the context.
 
    function Rate_Of (Ctx : in Context) return Rate_Bits_Number;
+   --  Get the configured rate parameter (in bits).
 
 private
 
+   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7) / 8) - 1;
    --  The rate number here represents bytes, not bits.
    --  This makes it easier to handle in proof, since bytes are
    --  always a multiple of 8 bits.
-   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7) / 8) - 1;
 
    type Context (Capacity : Positive) is record
       Permutation_State : State_Type;

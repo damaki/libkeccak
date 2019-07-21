@@ -24,6 +24,21 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+
+--  @summary
+--  Lane complementing implementation of the Keccak-f permutation.
+--
+--  @description
+--  This implementation is ported from the "lane complemented"
+--  implementation by the Keccak, Keyak, and Ketje teams provided in the
+--  Keccak Code Package.
+--
+--  In the Optimized implementation, 5 XOR, 5 AND, and 5 NOT operations are
+--  required per plane (5 lanes). In this lane complimenting implementation
+--  the number of NOT operations is reduced from 5 to 1 per plane by storing
+--  the complement of certain lanes.
+--
+--  @group Keccak-f
 generic
 package Keccak.Generic_KeccakF.Lane_Complementing_Permutation
 is

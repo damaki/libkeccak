@@ -28,7 +28,7 @@
 with Keccak.Types;
 
 --  @summary
---  Padding rules.
+--  Implements padding rules.
 --
 --  @description
 --  This package contains the implementation of the pad10*1 padding rule.

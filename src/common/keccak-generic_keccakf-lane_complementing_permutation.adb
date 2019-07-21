@@ -28,14 +28,6 @@ with Interfaces; use Interfaces;
 
 package body Keccak.Generic_KeccakF.Lane_Complementing_Permutation
 is
-   --  This implementation is ported from the "lane complemented"
-   --  implementation by the Keccak, Keyak, and Ketje teams provided in the
-   --  Keccak Code Package.
-   --
-   --  In the Optimized implementation, 5 XOR, 5 AND, and 5 NOT operations are
-   --  required per plane (5 lanes). In this lane complimenting implementation
-   --  the number of NOT operations is reduced from 5 to 1 per plane by storing
-   --  the complement of certain lanes.
 
    procedure Permute (S : in out Lane_Complemented_State)
    is
