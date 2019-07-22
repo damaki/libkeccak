@@ -1,3 +1,29 @@
+-------------------------------------------------------------------------------
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
+--
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
+--
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-------------------------------------------------------------------------------
 with Keccak.Arch.SSE2;
 with Keccak.Arch.AVX2;
 with Keccak.Generic_Parallel_KeccakF;
@@ -8,12 +34,11 @@ with Interfaces;
 pragma Elaborate_All (Keccak.Generic_Parallel_KeccakF);
 pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Parallel_Fallback);
 
---  @brief@
+--  @summary
 --  Defines procedures for running Keccak-f permutations in parallel for
 --  2x, 4x, and 8x parallelism, as well as serial permutations.
 --
---  @description@
---
+--  @description
 --  This package must define the following types and procedures:
 --  For 2x parallelism:
 --    * Parallel_State_P2
@@ -39,8 +64,9 @@ package Keccak.Parallel_Keccak_1600
 with SPARK_Mode => On
 is
 
-   ----------------------------------------------------------------------------
-   -- Keccak-f[1600]x2
+   ------------------------
+   --  Keccak-f[1600]x2  --
+   ------------------------
 
    --  128-bit SIMD (SSE) is available on this architecture.
 
@@ -84,8 +110,9 @@ is
       Byte_Len    : in     Natural)
       renames KeccakF_1600_P2.Extract_Bytes;
 
-   ----------------------------------------------------------------------------
-   --  Keccak-f[1600]x4
+   ------------------------
+   --  Keccak-f[1600]x4  --
+   ------------------------
 
    --  256-bit SIMD (AVX2) is available on this architecture.
 
@@ -129,8 +156,9 @@ is
       Byte_Len    : in     Natural)
       renames KeccakF_1600_P4.Extract_Bytes;
 
-   ----------------------------------------------------------------------------
-   --  Keccak-f[1600]x8
+   ------------------------
+   --  Keccak-f[1600]x8  --
+   ------------------------
 
    --  No 512-bit SIMD available on this architecture. Fallback to 4x2
 
@@ -169,6 +197,5 @@ is
       Data_Offset : in     Natural;
       Byte_Len    : in     Natural)
       renames KeccakF_1600_P8.Extract_Bytes;
-
 
 end Keccak.Parallel_Keccak_1600;

@@ -1,32 +1,36 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
 package body Keccak.Generic_Parallel_Sponge
 is
+
+   --------------
+   --  Lemmas  --
+   --------------
 
    pragma Warnings (Off, "postcondition does not check the outcome");
 
@@ -42,7 +46,6 @@ is
              and then Offset mod Rate = 0),
      Post => ((Remaining mod Rate = 0) = (Length mod Rate = 0));
 
-
    procedure Lemma_Offset_Mod_Rate_Preserve
      (Offset : in Natural;
       Rate   : in Positive)
@@ -54,7 +57,6 @@ is
 
    pragma Warnings (On, "postcondition does not check the outcome");
 
-
    procedure Lemma_Remaining_Mod_Rate_Preserve
      (Offset, Remaining, Length : in Natural;
       Rate                      : in Positive)
@@ -64,7 +66,6 @@ is
       pragma Assert (Remaining mod Rate = Length mod Rate);
    end Lemma_Remaining_Mod_Rate_Preserve;
 
-
    procedure Lemma_Offset_Mod_Rate_Preserve
      (Offset : in Natural;
       Rate   : in Positive)
@@ -73,6 +74,18 @@ is
       pragma Assert ((Offset + Rate) mod Rate = 0);
    end Lemma_Offset_Mod_Rate_Preserve;
 
+   -------------------
+   --  Add_Padding  --
+   -------------------
+
+   procedure Add_Padding (Ctx : in out Context)
+     with Global => null,
+     Pre => State_Of (Ctx) = Absorbing,
+     Post => State_Of (Ctx) = Squeezing;
+
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx : out Context)
    is
@@ -84,6 +97,9 @@ is
       pragma Assert (State_Of (Ctx) = Absorbing);
    end Init;
 
+   -----------------------------
+   --  Absorb_Bytes_Separate  --
+   -----------------------------
 
    procedure Absorb_Bytes_Separate (Ctx        : in out Context;
                                     Data       : in     Types.Byte_Array)
@@ -92,13 +108,15 @@ is
 
       Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
 
+      Buffer_Size : constant Natural := Rate_Bytes * Num_Parallel_Instances;
+
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
       Buf_First  : Types.Index_Number;
       Buf_Last   : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. (Rate_Bytes * Num_Parallel_Instances) - 1) := (others => 0);
+      Buffer     : Types.Byte_Array (0 .. Buffer_Size - 1) := (others => 0);
 
    begin
       while Remaining >= Ctx.Rate loop
@@ -161,6 +179,9 @@ is
 
    end Absorb_Bytes_Separate;
 
+   ------------------------
+   --  Absorb_Bytes_All  --
+   ------------------------
 
    procedure Absorb_Bytes_All (Ctx        : in out Context;
                                Data       : in     Types.Byte_Array)
@@ -224,6 +245,9 @@ is
 
    end Absorb_Bytes_All;
 
+   ------------------------------------
+   --  Absorb_Bytes_All_With_Suffix  --
+   ------------------------------------
 
    procedure Absorb_Bytes_All_With_Suffix
      (Ctx        : in out Context;
@@ -290,6 +314,9 @@ is
 
    end Absorb_Bytes_All_With_Suffix;
 
+   -----------------------------------------
+   --  Absorb_Bytes_Separate_With_Suffix  --
+   -----------------------------------------
 
    procedure Absorb_Bytes_Separate_With_Suffix
      (Ctx        : in out Context;
@@ -301,13 +328,15 @@ is
 
       Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
 
+      Buffer_Size : constant Natural := Rate_Bytes * Num_Parallel_Instances;
+
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
       Pos        : Types.Index_Number;
       Buf_First  : Types.Index_Number;
       Buf_Last   : Types.Index_Number;
 
-      Buffer     : Types.Byte_Array (0 .. (Rate_Bytes * Num_Parallel_Instances) - 1) := (others => 0);
+      Buffer     : Types.Byte_Array (0 .. Buffer_Size - 1) := (others => 0);
 
    begin
       Ctx.State := Squeezing;
@@ -376,11 +405,11 @@ is
 
    end Absorb_Bytes_Separate_With_Suffix;
 
+   -------------------
+   --  Add_Padding  --
+   -------------------
 
    procedure Add_Padding (Ctx : in out Context)
-     with Global => null,
-     Pre => State_Of (Ctx) = Absorbing,
-     Post => State_Of (Ctx) = Squeezing
    is
       Rate_Bytes : constant Rate_Bytes_Number := Ctx.Rate;
 
@@ -411,6 +440,9 @@ is
       pragma Assert (State_Of (Ctx) = Squeezing);
    end Add_Padding;
 
+   ------------------------------
+   --  Squeeze_Bytes_Separate  --
+   ------------------------------
 
    procedure Squeeze_Bytes_Separate (Ctx        : in out Context;
                                      Data       :    out Types.Byte_Array)

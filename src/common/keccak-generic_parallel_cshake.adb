@@ -1,8 +1,37 @@
+-------------------------------------------------------------------------------
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
+--
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
+--
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-------------------------------------------------------------------------------
 with Keccak.Util; use Keccak.Util;
 
 package body Keccak.Generic_Parallel_CSHAKE
 is
 
+   ---------------------------
+   --  Process_Full_Blocks  --
+   ---------------------------
 
    procedure Process_Full_Blocks
      (Ctx          : in out Context;
@@ -17,6 +46,9 @@ is
      Post => (Block_Offset < Block'Length
               and State_Of (Ctx) = Updating);
 
+   ---------------------------
+   --  Process_Full_Blocks  --
+   ---------------------------
 
    procedure Process_Full_Blocks
      (Ctx          : in out Context;
@@ -26,7 +58,7 @@ is
    is
       use type XOF.States;
 
-      Block_Remaining : Natural := Block'Length - Block_Offset;
+      Block_Length    : constant Natural := Block'Length - Block_Offset;
       Input_Remaining : Natural := Input'Length;
       Input_Offset    : Natural := 0;
 
@@ -41,7 +73,7 @@ is
          --  Merge first bytes of Input with the last bytes currently in
          --  the block.
 
-         if Input_Remaining < Block_Remaining then
+         if Input_Remaining < Block_Length then
             --  Not enough for a full block.
 
             Block (Block_Offset .. Block_Offset + Input_Remaining - 1) :=
@@ -55,18 +87,17 @@ is
             --  We have enough for a full block
 
             Block (Block_Offset .. Block'Last) :=
-              Input (Input'First .. Input'First + Block_Remaining - 1);
+              Input (Input'First .. Input'First + Block_Length - 1);
 
             XOF.Update_All (Ctx.XOF_Ctx, Block);
 
-            Input_Offset    := Input_Offset    + Block_Remaining;
-            Input_Remaining := Input_Remaining - Block_Remaining;
+            Input_Offset    := Input_Offset    + Block_Length;
+            Input_Remaining := Input_Remaining - Block_Length;
 
             Block_Offset    := 0;
 
          end if;
       end if;
-
 
       pragma Assert_And_Cut
         (Input_Offset + Input_Remaining = Input'Length
@@ -75,7 +106,6 @@ is
          and State_Of (Ctx) = Updating
          and XOF.State_Of (Ctx.XOF_Ctx) = XOF.Updating
          and (if Input_Remaining > 0 then Block_Offset = 0));
-
 
       --  Now process as many full blocks from Input as we can.
       Num_Full_Blocks := Input_Remaining / Block'Length;
@@ -90,7 +120,6 @@ is
          Input_Remaining := Input_Remaining - Length;
       end if;
 
-
       pragma Assert_And_Cut
         (Input_Offset + Input_Remaining = Input'Length
          and Block_Offset < Block'Length
@@ -98,7 +127,6 @@ is
          and State_Of (Ctx) = Updating
          and (if Input_Remaining > 0 then Block_Offset = 0)
          and Input_Remaining < Block'Length);
-
 
       --  Store any leftover bytes in the block
       if Input_Remaining > 0 then
@@ -111,6 +139,9 @@ is
 
    end Process_Full_Blocks;
 
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx           :    out Context;
                    Customization : in     String;
@@ -121,7 +152,6 @@ is
       Block        : Types.Byte_Array (0 .. Rate_Bytes - 1) := (others => 0);
 
       Block_Offset : Natural;
-
 
    begin
       XOF.Init (Ctx.XOF_Ctx);
@@ -149,7 +179,7 @@ is
       Process_Full_Blocks
         (Ctx          => Ctx,
          Block        => Block,
-         Input        => Left_Encode_NIST_Bit_Length(Function_Name'Length),
+         Input        => Left_Encode_NIST_Bit_Length (Function_Name'Length),
          Block_Offset => Block_Offset);
 
       Process_Full_Blocks
@@ -161,7 +191,7 @@ is
       Process_Full_Blocks
         (Ctx          => Ctx,
          Block        => Block,
-         Input        => Left_Encode_NIST_Bit_Length(Customization'Length),
+         Input        => Left_Encode_NIST_Bit_Length (Customization'Length),
          Block_Offset => Block_Offset);
 
       Process_Full_Blocks
@@ -179,6 +209,9 @@ is
 
    end Init;
 
+   -----------------------
+   --  Update_Separate  --
+   -----------------------
 
    procedure Update_Separate (Ctx  : in out Context;
                               Data : in     Types.Byte_Array)
@@ -187,6 +220,9 @@ is
       XOF.Update_Separate (Ctx.XOF_Ctx, Data);
    end Update_Separate;
 
+   -----------------------
+   --  Extract_Separate --
+   -----------------------
 
    procedure Extract_Separate (Ctx  : in out Context;
                                Data :    out Types.Byte_Array)

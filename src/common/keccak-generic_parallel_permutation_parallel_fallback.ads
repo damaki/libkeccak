@@ -1,39 +1,56 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Types;
 
+--  @summary
+--  Simulates a higher-order level of parallelism from lower-order parallelism.
+--
+--  @description
+--  This package uses a combines multiple instances of lower-order parallelism
+--  (e.g. two 2x parallelism) into a single higher-order parallel instance.
+--  For example, this package can be used to simulate Keccak-p[1600,24]x8
+--  by serially invoking 2 separate instances of Keccak-[1600,24]x4.
+--
+--  This package is useful in cases where a high order of parallelism is
+--  required (e.g. 8x) by an API, but such an implementation is not available.
+--
+--  Instances of this package can be chained. For example, if you want to
+--  have a fallback for 8x parallelism, but you only have a 2x implementation,
+--  then you can double the 2x into 4x, then double again the 4x into 8x.
+--
+--  @group Parallel Keccak-f
 generic
    type Permutation_State is private;
-   --  Type for the parallel permutation state (e.g. Keccak-f[1600]×2).
+   --  Type for the parallel permutation state (e.g. Keccak-f[1600]ï¿½2).
 
    Base_Parallelism : Positive;
    --  The number of parallel instances for the @Permutation_Type@.
    --
-   --  For example, if Permutation_State is the state for Keccak-f[1600]×4
+   --  For example, if Permutation_State is the state for Keccak-f[1600]ï¿½4
    --  then set Base_Parallelism to 4.
 
    Parallel_Factor : Positive;
@@ -42,9 +59,9 @@ generic
    --  The overall number of parallel instances will be:
    --     Base_Parallelism * Parallel_Factor.
    --
-   --  For example, if this package is instantiated with Keccak-f[1600]×4
-   --  and Parallel_Factor = 2, then this package will use 2x Keccak-f[1600]×4
-   --  to produce an overall Keccak-f[1600]×8 parallel permutation.
+   --  For example, if this package is instantiated with Keccak-f[1600]ï¿½4
+   --  and Parallel_Factor = 2, then this package will use 2x Keccak-f[1600]ï¿½4
+   --  to produce an overall Keccak-f[1600]ï¿½8 parallel permutation.
 
    with procedure Init (S : out Permutation_State);
    --  Initializes the Permutation_State to all zeroes.
@@ -69,24 +86,6 @@ generic
 
    State_Size    : Positive;
 
-   --  @brief@
-   --  Simulates a higher-order level of parallelism from lower-order parallelism.
-   --
-   --  @description@
-   --  This package uses a lower-order parallelism (e.g. 2x parllel) to simulate
-   --  higher-order parallelism (e.g. 4x). Basically, it doubles the number
-   --  of parallel instances, but runs each of the instances serially
-   --  For example, it makes two 2x parallel instances look like one 4x parallel
-   --  instance.
-   --  For example, this package can be used to simulate Keccak-p[1600,24]×8
-   --  by serially invoking 2 separate instances of Keccak-[1600,24]×4.
-   --
-   --  This package is useful in cases where a high order of parallelism is
-   --  required (e.g. 8x) by an API, but such an implementation is not available.
-   --
-   --  Instances of this package can be chained. For example, if you want to
-   --  have a fallback for 8x parallelism, but you only have a 2x implementation,
-   --  then you can double the 2x into 4x, then double again the 4x into 8x.
 package Keccak.Generic_Parallel_Permutation_Parallel_Fallback
 is
 
@@ -109,12 +108,11 @@ is
    procedure Init (S : out Parallel_State)
      with Global => null;
 
-
    generic
       with procedure Permute (S : in out Permutation_State);
    procedure Permute_All (S : in out Parallel_State)
      with Global => null;
-
+   --  Apply the permutation function to each internal instance.
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -128,17 +126,15 @@ is
              and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
              and then Bit_Len <= State_Size);
 
-
    procedure XOR_Bits_Into_State_All
      (S           : in out Parallel_State;
       Data        : in     Types.Byte_Array;
       Bit_Len     : in     Natural)
      with Global => null,
-     Depends => (S => + (Data, Bit_Len)),
+     Depends => (S =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= State_Size);
-
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;

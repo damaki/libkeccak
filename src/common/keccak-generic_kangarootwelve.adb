@@ -1,38 +1,46 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Util;
 
 package body Keccak.Generic_KangarooTwelve
 is
 
+   --------------------------
+   --  Suffix definitions  --
+   --------------------------
+
    Suffix_110_62  : constant Types.Byte_Array (1 .. 8) := (1 => 2#011#, others => 0);
    Suffix_110     : constant Types.Byte_Array (1 .. 1) := (1 => 2#011#);
    Suffix_11      : constant Types.Byte_Array (1 .. 1) := (1 => 2#11#);
    Suffix_FFFF_01 : constant Types.Byte_Array (1 .. 3) := (16#FF#, 16#FF#, 2#10#);
+
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
 
    generic
       with package XOF_Parallel_N is new Keccak.Generic_Parallel_XOF (<>);
@@ -54,6 +62,9 @@ is
    --
    --  @param Data Byte array containing N blocks.
 
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
 
    procedure Generic_Process_Parallel_Blocks
      (Ctx  : in out Context;
@@ -84,6 +95,9 @@ is
          Message    => CV_N);
    end Generic_Process_Parallel_Blocks;
 
+   ------------------------------
+   --  Generic instantiations  --
+   ------------------------------
 
    procedure Process_8_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (XOF_Parallel_8);
@@ -94,6 +108,9 @@ is
    procedure Process_2_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (XOF_Parallel_2);
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -106,6 +123,9 @@ is
               and Ctx.Partial_Block_Length = Ctx'Old.Partial_Block_Length);
    --  Processes a single block using a serial XOF.
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -113,7 +133,7 @@ is
    is
       Serial_Ctx : XOF_Serial.Context;
 
-      CV: Types.Byte_Array (1 .. CV_Size_Bytes);
+      CV : Types.Byte_Array (1 .. CV_Size_Bytes);
 
    begin
       --  Process N blocks in parallel and produce N changing values.
@@ -135,6 +155,9 @@ is
          Message    => CV);
    end Process_1_Block;
 
+   --------------------------
+   --  Add_To_First_Block  --
+   --------------------------
 
    procedure Add_To_First_Block
      (Ctx   : in out Context;
@@ -156,6 +179,9 @@ is
    --  Other blocks (after the first one) are hashed separately to produce
    --  chaining values.
 
+   --------------------------
+   --  Add_To_First_Block  --
+   --------------------------
 
    procedure Add_To_First_Block
      (Ctx   : in out Context;
@@ -172,7 +198,6 @@ is
             XOF_Serial.Update
               (Ctx     => Ctx.Outer_XOF,
                Message => Data (Data'First .. Data'First + (Free_In_Block - 1)));
-
 
             --  Add suffix '110^62' bits
             XOF_Serial.Update
@@ -227,6 +252,9 @@ is
       end if;
    end Add_To_First_Block;
 
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -252,6 +280,10 @@ is
 
         Ctx.Partial_Block_Length > 0 and Data'Length > 0 =>
           Added > 0);
+
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -316,6 +348,9 @@ is
       end if;
    end Add_To_Partial_Block;
 
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx : out Context)
    is
@@ -328,6 +363,9 @@ is
       XOF_Serial.Init (Ctx.Partial_Block_XOF);
    end Init;
 
+   --------------
+   --  Update  --
+   --------------
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
@@ -352,7 +390,7 @@ is
          pragma Assert (Ctx.Partial_Block_Length = 0);
          pragma Assert (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
 
-           --  Process blocks of 8 in parallel
+         --  Process blocks of 8 in parallel
          while Remaining >= Block_Size_Bytes * 8 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
             pragma Loop_Invariant (State_Of (Ctx) = Updating);
@@ -371,7 +409,6 @@ is
             Offset    := Offset    + (Block_Size_Bytes * 8);
             Remaining := Remaining - (Block_Size_Bytes * 8);
          end loop;
-
 
       --  Process blocks of 4 in parallel
          while Remaining >= Block_Size_Bytes * 4 loop
@@ -393,7 +430,6 @@ is
             Remaining := Remaining - (Block_Size_Bytes * 4);
          end loop;
 
-
       --  Process blocks of 2 in parallel
          while Remaining >= Block_Size_Bytes * 2 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
@@ -413,7 +449,6 @@ is
             Offset    := Offset    + (Block_Size_Bytes * 2);
             Remaining := Remaining - (Block_Size_Bytes * 2);
          end loop;
-
 
       --  Process single blocks
          if Remaining >= Block_Size_Bytes then
@@ -448,6 +483,9 @@ is
       end if;
    end Update;
 
+   --------------
+   --  Finish  --
+   --------------
 
    procedure Finish (Ctx           : in out Context;
                      Customization : in     String)
@@ -493,7 +531,7 @@ is
                  (Ctx    => Ctx.Partial_Block_XOF,
                   Digest => CV);
 
-               pragma Warnings (GNATprove, Off);
+               pragma Warnings (GNATprove, On);
 
                XOF_Serial.Update
                  (Ctx     => Ctx.Outer_XOF,
@@ -518,6 +556,9 @@ is
       end if;
    end Finish;
 
+   ---------------
+   --  Extract  --
+   ---------------
 
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)

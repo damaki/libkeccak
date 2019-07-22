@@ -1,45 +1,37 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Interfaces; use Interfaces;
 
 package body Keccak.Generic_KeccakF.Lane_Complementing_Permutation
 is
-   --  This implementation is ported from the "lane complemented"
-   --  implementation by the Keccak, Keyak, and Ketje teams provided in the
-   --  Keccak Code Package.
-   --
-   --  In the Optimized implementation, 5 XOR, 5 AND, and 5 NOT operations are
-   --  required per plane (5 lanes). In this lane complimenting implementation
-   --  the number of NOT operations is reduced from 5 to 1 per plane by storing
-   --  the complement of certain lanes.
 
    procedure Permute (S : in out Lane_Complemented_State)
    is
-      type Round_Constants is array(Round_Index) of Interfaces.Unsigned_64;
+      type Round_Constants is array (Round_Index) of Interfaces.Unsigned_64;
 
       RC : constant Round_Constants :=
         (
@@ -82,51 +74,100 @@ is
       Esa, Ese, Esi, Eso, Esu : Lane_Type;
 
       procedure Copy_From_State
-        with Global => (Input  => S,
-                        Output => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu)),
-        Inline
-      is
-      begin
-         Aba := S (0,0);
-         Abe := S (1,0);
-         Abi := S (2,0);
-         Abo := S (3,0);
-         Abu := S (4,0);
-         Aga := S (0,1);
-         Age := S (1,1);
-         Agi := S (2,1);
-         Ago := S (3,1);
-         Agu := S (4,1);
-         Aka := S (0,2);
-         Ake := S (1,2);
-         Aki := S (2,2);
-         Ako := S (3,2);
-         Aku := S (4,2);
-         Ama := S (0,3);
-         Ame := S (1,3);
-         Ami := S (2,3);
-         Amo := S (3,3);
-         Amu := S (4,3);
-         Asa := S (0,4);
-         Ase := S (1,4);
-         Asi := S (2,4);
-         Aso := S (3,4);
-         Asu := S (4,4);
-      end Copy_From_State;
-
+        with Inline,
+        Global => (Input  => S,
+                   Output => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu));
 
       procedure Copy_To_State_From_A
-        with Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu),
-                        Output => S),
-        Inline
+        with Inline,
+        Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu),
+                   Output => S);
+
+      procedure Copy_To_State_From_E
+        with Inline,
+        Global => (Input  => (Eba, Ebe, Ebi, Ebo, Ebu,
+                              Ega, Ege, Egi, Ego, Egu,
+                              Eka, Eke, Eki, Eko, Eku,
+                              Ema, Eme, Emi, Emo, Emu,
+                              Esa, Ese, Esi, Eso, Esu),
+                   Output => S);
+
+      procedure Prepare_Theta
+        with Inline,
+        Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu),
+                   Output => (Ca, Ce, Ci, Co, Cu));
+
+      procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (RI : in Round_Index)
+        with Inline,
+        Global => (In_Out => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu,
+                              Ca, Ce, Ci, Co, Cu),
+                   Output => (Eba, Ebe, Ebi, Ebo, Ebu,
+                              Ega, Ege, Egi, Ego, Egu,
+                              Eka, Eke, Eki, Eko, Eku,
+                              Ema, Eme, Emi, Emo, Emu,
+                              Esa, Ese, Esi, Eso, Esu));
+
+      procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (RI : in Round_Index)
+        with Inline,
+        Global => (In_Out => (Eba, Ebe, Ebi, Ebo, Ebu,
+                              Ega, Ege, Egi, Ego, Egu,
+                              Eka, Eke, Eki, Eko, Eku,
+                              Ema, Eme, Emi, Emo, Emu,
+                              Esa, Ese, Esi, Eso, Esu,
+                              Ca, Ce, Ci, Co, Cu),
+                   Output => (Aba, Abe, Abi, Abo, Abu,
+                              Aga, Age, Agi, Ago, Agu,
+                              Aka, Ake, Aki, Ako, Aku,
+                              Ama, Ame, Ami, Amo, Amu,
+                              Asa, Ase, Asi, Aso, Asu));
+
+      procedure Copy_From_State
+      is
+      begin
+         Aba := S (0, 0);
+         Abe := S (1, 0);
+         Abi := S (2, 0);
+         Abo := S (3, 0);
+         Abu := S (4, 0);
+         Aga := S (0, 1);
+         Age := S (1, 1);
+         Agi := S (2, 1);
+         Ago := S (3, 1);
+         Agu := S (4, 1);
+         Aka := S (0, 2);
+         Ake := S (1, 2);
+         Aki := S (2, 2);
+         Ako := S (3, 2);
+         Aku := S (4, 2);
+         Ama := S (0, 3);
+         Ame := S (1, 3);
+         Ami := S (2, 3);
+         Amo := S (3, 3);
+         Amu := S (4, 3);
+         Asa := S (0, 4);
+         Ase := S (1, 4);
+         Asi := S (2, 4);
+         Aso := S (3, 4);
+         Asu := S (4, 4);
+      end Copy_From_State;
+
+      procedure Copy_To_State_From_A
       is
       begin
          S := (0 => (0 => Aba,
@@ -157,15 +198,7 @@ is
               );
       end Copy_To_State_From_A;
 
-
       procedure Copy_To_State_From_E
-        with Global => (Input  => (Eba, Ebe, Ebi, Ebo, Ebu,
-                                   Ega, Ege, Egi, Ego, Egu,
-                                   Eka, Eke, Eki, Eko, Eku,
-                                   Ema, Eme, Emi, Emo, Emu,
-                                   Esa, Ese, Esi, Eso, Esu),
-                        Output => S),
-        Inline
       is
       begin
          S := (0 => (0 => Eba,
@@ -197,13 +230,6 @@ is
       end Copy_To_State_From_E;
 
       procedure Prepare_Theta
-        with Global => (Input  => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu),
-                        Output => (Ca, Ce, Ci, Co, Cu)),
-          Inline
       is
       begin
          Ca := Aba xor Aga xor Aka xor Ama xor Asa;
@@ -214,18 +240,6 @@ is
       end Prepare_Theta;
 
       procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (RI : in Round_Index)
-        with Global => (In_Out => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu,
-                                   Ca, Ce, Ci, Co, Cu),
-                        Output => (Eba, Ebe, Ebi, Ebo, Ebu,
-                                   Ega, Ege, Egi, Ego, Egu,
-                                   Eka, Eke, Eki, Eko, Eku,
-                                   Ema, Eme, Emi, Emo, Emu,
-                                   Esa, Ese, Esi, Eso, Esu)),
-        Inline
       is
          Da, De, Di, D0, Du : Lane_Type;
 
@@ -236,24 +250,24 @@ is
          Bsa, Bse, Bsi, Bso, Bsu : Lane_Type;
 
       begin
-         Da  := Cu xor Rotate_Left(Ce, 1);
-         De  := Ca xor Rotate_Left(Ci, 1);
-         Di  := Ce xor Rotate_Left(Co, 1);
-         D0  := Ci xor Rotate_Left(Cu, 1);
-         Du  := Co xor Rotate_Left(Ca, 1);
+         Da  := Cu xor Rotate_Left (Ce, 1);
+         De  := Ca xor Rotate_Left (Ci, 1);
+         Di  := Ce xor Rotate_Left (Co, 1);
+         D0  := Ci xor Rotate_Left (Cu, 1);
+         Du  := Co xor Rotate_Left (Ca, 1);
 
          Aba := Aba xor Da;
          Bba := Aba;
          Age := Age xor De;
-         Bbe := Rotate_Left(Age, 300 mod W);
+         Bbe := Rotate_Left (Age, 300 mod W);
          Aki := Aki xor Di;
-         Bbi := Rotate_Left(Aki, 171 mod W);
+         Bbi := Rotate_Left (Aki, 171 mod W);
          Amo := Amo xor D0;
-         Bbo := Rotate_Left(Amo, 21 mod W);
+         Bbo := Rotate_Left (Amo, 21 mod W);
          Asu := Asu xor Du;
-         Bbu := Rotate_Left(Asu, 78 mod W);
+         Bbu := Rotate_Left (Asu, 78 mod W);
          Eba := Bba xor (Bbe or Bbi);
-         Eba := Eba xor Lane_Type(RC(RI) and (2**W - 1));
+         Eba := Eba xor Lane_Type (RC (RI) and (2**W - 1));
          Ca  := Eba;
          Ebe := Bbe xor ((not Bbi) or Bbo);
          Ce  := Ebe;
@@ -265,15 +279,15 @@ is
          Cu  := Ebu;
 
          Abo := Abo xor D0;
-         Bga := Rotate_Left(Abo, 28 mod W);
+         Bga := Rotate_Left (Abo, 28 mod W);
          Agu := Agu xor Du;
-         Bge := Rotate_Left(Agu, 276 mod W);
+         Bge := Rotate_Left (Agu, 276 mod W);
          Aka := Aka xor Da;
-         Bgi := Rotate_Left(Aka, 3 mod W);
+         Bgi := Rotate_Left (Aka, 3 mod W);
          Ame := Ame xor De;
-         Bgo := Rotate_Left(Ame, 45 mod W);
+         Bgo := Rotate_Left (Ame, 45 mod W);
          Asi := Asi xor Di;
-         Bgu := Rotate_Left(Asi, 253 mod W);
+         Bgu := Rotate_Left (Asi, 253 mod W);
          Ega := Bga xor (Bge or Bgi);
          Ca  := Ca xor Ega;
          Ege := Bge xor (Bgi and Bgo);
@@ -286,15 +300,15 @@ is
          Cu  := Cu xor Egu;
 
          Abe := Abe xor De;
-         Bka := Rotate_Left(Abe, 1 mod W);
+         Bka := Rotate_Left (Abe, 1 mod W);
          Agi := Agi xor Di;
-         Bke := Rotate_Left(Agi, 6 mod W);
+         Bke := Rotate_Left (Agi, 6 mod W);
          Ako := Ako xor D0;
-         Bki := Rotate_Left(Ako, 153 mod W);
+         Bki := Rotate_Left (Ako, 153 mod W);
          Amu := Amu xor Du;
-         Bko := Rotate_Left(Amu, 136 mod W);
+         Bko := Rotate_Left (Amu, 136 mod W);
          Asa := Asa xor Da;
-         Bku := Rotate_Left(Asa, 210 mod W);
+         Bku := Rotate_Left (Asa, 210 mod W);
          Eka := Bka xor (Bke or Bki);
          Ca  := Ca xor Eka;
          Eke := Bke xor (Bki and Bko);
@@ -307,15 +321,15 @@ is
          Cu  := Cu xor Eku;
 
          Abu := Abu xor Du;
-         Bma := Rotate_Left(Abu, 91 mod W);
+         Bma := Rotate_Left (Abu, 91 mod W);
          Aga := Aga xor Da;
-         Bme := Rotate_Left(Aga, 36 mod W);
+         Bme := Rotate_Left (Aga, 36 mod W);
          Ake := Ake xor De;
-         Bmi := Rotate_Left(Ake, 10 mod W);
+         Bmi := Rotate_Left (Ake, 10 mod W);
          Ami := Ami xor Di;
-         Bmo := Rotate_Left(Ami, 15 mod W);
+         Bmo := Rotate_Left (Ami, 15 mod W);
          Aso := Aso xor D0;
-         Bmu := Rotate_Left(Aso, 120 mod W);
+         Bmu := Rotate_Left (Aso, 120 mod W);
          Ema := Bma xor (Bme and Bmi);
          Ca  := Ca xor Ema;
          Eme := Bme xor (Bmi or Bmo);
@@ -328,15 +342,15 @@ is
          Cu  := Cu xor Emu;
 
          Abi := Abi xor Di;
-         Bsa := Rotate_Left(Abi, 190 mod W);
+         Bsa := Rotate_Left (Abi, 190 mod W);
          Ago := Ago xor D0;
-         Bse := Rotate_Left(Ago, 55 mod W);
+         Bse := Rotate_Left (Ago, 55 mod W);
          Aku := Aku xor Du;
-         Bsi := Rotate_Left(Aku, 231 mod W);
+         Bsi := Rotate_Left (Aku, 231 mod W);
          Ama := Ama xor Da;
-         Bso := Rotate_Left(Ama, 105 mod W);
+         Bso := Rotate_Left (Ama, 105 mod W);
          Ase := Ase xor De;
-         Bsu := Rotate_Left(Ase, 66 mod W);
+         Bsu := Rotate_Left (Ase, 66 mod W);
          Esa := Bsa xor ((not Bse) and Bsi);
          Ca  := Ca xor Esa;
          Ese := (not Bse) xor (Bsi or Bso);
@@ -351,18 +365,6 @@ is
       end Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE;
 
       procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (RI : in Round_Index)
-        with Global => (In_Out => (Eba, Ebe, Ebi, Ebo, Ebu,
-                                   Ega, Ege, Egi, Ego, Egu,
-                                   Eka, Eke, Eki, Eko, Eku,
-                                   Ema, Eme, Emi, Emo, Emu,
-                                   Esa, Ese, Esi, Eso, Esu,
-                                   Ca, Ce, Ci, Co, Cu),
-                        Output => (Aba, Abe, Abi, Abo, Abu,
-                                   Aga, Age, Agi, Ago, Agu,
-                                   Aka, Ake, Aki, Ako, Aku,
-                                   Ama, Ame, Ami, Amo, Amu,
-                                   Asa, Ase, Asi, Aso, Asu)),
-        Inline
       is
          Da, De, Di, D0, Du : Lane_Type;
 
@@ -373,24 +375,24 @@ is
          Bsa, Bse, Bsi, Bso, Bsu : Lane_Type;
 
       begin
-         Da  := Cu xor Rotate_Left(Ce, 1);
-         De  := Ca xor Rotate_Left(Ci, 1);
-         Di  := Ce xor Rotate_Left(Co, 1);
-         D0  := Ci xor Rotate_Left(Cu, 1);
-         Du  := Co xor Rotate_Left(Ca, 1);
+         Da  := Cu xor Rotate_Left (Ce, 1);
+         De  := Ca xor Rotate_Left (Ci, 1);
+         Di  := Ce xor Rotate_Left (Co, 1);
+         D0  := Ci xor Rotate_Left (Cu, 1);
+         Du  := Co xor Rotate_Left (Ca, 1);
 
          Eba := Eba xor Da;
          Bba := Eba;
          Ege := Ege xor De;
-         Bbe := Rotate_Left(Ege, 300 mod W);
+         Bbe := Rotate_Left (Ege, 300 mod W);
          Eki := Eki xor Di;
-         Bbi := Rotate_Left(Eki, 171 mod W);
+         Bbi := Rotate_Left (Eki, 171 mod W);
          Emo := Emo xor D0;
-         Bbo := Rotate_Left(Emo, 21 mod W);
+         Bbo := Rotate_Left (Emo, 21 mod W);
          Esu := Esu xor Du;
-         Bbu := Rotate_Left(Esu, 78 mod W);
+         Bbu := Rotate_Left (Esu, 78 mod W);
          Aba := Bba xor (Bbe or Bbi);
-         Aba := Aba xor Lane_Type(RC(RI) and (2**W - 1));
+         Aba := Aba xor Lane_Type (RC (RI) and (2**W - 1));
          Ca  := Aba;
          Abe := Bbe xor ((not Bbi) or Bbo);
          Ce  := Abe;
@@ -402,15 +404,15 @@ is
          Cu  := Abu;
 
          Ebo := Ebo xor D0;
-         Bga := Rotate_Left(Ebo, 28 mod W);
+         Bga := Rotate_Left (Ebo, 28 mod W);
          Egu := Egu xor Du;
-         Bge := Rotate_Left(Egu, 276 mod W);
+         Bge := Rotate_Left (Egu, 276 mod W);
          Eka := Eka xor Da;
-         Bgi := Rotate_Left(Eka, 3 mod W);
+         Bgi := Rotate_Left (Eka, 3 mod W);
          Eme := Eme xor De;
-         Bgo := Rotate_Left(Eme, 45 mod W);
+         Bgo := Rotate_Left (Eme, 45 mod W);
          Esi := Esi xor Di;
-         Bgu := Rotate_Left(Esi, 253 mod W);
+         Bgu := Rotate_Left (Esi, 253 mod W);
          Aga := Bga xor (Bge or Bgi);
          Ca  := Ca xor Aga;
          Age := Bge xor (Bgi and Bgo);
@@ -423,15 +425,15 @@ is
          Cu  := Cu xor Agu;
 
          Ebe := Ebe xor De;
-         Bka := Rotate_Left(Ebe, 1 mod W);
+         Bka := Rotate_Left (Ebe, 1 mod W);
          Egi := Egi xor Di;
-         Bke := Rotate_Left(Egi, 6 mod W);
+         Bke := Rotate_Left (Egi, 6 mod W);
          Eko := Eko xor D0;
-         Bki := Rotate_Left(Eko, 153 mod W);
+         Bki := Rotate_Left (Eko, 153 mod W);
          Emu := Emu xor Du;
-         Bko := Rotate_Left(Emu, 136 mod W);
+         Bko := Rotate_Left (Emu, 136 mod W);
          Esa := Esa xor Da;
-         Bku := Rotate_Left(Esa, 210 mod W);
+         Bku := Rotate_Left (Esa, 210 mod W);
          Aka := Bka xor (Bke or Bki);
          Ca  := Ca xor Aka;
          Ake := Bke xor (Bki and Bko);
@@ -444,15 +446,15 @@ is
          Cu  := Cu xor Aku;
 
          Ebu := Ebu xor Du;
-         Bma := Rotate_Left(Ebu, 91 mod W);
+         Bma := Rotate_Left (Ebu, 91 mod W);
          Ega := Ega xor Da;
-         Bme := Rotate_Left(Ega, 36 mod W);
+         Bme := Rotate_Left (Ega, 36 mod W);
          Eke := Eke xor De;
-         Bmi := Rotate_Left(Eke, 10 mod W);
+         Bmi := Rotate_Left (Eke, 10 mod W);
          Emi := Emi xor Di;
-         Bmo := Rotate_Left(Emi, 15 mod W);
+         Bmo := Rotate_Left (Emi, 15 mod W);
          Eso := Eso xor D0;
-         Bmu := Rotate_Left(Eso, 120 mod W);
+         Bmu := Rotate_Left (Eso, 120 mod W);
          Ama := Bma xor (Bme and Bmi);
          Ca  := Ca xor Ama;
          Ame := Bme xor (Bmi or Bmo);
@@ -465,15 +467,15 @@ is
          Cu  := Cu xor Amu;
 
          Ebi := Ebi xor Di;
-         Bsa := Rotate_Left(Ebi, 190 mod W);
+         Bsa := Rotate_Left (Ebi, 190 mod W);
          Ego := Ego xor D0;
-         Bse := Rotate_Left(Ego, 55 mod W);
+         Bse := Rotate_Left (Ego, 55 mod W);
          Eku := Eku xor Du;
-         Bsi := Rotate_Left(Eku, 231 mod W);
+         Bsi := Rotate_Left (Eku, 231 mod W);
          Ema := Ema xor Da;
-         Bso := Rotate_Left(Ema, 105 mod W);
+         Bso := Rotate_Left (Ema, 105 mod W);
          Ese := Ese xor De;
-         Bsu := Rotate_Left(Ese, 66 mod W);
+         Bsu := Rotate_Left (Ese, 66 mod W);
          Asa := Bsa xor ((not Bse) and Bsi);
          Ca  := Ca xor Asa;
          Ase := (not Bse) xor (Bsi or Bso);

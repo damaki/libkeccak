@@ -1,44 +1,60 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Types;
 
+--  @summary
+--  Implements an optimized Keccak-f permutation based on SIMD instruction sets
+--  such as SSE, NEON, and AVX.
+--
+--  @description
+--  This package provides a basis for parallel implementations of Keccak
+--  for processing N separate permutations in parallel, where N is the number
+--  of vector components in the SIMD instruction set used.
+--
+--  When instantiating this package, subprograms and types are provided as
+--  formal generic parameters which implement each of the required operations
+--  for the target instruction set.
+--
+--  @group Parallel Keccak-f
 generic
    L : in Positive;
-   -- The binary logarithm of the lane size.
+   --  The binary logarithm of the lane size.
    --
-   -- This determines the Keccak-f state size. Possible values are:
-   -- * L=3 => 8-bit lanes,  Keccak-f[200]
-   -- * L=4 => 16-bit lanes, Keccak-f[400]
-   -- * L=5 => 32-bit lanes, Keccak-f[800]
-   -- * L=6 => 64-bit lanes, Keccak-f[1600]
+   --  This determines the Keccak-f state size. Allowed values are:
+   --  * L=3 => 8-bit lanes,  Keccak-f[200]
+   --  * L=4 => 16-bit lanes, Keccak-f[400]
+   --  * L=5 => 32-bit lanes, Keccak-f[800]
+   --  * L=6 => 64-bit lanes, Keccak-f[1600]
 
    type Lane_Type is mod <>;
+   --  Lane type e.g. Unsigned_64.
 
    type VXXI_Index is range <>;
+   --  Index type into the vector component.
 
    type VXXI is private;
    --  Vector type.
@@ -76,28 +92,15 @@ generic
    with function Shift_Right (A      : in Lane_Type;
                               Amount : in Natural) return Lane_Type;
 
-   --  @brief@
-   --  Implements an optimized Keccak algorithm based on SIMD instruction sets
-   --  such as SSE, NEON, and AVX.
-   --
-   --  @description@
-   --  This package provides a basis for parallel implementations of Keccak
-   --  for processing N separate permutations in parallel, where N is the number
-   --  of vector components in the SIMD instruction set used.
-   --
-   --  When instantiating this package, subprograms and types are provided as
-   --  formal generic parameters which implement each of the required operations
-   --  for the target instruction set.
 package Keccak.Generic_Parallel_KeccakF
 is
    W : constant Positive := 2**L;
    --  Lane size (in bits, i.e. 8, 16, 32, or 64)
 
-   B : constant Positive := W*25;
+   B : constant Positive := W * 25;
    --  Keccak-f state size (in bits).
 
    Num_Parallel_Instances : constant Positive := Vector_Width;
-
 
    pragma Assert (W mod 8 = 0,
                   "Generic_Parallel_KeccakF only supports L in 3 .. 6");
@@ -105,29 +108,27 @@ is
    pragma Assert (Vector_Width in 1 .. VXXI_View'Length,
                   "Vector_Width exceeds vector type's width");
 
-
    type Parallel_State is private;
-
 
    Initialized_State : constant Parallel_State;
 
-
    type Round_Index is range 0 .. 23;
-
 
    subtype Round_Count is Positive range 1 .. 24;
 
-
    procedure Init (S : out Parallel_State)
      with Global => null;
-
+   --  Initialise the Keccak state to all zeroes.
 
    generic
       First_Round : Round_Index := 0;
       Num_Rounds  : Round_Count := 24;
    procedure Permute_All (S : in out Parallel_State)
      with Global => null;
-
+   --  Applies the Keccak-f permutation function to all N parallel states.
+   --
+   --  This generic function is a Keccak-p permutation which is
+   --  instantiated, with the number rounds, into a Keccak-f instance.
 
    procedure XOR_Bits_Into_State_Separate
      (S           : in out Parallel_State;
@@ -144,20 +145,20 @@ is
    --
    --  The @Data@ array contains the data to be XORed into all parallel
    --  instances. The bytes in @Data@ are split into equal chunks depending on
-   --  the number of parallel instances. For example, for Keccak-f[1600]×2 the
+   --  the number of parallel instances. For example, for Keccak-f[1600]ï¿½2 the
    --  @Data@ array is split into 2 chunks as shown below:
    --
-   --    DO    BL             DO    BL
-   --  |--->|<---->|        |--->|<---->|
-   --  +-----------------------------------------+
-   --  |                    |                    | Data
-   --  +-----------------------------------------+
-   --       |      |             |      |
-   --       | XOR  |             | XOR  |
-   --       |  v   |             |  v   |
-   --       +-----------+        +-----------+
-   --       |  state 0  |        |  state 1  |
-   --       +-----------+        +-----------+
+   --     . DO    BL             DO    BL
+   --     |--->|<---->|        |--->|<---->|
+   --     +-----------------------------------------+
+   --     |                    |                    | Data
+   --     +-----------------------------------------+
+   --     .    |      |             |      |
+   --     .    | XOR  |             | XOR  |
+   --     .    |  v   |             |  v   |
+   --     .    +-----------+        +-----------+
+   --     .    |  state 0  |        |  state 1  |
+   --     .    +-----------+        +-----------+
    --
    --  Where DO = Data_Offset and BL = Bit_Len
    --
@@ -171,7 +172,7 @@ is
    --
    --  @param Data The array containing the data to XOR into the parallel state.
    --      The size of this array must be a multiple of the number of parallel
-   --      instances. For Example, for Keccak-f[1600]×4 then Data'Length
+   --      instances. For Example, for Keccak-f[1600]ï¿½4 then Data'Length
    --      must be a multiple of 4.
    --
    --  @param Data_Offset Offset of the first byte(s) to read from the @Data@
@@ -179,32 +180,31 @@ is
    --
    --  @param Bit_Len The number of bits to XOR into each state.
 
-
    procedure XOR_Bits_Into_State_All
      (S           : in out Parallel_State;
       Data        : in     Types.Byte_Array;
       Bit_Len     : in     Natural)
      with Global => null,
-     Depends => (S => + (Data, Bit_Len)),
+     Depends => (S =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
              and then Bit_Len <= B);
    --  XOR the same data into all parallel Keccak instances.
    --
    --  The @Data@ array contains the data to be XORed into all parallel
-   --  instances. For example, for Keccak-f[1600]×2 this would be as follows:
+   --  instances. For example, for Keccak-f[1600]ï¿½2 this would be as follows:
    --
-   --                   BL
-   --             |<--------->|
-   --             +----------------+
-   --             |                | Data
-   --             +----------------+
-   --                     /\
-   --                XOR /  \ XOR
-   --                 v /    \ v
-   --          +-----------+-----------+
-   --          |  state 0  |  state 1  |
-   --          +-----------+-----------+
+   --     .        BL
+   --     .  |<--------->|
+   --     .  +----------------+
+   --     .  |                | Data
+   --     .  +----------------+
+   --     .          /\
+   --     .     XOR /  \ XOR
+   --     .      v /    \ v
+   --     +-----------+-----------+
+   --     |  state 0  |  state 1  |
+   --     +-----------+-----------+
    --
    --  Where BL = Bit_Len
    --
@@ -215,7 +215,6 @@ is
    --  @param Data The array containing the data to XOR into each parallel state.
    --
    --  @param Bit_Len The length of the data, in bits.
-
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;
@@ -231,20 +230,20 @@ is
    --  The @Data@ array is split into N equal sized chunks, where N is the
    --  number of parallel instances. The bytes extracted from each Keccak
    --  state is then copied into the each chunk, offset by @Data_Offset@.
-   --  An example is shown below for Keccak-f[1600]×2 (i.e. 2 parallel
+   --  An example is shown below for Keccak-f[1600]ï¿½2 (i.e. 2 parallel
    --  instances):
    --
-   --    DO    BL             DO    BL
-   --  |--->|<---->|        |--->|<---->|
-   --  +-----------------------------------------+
-   --  |                    |                    | Data
-   --  +-----------------------------------------+
-   --       |  ^   |             |  ^   |
-   --       | Read |             | Read |
-   --       |      |             |      |
-   --       +-----------+        +-----------+
-   --       |  state 0  |        |  state 1  |
-   --       +-----------+        +-----------+
+   --     . DO    BL             DO    BL
+   --     |--->|<---->|        |--->|<---->|
+   --     +-----------------------------------------+
+   --     |                    |                    | Data
+   --     +-----------------------------------------+
+   --     .    |  ^   |             |  ^   |
+   --     .    | Read |             | Read |
+   --     .    |      |             |      |
+   --     .    +-----------+        +-----------+
+   --     .    |  state 0  |        |  state 1  |
+   --     .    +-----------+        +-----------+
    --
    --  The bytes are always read from the beginning of the Keccak state.
    --

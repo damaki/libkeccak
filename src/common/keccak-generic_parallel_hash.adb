@@ -1,33 +1,37 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
--- All rights reserved.
+--  Copyright (c) 2019, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 with Keccak.Util;
 
 package body Keccak.Generic_Parallel_Hash
 is
+
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
 
    generic
       with package SHAKE_Parallel_N is new Keccak.Generic_Parallel_XOF (<>);
@@ -44,12 +48,15 @@ is
    --  Generic procedure to process N blocks in parallel.
    --
    --  This procedure process N blocks in parallel to produce N chaining values
-   --  (CV). The CVs are then processed in the outer (serial) CSHAKE.
+   --  (CV). The CVs are then processed in the outer (serial) cSHAKE.
    --
    --  @param Ctx The KangarooTwelve context.
    --
    --  @param Data Byte array containing N blocks.
 
+   ---------------------------------------
+   --  Generic_Process_Parallel_Blocks  --
+   ---------------------------------------
 
    procedure Generic_Process_Parallel_Blocks
      (Ctx  : in out Context;
@@ -57,20 +64,20 @@ is
    is
       N : constant Positive := SHAKE_Parallel_N.Num_Parallel_Instances;
 
-      Par_Ctx : SHAKE_Parallel_N.Context;
+      Parallel_Ctx : SHAKE_Parallel_N.Context;
 
       CV_N : Types.Byte_Array (1 .. CV_Size_Bytes * N);
 
    begin
       --  Process N blocks in parallel and produce N chaining values.
-      SHAKE_Parallel_N.Init (Par_Ctx);
-      SHAKE_Parallel_N.Update_Separate  (Par_Ctx, Data);
+      SHAKE_Parallel_N.Init (Parallel_Ctx);
+      SHAKE_Parallel_N.Update_Separate  (Parallel_Ctx, Data);
 
       pragma Warnings (GNATprove, Off,
-                       "unused assignment to ""Par_Ctx""",
+                       "unused assignment to ""Parallel_Ctx""",
                        Reason => "No further data needs to be extracted");
 
-      SHAKE_Parallel_N.Extract_Separate (Par_Ctx, CV_N);
+      SHAKE_Parallel_N.Extract_Separate (Parallel_Ctx, CV_N);
 
       pragma Warnings (GNATprove, On);
 
@@ -80,6 +87,9 @@ is
          Message    => CV_N);
    end Generic_Process_Parallel_Blocks;
 
+   ------------------------------
+   --  Generic Instantiations  --
+   ------------------------------
 
    procedure Process_8_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (SHAKE_Parallel_8);
@@ -90,6 +100,9 @@ is
    procedure Process_2_Parallel_Blocks
    is new Generic_Process_Parallel_Blocks (SHAKE_Parallel_2);
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -103,6 +116,9 @@ is
               and Ctx.Block_Size = Ctx'Old.Block_Size);
    --  Processes a single block using a serial CSHAKE.
 
+   -----------------------
+   --  Process_1_Block  --
+   -----------------------
 
    procedure Process_1_Block
      (Ctx  : in out Context;
@@ -110,7 +126,7 @@ is
    is
       Serial_Ctx : SHAKE_Serial.Context;
 
-      CV: Types.Byte_Array (1 .. CV_Size_Bytes);
+      CV : Types.Byte_Array (1 .. CV_Size_Bytes);
 
    begin
       --  Process N blocks in parallel and produce N changing values.
@@ -131,6 +147,9 @@ is
          Message    => CV);
    end Process_1_Block;
 
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -157,6 +176,10 @@ is
 
         Ctx.Partial_Block_Length > 0 and Data'Length > 0 =>
           Added > 0);
+
+   ----------------------------
+   --  Add_To_Partial_Block  --
+   ----------------------------
 
    procedure Add_To_Partial_Block
      (Ctx   : in out Context;
@@ -215,6 +238,9 @@ is
       end if;
    end Add_To_Partial_Block;
 
+   ----------------------------------
+   --  Process_Last_Partial_Block  --
+   ----------------------------------
 
    procedure Process_Last_Partial_Block (Ctx : in out Context)
      with Global => null,
@@ -222,6 +248,9 @@ is
      Post => (State_Of (Ctx) = Updating
               and Ctx.Partial_Block_Length = 0);
 
+   ----------------------------------
+   --  Process_Last_Partial_Block  --
+   ----------------------------------
 
    procedure Process_Last_Partial_Block (Ctx : in out Context)
    is
@@ -237,6 +266,9 @@ is
       end if;
    end Process_Last_Partial_Block;
 
+   ------------
+   --  Init  --
+   ------------
 
    procedure Init (Ctx           :    out Context;
                    Block_Size    : in     Block_Size_Number;
@@ -260,6 +292,9 @@ is
 
    end Init;
 
+   --------------
+   --  Update  --
+   --------------
 
    procedure Update (Ctx  : in out Context;
                      Data : in     Types.Byte_Array)
@@ -281,7 +316,7 @@ is
          pragma Assert (Num_Bytes_Processed (Ctx) = Initial_Bytes_Processed + Byte_Count (Offset));
          pragma Assert (Byte_Count (Remaining) <= Max_Input_Length (Ctx));
 
-           --  Process blocks of 8 in parallel
+         --  Process blocks of 8 in parallel
          while Remaining >= Ctx.Block_Size * 8 loop
             pragma Loop_Invariant (Offset + Remaining = Data'Length);
             pragma Loop_Invariant (State_Of (Ctx) = Updating);
@@ -310,7 +345,6 @@ is
             and Ctx.Partial_Block_Length = 0
             and Ctx.Block_Size = Initial_Block_Size
             and Remaining < Ctx.Block_Size * 8);
-
 
       --  Process blocks of 4 in parallel
          while Remaining >= Ctx.Block_Size * 4 loop
@@ -341,7 +375,6 @@ is
             and Ctx.Partial_Block_Length = 0
             and Ctx.Block_Size = Initial_Block_Size
             and Remaining < Ctx.Block_Size * 4);
-
 
       --  Process blocks of 2 in parallel
          while Remaining >= Ctx.Block_Size * 2 loop
@@ -405,6 +438,9 @@ is
       end if;
    end Update;
 
+   --------------
+   --  Finish  --
+   --------------
 
    procedure Finish (Ctx  : in out Context;
                      Data :    out Types.Byte_Array)
@@ -434,6 +470,9 @@ is
                              Digest => Data);
    end Finish;
 
+   ---------------
+   --  Extract  --
+   ---------------
 
    procedure Extract (Ctx  : in out Context;
                       Data :    out Types.Byte_Array)
