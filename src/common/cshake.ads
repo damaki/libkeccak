@@ -32,12 +32,7 @@ pragma Elaborate_All (Keccak.Generic_CSHAKE);
 pragma Elaborate_All (Keccak.Generic_XOF);
 
 --  @summary
---  Defines concrete instantiations of cSHAKE128 and cSHAKE256.
---
---  @description
---  There are two variants of cSHAKE instantiated as defined by NIST SP 800-185:
---  * cSHAKE128
---  * cSHAKE256
+--  Instantiations of cSHAKE128 and cSHAKE256.
 --
 --  @group cSHAKE
 package CSHAKE

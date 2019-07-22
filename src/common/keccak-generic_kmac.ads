@@ -37,6 +37,11 @@ pragma Elaborate_All (Keccak.Generic_CSHAKE);
 --  of the Generic_CSHAKE package. For example, KMAC128 is implemented on
 --  top of cSHAKE128.
 --
+--  The KECCAK Message Authentication Code (KMAC) algorithm is a PRF and
+--  keyed hash function based on KECCAK. It provides variable-length output,
+--  and unlike SHAKE and cSHAKE, altering the requested output length generates
+--  a new, unrelated output.
+--
 --  This API is used as follows:
 --
 --  1 Call Init to initialise a new context. The private key and an optional
@@ -67,17 +72,14 @@ is
    type Context is private;
 
    type States is (Updating, Extracting, Finished);
-   --  The possible states for the context.
+   --  @value Updating When in this state additional data can be input into the
+   --    KMAC context.
    --
-   --  @value Updating When in this state the context can be fed
-   --  with input data by calling the Update procedure.
+   --  @value Extracting When in this state, the KMAC context can generate
+   --    output bytes by calling the Extract procedure.
    --
-   --  @value Extracting When in this state the context is producing output
-   --  bytes by calling the Extract procedure.
-   --
-   --  @value Finished This state is entered after the Finish procedure has
-   --  been called. When in this state, the context is finished and can no
-   --  longer be used further.
+   --  @value Finished When in this state the context is finished and no more data
+   --    can be input or output.
 
    procedure Init (Ctx           :    out Context;
                    Key           : in     Types.Byte_Array;

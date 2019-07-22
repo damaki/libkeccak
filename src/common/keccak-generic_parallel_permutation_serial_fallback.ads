@@ -31,10 +31,10 @@ with Keccak.Types;
 --
 --  @description
 --  This package implements subprograms for a parallel permutation API,
---  but implements the permutation serially.
+--  but executes the permutation serially.
 --
---  For example, this package can be used to simulate Keccak-p[1600,24]�8
---  by serially invoking 8 separate instances of Keccak-p[1600,24].
+--  For example, this package can be used to simulate Keccak-p[1600,24]x8
+--  by serially invoking 8 separate instances of Keccak-p[1600,24] serially.
 --
 --  @group Parallel Keccak-f
 generic

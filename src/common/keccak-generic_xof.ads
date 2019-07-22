@@ -39,21 +39,22 @@
 with Keccak.Generic_Sponge;
 with Keccak.Types;
 
---  Basis for the eXtendable Output Functions (XOF).
+--  @summary
+--  Generic eXtendable Output Function (XOF).
+--
+--  @group XOF
 generic
    with package XOF_Sponge is new Keccak.Generic_Sponge (<>);
 
-   --  Sponge capacity.
+   Capacity      : Positive;
+   --  Sponge capacity in bits.
    --
    --  This must be a multiple of 8, and must be smaller than the state size.
-   Capacity      : Positive;
 
    Suffix        : Keccak.Types.Byte;
 
    Suffix_Size   : Natural;
 
-   --  @summary
-   --  Generic eXtendable Output Function (XOF).
 package Keccak.Generic_XOF
 is
    --  Import common types from Keccak.Types to avoid users of the

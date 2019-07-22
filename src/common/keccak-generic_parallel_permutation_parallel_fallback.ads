@@ -30,13 +30,10 @@ with Keccak.Types;
 --  Simulates a higher-order level of parallelism from lower-order parallelism.
 --
 --  @description
---  This package uses a lower-order parallelism (e.g. 2x parllel) to simulate
---  higher-order parallelism (e.g. 4x). Basically, it doubles the number
---  of parallel instances, but runs each of the instances serially
---  For example, it makes two 2x parallel instances look like one 4x parallel
---  instance.
---  For example, this package can be used to simulate Keccak-p[1600,24]�8
---  by serially invoking 2 separate instances of Keccak-[1600,24]�4.
+--  This package uses a combines multiple instances of lower-order parallelism
+--  (e.g. two 2x parallelism) into a single higher-order parallel instance.
+--  For example, this package can be used to simulate Keccak-p[1600,24]x8
+--  by serially invoking 2 separate instances of Keccak-[1600,24]x4.
 --
 --  This package is useful in cases where a high order of parallelism is
 --  required (e.g. 8x) by an API, but such an implementation is not available.

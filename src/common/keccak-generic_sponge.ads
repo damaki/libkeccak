@@ -49,6 +49,8 @@ with Keccak.Types;
 --  Additionally, the 'Pad' procedure provides the padding rule, which adds
 --  padding bits into a block of data (the padding may spill over into another
 --  block if there is not enough free bits in the first provided block).
+--
+--  @group Sponge
 generic
    --  Size of the Sponge state in bits (e.g. 1600 for Keccak[1600])
    State_Size : Positive;

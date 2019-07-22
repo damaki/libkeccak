@@ -27,6 +27,9 @@
 with CSHAKE;
 with Keccak.Generic_Tuple_Hash;
 
+--  @summary
+--  Instantations of TupleHash128 and TupleHash256.
+--
 --  @group TupleHash
 package Tuple_Hash
 with SPARK_Mode => On

@@ -27,6 +27,15 @@
 with Keccak.Generic_Parallel_Sponge;
 with Keccak.Types;
 
+--  @summary
+--  Implements a generic parallel eXtendable Output Function (XOF).
+--
+--  @description
+--  The XOF is built on top of a Generic_Parallel_Sponge instance, and
+--  is able to calculate N separate XOFs in parallel where N is the
+--  number of parallel instances.
+--
+--  @group XOF
 generic
    with package Sponge is new Keccak.Generic_Parallel_Sponge (<>);
 

@@ -36,7 +36,7 @@ with Keccak.Padding;
 --  @summary
 --  Instantiates ParallelHash algorithms as defined in NIST SP 800-185.
 --
---  @group Hash
+--  @group ParallelHash
 package Parallel_Hash
 with SPARK_Mode => On
 is

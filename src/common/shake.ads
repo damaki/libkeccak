@@ -30,6 +30,10 @@ with Keccak.Generic_XOF;
 
 pragma Elaborate_All (Keccak.Generic_XOF);
 
+--  @summary
+--  Instantations of SHAKE128 and SHAKE256.
+--
+--  @group SHAKE
 package SHAKE
 with SPARK_Mode => On
 is

@@ -29,6 +29,9 @@ with Keccak.Generic_KMAC;
 
 pragma Elaborate_All (Keccak.Generic_KMAC);
 
+--  @summary
+--  Instantations of KMAC128 and KMAC256.
+--
 --  @group KMAC
 package KMAC
 with SPARK_Mode => On

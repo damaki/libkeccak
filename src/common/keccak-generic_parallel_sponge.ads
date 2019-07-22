@@ -26,6 +26,15 @@
 -------------------------------------------------------------------------------
 with Keccak.Types;
 
+--  @summary
+--  Generic parallel sponge construction.
+--
+--  @description
+--  This parallel sponge is built on top of a parallel permutation, which
+--  can perform multiple separate permutations in parallel by taking
+--  advantage of SIMD instructions sets (e.g. SSE2, AVX2).
+--
+--  @group Sponge
 generic
    State_Size : Positive;
    --  Size in bits of the underlying permutation state.
