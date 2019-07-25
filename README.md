@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/damaki/libkeccak.svg?branch=master)](https://travis-ci.com/damaki/libkeccak)
+
 # Libkeccak
 
 This project implements the Keccak family of sponge functions and related
@@ -31,7 +33,7 @@ as specified in [1,4,5]:
 * Parallel Hashes:
   * KangarooTwelve
   * ParallelHash128 and ParallelHash256
-  
+
 Note that the difference between a hash function an a XOF function is that a
 hash function has a fixed output length (for example, 256 bits), whereas the
 XOFs have arbitrary output length.
@@ -62,7 +64,7 @@ begin
    SHA3.SHA3_256.Init(Ctx);
    SHA3.SHA3_256.Update(Ctx, Data);
    SHA3.SHA3_256.Final(Ctx, Digest);
-   
+
    return Digest;
 end Compute_Hash;
 ```
@@ -93,7 +95,7 @@ Currently, the following ARCH and SIMD values are supported:
 | x86_64  | none, SSE2, or AVX2 |
 
 `ARCH=generic` should be used for any architecture which does not appear in the
-above table. 
+above table.
 
 Enabling `SIMD=SSE2` will use SSE2 instructions to speed up parallel algorithms
 such as KangarooTwelve and ParallelHash. Using `SIMD=AVX2` will also enable the
@@ -120,7 +122,7 @@ To run the benchmark type:
 
 The following performance measurements were taken on an Intel Core i7-2630QM
 2.0 GHz (@2.6 GHz with turbo boost) "Sandy Bridge" on 64-bit Linux. The code
-was compiled using GNAT GPL 2017 (20170515) with `ARCH=x86_64 SIMD=SSE2`. 
+was compiled using GNAT GPL 2017 (20170515) with `ARCH=x86_64 SIMD=SSE2`.
 The measurements shown are the output of the benchmark program.
 
 ```
@@ -186,7 +188,7 @@ The unit tests aim to cover the cases that are not covered by the KAT, such
 as boundary conditions. As the project moves forwards I will experiment with
 replacing tests with proof.
 
-# References 
+# References
 
 * [1] NIST FIPS PUB 202 - SHA-3 Standard: Permutation-Based Hash and Extendable
 output Functions. August 2015 http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf

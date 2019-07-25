@@ -1,0 +1,18 @@
+language: c
+
+services:
+  - docker
+
+branches:
+  only:
+    master
+
+env:
+  - TARGET=test ARCH=x86_64
+  - TARGET=test ARCH=generic
+
+git:
+  submodules: false
+
+script:
+  - docker run -v $PWD:/app -w /app jklmnn/gnat:gpl.2019.spark /bin/sh -c "make $TARGET ARCH=$ARCH"
