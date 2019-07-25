@@ -4,10 +4,11 @@ services:
   - docker
 
 env:
-  - TEST_SUITE=gnat-community-2019
+  - TARGET=test ARCH=x86_64
+  - TARGET=test ARCH=generic
 
 git:
   submodules: false
 
 script:
-  - if [ "$TEST_SUITE" = "gnat-community-2019" ]; then docker run -v $PWD:/app -w /app jklmnn/gnat:gpl.2019.spark /bin/sh -c "make test"; fi
+  - docker run -v $PWD:/app -w /app jklmnn/gnat:gpl.2019.spark /bin/sh -c "make $TARGET ARCH=$ARCH"
