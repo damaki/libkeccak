@@ -3,6 +3,10 @@ language: c
 services:
   - docker
 
+branches:
+  only:
+    master
+
 env:
   - TARGET=test ARCH=x86_64
   - TARGET=test ARCH=generic
