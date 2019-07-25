@@ -16,4 +16,4 @@ git:
   submodules: false
 
 script:
-  - docker run -v $PWD:/app -w /app jklmnn/gnat:gpl.2019.spark /bin/sh -c "make $TARGET ARCH=$ARCH"
+  - travis_wait docker run -v $PWD:/app -w /app jklmnn/gnat:gpl.2019.spark /bin/sh -c "make $TARGET ARCH=$ARCH"
