@@ -6,6 +6,7 @@ services:
 env:
   - TARGET=test ARCH=x86_64
   - TARGET=test ARCH=generic
+  - TARGET=proof ARCH=generic
 
 git:
   submodules: false
