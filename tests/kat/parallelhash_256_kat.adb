@@ -30,7 +30,7 @@ with Parallel_Hash;
 
 procedure ParallelHash_256_KAT
 is
-   package Runner is new KAT.Parallel_Hash_Runner(Parallel_Hash.ParallelHash256);
+   package Runner is new KAT.Parallel_Hash_Runner(Parallel_Hash.ParallelHash256, False);
 
 begin
    Runner.Run_Tests;
