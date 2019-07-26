@@ -38,89 +38,94 @@ is
    is
       use type Keccak.Types.Byte_Array;
       use type Ada.Command_Line.Exit_Status;
-      
+
       package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
-      
+
       Tests : ParallelHash_KAT_Vectors.Vector;
-      
+
       Ctx      : ParallelHash.Context;
       Out_Data : Keccak.Types.Byte_Array(0 .. 1600);
       Out_Last : Keccak.Types.Index_Number;
-      
+
       Num_Passed  : Natural := 0;
       Num_Failed  : Natural := 0;
-      
+
    begin
       -- The KAT file name is given on the command line.
       -- Check that the argument is present.
       if Ada.Command_Line.Argument_Count /= 1 then
          Ada.Text_IO.Put("Error: missing file name parameter");
-         
+
          Ada.Command_Line.Set_Exit_Status(-1);
-         
+
       else
-      
+
          -- Load the test file using the file name given on the command line
          Ada.Text_IO.Put_Line("Loading file: " & Ada.Command_Line.Argument(1));
          Load_ParallelHash_Test_Vectors(Ada.Command_Line.Argument(1), Tests);
-         
+
          Ada.Text_IO.Put("Running ");
          Integer_IO.Put(Integer(Tests.Length), Width => 0);
          Ada.Text_IO.Put_Line(" tests ...");
-      
+
          -- Run each test.
          for C in Tests.Iterate loop
-         
+
             ParallelHash.Init
                (Ctx           => Ctx,
                 Block_Size    => ParallelHash_KAT_Vectors.Element(C).Block_Size,
                 Customization => To_String(ParallelHash_KAT_Vectors.Element(C).S_Data));
-                         
+
             ParallelHash.Update (Ctx  => Ctx,
                                  Data => ParallelHash_KAT_Vectors.Element(C).In_Data.all);
-            
+
             Out_Last := ParallelHash_KAT_Vectors.Element(C).Out_Data.all'Length - 1;
-            
-            ParallelHash.Finish (Ctx  => Ctx,
-                                 Data => Out_Data (Out_Data'First .. Out_Last));
+
+            if XOF_Mode then
+               ParallelHash.Extract (Ctx  => Ctx,
+                                     Data => Out_Data (Out_Data'First .. Out_Last));
+            else
+               ParallelHash.Finish (Ctx  => Ctx,
+                                    Data => Out_Data (Out_Data'First .. Out_Last));
+            end if;
 
             if Out_Data(0 .. Out_Last) = ParallelHash_KAT_Vectors.Element(C).Out_Data.all then
                Num_Passed := Num_Passed + 1;
             else
                Num_Failed := Num_Failed + 1;
-               
+
                -- Display a message on failure to help with debugging.
                Ada.Text_IO.Put_Line("FAILURE");
-               
+
                Ada.Text_IO.Put("   Expected Out_Data: ");
                Ada.Text_IO.Put(Byte_Array_To_String(ParallelHash_KAT_Vectors.Element(C).Out_Data.all));
                Ada.Text_IO.New_Line;
-               
+
                Ada.Text_IO.Put("   Actual Out_Data:   ");
                Ada.Text_IO.Put(Byte_Array_To_String(Out_Data(0 .. Out_Last)));
                Ada.Text_IO.New_Line;
             end if;
          end loop;
-         
+
          -- Print results
-         
+
          Ada.Text_IO.New_Line;
-         
+
          Ada.Text_IO.Put("Passed: ");
          Integer_IO.Put(Num_Passed, Width => 0);
          Ada.Text_IO.New_Line;
-         
+
          Ada.Text_IO.Put("Failed: ");
          Integer_IO.Put(Num_Failed, Width => 0);
          Ada.Text_IO.New_Line;
-         
+
          -- Allow external tool (e.g. make) to detect failed tests.
          if Num_Failed > 0 then
             Ada.Command_Line.Set_Exit_Status(1);
          end if;
-         
+
       end if;
-      
+
    end Run_Tests;
 
 end KAT.Parallel_Hash_Runner;

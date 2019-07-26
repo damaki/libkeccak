@@ -25,16 +25,15 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Keccak.Generic_Parallel_Hash;
+with KAT.Parallel_Hash_Runner;
+with Parallel_Hash;
 
-generic
-   with package ParallelHash is new Keccak.Generic_Parallel_Hash(<>);
-
-   XOF_Mode : Boolean;
-
-package KAT.Parallel_Hash_Runner
+procedure ParallelHashXOF_128_KAT
 is
+   package Runner is new KAT.Parallel_Hash_Runner(Parallel_Hash.ParallelHash128, True);
 
-   procedure Run_Tests;
+begin
+   Runner.Run_Tests;
 
-end KAT.Parallel_Hash_Runner;
+end ParallelHashXOF_128_KAT;
+
