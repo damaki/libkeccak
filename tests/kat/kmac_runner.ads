@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,14 +24,15 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-
-with Keccak.Generic_Hash;
+with Keccak.Generic_KMAC;
 
 generic
-   with package Hash is new Keccak.Generic_Hash(<>);
-package KAT.Runner
-is
+   with package KMAC is new Keccak.Generic_KMAC(<>);
+package KMAC_Runner is
 
-   procedure Run_Tests(Align_Bits : in Boolean);
+   procedure Run_Tests (File_Name  : in     String;
+                        XOF        : in     Boolean;
+                        Num_Passed :    out Natural;
+                        Num_Failed :    out Natural);
 
-end KAT.Runner;
+end KMAC_Runner;

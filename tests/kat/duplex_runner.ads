@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,17 +24,15 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-
-with Keccak.Generic_Parallel_Hash;
+with Keccak.Generic_Duplex;
 
 generic
-   with package ParallelHash is new Keccak.Generic_Parallel_Hash(<>);
+   with package Duplex is new Keccak.Generic_Duplex(<>);
+package Duplex_Runner is
 
-   XOF_Mode : Boolean;
+   procedure Run_Tests (File_Name  : in     String;
+                        Capacity   : in     Positive;
+                        Num_Passed :    out Natural;
+                        Num_Failed :    out Natural);
 
-package KAT.Parallel_Hash_Runner
-is
-
-   procedure Run_Tests;
-
-end KAT.Parallel_Hash_Runner;
+end Duplex_Runner;

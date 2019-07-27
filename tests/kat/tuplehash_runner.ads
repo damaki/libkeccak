@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,16 +24,15 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Generic_Tuple_Hash;
 
-with KAT.KMACXOF_Runner;
-with KMAC;
+generic
+   with package TupleHash is new Keccak.Generic_Tuple_Hash(<>);
+package TupleHash_Runner is
 
-procedure KMACXOF_256_KAT
-is
-   package Runner is new KAT.KMACXOF_Runner(KMAC.KMAC256);
+   procedure Run_Tests (File_Name  : in     String;
+                        XOF        : in     Boolean;
+                        Num_Passed :    out Natural;
+                        Num_Failed :    out Natural);
 
-begin
-   Runner.Run_Tests;
-
-end KMACXOF_256_KAT;
-
+end TupleHash_Runner;

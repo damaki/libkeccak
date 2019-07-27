@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,14 +24,15 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-
-with Keccak.Generic_Tuple_Hash;
+with Keccak.Generic_Hash;
 
 generic
-   with package Tuple_Hash is new Keccak.Generic_Tuple_Hash(<>);
-package KAT.Tuple_Hash_XOF_Runner
-is
+   with package Hash is new Keccak.Generic_Hash(<>);
+package Hash_Runner is
 
-   procedure Run_Tests;
-   
-end KAT.Tuple_Hash_XOF_Runner;
+   procedure Run_Tests (File_Name  : in     String;
+                        Align_Bits : in     Boolean;
+                        Num_Passed :    out Natural;
+                        Num_Failed :    out Natural);
+
+end Hash_Runner;
