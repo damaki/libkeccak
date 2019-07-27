@@ -1,7 +1,7 @@
 # ParallelHashXOF256_samples.txt
 # Algorithm name: ParallelHash256
-# Test vectors obtained from: https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/ParallelHashXOF_samples.pdf
-# Accessed 26 July 2019
+# Test vectors obtained from: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/ParallelHash_samples.pdf
+# Accessed 25 June 2017
 
 B = 8
 S = ""

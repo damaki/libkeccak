@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,16 +24,14 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Generic_CSHAKE;
 
-with KAT.Duplex_Runner;
-with Keccak.Keccak_1600.Rounds_24;
+generic
+   with package CSHAKE is new Keccak.Generic_CSHAKE(<>);
+package CSHAKE_Runner is
 
-procedure Keccak_Duplex_KAT_r1026c574
-is
-   package Runner is new KAT.Duplex_Runner(Keccak.Keccak_1600.Rounds_24.Duplex);
+   procedure Run_Tests (File_Name  : in     String;
+                        Num_Passed :    out Natural;
+                        Num_Failed :    out Natural);
 
-begin
-   Runner.Run_Tests(574);
-
-end Keccak_Duplex_KAT_r1026c574;
-
+end CSHAKE_Runner;

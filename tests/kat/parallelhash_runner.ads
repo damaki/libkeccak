@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2017, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,16 +24,15 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Generic_Parallel_Hash;
 
-with KAT.Tuple_Hash_Runner;
-with Tuple_Hash;
+generic
+   with package Parallel_Hash is new Keccak.Generic_Parallel_Hash(<>);
+package ParallelHash_Runner is
 
-procedure Tuple_Hash_128_KAT
-is
-   package Runner is new KAT.Tuple_Hash_Runner(Tuple_Hash.Tuple_Hash_128);
+   procedure Run_Tests (File_Name  : in     String;
+                        XOF        : in     Boolean;
+                        Num_Passed :    out Natural;
+                        Num_Failed :    out Natural);
 
-begin
-   Runner.Run_Tests;
-
-end Tuple_Hash_128_KAT;
-
+end ParallelHash_Runner;
