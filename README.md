@@ -32,6 +32,7 @@ as specified in [1,4,5]:
   * TupleHash128 and TupleHash256
 * Parallel Hashes:
   * KangarooTwelve
+  * MarsupilamiFourteen (256-bit security variant of KangarooTwelve)
   * ParallelHash128 and ParallelHash256
 
 Note that the difference between a hash function an a XOF function is that a

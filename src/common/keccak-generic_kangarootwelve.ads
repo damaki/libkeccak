@@ -47,6 +47,11 @@ with Keccak.Types;
 --  @group KangarooTwelve
 generic
 
+   CV_Size_Bytes : Positive;
+   --  The size of each chaining value (CV) in bytes.
+   --  This is set to 256 bits (32 bytes) for KangarooTwelve
+   --  and 512 bits (64 bytes) for MarsupilamiFourteen.
+
    with package XOF_Serial is new Keccak.Generic_XOF (<>);
    --  This XOF must be configured with NO SUFFIX BITS.
    --  The Generic_KangarooTwelve implementation takes care of the appropriate
@@ -169,10 +174,6 @@ is
    --  to KangarooTwelve. This decreases as input bytes are processed.
 
 private
-
-   CV_Size_Bytes    : constant := 256 / 8;
-   --  The size of each chaining value (CV) in bytes.
-   --  This is set to 256 bits (32 bytes) in the documentation.
 
    use type XOF_Serial.States;
 
