@@ -128,8 +128,6 @@ is
       --  Process whole lanes
       Outer_Loop :
       for Y2 in Y_Coord loop
-         pragma Loop_Variant (Increases => Offset,
-                              Decreases => Remaining_Bytes);
          pragma Loop_Invariant (Offset mod (W / 8) = 0
                                 and Offset + Remaining_Bytes = Data'Length);
 
@@ -233,8 +231,6 @@ is
       --  Process whole lanes
       Outer_Loop :
       for Y2 in Y_Coord loop
-         pragma Loop_Variant (Increases => Offset,
-                              Decreases => Remaining_Bytes);
          pragma Loop_Invariant (Offset mod (W / 8) = 0
                                 and Offset + Remaining_Bytes = Data'Length);
 

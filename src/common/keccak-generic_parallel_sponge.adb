@@ -175,6 +175,10 @@ is
             Bit_Len     => Ctx.Rate * 8);
 
          Permute_All (Ctx.Permutation_State);
+
+      else
+         --  Help prove contract case.
+         pragma Assert ((Data'Length / Num_Parallel_Instances) mod (Rate_Of (Ctx) / 8) = 0);
       end if;
 
    end Absorb_Bytes_Separate;
