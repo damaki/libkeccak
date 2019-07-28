@@ -126,31 +126,40 @@ is
       --  Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
 
       --  Process whole lanes
-      while Remaining_Bytes >= W / 8 loop
+      Outer_Loop :
+      for Y2 in Y_Coord loop
          pragma Loop_Variant (Increases => Offset,
                               Decreases => Remaining_Bytes);
          pragma Loop_Invariant (Offset mod (W / 8) = 0
                                 and Offset + Remaining_Bytes = Data'Length);
 
-         Lane := A (X, Y);
+         for X2 in X_Coord loop
+            pragma Loop_Variant (Increases => Offset,
+                                 Decreases => Remaining_Bytes);
+            pragma Loop_Invariant (Offset mod (W / 8) = 0
+                                  and Offset + Remaining_Bytes = Data'Length);
 
-         for I in Natural range 0 .. (W / 8) - 1 loop
-            Data (Data'First + Offset + I)
-              := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
+            if Remaining_Bytes < W / 8 then
+               X := X2;
+               Y := Y2;
+               exit Outer_Loop;
+            end if;
 
-            pragma Annotate (GNATprove, False_Positive,
-                             """Data"" might not be initialized",
-                             "Data is initialized at end of procedure");
+            Lane := A (X2, Y2);
+
+            for I in Natural range 0 .. (W / 8) - 1 loop
+               Data (Data'First + Offset + I)
+               := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
+
+               pragma Annotate (GNATprove, False_Positive,
+                              """Data"" might not be initialized",
+                              "Data is initialized at end of procedure");
+            end loop;
+
+            Remaining_Bytes := Remaining_Bytes - W / 8;
+            Offset          := Offset + W / 8;
          end loop;
-
-         X := X + 1;
-         if X = 0 then
-            Y := Y + 1;
-         end if;
-
-         Remaining_Bytes := Remaining_Bytes - W / 8;
-         Offset          := Offset + W / 8;
-      end loop;
+      end loop Outer_Loop;
 
       --  Process any remaining data (smaller than 1 lane)
       if Remaining_Bytes > 0 then
@@ -222,31 +231,40 @@ is
       --  Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
 
       --  Process whole lanes
-      while Remaining_Bytes >= W / 8 loop
+      Outer_Loop :
+      for Y2 in Y_Coord loop
          pragma Loop_Variant (Increases => Offset,
                               Decreases => Remaining_Bytes);
          pragma Loop_Invariant (Offset mod (W / 8) = 0
                                 and Offset + Remaining_Bytes = Data'Length);
 
-         Lane := A (X, Y) xor Complement_Mask (X, Y);
+         for X2 in X_Coord loop
+            pragma Loop_Variant (Increases => Offset,
+                                 Decreases => Remaining_Bytes);
+            pragma Loop_Invariant (Offset mod (W / 8) = 0
+                                  and Offset + Remaining_Bytes = Data'Length);
 
-         for I in Natural range 0 .. (W / 8) - 1 loop
-            Data (Data'First + Offset + I)
-              := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
+            if Remaining_Bytes < W / 8 then
+               X := X2;
+               Y := Y2;
+               exit Outer_Loop;
+            end if;
 
-            pragma Annotate (GNATprove, False_Positive,
-                             """Data"" might not be initialized",
-                             "Data is initialized at end of procedure");
+            Lane := A (X2, Y2) xor Complement_Mask (X2, Y2);
+
+            for I in Natural range 0 .. (W / 8) - 1 loop
+               Data (Data'First + Offset + I)
+               := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
+
+               pragma Annotate (GNATprove, False_Positive,
+                              """Data"" might not be initialized",
+                              "Data is initialized at end of procedure");
+            end loop;
+
+            Remaining_Bytes := Remaining_Bytes - W / 8;
+            Offset          := Offset + W / 8;
          end loop;
-
-         X := X + 1;
-         if X = 0 then
-            Y := Y + 1;
-         end if;
-
-         Remaining_Bytes := Remaining_Bytes - W / 8;
-         Offset          := Offset + W / 8;
-      end loop;
+      end loop Outer_Loop;
 
       --  Process any remaining data (smaller than 1 lane)
       if Remaining_Bytes > 0 then

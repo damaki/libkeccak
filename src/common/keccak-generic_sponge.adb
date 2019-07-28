@@ -53,6 +53,7 @@ is
       Ctx.Block           := (others => 0);
       Ctx.Bits_Absorbed   := 0;
       Ctx.Bytes_Squeezed  := 0;
+      Ctx.Out_Bytes_Ready := False;
       Ctx.Rate            := (State_Size - Capacity) / 8;
       Ctx.Curr_State      := Absorbing;
    end Init;
@@ -335,9 +336,10 @@ is
       --  Extract the first bytes for squeezing.
       Extract_Data (Ctx.State, Ctx.Block (0 .. Ctx.Rate - 1));
 
-      Ctx.Bits_Absorbed  := 0;
-      Ctx.Bytes_Squeezed := 0;
-      Ctx.Curr_State     := Squeezing;
+      Ctx.Bits_Absorbed   := 0;
+      Ctx.Bytes_Squeezed  := 0;
+      Ctx.Out_Bytes_Ready := True;
+      Ctx.Curr_State      := Squeezing;
 
    end Finalize;
 
@@ -354,26 +356,13 @@ is
       Initial_Rate : constant Positive := Rate_Of (Ctx) with Ghost;
 
    begin
-      Digest := (others => 0); --  workaround for flow analysis
-
       --  Move from Absorbing state to Squeezing state, if necessary
       if State_Of (Ctx) = Absorbing then
          Finalize (Ctx);
       end if;
 
-      pragma Assert (State_Of (Ctx) = Squeezing);
-
-      --  If there are no leftover bytes then generate a new block.
-      if Ctx.Bytes_Squeezed >= Ctx.Rate then
-         F (Ctx.State);
-         Extract_Data (Ctx.State, Ctx.Block (0 .. Ctx.Rate - 1));
-         Ctx.Bytes_Squeezed := 0;
-      end if;
-
-      pragma Assert (Offset + Remaining = Digest'Length);
-
-      --  First, squeeze any leftover bytes in the current block
-      if Ctx.Bytes_Squeezed > 0 then
+      --  Copy any leftover bytes in the current block.
+      if Ctx.Out_Bytes_Ready and Ctx.Bytes_Squeezed < Ctx.Rate then
          declare
             Bytes_To_Squeeze : Natural := Ctx.Rate - Ctx.Bytes_Squeezed;
          begin
@@ -393,19 +382,24 @@ is
             Remaining := Remaining - Bytes_To_Squeeze;
          end;
 
-         --  Permute state if necessary.
+         pragma Assert (if Remaining > 0 then Ctx.Bytes_Squeezed >= Ctx.Rate);
+
          if Ctx.Bytes_Squeezed >= Ctx.Rate then
-            F (Ctx.State);
-            Extract_Data (Ctx.State, Ctx.Block (0 .. Ctx.Rate - 1));
-            Ctx.Bytes_Squeezed := 0;
+            Ctx.Out_Bytes_Ready := False;
          end if;
+
+      else
+         Ctx.Out_Bytes_Ready := False;
       end if;
 
-      pragma Assert (if Remaining > 0 then Ctx.Bytes_Squeezed = 0);
-      pragma Assert (Offset + Remaining = Digest'Length);
-      pragma Assert (Rate_Of (Ctx) = Initial_Rate);
+      --  Check that we've used all leftover data if we still have
+      --  remaining bytes to output.
+      pragma Assert_And_Cut ((if Remaining > 0 then not Ctx.Out_Bytes_Ready)
+                             and Rate_Of (Ctx) = Initial_Rate
+                             and Offset + Remaining = Digest'Length
+                             and State_Of (Ctx) = Squeezing);
 
-      --  Process full blocks
+      --  Process full blocks.
       while Remaining >= Ctx.Rate loop
          pragma Loop_Invariant ((Offset + Remaining = Digest'Length)
                                 and Ctx.Curr_State = Squeezing
@@ -413,12 +407,10 @@ is
          pragma Loop_Variant (Increases => Offset,
                               Decreases => Remaining);
 
-         Digest (Digest'First + Offset ..
-                   Digest'First + Offset + (Ctx.Rate - 1))
-             := Ctx.Block (0 .. Ctx.Rate - 1);
-
          F (Ctx.State);
-         Extract_Data (Ctx.State, Ctx.Block (0 .. Ctx.Rate - 1));
+         Extract_Data (Ctx.State,
+                       Digest (Digest'First + Offset ..
+                               Digest'First + Offset + (Ctx.Rate - 1)));
 
          Offset    := Offset    + Ctx.Rate;
          Remaining := Remaining - Ctx.Rate;
@@ -426,13 +418,16 @@ is
 
       pragma Assert (Remaining < Ctx.Rate);
 
-      --  Process last block
       if Remaining > 0 then
+         F (Ctx.State);
+         Extract_Data (Ctx.State, Ctx.Block (0 .. Ctx.Rate - 1));
+
          Digest (Digest'First + Offset ..
                    Digest'First + ((Offset + Remaining) - 1))
              := Ctx.Block (0 .. Remaining - 1);
 
-         Ctx.Bytes_Squeezed := Remaining;
+         Ctx.Bytes_Squeezed  := Remaining;
+         Ctx.Out_Bytes_Ready := True;
       end if;
    end Squeeze;
 

@@ -231,6 +231,9 @@ is
      Depends => ((Ctx, Digest) => (Ctx, Digest)),
      Post => (State_Of (Ctx) = Squeezing
               and Rate_Of (Ctx) = Rate_Of (Ctx'Old));
+   pragma Annotate (GNATprove, False_Positive,
+                    """Digest"" might not be initialized",
+                    "Digest is fully initialized by the end of the subprogram");
    --  Squeeze (output) bits from the sponge.
    --
    --  Squeeze can be called multiple times to extract an arbitrary amount of
@@ -288,6 +291,9 @@ private
       --  the rate, then the next block of output is generated and Bytes_Squeezed
       --  is reset to 0.
       Bytes_Squeezed  : Byte_Absorption_Number;
+
+      --  True if the data in the 'Block' buffer contain valid output data.
+      Out_Bytes_Ready : Boolean;
 
       --  The rate parameter. This value is represented in bytes, not bits
       --  so that it is easier to manage in proof.
