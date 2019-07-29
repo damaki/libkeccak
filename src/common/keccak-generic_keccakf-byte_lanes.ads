@@ -35,7 +35,7 @@ package Keccak.Generic_KeccakF.Byte_Lanes
 is
 
    pragma Assert
-     (W mod 8 = 0,
+     (Lane_Size_Bits mod 8 = 0,
       "Byte_Lanes can only be used with lane sizes that are a multiple of 8");
 
    procedure XOR_Bits_Into_State (A       : in out State;
@@ -45,7 +45,7 @@ is
      Depends => (A =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= B);
+             and then Bit_Len <= State_Size_Bits);
    --  XOR bits into the Keccak-f state.
    --
    --  The data is XOR'ed into the first Bit_Len bits of the state.
@@ -76,7 +76,7 @@ is
      Depends => (A =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= B);
+             and then Bit_Len <= State_Size_Bits);
    --  XOR bits into the lane complemented version of the Keccak-f state.
    --
    --  The data is XOR'ed into the first Bit_Len bits of the state.
@@ -103,7 +103,7 @@ is
                             Data :    out Keccak.Types.Byte_Array)
      with Global => null,
      Depends => (Data =>+ A),
-     Pre => Data'Length <= ((B + 7) / 8);
+     Pre => Data'Length <= ((State_Size_Bits + 7) / 8);
    --  Copy bytes from the Keccak-f state.
    --
    --  The bytes are extracted starting at the beginning of the Keccak state.
@@ -131,7 +131,7 @@ is
                             Data :    out Keccak.Types.Byte_Array)
      with Global => null,
      Depends => (Data =>+ A),
-     Pre => Data'Length <= ((B + 7) / 8);
+     Pre => Data'Length <= ((State_Size_Bits + 7) / 8);
    --  Copy bytes from the lane complemented Keccak-f state.
    --
    --  The bytes are extracted starting at the beginning of the Keccak state.
@@ -179,7 +179,7 @@ is
    --    are needed.
      with Global => null,
      Depends => (Data =>+ (A, Bit_Len)),
-     Pre => (Bit_Len <= B
+     Pre => (Bit_Len <= State_Size_Bits
              and then Data'Length = (Bit_Len + 7) / 8);
 
    procedure Extract_Bits (A       : in     Lane_Complemented_State;
@@ -187,7 +187,7 @@ is
                            Bit_Len : in     Natural)
      with Global => null,
      Depends => (Data =>+ (A, Bit_Len)),
-     Pre => (Bit_Len <= B
+     Pre => (Bit_Len <= State_Size_Bits
              and then Data'Length = (Bit_Len + 7) / 8);
    --  Copy bits from the lane complemented Keccak-f state.
    --

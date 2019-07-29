@@ -54,7 +54,7 @@ is
       Ctx.Bits_Absorbed   := 0;
       Ctx.Bytes_Squeezed  := 0;
       Ctx.Out_Bytes_Ready := False;
-      Ctx.Rate            := (State_Size - Capacity) / 8;
+      Ctx.Rate            := (State_Size_Bits - Capacity) / 8;
       Ctx.Curr_State      := Absorbing;
    end Init;
 
@@ -88,7 +88,7 @@ is
          Free_Bits_In_Block  := Rate_Of (Ctx) - Ctx.Bits_Absorbed;
          Free_Bytes_In_Block := Free_Bits_In_Block / 8;
 
-         pragma Assert (Free_Bits_In_Block < State_Size);
+         pragma Assert (Free_Bits_In_Block < State_Size_Bits);
          pragma Assert (Free_Bits_In_Block mod 8 = 0);
 
          if Bit_Length < Free_Bits_In_Block then
@@ -115,7 +115,7 @@ is
             XOR_Bits_Into_State (Ctx.State,
                                  Ctx.Block (0 .. Ctx.Rate - 1),
                                  Initial_Bit_Rate);
-            F (Ctx.State);
+            Permute (Ctx.State);
 
             pragma Assert (Offset + Remaining_Bytes = Initial_Data_Len);
             pragma Assert (Remaining_Bytes = (Remaining_Bits + 7) / 8);
@@ -136,7 +136,7 @@ is
                                     Data (Data'First + Offset ..
                                           Data'First + Offset + (Ctx.Rate - 1)),
                                     Initial_Bit_Rate);
-               F (Ctx.State);
+               Permute (Ctx.State);
 
                Offset          := Offset          + Ctx.Rate;
                Remaining_Bytes := Remaining_Bytes - Ctx.Rate;
@@ -296,7 +296,7 @@ is
    --  rule is applied and the first bytes are extracted for squeezing.
    procedure Finalize (Ctx : in out Context)
    is
-      Next_Block : Keccak.Types.Byte_Array (0 .. (State_Size / 8) - 1) := (others => 0);
+      Next_Block : Keccak.Types.Byte_Array (0 .. (State_Size_Bits / 8) - 1) := (others => 0);
       Spilled    : Boolean;
 
    begin
@@ -307,7 +307,7 @@ is
          XOR_Bits_Into_State (Ctx.State,
                               Ctx.Block (0 .. Ctx.Rate - 1),
                               Rate_Of (Ctx));
-         F (Ctx.State);
+         Permute (Ctx.State);
 
          Ctx.Block := (others => 0);
          Ctx.Bits_Absorbed := 0;
@@ -323,14 +323,14 @@ is
       XOR_Bits_Into_State (Ctx.State,
                            Ctx.Block (0 .. Ctx.Rate - 1),
                            Rate_Of (Ctx));
-      F (Ctx.State);
+      Permute (Ctx.State);
 
       --  Did the padding spill over to another block?
       if Spilled then
          XOR_Bits_Into_State (Ctx.State,
                               Next_Block (0 .. Ctx.Rate - 1),
                               Rate_Of (Ctx));
-         F (Ctx.State);
+         Permute (Ctx.State);
       end if;
 
       --  Extract the first bytes for squeezing.
@@ -407,7 +407,7 @@ is
          pragma Loop_Variant (Increases => Offset,
                               Decreases => Remaining);
 
-         F (Ctx.State);
+         Permute (Ctx.State);
          Extract_Data (Ctx.State,
                        Digest (Digest'First + Offset ..
                                Digest'First + Offset + (Ctx.Rate - 1)));
@@ -419,7 +419,7 @@ is
       pragma Assert (Remaining < Ctx.Rate);
 
       if Remaining > 0 then
-         F (Ctx.State);
+         Permute (Ctx.State);
          Extract_Data (Ctx.State, Ctx.Block (0 .. Ctx.Rate - 1));
 
          Digest (Digest'First + Offset ..

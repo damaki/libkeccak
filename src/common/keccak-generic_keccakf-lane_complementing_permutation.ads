@@ -48,7 +48,7 @@ is
       --
       --  By default, the definition from The Keccak Reference is used.
       First_Round : Round_Index := 0;
-      Num_Rounds  : Round_Count := 12 + (2 * L);
+      Num_Rounds  : Round_Count := 12 + (2 * Lane_Size_Log);
    procedure Permute (S : in out Lane_Complemented_State)
      with Global => null;
 

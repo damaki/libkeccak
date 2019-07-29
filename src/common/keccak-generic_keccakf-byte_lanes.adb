@@ -45,20 +45,21 @@ is
       Outer_Loop :
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-         pragma Loop_Invariant (Offset mod (W / 8) = 0);
-         pragma Loop_Invariant (Offset = Natural (Y) * (W / 8) * 5);
+         pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (Lane_Size_Bits / 8) * 5);
 
          for X in X_Coord loop
             pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-            pragma Loop_Invariant (Offset mod (W / 8) = 0);
-            pragma Loop_Invariant (Offset = (Natural (Y) * (W / 8) * 5) + (Natural (X) * (W / 8)));
+            pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (Lane_Size_Bits / 8) * 5) +
+                                            (Natural (X) * (Lane_Size_Bits / 8)));
 
-            exit Outer_Loop when Remaining_Bits < W;
+            exit Outer_Loop when Remaining_Bits < Lane_Size_Bits;
 
             declare
                Lane : Lane_Type := 0;
             begin
-               for I in Natural range 0 .. (W / 8) - 1 loop
+               for I in Natural range 0 .. (Lane_Size_Bits / 8) - 1 loop
                   Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)),
                                              I * 8);
                end loop;
@@ -66,8 +67,8 @@ is
                A (X, Y) := A (X, Y) xor Lane;
             end;
 
-            Offset          := Offset          + W / 8;
-            Remaining_Bits  := Remaining_Bits  - W;
+            Offset          := Offset          + Lane_Size_Bits / 8;
+            Remaining_Bits  := Remaining_Bits  - Lane_Size_Bits;
 
          end loop;
       end loop Outer_Loop;
@@ -75,8 +76,8 @@ is
       --  Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
-            X : constant X_Coord := X_Coord ((Bit_Len / W) mod 5);
-            Y : constant Y_Coord := Y_Coord ((Bit_Len / W)  /  5);
+            X : constant X_Coord := X_Coord ((Bit_Len / Lane_Size_Bits) mod 5);
+            Y : constant Y_Coord := Y_Coord ((Bit_Len / Lane_Size_Bits)  /  5);
 
             Word            : Lane_Type := 0;
             Remaining_Bytes : constant Natural := (Remaining_Bits + 7) / 8;
@@ -128,16 +129,16 @@ is
       --  Process whole lanes
       Outer_Loop :
       for Y2 in Y_Coord loop
-         pragma Loop_Invariant (Offset mod (W / 8) = 0
+         pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0
                                 and Offset + Remaining_Bytes = Data'Length);
 
          for X2 in X_Coord loop
             pragma Loop_Variant (Increases => Offset,
                                  Decreases => Remaining_Bytes);
-            pragma Loop_Invariant (Offset mod (W / 8) = 0
+            pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0
                                   and Offset + Remaining_Bytes = Data'Length);
 
-            if Remaining_Bytes < W / 8 then
+            if Remaining_Bytes < Lane_Size_Bits / 8 then
                X := X2;
                Y := Y2;
                exit Outer_Loop;
@@ -145,7 +146,7 @@ is
 
             Lane := A (X2, Y2);
 
-            for I in Natural range 0 .. (W / 8) - 1 loop
+            for I in Natural range 0 .. (Lane_Size_Bits / 8) - 1 loop
                Data (Data'First + Offset + I)
                := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
 
@@ -154,8 +155,8 @@ is
                               "Data is initialized at end of procedure");
             end loop;
 
-            Remaining_Bytes := Remaining_Bytes - W / 8;
-            Offset          := Offset + W / 8;
+            Remaining_Bytes := Remaining_Bytes - Lane_Size_Bits / 8;
+            Offset          := Offset + Lane_Size_Bits / 8;
          end loop;
       end loop Outer_Loop;
 
@@ -231,16 +232,16 @@ is
       --  Process whole lanes
       Outer_Loop :
       for Y2 in Y_Coord loop
-         pragma Loop_Invariant (Offset mod (W / 8) = 0
+         pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0
                                 and Offset + Remaining_Bytes = Data'Length);
 
          for X2 in X_Coord loop
             pragma Loop_Variant (Increases => Offset,
                                  Decreases => Remaining_Bytes);
-            pragma Loop_Invariant (Offset mod (W / 8) = 0
+            pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0
                                   and Offset + Remaining_Bytes = Data'Length);
 
-            if Remaining_Bytes < W / 8 then
+            if Remaining_Bytes < Lane_Size_Bits / 8 then
                X := X2;
                Y := Y2;
                exit Outer_Loop;
@@ -248,7 +249,7 @@ is
 
             Lane := A (X2, Y2) xor Complement_Mask (X2, Y2);
 
-            for I in Natural range 0 .. (W / 8) - 1 loop
+            for I in Natural range 0 .. (Lane_Size_Bits / 8) - 1 loop
                Data (Data'First + Offset + I)
                := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
 
@@ -257,8 +258,8 @@ is
                               "Data is initialized at end of procedure");
             end loop;
 
-            Remaining_Bytes := Remaining_Bytes - W / 8;
-            Offset          := Offset + W / 8;
+            Remaining_Bytes := Remaining_Bytes - Lane_Size_Bits / 8;
+            Offset          := Offset + Lane_Size_Bits / 8;
          end loop;
       end loop Outer_Loop;
 

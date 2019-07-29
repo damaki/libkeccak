@@ -34,9 +34,9 @@ is
    function Bytes_To_Lane (Data   : in Types.Byte_Array;
                            Offset : in Natural) return Lane_Type
      with Inline,
-     Pre => (Data'Length >= W / 8
+     Pre => (Data'Length >= Lane_Size_Bits / 8
              and then Offset < Data'Length
-             and then Data'Length - Offset >= W / 8);
+             and then Data'Length - Offset >= Lane_Size_Bits / 8);
 
    ---------------------
    --  Bytes_To_Lane  --
@@ -47,7 +47,7 @@ is
    is
       Lane : Lane_Type := 0;
    begin
-      for I in 0 .. (W / 8) - 1 loop
+      for I in 0 .. (Lane_Size_Bits / 8) - 1 loop
          Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)), I * 8);
       end loop;
       return Lane;
@@ -306,18 +306,18 @@ is
          Aba := Aba xor Da;
          Bba := Aba;
          Age := Age xor De;
-         Bbe := Rotate_Left (Age, 300 mod W);
+         Bbe := Rotate_Left (Age, 300 mod Lane_Size_Bits);
          Aki := Aki xor Di;
-         Bbi := Rotate_Left (Aki, 171  mod W);
+         Bbi := Rotate_Left (Aki, 171  mod Lane_Size_Bits);
          Eba := Bba xor And_Not (Bbe, Bbi);
          Eba := Eba xor Load (RC (RI));
          Ca := Eba;
          Amo := Amo xor D0;
-         Bbo := Rotate_Left (Amo, 21 mod W);
+         Bbo := Rotate_Left (Amo, 21 mod Lane_Size_Bits);
          Ebe := Bbe xor And_Not (Bbi, Bbo);
          Ce := Ebe;
          Asu := Asu xor Du;
-         Bbu := Rotate_Left (Asu, 78 mod W);
+         Bbu := Rotate_Left (Asu, 78 mod Lane_Size_Bits);
          Ebi := Bbi xor And_Not (Bbo, Bbu);
          Ci := Ebi;
          Ebo := Bbo xor And_Not (Bbu, Bba);
@@ -326,19 +326,19 @@ is
          Cu := Ebu;
 
          Abo := Abo xor D0;
-         Bga := Rotate_Left (Abo, 28 mod W);
+         Bga := Rotate_Left (Abo, 28 mod Lane_Size_Bits);
          Agu := Agu xor Du;
-         Bge := Rotate_Left (Agu, 276 mod W);
+         Bge := Rotate_Left (Agu, 276 mod Lane_Size_Bits);
          Aka := Aka xor Da;
-         Bgi := Rotate_Left (Aka, 3 mod W);
+         Bgi := Rotate_Left (Aka, 3 mod Lane_Size_Bits);
          Ega := Bga xor And_Not (Bge, Bgi);
          Ca  := Ca xor Ega;
          Ame := Ame xor De;
-         Bgo := Rotate_Left (Ame, 45 mod W);
+         Bgo := Rotate_Left (Ame, 45 mod Lane_Size_Bits);
          Ege := Bge xor And_Not (Bgi, Bgo);
          Ce  := Ce xor Ege;
          Asi := Asi xor Di;
-         Bgu := Rotate_Left (Asi, 253 mod W);
+         Bgu := Rotate_Left (Asi, 253 mod Lane_Size_Bits);
          Egi := Bgi xor And_Not (Bgo, Bgu);
          Ci  := Ci xor Egi;
          Ego := Bgo xor And_Not (Bgu, Bga);
@@ -347,19 +347,19 @@ is
          Cu  := Cu xor Egu;
 
          Abe := Abe xor De;
-         Bka := Rotate_Left (Abe, 1 mod W);
+         Bka := Rotate_Left (Abe, 1 mod Lane_Size_Bits);
          Agi := Agi xor Di;
-         Bke := Rotate_Left (Agi, 6 mod W);
+         Bke := Rotate_Left (Agi, 6 mod Lane_Size_Bits);
          Ako := Ako xor D0;
-         Bki := Rotate_Left (Ako, 153 mod W);
+         Bki := Rotate_Left (Ako, 153 mod Lane_Size_Bits);
          Eka := Bka xor And_Not (Bke, Bki);
          Ca  := Ca xor Eka;
          Amu := Amu xor Du;
-         Bko := Rotate_Left (Amu, 136 mod W);
+         Bko := Rotate_Left (Amu, 136 mod Lane_Size_Bits);
          Eke := Bke xor And_Not (Bki, Bko);
          Ce  := Ce xor Eke;
          Asa := Asa xor Da;
-         Bku := Rotate_Left (Asa, 210 mod W);
+         Bku := Rotate_Left (Asa, 210 mod Lane_Size_Bits);
          Eki := Bki xor And_Not (Bko, Bku);
          Ci  := Ci xor Eki;
          Eko := Bko xor And_Not (Bku, Bka);
@@ -368,19 +368,19 @@ is
          Cu  := Cu xor Eku;
 
          Abu := Abu xor Du;
-         Bma := Rotate_Left (Abu, 91 mod W);
+         Bma := Rotate_Left (Abu, 91 mod Lane_Size_Bits);
          Aga := Aga xor Da;
-         Bme := Rotate_Left (Aga, 36 mod W);
+         Bme := Rotate_Left (Aga, 36 mod Lane_Size_Bits);
          Ake := Ake xor De;
-         Bmi := Rotate_Left (Ake, 10 mod W);
+         Bmi := Rotate_Left (Ake, 10 mod Lane_Size_Bits);
          Ema := Bma xor And_Not (Bme, Bmi);
          Ca  := Ca xor Ema;
          Ami := Ami xor Di;
-         Bmo := Rotate_Left (Ami, 15 mod W);
+         Bmo := Rotate_Left (Ami, 15 mod Lane_Size_Bits);
          Eme := Bme xor And_Not (Bmi, Bmo);
          Ce  := Ce xor Eme;
          Aso := Aso xor D0;
-         Bmu := Rotate_Left (Aso, 120 mod W);
+         Bmu := Rotate_Left (Aso, 120 mod Lane_Size_Bits);
          Emi := Bmi xor And_Not (Bmo, Bmu);
          Ci  := Ci xor Emi;
          Emo := Bmo xor And_Not (Bmu, Bma);
@@ -389,19 +389,19 @@ is
          Cu  := Cu xor Emu;
 
          Abi := Abi xor Di;
-         Bsa := Rotate_Left (Abi, 190 mod W);
+         Bsa := Rotate_Left (Abi, 190 mod Lane_Size_Bits);
          Ago := Ago xor D0;
-         Bse := Rotate_Left (Ago, 55 mod W);
+         Bse := Rotate_Left (Ago, 55 mod Lane_Size_Bits);
          Aku := Aku xor Du;
-         Bsi := Rotate_Left (Aku, 231 mod W);
+         Bsi := Rotate_Left (Aku, 231 mod Lane_Size_Bits);
          Esa := Bsa xor And_Not (Bse, Bsi);
          Ca  := Ca xor Esa;
          Ama := Ama xor Da;
-         Bso := Rotate_Left (Ama, 105 mod W);
+         Bso := Rotate_Left (Ama, 105 mod Lane_Size_Bits);
          Ese := Bse xor And_Not (Bsi, Bso);
          Ce  := Ce xor Ese;
          Ase := Ase xor De;
-         Bsu := Rotate_Left (Ase, 66 mod W);
+         Bsu := Rotate_Left (Ase, 66 mod Lane_Size_Bits);
          Esi := Bsi xor And_Not (Bso, Bsu);
          Ci  := Ci xor Esi;
          Eso := Bso xor And_Not (Bsu, Bsa);
@@ -431,18 +431,18 @@ is
          Eba := Eba xor Da;
          Bba := Eba;
          Ege := Ege xor De;
-         Bbe := Rotate_Left (Ege, 300 mod W);
+         Bbe := Rotate_Left (Ege, 300 mod Lane_Size_Bits);
          Eki := Eki xor Di;
-         Bbi := Rotate_Left (Eki, 171  mod W);
+         Bbi := Rotate_Left (Eki, 171  mod Lane_Size_Bits);
          Aba := Bba xor And_Not (Bbe, Bbi);
          Aba := Aba xor Load (RC (RI));
          Ca := Aba;
          Emo := Emo xor D0;
-         Bbo := Rotate_Left (Emo, 21 mod W);
+         Bbo := Rotate_Left (Emo, 21 mod Lane_Size_Bits);
          Abe := Bbe xor And_Not (Bbi, Bbo);
          Ce := Abe;
          Esu := Esu xor Du;
-         Bbu := Rotate_Left (Esu, 78 mod W);
+         Bbu := Rotate_Left (Esu, 78 mod Lane_Size_Bits);
          Abi := Bbi xor And_Not (Bbo, Bbu);
          Ci := Abi;
          Abo := Bbo xor And_Not (Bbu, Bba);
@@ -451,19 +451,19 @@ is
          Cu := Abu;
 
          Ebo := Ebo xor D0;
-         Bga := Rotate_Left (Ebo, 28 mod W);
+         Bga := Rotate_Left (Ebo, 28 mod Lane_Size_Bits);
          Egu := Egu xor Du;
-         Bge := Rotate_Left (Egu, 276 mod W);
+         Bge := Rotate_Left (Egu, 276 mod Lane_Size_Bits);
          Eka := Eka xor Da;
-         Bgi := Rotate_Left (Eka, 3 mod W);
+         Bgi := Rotate_Left (Eka, 3 mod Lane_Size_Bits);
          Aga := Bga xor And_Not (Bge, Bgi);
          Ca := Ca xor Aga;
          Eme := Eme xor De;
-         Bgo := Rotate_Left (Eme, 45 mod W);
+         Bgo := Rotate_Left (Eme, 45 mod Lane_Size_Bits);
          Age := Bge xor And_Not (Bgi, Bgo);
          Ce := Ce xor Age;
          Esi := Esi xor Di;
-         Bgu := Rotate_Left (Esi, 253 mod W);
+         Bgu := Rotate_Left (Esi, 253 mod Lane_Size_Bits);
          Agi := Bgi xor And_Not (Bgo, Bgu);
          Ci := Ci xor Agi;
          Ago := Bgo xor And_Not (Bgu, Bga);
@@ -472,19 +472,19 @@ is
          Cu := Cu xor Agu;
 
          Ebe := Ebe xor De;
-         Bka := Rotate_Left (Ebe, 1 mod W);
+         Bka := Rotate_Left (Ebe, 1 mod Lane_Size_Bits);
          Egi := Egi xor Di;
-         Bke := Rotate_Left (Egi, 6 mod W);
+         Bke := Rotate_Left (Egi, 6 mod Lane_Size_Bits);
          Eko := Eko xor D0;
-         Bki := Rotate_Left (Eko, 153 mod W);
+         Bki := Rotate_Left (Eko, 153 mod Lane_Size_Bits);
          Aka := Bka xor And_Not (Bke, Bki);
          Ca := Ca xor Aka;
          Emu := Emu xor Du;
-         Bko := Rotate_Left (Emu, 136 mod W);
+         Bko := Rotate_Left (Emu, 136 mod Lane_Size_Bits);
          Ake := Bke xor And_Not (Bki, Bko);
          Ce := Ce xor Ake;
          Esa := Esa xor Da;
-         Bku := Rotate_Left (Esa, 210 mod W);
+         Bku := Rotate_Left (Esa, 210 mod Lane_Size_Bits);
          Aki := Bki xor And_Not (Bko, Bku);
          Ci := Ci xor Aki;
          Ako := Bko xor And_Not (Bku, Bka);
@@ -493,19 +493,19 @@ is
          Cu := Cu xor Aku;
 
          Ebu := Ebu xor Du;
-         Bma := Rotate_Left (Ebu, 91 mod W);
+         Bma := Rotate_Left (Ebu, 91 mod Lane_Size_Bits);
          Ega := Ega xor Da;
-         Bme := Rotate_Left (Ega, 36 mod W);
+         Bme := Rotate_Left (Ega, 36 mod Lane_Size_Bits);
          Eke := Eke xor De;
-         Bmi := Rotate_Left (Eke, 10 mod W);
+         Bmi := Rotate_Left (Eke, 10 mod Lane_Size_Bits);
          Ama := Bma xor And_Not (Bme, Bmi);
          Ca := Ca xor Ama;
          Emi := Emi xor Di;
-         Bmo := Rotate_Left (Emi, 15 mod W);
+         Bmo := Rotate_Left (Emi, 15 mod Lane_Size_Bits);
          Ame := Bme xor And_Not (Bmi, Bmo);
          Ce := Ce xor Ame;
          Eso := Eso xor D0;
-         Bmu := Rotate_Left (Eso, 120 mod W);
+         Bmu := Rotate_Left (Eso, 120 mod Lane_Size_Bits);
          Ami := Bmi xor And_Not (Bmo, Bmu);
          Ci := Ci xor Ami;
          Amo := Bmo xor And_Not (Bmu, Bma);
@@ -514,19 +514,19 @@ is
          Cu := Cu xor Amu;
 
          Ebi := Ebi xor Di;
-         Bsa := Rotate_Left (Ebi, 190 mod W);
+         Bsa := Rotate_Left (Ebi, 190 mod Lane_Size_Bits);
          Ego := Ego xor D0;
-         Bse := Rotate_Left (Ego, 55 mod W);
+         Bse := Rotate_Left (Ego, 55 mod Lane_Size_Bits);
          Eku := Eku xor Du;
-         Bsi := Rotate_Left (Eku, 231 mod W);
+         Bsi := Rotate_Left (Eku, 231 mod Lane_Size_Bits);
          Asa := Bsa xor And_Not (Bse, Bsi);
          Ca := Ca xor Asa;
          Ema := Ema xor Da;
-         Bso := Rotate_Left (Ema, 105 mod W);
+         Bso := Rotate_Left (Ema, 105 mod Lane_Size_Bits);
          Ase := Bse xor And_Not (Bsi, Bso);
          Ce := Ce xor Ase;
          Ese := Ese xor De;
-         Bsu := Rotate_Left (Ese, 66 mod W);
+         Bsu := Rotate_Left (Ese, 66 mod Lane_Size_Bits);
          Asi := Bsi xor And_Not (Bso, Bsu);
          Ci := Ci xor Asi;
          Aso := Bso xor And_Not (Bsu, Bsa);
@@ -609,17 +609,18 @@ is
       Outer_Loop :
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-         pragma Loop_Invariant (Offset mod (W / 8) = 0);
-         pragma Loop_Invariant (Offset = Natural (Y) * (W / 8) * 5);
+         pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (Lane_Size_Bits / 8) * 5);
          pragma Loop_Invariant (Offset <= Stride - Data_Offset);
 
          for X in X_Coord loop
             pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-            pragma Loop_Invariant (Offset mod (W / 8) = 0);
-            pragma Loop_Invariant (Offset = (Natural (Y) * (W / 8) * 5) + (Natural (X) * (W / 8)));
+            pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (Lane_Size_Bits / 8) * 5) +
+                                            (Natural (X) * (Lane_Size_Bits / 8)));
             pragma Loop_Invariant (Offset <= Stride - Data_Offset);
 
-            exit Outer_Loop when Remaining_Bits < W;
+            exit Outer_Loop when Remaining_Bits < Lane_Size_Bits;
 
             for I in 0 .. Num_Parallel_Instances - 1 loop
                Lane := Bytes_To_Lane (Data, Data_Offset + Offset + (Stride * I));
@@ -627,20 +628,20 @@ is
                S (X, Y)(SI) := S (X, Y)(SI) xor Lane;
             end loop;
 
-            Offset         := Offset          + W / 8;
-            Remaining_Bits := Remaining_Bits  - W;
+            Offset         := Offset          + Lane_Size_Bits / 8;
+            Remaining_Bits := Remaining_Bits  - Lane_Size_Bits;
 
          end loop;
       end loop Outer_Loop;
 
       pragma Assert ((Offset * 8) + Remaining_Bits = Bit_Len);
-      pragma Assert (Remaining_Bits < W);
+      pragma Assert (Remaining_Bits < Lane_Size_Bits);
 
       --  Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
-            X : constant X_Coord   := X_Coord ((Bit_Len / W) mod 5);
-            Y : constant Y_Coord   := Y_Coord ((Bit_Len / W)  /  5);
+            X : constant X_Coord   := X_Coord ((Bit_Len / Lane_Size_Bits) mod 5);
+            Y : constant Y_Coord   := Y_Coord ((Bit_Len / Lane_Size_Bits)  /  5);
 
             Remaining_Bytes : constant Natural   := (Remaining_Bits + 7) / 8;
             Lanes           : array (0 .. Num_Parallel_Instances) of Lane_Type := (others => 0);
@@ -680,20 +681,21 @@ is
       Outer_Loop :
       for Y in Y_Coord loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-         pragma Loop_Invariant (Offset mod (W / 8) = 0);
-         pragma Loop_Invariant (Offset = Natural (Y) * (W / 8) * 5);
+         pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (Lane_Size_Bits / 8) * 5);
 
          for X in X_Coord loop
             pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
-            pragma Loop_Invariant (Offset mod (W / 8) = 0);
-            pragma Loop_Invariant (Offset = (Natural (Y) * (W / 8) * 5) + (Natural (X) * (W / 8)));
+            pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (Lane_Size_Bits / 8) * 5) +
+                                            (Natural (X) * (Lane_Size_Bits / 8)));
 
-            exit Outer_Loop when Remaining_Bits < W;
+            exit Outer_Loop when Remaining_Bits < Lane_Size_Bits;
 
             declare
                Lane : Lane_Type := 0;
             begin
-               for I in Natural range 0 .. (W / 8) - 1 loop
+               for I in Natural range 0 .. (Lane_Size_Bits / 8) - 1 loop
                   Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)),
                                              I * 8);
                end loop;
@@ -703,8 +705,8 @@ is
                end loop;
             end;
 
-            Offset          := Offset          + W / 8;
-            Remaining_Bits  := Remaining_Bits  - W;
+            Offset          := Offset          + Lane_Size_Bits / 8;
+            Remaining_Bits  := Remaining_Bits  - Lane_Size_Bits;
 
          end loop;
       end loop Outer_Loop;
@@ -712,8 +714,8 @@ is
       --  Process any remaining data (smaller than 1 lane - 64 bits)
       if Remaining_Bits > 0 then
          declare
-            X : constant X_Coord   := X_Coord ((Bit_Len / W) mod 5);
-            Y : constant Y_Coord   := Y_Coord ((Bit_Len / W)  /  5);
+            X : constant X_Coord   := X_Coord ((Bit_Len / Lane_Size_Bits) mod 5);
+            Y : constant Y_Coord   := Y_Coord ((Bit_Len / Lane_Size_Bits)  /  5);
 
             Word            : Lane_Type        := 0;
             Remaining_Bytes : constant Natural := (Remaining_Bits + 7) / 8;
@@ -758,10 +760,10 @@ is
       --  Case when each lane is at least 1 byte (i.e. 8, 16, 32, or 64 bits)
 
       --  Process whole lanes
-      while Remaining_Bytes >= W / 8 loop
+      while Remaining_Bytes >= Lane_Size_Bits / 8 loop
          pragma Loop_Variant (Increases => Offset,
                               Decreases => Remaining_Bytes);
-         pragma Loop_Invariant (Offset mod (W / 8) = 0
+         pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0
                                 and Offset + Remaining_Bytes = Byte_Len
                                 and Offset <= Stride - Data_Offset);
 
@@ -769,10 +771,10 @@ is
             SI := VXXI_Index_Offset_From_First (I);
             Lane := S (X, Y) (SI);
 
-            pragma Assert (Data_Offset + Offset + (Stride * I) <= Data'Length - W / 8);
+            pragma Assert (Data_Offset + Offset + (Stride * I) <= Data'Length - Lane_Size_Bits / 8);
 
-            for J in Natural range 0 .. (W / 8) - 1 loop
-               pragma Assert (Data_Offset + Offset + W / 8 <= Stride);
+            for J in Natural range 0 .. (Lane_Size_Bits / 8) - 1 loop
+               pragma Assert (Data_Offset + Offset + Lane_Size_Bits / 8 <= Stride);
                pragma Assert (Stride = Data'Length / Vector_Width);
 
                Data (Data'First + Data_Offset + Offset + J + (Stride * I))
@@ -789,8 +791,8 @@ is
             Y := Y + 1;
          end if;
 
-         Remaining_Bytes := Remaining_Bytes - W / 8;
-         Offset          := Offset + W / 8;
+         Remaining_Bytes := Remaining_Bytes - Lane_Size_Bits / 8;
+         Offset          := Offset + Lane_Size_Bits / 8;
       end loop;
 
       --  Process any remaining data (smaller than 1 lane)

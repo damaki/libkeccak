@@ -38,19 +38,20 @@ generic
    --  The binary logarithm of the lane size.
    --
    --  This determines the Keccak-f state size. Possible values are:
-   --  * L=0 => 1-bit lanes,  Keccak-f[25]
-   --  * L=1 => 2-bit lanes,  Keccak-f[50]
-   --  * L=2 => 4-bit lanes,  Keccak-f[100]
-   --  * L=3 => 8-bit lanes,  Keccak-f[200]
-   --  * L=4 => 16-bit lanes, Keccak-f[400]
-   --  * L=5 => 32-bit lanes, Keccak-f[800]
-   --  * L=6 => 64-bit lanes, Keccak-f[1600]
-   L : in Natural;
+   --  * Lane_Size_Log = 0 => 1-bit lanes,  Keccak-f[25]
+   --  * Lane_Size_Log = 1 => 2-bit lanes,  Keccak-f[50]
+   --  * Lane_Size_Log = 2 => 4-bit lanes,  Keccak-f[100]
+   --  * Lane_Size_Log = 3 => 8-bit lanes,  Keccak-f[200]
+   --  * Lane_Size_Log = 4 => 16-bit lanes, Keccak-f[400]
+   --  * Lane_Size_Log = 5 => 32-bit lanes, Keccak-f[800]
+   --  * Lane_Size_Log = 6 => 64-bit lanes, Keccak-f[1600]
+   Lane_Size_Log : in Natural;
 
    --  Modular type for a lane of the Keccak state.
    --
-   --  Lane_Type'Modulus must be equal to 2**(2**L). For example, when L=6
-   --  Lane_Type must be a 64-bit mod type (2**L = 64 when L=6).
+   --  Lane_Type'Modulus must be equal to 2**(2**Lane_Size_Log).
+   --  For example, when Lane_Size_Log=6 Lane_Type must be a 64-bit
+   --  mod type (2**Lane_Size_Log = 64 when Lane_Size_Log = 6).
    type Lane_Type is mod <>;
 
    --  Bit-wise left shift for Lane_Type.
@@ -67,11 +68,11 @@ generic
 
 package Keccak.Generic_KeccakF
 is
-   W : constant Positive := 2**L;   --  Lane size in bits
-   B : constant Positive := W * 25; --  State size in bits (1600, 800, etc...)
+   Lane_Size_Bits  : constant Positive := 2**Lane_Size_Log;
+   State_Size_Bits : constant Positive := Lane_Size_Bits * 25;
 
-   pragma Assert (Lane_Type'Modulus = 2**W,
-                  "Value for L is incompatible with the specified lane type");
+   pragma Assert (Lane_Type'Modulus = 2**Lane_Size_Bits,
+                  "Value for Lane_Size_Log is incompatible with the specified lane type");
 
    subtype Round_Count is Positive range 1 .. 24;
 

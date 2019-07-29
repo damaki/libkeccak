@@ -71,19 +71,19 @@ is
    --  128-bit SIMD (SSE) is available on this architecture.
 
    package KeccakF_1600_P2 is new Keccak.Generic_Parallel_KeccakF
-     (L            => 6,
-      Lane_Type    => Interfaces.Unsigned_64,
-      VXXI_Index   => Arch.SSE2.V2DI_Vectors.V2DI_Index,
-      VXXI         => Arch.SSE2.V2DI_Vectors.V2DI,
-      VXXI_View    => Arch.SSE2.V2DI_Vectors.V2DI_View,
-      Vector_Width => 2,
-      Load         => Arch.SSE2.V2DI_Vectors.Load,
-      Store        => Arch.SSE2.V2DI_Vectors.Store,
-      "xor"        => Arch.SSE2.V2DI_Vectors."xor",
-      Rotate_Left  => Arch.SSE2.V2DI_Vectors.Rotate_Left,
-      And_Not      => Arch.SSE2.V2DI_Vectors.And_Not,
-      Shift_Left   => Interfaces.Shift_Left,
-      Shift_Right  => Interfaces.Shift_Right);
+     (Lane_Size_Log => 6,
+      Lane_Type     => Interfaces.Unsigned_64,
+      VXXI_Index    => Arch.SSE2.V2DI_Vectors.V2DI_Index,
+      VXXI          => Arch.SSE2.V2DI_Vectors.V2DI,
+      VXXI_View     => Arch.SSE2.V2DI_Vectors.V2DI_View,
+      Vector_Width  => 2,
+      Load          => Arch.SSE2.V2DI_Vectors.Load,
+      Store         => Arch.SSE2.V2DI_Vectors.Store,
+      "xor"         => Arch.SSE2.V2DI_Vectors."xor",
+      Rotate_Left   => Arch.SSE2.V2DI_Vectors.Rotate_Left,
+      And_Not       => Arch.SSE2.V2DI_Vectors.And_Not,
+      Shift_Left    => Interfaces.Shift_Left,
+      Shift_Right   => Interfaces.Shift_Right);
 
    subtype Parallel_State_P2 is KeccakF_1600_P2.Parallel_State;
 
@@ -125,7 +125,7 @@ is
       XOR_Bits_Into_State_Separate => XOR_Bits_Into_State_Separate_P2,
       XOR_Bits_Into_State_All      => XOR_Bits_Into_State_All_P2,
       Extract_Bytes                => Extract_Bytes_P2,
-      State_Size                   => 1600);
+      State_Size_Bits              => 1600);
 
    subtype Parallel_State_P4 is KeccakF_1600_P4.Parallel_State;
 
@@ -167,7 +167,7 @@ is
       XOR_Bits_Into_State_Separate => XOR_Bits_Into_State_Separate_P2,
       XOR_Bits_Into_State_All      => XOR_Bits_Into_State_All_P2,
       Extract_Bytes                => Extract_Bytes_P2,
-      State_Size                   => 1600);
+      State_Size_Bits              => 1600);
 
    subtype Parallel_State_P8 is KeccakF_1600_P8.Parallel_State;
 

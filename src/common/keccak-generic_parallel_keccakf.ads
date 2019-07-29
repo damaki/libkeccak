@@ -41,14 +41,14 @@ with Keccak.Types;
 --
 --  @group Parallel Keccak-f
 generic
-   L : in Positive;
+   Lane_Size_Log : in Positive;
    --  The binary logarithm of the lane size.
    --
    --  This determines the Keccak-f state size. Allowed values are:
-   --  * L=3 => 8-bit lanes,  Keccak-f[200]
-   --  * L=4 => 16-bit lanes, Keccak-f[400]
-   --  * L=5 => 32-bit lanes, Keccak-f[800]
-   --  * L=6 => 64-bit lanes, Keccak-f[1600]
+   --  * Lane_Size_Log = 3 => 8-bit lanes,  Keccak-f[200]
+   --  * Lane_Size_Log = 4 => 16-bit lanes, Keccak-f[400]
+   --  * Lane_Size_Log = 5 => 32-bit lanes, Keccak-f[800]
+   --  * Lane_Size_Log = 6 => 64-bit lanes, Keccak-f[1600]
 
    type Lane_Type is mod <>;
    --  Lane type e.g. Unsigned_64.
@@ -76,15 +76,15 @@ generic
 
    with function Store (X : in VXXI) return VXXI_View;
 
-   with function "xor" (A, B : in VXXI) return VXXI;
-   --  Calculates A xor B per vector component.
+   with function "xor" (A, State_Size_Bits : in VXXI) return VXXI;
+   --  Calculates A xor State_Size_Bits per vector component.
 
    with function Rotate_Left (A      : in VXXI;
                               Amount : in Natural) return VXXI;
    --  Calculates Rotate_Left(A) per vector component.
 
-   with function And_Not (A, B : in VXXI) return VXXI;
-   --  Calculates B and (not A) per vector component.
+   with function And_Not (A, State_Size_Bits : in VXXI) return VXXI;
+   --  Calculates State_Size_Bits and (not A) per vector component.
 
    with function Shift_Left (A      : in Lane_Type;
                              Amount : in Natural) return Lane_Type;
@@ -94,16 +94,16 @@ generic
 
 package Keccak.Generic_Parallel_KeccakF
 is
-   W : constant Positive := 2**L;
+   Lane_Size_Bits : constant Positive := 2**Lane_Size_Log;
    --  Lane size (in bits, i.e. 8, 16, 32, or 64)
 
-   B : constant Positive := W * 25;
+   State_Size_Bits : constant Positive := Lane_Size_Bits * 25;
    --  Keccak-f state size (in bits).
 
    Num_Parallel_Instances : constant Positive := Vector_Width;
 
-   pragma Assert (W mod 8 = 0,
-                  "Generic_Parallel_KeccakF only supports L in 3 .. 6");
+   pragma Assert (Lane_Size_Bits mod 8 = 0,
+                  "Generic_Parallel_KeccakF only supports Lane_Size_Log in 3 .. 6");
 
    pragma Assert (Vector_Width in 1 .. VXXI_View'Length,
                   "Vector_Width exceeds vector type's width");
@@ -140,7 +140,7 @@ is
              and then Data'Length mod Vector_Width = 0
              and then Data_Offset <= (Data'Length / Vector_Width)
              and then Bit_Len <= ((Data'Length / Vector_Width) - Data_Offset) * 8
-             and then Bit_Len <= B);
+             and then Bit_Len <= State_Size_Bits);
    --  XOR separate data into each parallel Keccak instance.
    --
    --  The @Data@ array contains the data to be XORed into all parallel
@@ -188,7 +188,7 @@ is
      Depends => (S =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= B);
+             and then Bit_Len <= State_Size_Bits);
    --  XOR the same data into all parallel Keccak instances.
    --
    --  The @Data@ array contains the data to be XORed into all parallel
@@ -224,7 +224,7 @@ is
      Pre => (Data'Length mod Vector_Width = 0
              and then Data_Offset <= Data'Length / Vector_Width
              and then Byte_Len <= (Data'Length / Vector_Width) - Data_Offset
-             and then Byte_Len <= B / 8);
+             and then Byte_Len <= State_Size_Bits / 8);
    --  Extract bytes from the Keccak state.
    --
    --  The @Data@ array is split into N equal sized chunks, where N is the

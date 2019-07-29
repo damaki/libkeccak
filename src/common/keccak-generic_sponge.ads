@@ -39,10 +39,10 @@ with Keccak.Types;
 --  define the state, and the operations on the state which are required by the
 --  sponge:
 --  * The type of the state is defined by the 'State' parameter.
---  * The bit-length of the state is defined by the 'State_Size' parameter.
+--  * The bit-length of the state is defined by the 'State_Size_Bits' parameter.
 --  * The 'Init_State' procedure initializes the state to zeroes.
 --  * The 'XOR_Bits_Into_State' procedure XORs bits into the state.
---  * The 'F' procedure permutes the state.
+--  * The 'Permute' procedure permutes the state.
 --  * The 'Extract_Data' procedure converts all or part of the state into a byte
 --    array.
 --
@@ -53,7 +53,7 @@ with Keccak.Types;
 --  @group Sponge
 generic
    --  Size of the Sponge state in bits (e.g. 1600 for Keccak[1600])
-   State_Size : Positive;
+   State_Size_Bits : Positive;
 
    --  Type for the internal state.
    type State_Type is private;
@@ -62,7 +62,7 @@ generic
    with procedure Init_State (A : out State_Type);
 
    --  Procedure to permute the state
-   with procedure F (A : in out State_Type);
+   with procedure Permute (A : in out State_Type);
 
    --  Procedure to XOR bits into the internal state.
    with procedure XOR_Bits_Into_State (A       : in out State_Type;
@@ -83,13 +83,13 @@ generic
 package Keccak.Generic_Sponge
 is
 
-   Block_Size_Bits : constant Positive := State_Size;
+   Block_Size_Bits : constant Positive := State_Size_Bits;
 
    type States is (Absorbing, Squeezing);
 
    type Context is private;
 
-   subtype Rate_Bits_Number is Positive range 1 .. State_Size - 1
+   subtype Rate_Bits_Number is Positive range 1 .. State_Size_Bits - 1
      with Dynamic_Predicate => Rate_Bits_Number mod 8 = 0;
    --  Number representing the Rate (in bits).
    --
@@ -105,9 +105,9 @@ is
                    Capacity        : in     Positive)
      with Global => null,
      Depends => (Ctx => Capacity),
-     Pre => (((State_Size - Capacity) mod 8 = 0) and (Capacity < State_Size)),
+     Pre => (((State_Size_Bits - Capacity) mod 8 = 0) and (Capacity < State_Size_Bits)),
      Post => ((State_Of (Ctx) = Absorbing)
-              and (Rate_Of (Ctx) = State_Size - Capacity)
+              and (Rate_Of (Ctx) = State_Size_Bits - Capacity)
               and In_Queue_Bit_Length (Ctx) = 0);
    --  Initialize the context with the specified capacity.
    --
@@ -125,7 +125,7 @@ is
    --  @param Capacity The sponge's capacity (in bits). The capacity has the
    --    following requirements:
    --    * Must be positive
-   --    * Must be strictly smaller than the State_Size
+   --    * Must be strictly smaller than the State_Size_Bits
    --    * Must be a multiple of 8 (this is a requirement for this implementation)
 
    function State_Of (Ctx : in Context) return States
@@ -147,7 +147,7 @@ is
      with Global => null;
    --  Gets the currently configured rate of the sponge.
    --
-   --  The rate is derived from the sponge's capacity and the State_Size.
+   --  The rate is derived from the sponge's capacity and the State_Size_Bits.
    --
    --  @return The sponge's rate, in bits.
 
@@ -249,7 +249,7 @@ is
 
    function In_Queue_Bit_Length (Ctx : in Context) return Natural
      with Global => null,
-     Post => In_Queue_Bit_Length'Result < State_Size;
+     Post => In_Queue_Bit_Length'Result < State_Size_Bits;
    --  Get the number of bits which are waiting in the input queue, and have
    --  not yet been absorbed into the sponge.
    --
@@ -261,11 +261,11 @@ private
    --  The rate number here represents bytes, not bits.
    --  This makes it easier to handle in proof, since bytes are
    --  always a multiple of 8 bits.
-   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size + 7) / 8) - 1;
+   subtype Rate_Bytes_Number is Positive range 1 .. ((State_Size_Bits + 7) / 8) - 1;
 
-   subtype Byte_Absorption_Number is Natural range 0 .. ((State_Size + 7) / 8) - 1;
+   subtype Byte_Absorption_Number is Natural range 0 .. ((State_Size_Bits + 7) / 8) - 1;
 
-   subtype Bit_Absorption_Number  is Natural range 0 .. State_Size - 1;
+   subtype Bit_Absorption_Number  is Natural range 0 .. State_Size_Bits - 1;
 
    subtype Block_Type is Keccak.Types.Byte_Array (Byte_Absorption_Number);
 

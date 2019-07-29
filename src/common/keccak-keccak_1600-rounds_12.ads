@@ -41,19 +41,19 @@ is
       Num_Rounds  => 12);
 
    package Sponge is new Keccak.Generic_Sponge
-     (State_Size          => KeccakF_1600.B,
+     (State_Size_Bits     => KeccakF_1600.State_Size_Bits,
       State_Type          => KeccakF_1600.Lane_Complemented_State,
       Init_State          => KeccakF_1600.Init,
-      F                   => Permute,
+      Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Data        => KeccakF_1600_Lanes.Extract_Bytes,
       Pad                 => Keccak.Padding.Pad101_Multi_Blocks);
 
    package Duplex is new Keccak.Generic_Duplex
-     (State_Size          => KeccakF_1600.B,
+     (State_Size_Bits     => KeccakF_1600.State_Size_Bits,
       State_Type          => KeccakF_1600.Lane_Complemented_State,
       Init_State          => KeccakF_1600.Init,
-      F                   => Permute,
+      Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bits        => KeccakF_1600_Lanes.Extract_Bits,
       Pad                 => Keccak.Padding.Pad101_Single_Block,

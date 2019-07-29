@@ -24,7 +24,7 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Interfaces;
+with Interfaces; use Interfaces;
 
 package body Keccak.Generic_KeccakF.Bit_Lanes
 is
@@ -37,8 +37,6 @@ is
                                   Data    : in     Keccak.Types.Byte_Array;
                                   Bit_Len : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       X                : X_Coord := 0;
       Y                : Y_Coord := 0;
 
@@ -58,8 +56,9 @@ is
             Lane : Lane_Type;
 
          begin
-            for I in Natural range 0 .. (8 / W) - 1 loop
-               Lane := Lane_Type (Interfaces.Shift_Right (Byte, I * W) and (2**W - 1));
+            for I in Natural range 0 .. (8 / Lane_Size_Bits) - 1 loop
+               Lane := Lane_Type (Shift_Right (Byte,
+                                               I * Lane_Size_Bits) and (2**Lane_Size_Bits - 1));
 
                A (X, Y) := A (X, Y) xor Lane;
 
@@ -81,8 +80,9 @@ is
          begin
             Byte := Data (Data'First + Offset) and (2**Remaining_Bits - 1);
 
-            for I in Natural range 0 .. (8 / W) - 1 loop
-               Lane := Lane_Type (Interfaces.Shift_Right (Byte, I * W) and (2**W - 1));
+            for I in Natural range 0 .. (8 / Lane_Size_Bits) - 1 loop
+               Lane := Lane_Type (Shift_Right (Byte,
+                                               I * Lane_Size_Bits) and (2**Lane_Size_Bits - 1));
 
                A (X, Y) := A (X, Y) xor Lane;
 
@@ -119,8 +119,6 @@ is
    procedure Extract_Bytes (A    : in     State;
                             Data :    out Keccak.Types.Byte_Array)
    is
-      use type Keccak.Types.Byte;
-
       X               : X_Coord := 0;
       Y               : Y_Coord := 0;
 
@@ -132,15 +130,16 @@ is
       Data := (others => 0); --  workaround for flow analysis.
 
       --  Process entire bytes
-      while Remaining_Bytes > 0 and Offset < B / 8 loop
+      while Remaining_Bytes > 0 and Offset < State_Size_Bits / 8 loop
          pragma Loop_Variant (Increases => Offset,
                               Decreases => Remaining_Bytes);
          pragma Loop_Invariant (Offset + Remaining_Bytes = Data'Length);
 
          Byte := 0;
 
-         for I in Natural range 0 .. (8 / W) - 1 loop
-            Byte := Byte or Interfaces.Shift_Left (Keccak.Types.Byte (A (X, Y)), I * W);
+         for I in Natural range 0 .. (8 / Lane_Size_Bits) - 1 loop
+            Byte := Byte or Shift_Left (Keccak.Types.Byte (A (X, Y)),
+                                        I * Lane_Size_Bits);
 
             X := X + 1;
             if X = 0 then
@@ -159,8 +158,9 @@ is
 
          Byte := 0;
 
-         for I in Natural range 0 .. (8 / W) - 1 loop
-            Byte := Byte or Interfaces.Shift_Left (Keccak.Types.Byte (A (X, Y)), I * W);
+         for I in Natural range 0 .. (8 / Lane_Size_Bits) - 1 loop
+            Byte := Byte or Shift_Left (Keccak.Types.Byte (A (X, Y)),
+                                        I * Lane_Size_Bits);
 
             X := X + 1;
             if X = 0 then
@@ -182,8 +182,6 @@ is
    procedure Extract_Bytes (A    : in     Lane_Complemented_State;
                             Data :    out Keccak.Types.Byte_Array)
    is
-      use type Keccak.Types.Byte;
-
       Complement_Mask : constant Lane_Complemented_State :=
         (0 => (4         => Lane_Type'Last,
                others    => 0),
@@ -207,16 +205,16 @@ is
       Data := (others => 0); --  workaround for flow analysis.
 
       --  Process entire bytes
-      while Remaining_Bytes > 0 and Offset < B / 8 loop
+      while Remaining_Bytes > 0 and Offset < State_Size_Bits / 8 loop
          pragma Loop_Variant (Increases => Offset,
                               Decreases => Remaining_Bytes);
          pragma Loop_Invariant (Offset + Remaining_Bytes = Data'Length);
 
          Byte := 0;
 
-         for I in Natural range 0 .. (8 / W) - 1 loop
+         for I in Natural range 0 .. (8 / Lane_Size_Bits) - 1 loop
             Lane := A (X, Y) xor Complement_Mask (X, Y);
-            Byte := Byte or Interfaces.Shift_Left (Keccak.Types.Byte (Lane), I * W);
+            Byte := Byte or Shift_Left (Keccak.Types.Byte (Lane), I * Lane_Size_Bits);
 
             X := X + 1;
             if X = 0 then
@@ -235,9 +233,9 @@ is
 
          Byte := 0;
 
-         for I in Natural range 0 .. (8 / W) - 1 loop
+         for I in Natural range 0 .. (8 / Lane_Size_Bits) - 1 loop
             Lane := A (X, Y) xor Complement_Mask (X, Y);
-            Byte := Byte or Interfaces.Shift_Left (Keccak.Types.Byte (Lane), I * W);
+            Byte := Byte or Shift_Left (Keccak.Types.Byte (Lane), I * Lane_Size_Bits);
 
             X := X + 1;
             if X = 0 then
@@ -260,8 +258,6 @@ is
                            Data    :    out Keccak.Types.Byte_Array;
                            Bit_Len : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
    begin
       Extract_Bytes (A, Data);
 
@@ -280,8 +276,6 @@ is
                            Data    :    out Keccak.Types.Byte_Array;
                            Bit_Len : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
    begin
       Extract_Bytes (A, Data);
 
