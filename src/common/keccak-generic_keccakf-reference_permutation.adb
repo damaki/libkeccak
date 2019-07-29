@@ -83,34 +83,34 @@ is
    is
    begin
       AR := (0 => (0 => A (0, 0),
-                   1 => Rotate_Left (A (0, 1), 36  mod W),
-                   2 => Rotate_Left (A (0, 2), 3   mod W),
-                   3 => Rotate_Left (A (0, 3), 105 mod W),
-                   4 => Rotate_Left (A (0, 4), 210 mod W)
+                   1 => Rotate_Left (A (0, 1), 36  mod Lane_Size_Bits),
+                   2 => Rotate_Left (A (0, 2), 3   mod Lane_Size_Bits),
+                   3 => Rotate_Left (A (0, 3), 105 mod Lane_Size_Bits),
+                   4 => Rotate_Left (A (0, 4), 210 mod Lane_Size_Bits)
                   ),
-             1 => (0 => Rotate_Left (A (1, 0), 1   mod W),
-                   1 => Rotate_Left (A (1, 1), 300 mod W),
-                   2 => Rotate_Left (A (1, 2), 10  mod W),
-                   3 => Rotate_Left (A (1, 3), 45  mod W),
-                   4 => Rotate_Left (A (1, 4), 66  mod W)
+             1 => (0 => Rotate_Left (A (1, 0), 1   mod Lane_Size_Bits),
+                   1 => Rotate_Left (A (1, 1), 300 mod Lane_Size_Bits),
+                   2 => Rotate_Left (A (1, 2), 10  mod Lane_Size_Bits),
+                   3 => Rotate_Left (A (1, 3), 45  mod Lane_Size_Bits),
+                   4 => Rotate_Left (A (1, 4), 66  mod Lane_Size_Bits)
                   ),
-             2 => (0 => Rotate_Left (A (2, 0), 190 mod W),
-                   1 => Rotate_Left (A (2, 1), 6   mod W),
-                   2 => Rotate_Left (A (2, 2), 171 mod W),
-                   3 => Rotate_Left (A (2, 3), 15  mod W),
-                   4 => Rotate_Left (A (2, 4), 253 mod W)
+             2 => (0 => Rotate_Left (A (2, 0), 190 mod Lane_Size_Bits),
+                   1 => Rotate_Left (A (2, 1), 6   mod Lane_Size_Bits),
+                   2 => Rotate_Left (A (2, 2), 171 mod Lane_Size_Bits),
+                   3 => Rotate_Left (A (2, 3), 15  mod Lane_Size_Bits),
+                   4 => Rotate_Left (A (2, 4), 253 mod Lane_Size_Bits)
                   ),
-             3 => (0 => Rotate_Left (A (3, 0), 28  mod W),
-                   1 => Rotate_Left (A (3, 1), 55  mod W),
-                   2 => Rotate_Left (A (3, 2), 153 mod W),
-                   3 => Rotate_Left (A (3, 3), 21  mod W),
-                   4 => Rotate_Left (A (3, 4), 120 mod W)
+             3 => (0 => Rotate_Left (A (3, 0), 28  mod Lane_Size_Bits),
+                   1 => Rotate_Left (A (3, 1), 55  mod Lane_Size_Bits),
+                   2 => Rotate_Left (A (3, 2), 153 mod Lane_Size_Bits),
+                   3 => Rotate_Left (A (3, 3), 21  mod Lane_Size_Bits),
+                   4 => Rotate_Left (A (3, 4), 120 mod Lane_Size_Bits)
                   ),
-             4 => (0 => Rotate_Left (A (4, 0), 91  mod W),
-                   1 => Rotate_Left (A (4, 1), 276 mod W),
-                   2 => Rotate_Left (A (4, 2), 231 mod W),
-                   3 => Rotate_Left (A (4, 3), 136 mod W),
-                   4 => Rotate_Left (A (4, 4), 78  mod W)
+             4 => (0 => Rotate_Left (A (4, 0), 91  mod Lane_Size_Bits),
+                   1 => Rotate_Left (A (4, 1), 276 mod Lane_Size_Bits),
+                   2 => Rotate_Left (A (4, 2), 231 mod Lane_Size_Bits),
+                   3 => Rotate_Left (A (4, 3), 136 mod Lane_Size_Bits),
+                   4 => Rotate_Left (A (4, 4), 78  mod Lane_Size_Bits)
                   )
             );
    end Rho;
@@ -167,34 +167,34 @@ is
    is
    begin
       A := (0 => (0 => A (0, 0),
-                  1 => Rotate_Left (A (3, 0), 28  mod W),
-                  2 => Rotate_Left (A (1, 0), 1   mod W),
-                  3 => Rotate_Left (A (4, 0), 91  mod W),
-                  4 => Rotate_Left (A (2, 0), 190 mod W)
+                  1 => Rotate_Left (A (3, 0), 28  mod Lane_Size_Bits),
+                  2 => Rotate_Left (A (1, 0), 1   mod Lane_Size_Bits),
+                  3 => Rotate_Left (A (4, 0), 91  mod Lane_Size_Bits),
+                  4 => Rotate_Left (A (2, 0), 190 mod Lane_Size_Bits)
                  ),
-            1 => (0 => Rotate_Left (A (1, 1), 300 mod W),
-                  1 => Rotate_Left (A (4, 1), 276 mod W),
-                  2 => Rotate_Left (A (2, 1), 6   mod W),
-                  3 => Rotate_Left (A (0, 1), 36  mod W),
-                  4 => Rotate_Left (A (3, 1), 55  mod W)
+            1 => (0 => Rotate_Left (A (1, 1), 300 mod Lane_Size_Bits),
+                  1 => Rotate_Left (A (4, 1), 276 mod Lane_Size_Bits),
+                  2 => Rotate_Left (A (2, 1), 6   mod Lane_Size_Bits),
+                  3 => Rotate_Left (A (0, 1), 36  mod Lane_Size_Bits),
+                  4 => Rotate_Left (A (3, 1), 55  mod Lane_Size_Bits)
                  ),
-            2 => (0 => Rotate_Left (A (2, 2), 171 mod W),
-                  1 => Rotate_Left (A (0, 2), 3   mod W),
-                  2 => Rotate_Left (A (3, 2), 153 mod W),
-                  3 => Rotate_Left (A (1, 2), 10  mod W),
-                  4 => Rotate_Left (A (4, 2), 231 mod W)
+            2 => (0 => Rotate_Left (A (2, 2), 171 mod Lane_Size_Bits),
+                  1 => Rotate_Left (A (0, 2), 3   mod Lane_Size_Bits),
+                  2 => Rotate_Left (A (3, 2), 153 mod Lane_Size_Bits),
+                  3 => Rotate_Left (A (1, 2), 10  mod Lane_Size_Bits),
+                  4 => Rotate_Left (A (4, 2), 231 mod Lane_Size_Bits)
                  ),
-            3 => (0 => Rotate_Left (A (3, 3), 21  mod W),
-                  1 => Rotate_Left (A (1, 3), 45  mod W),
-                  2 => Rotate_Left (A (4, 3), 136 mod W),
-                  3 => Rotate_Left (A (2, 3), 15  mod W),
-                  4 => Rotate_Left (A (0, 3), 105 mod W)
+            3 => (0 => Rotate_Left (A (3, 3), 21  mod Lane_Size_Bits),
+                  1 => Rotate_Left (A (1, 3), 45  mod Lane_Size_Bits),
+                  2 => Rotate_Left (A (4, 3), 136 mod Lane_Size_Bits),
+                  3 => Rotate_Left (A (2, 3), 15  mod Lane_Size_Bits),
+                  4 => Rotate_Left (A (0, 3), 105 mod Lane_Size_Bits)
                  ),
-            4 => (0 => Rotate_Left (A (4, 4), 78  mod W),
-                  1 => Rotate_Left (A (2, 4), 253 mod W),
-                  2 => Rotate_Left (A (0, 4), 210 mod W),
-                  3 => Rotate_Left (A (3, 4), 120 mod W),
-                  4 => Rotate_Left (A (1, 4), 66  mod W)
+            4 => (0 => Rotate_Left (A (4, 4), 78  mod Lane_Size_Bits),
+                  1 => Rotate_Left (A (2, 4), 253 mod Lane_Size_Bits),
+                  2 => Rotate_Left (A (0, 4), 210 mod Lane_Size_Bits),
+                  3 => Rotate_Left (A (3, 4), 120 mod Lane_Size_Bits),
+                  4 => Rotate_Left (A (1, 4), 66  mod Lane_Size_Bits)
                  )
            );
    end Rho_Pi;
@@ -246,7 +246,7 @@ is
       --  with the first lane (this is the Iota part).
       AR (0, 0) := (A (0, 0)
                     xor ((not A (1, 0)) and A (2, 0))
-                    xor Lane_Type (RC (RI) and (2**W - 1)));
+                    xor Lane_Type (RC (RI) and (2**Lane_Size_Bits - 1)));
 
       pragma Annotate (GNATprove, False_Positive,
                        """AR"" might not be initialized",

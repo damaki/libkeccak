@@ -84,7 +84,7 @@ generic
                                  Byte_Len    : in     Natural);
    --  Extract bytes from each parallel state.
 
-   State_Size    : Positive;
+   State_Size_Bits    : Positive;
 
 package Keccak.Generic_Parallel_Permutation_Parallel_Fallback
 is
@@ -124,7 +124,7 @@ is
              and then Data'Length mod Num_Parallel_Instances = 0
              and then Data_Offset <= (Data'Length / Num_Parallel_Instances)
              and then Bit_Len <= ((Data'Length / Num_Parallel_Instances) - Data_Offset) * 8
-             and then Bit_Len <= State_Size);
+             and then Bit_Len <= State_Size_Bits);
 
    procedure XOR_Bits_Into_State_All
      (S           : in out Parallel_State;
@@ -134,7 +134,7 @@ is
      Depends => (S =>+ (Data, Bit_Len)),
      Pre => (Data'Length <= Natural'Last / 8
              and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= State_Size);
+             and then Bit_Len <= State_Size_Bits);
 
    procedure Extract_Bytes (S           : in     Parallel_State;
                             Data        : in out Types.Byte_Array;
@@ -144,6 +144,6 @@ is
      Pre => (Data'Length mod Num_Parallel_Instances = 0
              and then Data_Offset <= Data'Length / Num_Parallel_Instances
              and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset
-             and then Byte_Len <= State_Size / 8);
+             and then Byte_Len <= State_Size_Bits / 8);
 
 end Keccak.Generic_Parallel_Permutation_Parallel_Fallback;

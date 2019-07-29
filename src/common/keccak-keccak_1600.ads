@@ -41,11 +41,11 @@ with SPARK_Mode => On
 is
 
    package KeccakF_1600 is new Keccak.Generic_KeccakF
-     (L           => 6,
-      Lane_Type   => Interfaces.Unsigned_64,
-      Shift_Left  => Interfaces.Shift_Left,
-      Shift_Right => Interfaces.Shift_Right,
-      Rotate_Left => Interfaces.Rotate_Left);
+     (Lane_Size_Log => 6,
+      Lane_Type     => Interfaces.Unsigned_64,
+      Shift_Left    => Interfaces.Shift_Left,
+      Shift_Right   => Interfaces.Shift_Right,
+      Rotate_Left   => Interfaces.Rotate_Left);
 
    package KeccakF_1600_Permutation is new KeccakF_1600.Lane_Complementing_Permutation;
 

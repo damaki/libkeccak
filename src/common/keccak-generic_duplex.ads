@@ -29,7 +29,7 @@ with Keccak.Types;
 
 generic
    --  Size of the Duplex state in bits (e.g. 1600 for Keccak[1600])
-   State_Size : Positive;
+   State_Size_Bits : Positive;
 
    --  Type for the Duplex state (e.g. this could be a Keccak[1600] state).
    type State_Type is private;
@@ -38,7 +38,7 @@ generic
    with procedure Init_State (A : out State_Type);
 
    --  Procedure to permute the state.
-   with procedure F (A : in out State_Type);
+   with procedure Permute (A : in out State_Type);
 
    --  Procedure to XOR bits into the generic state.
    with procedure XOR_Bits_Into_State (A       : in out State_Type;
@@ -68,7 +68,7 @@ generic
    --  specification "Cryptographic Sponge Functions" from authors of Keccak.
 package Keccak.Generic_Duplex
 is
-   subtype Rate_Number is Positive range 1 + Min_Padding_Bits .. State_Size - 1;
+   subtype Rate_Number is Positive range 1 + Min_Padding_Bits .. State_Size_Bits - 1;
 
    type Context is private;
 
@@ -76,11 +76,11 @@ is
                    Capacity : in     Positive)
      with Global => null,
      Depends => (Ctx => Capacity),
-     Pre => (Capacity < (State_Size - Min_Padding_Bits)),
-     Post => Rate_Of (Ctx) = State_Size - Capacity;
+     Pre => (Capacity < (State_Size_Bits - Min_Padding_Bits)),
+     Post => Rate_Of (Ctx) = State_Size_Bits - Capacity;
    --  Initialize the context.
    --
-   --  After initialization, the rate is equal to the State_Size - Capacity.
+   --  After initialization, the rate is equal to the State_Size_Bits - Capacity.
    --  For example, if the state size is 1600 bits and the capacity is 512 bits
    --  then the rate is 1088 bits.
    --
@@ -96,7 +96,7 @@ is
      with Global => null;
    --  Get the rate of the context.
    --
-   --  @return The rate (in bits). This is always less than the State_Size
+   --  @return The rate (in bits). This is always less than the State_Size_Bits
 
    function Max_Input_Length (Ctx : in Context) return Positive
      with Global => null;

@@ -42,11 +42,11 @@ with SPARK_Mode => On
 is
 
    package KeccakF_100 is new Keccak.Generic_KeccakF
-     (L           => 2,
-      Lane_Type   => Keccak.Types.Unsigned_4,
-      Shift_Left  => Keccak.Types.Shift_Left_4,
-      Shift_Right => Keccak.Types.Shift_Right_4,
-      Rotate_Left => Keccak.Types.Rotate_Left_4);
+     (Lane_Size_Log => 2,
+      Lane_Type     => Keccak.Types.Unsigned_4,
+      Shift_Left    => Keccak.Types.Shift_Left_4,
+      Shift_Right   => Keccak.Types.Shift_Right_4,
+      Rotate_Left   => Keccak.Types.Rotate_Left_4);
 
    package KeccakF_100_Permutation is new KeccakF_100.Lane_Complementing_Permutation;
 

@@ -86,7 +86,7 @@ is
       Init                => Keccak_1600.KeccakF_1600.Init,
       XOR_Bits_Into_State => Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bytes       => Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
-      State_Size          => 1600,
+      State_Size_Bits     => 1600,
       Parallelism         => 2);
 
    subtype Parallel_State_P2 is KeccakF_1600_P2.Parallel_State;
@@ -126,7 +126,7 @@ is
       Init                => Keccak_1600.KeccakF_1600.Init,
       XOR_Bits_Into_State => Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bytes       => Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
-      State_Size          => 1600,
+      State_Size_Bits     => 1600,
       Parallelism         => 4);
 
    subtype Parallel_State_P4 is KeccakF_1600_P4.Parallel_State;
@@ -166,7 +166,7 @@ is
       Init                => Keccak_1600.KeccakF_1600.Init,
       XOR_Bits_Into_State => Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
       Extract_Bytes       => Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
-      State_Size          => 1600,
+      State_Size_Bits     => 1600,
       Parallelism         => 8);
 
    subtype Parallel_State_P8 is KeccakF_1600_P8.Parallel_State;
