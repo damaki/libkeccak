@@ -51,4 +51,9 @@ is
 
    package KeccakF_800_Lanes is new KeccakF_800.Byte_Lanes;
 
+   procedure XOR_Pad101_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
+     (State_Size_Bits     => 800,
+      State_Type          => KeccakF_800.State,
+      XOR_Byte_Into_State => KeccakF_800_Lanes.XOR_Byte_Into_State);
+
 end Keccak.Keccak_800;

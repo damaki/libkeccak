@@ -49,7 +49,7 @@ project Libkeccak is
    end Builder;
 
    package Prove is
-      for Switches use ("-j8", "--level=3", "--prover=cvc4,z3,altergo", "--proof=progressive", "--timeout=60");
+      for Switches use ("-j0", "--level=3");
    end Prove;
 
    package Compiler is

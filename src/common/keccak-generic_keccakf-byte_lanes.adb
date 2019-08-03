@@ -107,6 +107,35 @@ is
          Bit_Len => Bit_Len);
    end XOR_Bits_Into_State;
 
+   ---------------------------
+   --  XOR_Byte_Into_State  --
+   ---------------------------
+
+   procedure XOR_Byte_Into_State (A       : in out State;
+                                  Offset  : in     Natural;
+                                  Value   : in     Keccak.Types.Byte)
+   is
+      Lane_Size_Bytes : constant Positive := Lane_Size_Bits / 8;
+
+      X : X_Coord := X_Coord ((Offset / Lane_Size_Bytes) mod 5);
+      Y : Y_Coord := Y_Coord (Offset / (Lane_Size_Bytes * 5));
+
+   begin
+      A (X, Y) := A (X, Y) xor Shift_Left (Lane_Type (Value), Offset mod (Lane_Size_Bits / 8));
+   end XOR_Byte_Into_State;
+
+   ---------------------------
+   --  XOR_Byte_Into_State  --
+   ---------------------------
+
+   procedure XOR_Byte_Into_State (A       : in out Lane_Complemented_State;
+                                  Offset  : in     Natural;
+                                  Value   : in     Keccak.Types.Byte)
+   is
+   begin
+      XOR_Byte_Into_State (State (A), Offset, Value);
+   end XOR_Byte_Into_State;
+
    ---------------------
    --  Extract_Bytes  --
    ---------------------
