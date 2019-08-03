@@ -47,10 +47,14 @@ package body Keccak.Generic_MonkeyDuplex is
 
       XOR_Padding_Into_State (A         => Ctx.State,
                               First_Bit => Bit_Len,
-                              Last_Bit  => Rate_Of (Ctx) - 1);
+                              Last_Bit  => State_Size_Bits - 1);
 
       Permute_Start (Ctx.State);
    end Start;
+
+   -------------
+   --  Start  --
+   -------------
 
    function Start (Rate     : in     Rate_Bits_Number;
                    Data     : in     Keccak.Types.Byte_Array;

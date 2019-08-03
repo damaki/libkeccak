@@ -70,7 +70,7 @@ package Keccak.Generic_MonkeyDuplex is
                     Bit_Len  : in     Natural)
      with Global => null,
      Pre => (Rate > Min_Padding_Bits
-             and then Bit_Len <= Rate - Min_Padding_Bits
+             and then Bit_Len <= State_Size_Bits - Min_Padding_Bits
              and then Data'Length >= (Bit_Len + 7) / 8),
      Post => Rate_Of (Ctx) = Rate;
 
@@ -79,7 +79,7 @@ package Keccak.Generic_MonkeyDuplex is
                    Bit_Len  : in     Natural) return Context
      with Global => null,
      Pre => (Rate > Min_Padding_Bits
-             and then Bit_Len <= Rate - Min_Padding_Bits
+             and then Bit_Len <= State_Size_Bits - Min_Padding_Bits
              and then Data'Length >= (Bit_Len + 7) / 8),
      Post => Rate_Of (Start'Result) = Rate;
 

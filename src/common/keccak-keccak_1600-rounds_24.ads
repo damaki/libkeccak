@@ -26,6 +26,8 @@
 -------------------------------------------------------------------------------
 with Keccak.Generic_Duplex;
 with Keccak.Generic_Sponge;
+with Keccak.Generic_MonkeyDuplex;
+with Keccak.Generic_MonkeyWrap;
 
 pragma Elaborate_All (Keccak.Generic_Duplex);
 pragma Elaborate_All (Keccak.Generic_Sponge);
@@ -42,7 +44,7 @@ is
 
    package Sponge is new Keccak.Generic_Sponge
      (State_Size_Bits     => KeccakF_1600.State_Size_Bits,
-      State_Type          => KeccakF_1600.Lane_Complemented_State,
+      State_Type          => State,
       Init_State          => KeccakF_1600.Init,
       Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_1600_Lanes.XOR_Bits_Into_State,
@@ -51,7 +53,7 @@ is
 
    package Duplex is new Keccak.Generic_Duplex
      (State_Size_Bits     => KeccakF_1600.State_Size_Bits,
-      State_Type          => KeccakF_1600.Lane_Complemented_State,
+      State_Type          => State,
       Init_State          => KeccakF_1600.Init,
       Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_1600_Lanes.XOR_Bits_Into_State,

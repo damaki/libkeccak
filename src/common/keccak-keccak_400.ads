@@ -47,13 +47,15 @@ is
       Shift_Right   => Interfaces.Shift_Right,
       Rotate_Left   => Interfaces.Rotate_Left);
 
+   subtype State is KeccakF_400.Lane_Complemented_State;
+
    package KeccakF_400_Permutation is new KeccakF_400.Lane_Complementing_Permutation;
 
    package KeccakF_400_Lanes is new KeccakF_400.Byte_Lanes;
 
    procedure XOR_Pad101_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
      (State_Size_Bits     => 400,
-      State_Type          => KeccakF_400.State,
+      State_Type          => State,
       XOR_Byte_Into_State => KeccakF_400_Lanes.XOR_Byte_Into_State);
 
 end Keccak.Keccak_400;

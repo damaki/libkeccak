@@ -97,6 +97,25 @@ is
    --     value cannot be larger than the bit-length of the 'Data' array, and
    --     cannot be larger than the Keccak-f state size.
 
+   procedure XOR_Bits_Into_State_Twisted (A       : in out State;
+                                          Data    : in     Keccak.Types.Byte_Array;
+                                          Bit_Len : in     Natural)
+     with Global => null,
+     Depends => (A =>+ (Data, Bit_Len)),
+     Pre => (Bit_Len <= State_Size_Bits
+             and then (Bit_Len + 7) / 8 <= Data'Length);
+   --  Version of XOR_Bits_Into_State for Twisted Keccak-p
+
+   procedure XOR_Bits_Into_State_Twisted (A       : in out Lane_Complemented_State;
+                                          Data    : in     Keccak.Types.Byte_Array;
+                                          Bit_Len : in     Natural)
+     with Inline,
+     Global => null,
+     Depends => (A =>+ (Data, Bit_Len)),
+     Pre => (Bit_Len <= State_Size_Bits
+             and then (Bit_Len + 7) / 8 <= Data'Length);
+   --  Version of XOR_Bits_Into_State for Twisted Keccak-p
+
    procedure XOR_Byte_Into_State (A       : in out State;
                                   Offset  : in     Natural;
                                   Value   : in     Keccak.Types.Byte)
@@ -107,6 +126,20 @@ is
    procedure XOR_Byte_Into_State (A       : in out Lane_Complemented_State;
                                   Offset  : in     Natural;
                                   Value   : in     Keccak.Types.Byte)
+     with Global => null,
+     Depends => (A =>+ (Offset, Value)),
+     Pre => Offset < (State_Size_Bits + 7) / 8;
+
+   procedure XOR_Byte_Into_State_Twisted (A       : in out State;
+                                          Offset  : in     Natural;
+                                          Value   : in     Keccak.Types.Byte)
+     with Global => null,
+     Depends => (A =>+ (Offset, Value)),
+     Pre => Offset < (State_Size_Bits + 7) / 8;
+
+   procedure XOR_Byte_Into_State_Twisted (A       : in out Lane_Complemented_State;
+                                          Offset  : in     Natural;
+                                          Value   : in     Keccak.Types.Byte)
      with Global => null,
      Depends => (A =>+ (Offset, Value)),
      Pre => Offset < (State_Size_Bits + 7) / 8;

@@ -27,6 +27,33 @@
 package body Keccak.Generic_KeccakF.Byte_Lanes
 is
 
+   Twist : constant array (Y_Coord, X_Coord) of X_Coord :=
+     (0 => (0 => 0,
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            4 => 4),
+      1 => (0 => 3,
+            1 => 4,
+            2 => 0,
+            3 => 1,
+            4 => 2),
+      2 => (0 => 1,
+            1 => 2,
+            2 => 3,
+            3 => 4,
+            4 => 0),
+      3 => (0 => 4,
+            1 => 0,
+            2 => 1,
+            3 => 2,
+            4 => 3),
+      4 => (0 => 2,
+            1 => 3,
+            2 => 4,
+            3 => 0,
+            4 => 1));
+
    ---------------------------
    --  XOR_Bits_Into_State  --
    ---------------------------
@@ -107,6 +134,95 @@ is
          Bit_Len => Bit_Len);
    end XOR_Bits_Into_State;
 
+   -----------------------------------
+   --  XOR_Bits_Into_State_Twisted  --
+   -----------------------------------
+
+   procedure XOR_Bits_Into_State_Twisted (A       : in out State;
+                                          Data    : in     Keccak.Types.Byte_Array;
+                                          Bit_Len : in     Natural)
+   is
+      use type Keccak.Types.Byte;
+
+      Remaining_Bits   : Natural := Bit_Len;
+      Offset           : Natural := 0;
+
+      XT : X_Coord;
+      YT : Y_Coord;
+
+   begin
+      --  Process whole lanes (64 bits).
+      Outer_Loop :
+      for Y in Y_Coord loop
+         pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
+         pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+         pragma Loop_Invariant (Offset = Natural (Y) * (Lane_Size_Bits / 8) * 5);
+
+         for X in X_Coord loop
+            pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
+            pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0);
+            pragma Loop_Invariant (Offset = (Natural (Y) * (Lane_Size_Bits / 8) * 5) +
+                                            (Natural (X) * (Lane_Size_Bits / 8)));
+
+            exit Outer_Loop when Remaining_Bits < Lane_Size_Bits;
+
+            declare
+               Lane : Lane_Type := 0;
+            begin
+               for I in Natural range 0 .. (Lane_Size_Bits / 8) - 1 loop
+                  Lane := Lane or Shift_Left (Lane_Type (Data (Data'First + Offset + I)),
+                                             I * 8);
+               end loop;
+
+               XT := Twist (Y, X);
+               YT := Y_Coord (X);
+
+               A (XT, YT) := A (XT, YT) xor Lane;
+            end;
+
+            Offset          := Offset          + Lane_Size_Bits / 8;
+            Remaining_Bits  := Remaining_Bits  - Lane_Size_Bits;
+
+         end loop;
+      end loop Outer_Loop;
+
+      --  Process any remaining data (smaller than 1 lane - 64 bits)
+      if Remaining_Bits > 0 then
+         declare
+            X : constant X_Coord := X_Coord ((Bit_Len / Lane_Size_Bits) mod 5);
+            Y : constant Y_Coord := Y_Coord ((Bit_Len / Lane_Size_Bits)  /  5);
+
+            Word            : Lane_Type := 0;
+            Remaining_Bytes : constant Natural := (Remaining_Bits + 7) / 8;
+
+         begin
+            XT := Twist (Y, X);
+            YT := Y_Coord (X);
+
+            for I in Natural range 0 .. Remaining_Bytes - 1 loop
+               Word := Word or Shift_Left (Lane_Type (Data (Data'First + Offset + I)), I * 8);
+            end loop;
+
+            A (XT, YT) := A (XT, YT) xor (Word and (2**Remaining_Bits) - 1);
+         end;
+      end if;
+   end XOR_Bits_Into_State_Twisted;
+
+   -----------------------------------
+   --  XOR_Bits_Into_State_Twisted  --
+   -----------------------------------
+
+   procedure XOR_Bits_Into_State_Twisted (A       : in out Lane_Complemented_State;
+                                          Data    : in     Keccak.Types.Byte_Array;
+                                          Bit_Len : in     Natural)
+   is
+   begin
+      XOR_Bits_Into_State_Twisted
+        (A       => State (A),
+         Data    => Data,
+         Bit_Len => Bit_Len);
+   end XOR_Bits_Into_State_Twisted;
+
    ---------------------------
    --  XOR_Byte_Into_State  --
    ---------------------------
@@ -117,8 +233,8 @@ is
    is
       Lane_Size_Bytes : constant Positive := Lane_Size_Bits / 8;
 
-      X : X_Coord := X_Coord ((Offset / Lane_Size_Bytes) mod 5);
-      Y : Y_Coord := Y_Coord (Offset / (Lane_Size_Bytes * 5));
+      X : constant X_Coord := X_Coord ((Offset / Lane_Size_Bytes) mod 5);
+      Y : constant Y_Coord := Y_Coord (Offset / (Lane_Size_Bytes * 5));
 
    begin
       A (X, Y) := A (X, Y) xor Shift_Left (Lane_Type (Value), Offset mod (Lane_Size_Bits / 8));
@@ -135,6 +251,38 @@ is
    begin
       XOR_Byte_Into_State (State (A), Offset, Value);
    end XOR_Byte_Into_State;
+
+   -----------------------------------
+   --  XOR_Byte_Into_State_Twisted  --
+   -----------------------------------
+
+   procedure XOR_Byte_Into_State_Twisted (A       : in out State;
+                                          Offset  : in     Natural;
+                                          Value   : in     Keccak.Types.Byte)
+   is
+      Lane_Size_Bytes : constant Positive := Lane_Size_Bits / 8;
+
+      X : constant X_Coord := X_Coord ((Offset / Lane_Size_Bytes) mod 5);
+      Y : constant Y_Coord := Y_Coord (Offset / (Lane_Size_Bytes * 5));
+
+      XT : constant X_Coord := Twist (Y, X);
+      YT : constant Y_Coord := Y_Coord (X);
+
+   begin
+      A (XT, YT) := A (XT, YT) xor Shift_Left (Lane_Type (Value), Offset mod (Lane_Size_Bits / 8));
+   end XOR_Byte_Into_State_Twisted;
+
+   ---------------------------
+   --  XOR_Byte_Into_State_Twisted  --
+   ---------------------------
+
+   procedure XOR_Byte_Into_State_Twisted (A       : in out Lane_Complemented_State;
+                                          Offset  : in     Natural;
+                                          Value   : in     Keccak.Types.Byte)
+   is
+   begin
+      XOR_Byte_Into_State_Twisted (State (A), Offset, Value);
+   end XOR_Byte_Into_State_Twisted;
 
    ---------------------
    --  Extract_Bytes  --

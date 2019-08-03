@@ -495,25 +495,29 @@ is
 
       Prepare_Theta;
 
+      pragma Warnings
+        (GNATprove, Off,
+         "statement has no effect, in instantiation at",
+         Reason => "Loop is not executed in instantiations with Num_Rounds = 1");
+
       for RI in 0 .. (Num_Rounds / 2) - 1 loop
+
          pragma Warnings
            (GNATprove, Off,
-            "unused assignment to ""A",
-            Reason => "Axx variables are also re-used as temporaries");
+            "unused assignment to",
+            Reason => "Axx and Exx variables are also re-used as temporaries");
+
+         pragma Warnings
+           (GNATprove, Off,
+            "this statement is never reached",
+            Reason => "This loop is not executed when instantiated with Num_Rounds => 1");
 
          Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (First_Round + Round_Index (RI * 2));
+         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (First_Round + Round_Index ((RI * 2) + 1));
 
-         pragma Warnings (GNATprove, On);
-
-         pragma Warnings
-           (GNATprove, Off,
-            "unused assignment to ""E",
-            Reason => "Exx variables are also re-used as temporaries");
-
-         Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (First_Round + Round_Index (RI * 2) + 1);
-
-         pragma Warnings (GNATprove, On);
       end loop;
+
+      pragma Warnings (GNATprove, On);
 
       if Num_Rounds mod 2 /= 0 then
          --  Number of rounds is an odd number, so we need to do the final step.
