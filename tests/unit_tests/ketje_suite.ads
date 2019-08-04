@@ -25,27 +25,10 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with Ketje_Suite;
-with AUnit.Test_Caller;
+with AUnit.Test_Suites; use AUnit.Test_Suites;
 
-package body Keccak_Suites
-is
-   function Suite return Access_Test_Suite
-   is
+package Ketje_Suite is
 
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
-      Ret.Add_Test(Ketje_Suite.Suite);
+   function Suite return Access_Test_Suite;
 
-      return Ret;
-   end Suite;
-
-end Keccak_Suites;
+end Ketje_Suite;
