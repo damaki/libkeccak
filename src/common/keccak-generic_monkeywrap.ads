@@ -137,9 +137,10 @@ package Keccak.Generic_MonkeyWrap is
      Post => State_Of (Ctx) = Auth_Data;
    --  Begin a new session.
    --
-   --  This can be called at any time to start a new session. The ciphertext
-   --  and tag generated in the next session depends on all previous sessions
-   --  before it.
+   --  This can be called at any time to start a new session, but is normally
+   --  called after generating or verify the tag. The ciphertexts and tags
+   --  generated in all future sessions depends on all previous sessions before
+   --  it.
 
    function State_Of (Ctx : in Context) return State
      with Global => null;

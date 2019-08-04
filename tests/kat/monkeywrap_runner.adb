@@ -123,16 +123,20 @@ is
 
          elsif C.Contains (AAD_Key) then
 
-            MonkeyWrap.Update_Auth_Data (Ctx  => Ctx,
-                                         Data => C.Element (AAD_Key).First_Element.Hex.all);
+            if C.Element (AAD_Key).First_Element.Hex.all'Length > 0 then
+               MonkeyWrap.Update_Auth_Data (Ctx  => Ctx,
+                                          Data => C.Element (AAD_Key).First_Element.Hex.all);
+            end if;
 
             declare
                Ciphertext : Keccak.Types.Byte_Array (C.Element (Plaintext_Key).First_Element.Hex.all'Range);
                Tag        : Keccak.Types.Byte_Array (C.Element (Tag_Key).First_Element.Hex.all'Range);
             begin
-               MonkeyWrap.Update_Encrypt (Ctx        => Ctx,
-                                          Plaintext  => C.Element (Plaintext_Key).First_Element.Hex.all,
-                                          Ciphertext => Ciphertext);
+               if Ciphertext'Length > 0 then
+                  MonkeyWrap.Update_Encrypt (Ctx        => Ctx,
+                                             Plaintext  => C.Element (Plaintext_Key).First_Element.Hex.all,
+                                             Ciphertext => Ciphertext);
+               end if;
 
                MonkeyWrap.Extract_Tag (Ctx => Ctx,
                                        Tag => Tag);

@@ -162,7 +162,8 @@ package body Keccak.Generic_KeccakF.Byte_Lanes.Twisted is
       YT : constant Y_Coord := Y_Coord (X);
 
    begin
-      A (XT, YT) := A (XT, YT) xor Shift_Left (Lane_Type (Value), Offset mod (Lane_Size_Bits / 8));
+      A (XT, YT) := A (XT, YT) xor Shift_Left (Lane_Type (Value),
+                                               (Offset mod (Lane_Size_Bits / 8)) * 8);
    end XOR_Byte_Into_State_Twisted;
 
    ---------------------------

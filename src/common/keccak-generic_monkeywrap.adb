@@ -516,6 +516,9 @@ package body Keccak.Generic_MonkeyWrap is
          if Remaining < Remaining_Output then
             Tag := Ctx.Keystream (Ctx.In_Data_Length .. Ctx.In_Data_Length + Remaining - 1);
             Ctx.In_Data_Length := Ctx.In_Data_Length + Remaining;
+
+            Offset    := Remaining;
+            Remaining := 0;
          else
 
             Pos := Tag'First + Offset;
@@ -523,6 +526,9 @@ package body Keccak.Generic_MonkeyWrap is
               Ctx.Keystream (Ctx.In_Data_Length .. Ctx.In_Data_Length + Remaining_Output - 1);
 
             Ctx.In_Data_Length := Block_Size_Bytes;
+
+            Offset    := Offset    + Remaining_Output;
+            Remaining := Remaining - Remaining_Output;
          end if;
 
          --  Process full blocks
