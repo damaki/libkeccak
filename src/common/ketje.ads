@@ -60,7 +60,7 @@ is
 
       package MonkeyDuplex_Jr is new Keccak.Generic_MonkeyDuplex
         (State_Size_Bits        => 200,
-         State_Type             => Keccak_200.KeccakF_200.Lane_Complemented_State,
+         State_Type             => Keccak_200.State,
          Init_State             => Keccak_200.KeccakF_200.Init,
          Permute_Start          => Keccak_200.Rounds_12.Permute,
          Permute_Step           => Permute_Jr_Step,
@@ -85,7 +85,7 @@ is
 
       package MonkeyDuplex_Sr is new Keccak.Generic_MonkeyDuplex
         (State_Size_Bits        => 400,
-         State_Type             => Keccak_400.KeccakF_400.Lane_Complemented_State,
+         State_Type             => Keccak_400.State,
          Init_State             => Keccak_400.KeccakF_400.Init,
          Permute_Start          => Keccak_400.Rounds_12.Permute,
          Permute_Step           => Permute_Sr_Step,
@@ -110,7 +110,7 @@ is
 
       package MonkeyDuplex_Minor is new Keccak.Generic_MonkeyDuplex
         (State_Size_Bits        => 800,
-         State_Type             => Keccak_800.KeccakF_800.Lane_Complemented_State,
+         State_Type             => Keccak_800.State,
          Init_State             => Keccak_800.KeccakF_800.Init,
          Permute_Start          => Keccak_800.Rounds_12.Permute,
          Permute_Step           => Permute_Minor_Step,
@@ -135,7 +135,7 @@ is
 
       package MonkeyDuplex_Major is new Keccak.Generic_MonkeyDuplex
         (State_Size_Bits        => 1600,
-         State_Type             => Keccak_1600.KeccakF_1600.Lane_Complemented_State,
+         State_Type             => Keccak_1600.State,
          Init_State             => Keccak_1600.KeccakF_1600.Init,
          Permute_Start          => Keccak_1600.Rounds_12.Permute,
          Permute_Step           => Permute_Major_Step,
@@ -148,11 +148,11 @@ is
 
    end Implementation;
 
-   package Jr    is new Keccak.Generic_MonkeyWrap
+   package Jr is new Keccak.Generic_MonkeyWrap
      (Block_Size_Bytes => 16 / 8,
       MonkeyDuplex     => Implementation.MonkeyDuplex_Jr);
 
-   package Sr    is new Keccak.Generic_MonkeyWrap
+   package Sr is new Keccak.Generic_MonkeyWrap
      (Block_Size_Bytes => 32 / 8,
       MonkeyDuplex     => Implementation.MonkeyDuplex_Sr);
 
