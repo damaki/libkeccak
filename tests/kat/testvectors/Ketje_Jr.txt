@@ -4,7 +4,7 @@
 # The test vector file format has been adapted to fit the format supported
 # by libkeccak's test vector parser.
 
-# initialize with key of 176 bits, nonceof 0 bits:
+# initialize with key of176 bits, nonce of 0 bits:
 Key = fe9730c962fb942dc65ff8912ac35cf58e27c059f28b
 Nonce =
 
@@ -48,7 +48,7 @@ Plaintext =
 Ciphertext =
 Tag = 068ed730d990617ceb43e5e5667e4e50
 
-# initialize with key of 160 bits, nonceof16 bits:
+# initialize with key of160 bits, nonce of16 bits:
 Key = bc55ee8720b952eb841db64fe8811ab34ce57e17
 Nonce = 7bdc
 
@@ -107,7 +107,7 @@ Plaintext = dafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b
 Ciphertext = e7591f2aaeccd34ed0111e72f75eec8db283ba8d79322e0f037fb5ad3c7712114ff5ca0efbc3fff2f4249b84cf374dc3
 Tag = 65ff8033409c714d9e7c0a1ae846bd9b
 
-# initialize with key of 144 bits, nonceof32 bits:
+# initialize with key of144 bits, nonce of32 bits:
 Key = 7a13ac45de7710a942db740da63fd8710aa3
 Nonce = bd1e7fe0
 
@@ -171,7 +171,7 @@ Plaintext =
 Ciphertext =
 Tag = 26b17b87bd31182956a2b9c6d9de4306
 
-# initialize with key of 128 bits, nonceof 0 bits:
+# initialize with key of128 bits, nonce of 0 bits:
 Key = 32cb64fd962fc861fa932cc55ef79029
 Nonce =
 
@@ -575,7 +575,7 @@ Plaintext =
 Ciphertext =
 Tag = 5a5033422a43400d32639737ae54e67b86b2fce6f4f3f226617d9129c347dc3c
 
-# initialize with key of 128 bits, nonceof 8 bits:
+# initialize with key of128 bits, nonce of 8 bits:
 Key = 33cc65fe9730c962fb942dc65ff8912a
 Nonce = d5
 
@@ -979,7 +979,7 @@ Plaintext =
 Ciphertext =
 Tag = d5ff813f0bf1eae07e9f41c86a10a5ef253db37a370a118366eb2bf8fc40a734
 
-# initialize with key of 128 bits, nonceof16 bits:
+# initialize with key of128 bits, nonce of16 bits:
 Key = 34cd66ff9831ca63fc952ec760f9922b
 Nonce = 77d8
 
@@ -1383,7 +1383,7 @@ Plaintext =
 Ciphertext =
 Tag = 6a8929217f48ba1f0c1c367736086415ad10bbb203657f5b3343fa83c118aa57
 
-# initialize with key of 128 bits, nonceof24 bits:
+# initialize with key of128 bits, nonce of24 bits:
 Key = 35ce67009932cb64fd962fc861fa932c
 Nonce = 197adb
 
@@ -1787,7 +1787,7 @@ Plaintext =
 Ciphertext =
 Tag = d60941a4721770f9aa081d65d87b9dfe3b6948098e28e03e4b13a1e57b33e630
 
-# initialize with key of 128 bits, nonceof32 bits:
+# initialize with key of128 bits, nonce of32 bits:
 Key = 36cf68019a33cc65fe9730c962fb942d
 Nonce = bb1c7dde
 
@@ -2191,7 +2191,7 @@ Plaintext =
 Ciphertext =
 Tag = d1a936c46d8d2faedbf3096eebaa39ce480b1384a8714f94a3fc93bf7cae63d8
 
-# initialize with key of 128 bits, nonceof40 bits:
+# initialize with key of128 bits, nonce of40 bits:
 Key = 37d069029b34cd66ff9831ca63fc952e
 Nonce = 5dbe1f8040
 
@@ -2595,7 +2595,7 @@ Plaintext =
 Ciphertext =
 Tag = f6e24777a436f91215ccaf8d3f23952928db2caa4bfffc25ac6f38a02bb66987
 
-# initialize with key of 128 bits, nonceof48 bits:
+# initialize with key of128 bits, nonce of48 bits:
 Key = 38d16a039c35ce67009932cb64fd962f
 Nonce = ff60c122e243
 
@@ -2999,7 +2999,7 @@ Plaintext =
 Ciphertext =
 Tag = 67cb616ce2c5e01bb09aee89f0bebb23470137299aa02a1f27517dd264de1cf5
 
-# initialize with key of 112 bits, nonceof64 bits:
+# initialize with key of112 bits, nonce of64 bits:
 Key = f68f28c15af38c25be57f08922bb
 Nonce = 41a203642485e647
 
@@ -3108,7 +3108,7 @@ Plaintext = ddfe7e9f1f40c0e161820223a3c44465e50686a72748c8e9698a0a2babcc4c6ded0e
 Ciphertext = 1510ba40c235213d54b2c12fcafe25227a5831e673856e2ad91f50e739bb195e56ad00431b67217060ae0037b76b0401
 Tag = 03b7e385c571876b54c77273ded03d1f
 
-# initialize with key of 104 bits, nonceof72 bits:
+# initialize with key of104 bits, nonce of72 bits:
 Key = 55ee8720b952eb841db64fe881
 Nonce = e243a405c52687e8a8
 
@@ -3247,7 +3247,7 @@ Plaintext =
 Ciphertext =
 Tag = 2c49e6ebc4abf2de91a3ea40336075e4
 
-# initialize with key of96 bits, nonceof80 bits:
+# initialize with key of96 bits, nonce of80 bits:
 Key = b44de67f18b14ae37c15ae47
 Nonce = 83e445a666c7288949aa
 
@@ -3445,6 +3445,3 @@ AAD = 029324b546d768f98a1bac3dce5ff08171029324b546d768f98a1bac3dce5ff0e071029324
 Plaintext =
 Ciphertext =
 Tag = a953bbf734348106dca406b86a811797
-
-GlobalTag = 6b2db5c57651366cf83e42dcb3690e51
-

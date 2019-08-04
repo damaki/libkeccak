@@ -1,7 +1,7 @@
 # Ketje_Major.txt
 # Algorithm name: Ketje Major
 # Test vectors obtained from https://www.github.com/XKCP/XKCP
-# The test vector file format hasbeenadapted to fit the format supported
+# The test vector file format has been adapted to fit the format supported
 # by libkeccak's test vector parser.
 
 # initialize with key of 1576 bits, nonce of 0 bits:
@@ -8083,5 +8083,3 @@ AAD = 8213a435c657e8790a9b2cbd4edf7001f18213a435c657e8790a9b2cbd4edf7060f18213a4
 Plaintext = 1f40c0e161820223a3c44465e50686a72748c8e9698a0a2babcc4c6ded0e8eaf2f50d0f171921233b3d45475f51696b73758
 Ciphertext = 0d51b1d0b43e70e0a552121c60ae6fcb24da6120ac2604208a4a6a76fc75077c103cdec9a6b4bc62a9e7827156f204b0c397
 Tag = e58fdde4564e883245bcf9315e1062d0
-
-GlobalTag = 1e7c6c56424f8c1fe0bd042d03da3a1e
