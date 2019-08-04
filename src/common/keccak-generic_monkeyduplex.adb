@@ -151,7 +151,7 @@ package body Keccak.Generic_MonkeyDuplex is
       end if;
 
       XOR_Padding_Into_State (A         => Ctx.State,
-                              First_Bit => In_Data_Bit_Length,
+                              First_Bit => In_Data_Bit_Length + Suffix_Bit_Length,
                               Last_Bit  => Rate_Of (Ctx) - 1);
 
       Permute_Stride (Ctx.State);
