@@ -51,8 +51,8 @@ is
 
       for N in 0 .. AAD'Length loop
          MonkeyWrap.Init (Ctx   => Ctx,
-                        Key   => Key,
-                        Nonce => Nonce);
+                          Key   => Key,
+                          Nonce => Nonce);
 
          MonkeyWrap.Update_Auth_Data (Ctx  => Ctx,
                                       Data => AAD (1 .. N));
@@ -62,8 +62,8 @@ is
                                     Ciphertext => CT1);
 
          MonkeyWrap.Init (Ctx   => Ctx,
-                        Key   => Key,
-                        Nonce => Nonce);
+                          Key   => Key,
+                          Nonce => Nonce);
 
          MonkeyWrap.Update_Auth_Data (Ctx  => Ctx,
                                       Data => AAD (1 .. N));
@@ -72,24 +72,205 @@ is
                                     Ciphertext => CT1,
                                     Plaintext  => PT2);
 
-         Assert (PT1 = PT2, "Decryption resulted in different plaintext with AAD'Length=" & Integer'Image (N));
+         Assert (PT1 = PT2, "Decryption resulted in different plaintext with AAD'Length =" & Integer'Image (N));
       end loop;
 
    end Test_Encrypt_Decrypt;
 
+   --  Test that processing the same AAD with varying calls to
+   --  Update_Auth_Data produces the same tag.
+   --
+   --  This ensures that data can be streamed in any way and still
+   --  produce the same result.
    procedure Test_Streaming_AAD (T : in out Test) is
+      Ctx : MonkeyWrap.Context;
+
+      Key   : constant Byte_Array (1 .. 8) := (others => 16#AA#);
+      Nonce : constant Byte_Array (1 .. 8) := (others => 16#55#);
+
+      AAD : Byte_Array (1 .. 256);
+
+      Tag1 : Byte_Array (1 .. 256);
+      Tag2 : Byte_Array (1 .. 256);
+
+      Offset    : Natural;
+      Remaining : Natural;
+
    begin
-      null;
+      for I in 0 .. AAD'Length - 1 loop
+         AAD (AAD'First + I) := Byte (I mod 256);
+      end loop;
+
+      --  Generate reference tag
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Update_Auth_Data (Ctx, AAD);
+      MonkeyWrap.Extract_Tag (Ctx, Tag1);
+
+      for Chunk_Size in 1 .. AAD'Length loop
+
+         MonkeyWrap.Init (Ctx   => Ctx,
+                          Key   => Key,
+                          Nonce => Nonce);
+
+         Offset    := 0;
+         Remaining := AAD'Length;
+
+         --  Process AAD in chunks
+         while Remaining > 0 loop
+            pragma Loop_Invariant (Offset + Remaining = AAD'Length);
+
+            if Remaining >= Chunk_Size then
+               MonkeyWrap.Update_Auth_Data
+                  (Ctx  => Ctx,
+                   Data => AAD (AAD'First + Offset .. AAD'First + Offset + Chunk_Size - 1));
+
+               Offset    := Offset    + Chunk_Size;
+               Remaining := Remaining - Chunk_Size;
+            else
+               MonkeyWrap.Update_Auth_Data
+                  (Ctx  => Ctx,
+                   Data => AAD (AAD'First + Offset .. AAD'Last));
+
+               Offset    := Offset + Remaining;
+               Remaining := 0;
+            end if;
+         end loop;
+
+         --  Generate tag
+         MonkeyWrap.Extract_Tag (Ctx, Tag2);
+
+         Assert (Tag1 = Tag2, "Wrong tag for chunk size =" & Integer'Image (Chunk_Size));
+      end loop;
    end Test_Streaming_AAD;
 
+   --  Test that processing the same plaintext with varying calls to
+   --  Update_Encrypt produces the same ciphertext.
+   --
+   --  This ensures that data can be streamed in any way and still
+   --  produce the same result.
    procedure Test_Streaming_Ciphertext (T : in out Test) is
+      Ctx : MonkeyWrap.Context;
+
+      Key   : constant Byte_Array (1 .. 8) := (others => 16#AA#);
+      Nonce : constant Byte_Array (1 .. 8) := (others => 16#55#);
+
+      PT : Byte_Array (1 .. 256);
+
+      CT1 : Byte_Array (1 .. 256);
+      CT2 : Byte_Array (1 .. 256);
+
+      Tag1 : Byte_Array (1 .. 256);
+      Tag2 : Byte_Array (1 .. 256);
+
+      Offset    : Natural;
+      Remaining : Natural;
+
    begin
-      null;
+      for I in 0 .. PT'Length - 1 loop
+         PT (PT'First + I) := Byte (I mod 256);
+      end loop;
+
+      --  Generate reference ciphertext & tag
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Update_Encrypt (Ctx, PT, CT1);
+      MonkeyWrap.Extract_Tag (Ctx, Tag1);
+
+      for Chunk_Size in 1 .. PT'Length loop
+
+         MonkeyWrap.Init (Ctx, Key, Nonce);
+
+         Offset    := 0;
+         Remaining := PT'Length;
+
+         CT2 := (others => 0);
+
+         --  Process plaintext in chunks
+         while Remaining > 0 loop
+            pragma Loop_Invariant (Offset + Remaining = PT'Length);
+
+            if Remaining >= Chunk_Size then
+               MonkeyWrap.Update_Encrypt
+                  (Ctx        => Ctx,
+                   Plaintext  => PT  (PT'First  + Offset .. PT'First  + Offset + Chunk_Size - 1),
+                   Ciphertext => CT2 (CT2'First + Offset .. CT2'First + Offset + Chunk_Size - 1));
+
+               Offset    := Offset    + Chunk_Size;
+               Remaining := Remaining - Chunk_Size;
+            else
+               MonkeyWrap.Update_Encrypt
+                  (Ctx  => Ctx,
+                   Plaintext  => PT  (PT'First  + Offset .. PT'Last),
+                   Ciphertext => CT2 (CT2'First + Offset .. CT2'Last));
+
+               Offset    := Offset + Remaining;
+               Remaining := 0;
+            end if;
+         end loop;
+
+         --  Generate tag
+         MonkeyWrap.Extract_Tag (Ctx, Tag2);
+
+         Assert (CT1  = CT2,  "Wrong ciphertext for chunk size =" & Integer'Image (Chunk_Size));
+         Assert (Tag1 = Tag2, "Wrong tag for chunk size =" & Integer'Image (Chunk_Size));
+      end loop;
    end Test_Streaming_Ciphertext;
 
+   --  Test that extracting the same tag with varying calls to
+   --  Extract_Tag produces the same ciphertext.
+   --
+   --  This ensures that data can be streamed in any way and still
+   --  produce the same result.
    procedure Test_Streaming_Tag (T : in out Test) is
+      Ctx : MonkeyWrap.Context;
+
+      Key   : constant Byte_Array (1 .. 8) := (others => 16#AA#);
+      Nonce : constant Byte_Array (1 .. 8) := (others => 16#55#);
+
+      Tag1 : Byte_Array (1 .. 256);
+      Tag2 : Byte_Array (1 .. 256);
+
+      Offset    : Natural;
+      Remaining : Natural;
+
    begin
-      null;
+      --  Generate reference tag
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Extract_Tag (Ctx, Tag1);
+
+      for Chunk_Size in 1 .. Tag1'Length loop
+
+         MonkeyWrap.Init (Ctx   => Ctx,
+                          Key   => Key,
+                          Nonce => Nonce);
+
+         Offset    := 0;
+         Remaining := Tag1'Length;
+
+         Tag2 := (others => 0);
+
+         --  Process tag in chunks
+         while Remaining > 0 loop
+            pragma Loop_Invariant (Offset + Remaining = Tag1'Length);
+
+            if Remaining >= Chunk_Size then
+               MonkeyWrap.Extract_Tag
+                  (Ctx => Ctx,
+                   Tag => Tag2 (Tag2'First + Offset .. Tag2'First + Offset + Chunk_Size - 1));
+
+               Offset    := Offset    + Chunk_Size;
+               Remaining := Remaining - Chunk_Size;
+            else
+               MonkeyWrap.Extract_Tag
+                  (Ctx => Ctx,
+                   Tag => Tag2 (Tag2'First + Offset .. Tag2'Last));
+
+               Offset    := Offset + Remaining;
+               Remaining := 0;
+            end if;
+         end loop;
+
+         Assert (Tag1 = Tag2, "Wrong tag for chunk size =" & Integer'Image (Chunk_Size));
+      end loop;
    end Test_Streaming_Tag;
 
 end Ketje_Tests;
