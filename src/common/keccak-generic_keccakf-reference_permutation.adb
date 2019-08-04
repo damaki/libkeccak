@@ -268,6 +268,8 @@ is
 
    procedure Permute (A : in out State)
    is
+      First_Round : constant Round_Index := 23 - Round_Index (Num_Rounds - 1);
+
       Temp : State;
 
    begin

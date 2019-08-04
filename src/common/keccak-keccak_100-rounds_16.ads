@@ -37,8 +37,7 @@ with SPARK_Mode => On
 is
 
    procedure Permute is new KeccakF_100_Permutation.Permute
-     (First_Round => 8,
-      Num_Rounds  => 16);
+     (Num_Rounds  => 16);
 
    package Sponge is new Keccak.Generic_Sponge
      (State_Size_Bits     => KeccakF_100.State_Size_Bits,

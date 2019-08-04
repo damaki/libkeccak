@@ -35,6 +35,8 @@ is
    is
       type Round_Constants is array (Round_Index) of Interfaces.Unsigned_64;
 
+      First_Round : constant Round_Index := 23 - Round_Index (Num_Rounds - 1);
+
       RC : constant Round_Constants :=
         (
          16#0000_0000_0000_0001#,

@@ -56,12 +56,10 @@ is
       ----------------
 
       procedure Permute_Jr_Step is new Keccak_200.KeccakF_200_Permutation.Permute
-        (First_Round => 23,
-         Num_Rounds  => 1);
+        (Num_Rounds  => 1);
 
       procedure Permute_Jr_Stride is new Keccak_200.KeccakF_200_Permutation.Permute
-        (First_Round => 18,
-         Num_Rounds  => 6);
+        (Num_Rounds  => 6);
 
       package Twisted_Lanes_200 is new Keccak_200.KeccakF_200_Lanes.Twisted;
 
@@ -88,12 +86,10 @@ is
       ----------------
 
       procedure Permute_Sr_Step is new Keccak_400.KeccakF_400_Permutation.Permute
-        (First_Round => 23,
-         Num_Rounds  => 1);
+        (Num_Rounds  => 1);
 
       procedure Permute_Sr_Stride is new Keccak_400.KeccakF_400_Permutation.Permute
-        (First_Round => 18,
-         Num_Rounds  => 6);
+        (Num_Rounds  => 6);
 
       package Twisted_Lanes_400 is new Keccak_400.KeccakF_400_Lanes.Twisted;
 
@@ -120,12 +116,10 @@ is
       -------------------
 
       procedure Permute_Minor_Step is new Keccak_800.KeccakF_800_Permutation.Permute
-        (First_Round => 23,
-         Num_Rounds  => 1);
+        (Num_Rounds  => 1);
 
       procedure Permute_Minor_Stride is new Keccak_800.KeccakF_800_Permutation.Permute
-        (First_Round => 18,
-         Num_Rounds  => 6);
+        (Num_Rounds  => 6);
 
       package Twisted_Lanes_800 is new Keccak_800.KeccakF_800_Lanes.Twisted;
 
@@ -152,12 +146,10 @@ is
       -------------------
 
       procedure Permute_Major_Step is new Keccak_1600.KeccakF_1600_Permutation.Permute
-        (First_Round => 23,
-         Num_Rounds  => 1);
+        (Num_Rounds  => 1);
 
       procedure Permute_Major_Stride is new Keccak_1600.KeccakF_1600_Permutation.Permute
-        (First_Round => 18,
-         Num_Rounds  => 6);
+        (Num_Rounds  => 6);
 
       package Twisted_Lanes_1600 is new Keccak_1600.KeccakF_1600_Lanes.Twisted;
 
