@@ -97,8 +97,8 @@ package body Keccak.Generic_MonkeyWrap is
             Ctx.In_Data (Ctx.In_Data_Length .. Ctx.In_Data_Length + (Remaining_In_Chunk - 1)) :=
               Data (Data'First .. Data'First + (Remaining_In_Chunk - 1));
 
-            Offset             := Offset           + Remaining_In_Chunk;
-            Remaining          := Remaining        - Remaining_In_Chunk;
+            Offset             := Offset             + Remaining_In_Chunk;
+            Remaining          := Remaining          - Remaining_In_Chunk;
             Ctx.In_Data_Length := Ctx.In_Data_Length + Remaining_In_Chunk;
 
             pragma Assert (Ctx.In_Data_Length = Block_Size_Bytes);
@@ -115,6 +115,7 @@ package body Keccak.Generic_MonkeyWrap is
 
          else
             Ctx.In_Data (Ctx.In_Data_Length .. Ctx.In_Data_Length + Remaining - 1) := Data;
+            Ctx.In_Data_Length := Ctx.In_Data_Length + Remaining;
 
             Offset    := Remaining;
             Remaining := 0;
