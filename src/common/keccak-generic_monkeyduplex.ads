@@ -60,7 +60,7 @@ generic
 
 package Keccak.Generic_MonkeyDuplex is
 
-   subtype Rate_Bits_Number is Positive range 1 .. State_Size_Bits - Min_Padding_Bits - 1;
+   subtype Rate_Bits_Number is Positive range Min_Padding_Bits + 1 .. State_Size_Bits - 1;
 
    type Context is private;
 
@@ -69,8 +69,7 @@ package Keccak.Generic_MonkeyDuplex is
                     Data     : in     Keccak.Types.Byte_Array;
                     Bit_Len  : in     Natural)
      with Global => null,
-     Pre => (Rate > Min_Padding_Bits
-             and then Bit_Len <= State_Size_Bits - Min_Padding_Bits
+     Pre => (Bit_Len <= State_Size_Bits - Min_Padding_Bits
              and then Data'Length >= (Bit_Len + 7) / 8),
      Post => Rate_Of (Ctx) = Rate;
 
@@ -78,8 +77,7 @@ package Keccak.Generic_MonkeyDuplex is
                    Data     : in     Keccak.Types.Byte_Array;
                    Bit_Len  : in     Natural) return Context
      with Global => null,
-     Pre => (Rate > Min_Padding_Bits
-             and then Bit_Len <= State_Size_Bits - Min_Padding_Bits
+     Pre => (Bit_Len <= State_Size_Bits - Min_Padding_Bits
              and then Data'Length >= (Bit_Len + 7) / 8),
      Post => Rate_Of (Start'Result) = Rate;
 

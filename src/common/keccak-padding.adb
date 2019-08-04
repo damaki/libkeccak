@@ -135,6 +135,10 @@ is
 
    end Pad101_Multi_Blocks;
 
+   -----------------------------
+   --  XOR_Pad101_Into_State  --
+   -----------------------------
+
    procedure XOR_Pad101_Into_State (State     : in out State_Type;
                                     First_Bit : in     Natural;
                                     Last_Bit  : in     Natural) is

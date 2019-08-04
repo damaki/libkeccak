@@ -141,7 +141,6 @@ is
                if Ciphertext = C.Element(Ciphertext_Key).First_Element.Hex.all then
                   if Tag = C.Element(Tag_Key).First_Element.Hex.all then
                      Num_Passed := Num_Passed + 1;
-                     Ada.Text_IO.Put_Line (Byte_Array_To_String (C.Element (Plaintext_Key).First_Element.Hex.all));
                   else
                      Num_Failed := Num_Failed + 1;
 

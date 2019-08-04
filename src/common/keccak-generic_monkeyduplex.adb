@@ -111,7 +111,7 @@ package body Keccak.Generic_MonkeyDuplex is
       if Last_Suffix_Byte /= First_Suffix_Byte then
          XOR_Byte_Into_State (A      => Ctx.State,
                               Offset => Last_Suffix_Byte,
-                              Value  => Shift_Right (Suffix, 8 - In_Data_Bit_Length mod 8));
+                              Value  => Shift_Right (Suffix, 8 - (In_Data_Bit_Length mod 8)));
       end if;
 
       XOR_Padding_Into_State (A         => Ctx.State,
@@ -147,7 +147,7 @@ package body Keccak.Generic_MonkeyDuplex is
       if Last_Suffix_Byte /= First_Suffix_Byte then
          XOR_Byte_Into_State (A      => Ctx.State,
                               Offset => Last_Suffix_Byte,
-                              Value  => Shift_Right (Suffix, 8 - In_Data_Bit_Length mod 8));
+                              Value  => Shift_Right (Suffix, 8 - (In_Data_Bit_Length mod 8)));
       end if;
 
       XOR_Padding_Into_State (A         => Ctx.State,

@@ -7,7 +7,7 @@ project KAT is
    for Main use ("kat.adb");
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-O2", "-gnatN", "-gnata", "-gnatwe");
+      for Default_Switches ("Ada") use ("-O2", "-gnatN", "-gnata", "-gnatwe", "-g");
    end Compiler;
 
 end KAT;

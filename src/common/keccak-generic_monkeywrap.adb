@@ -29,6 +29,12 @@ with Interfaces; use Interfaces;
 
 package body Keccak.Generic_MonkeyWrap is
 
+   Frame_Bits_00 : constant Keccak.Types.Byte := 2#00#;
+   Frame_Bits_01 : constant Keccak.Types.Byte := 2#10#;
+   Frame_Bits_11 : constant Keccak.Types.Byte := 2#11#;
+   Frame_Bits_10 : constant Keccak.Types.Byte := 2#01#;
+   Frame_Bits_0  : constant Keccak.Types.Byte := 2#0#;
+
    ------------
    --  Init  --
    ------------
@@ -37,18 +43,18 @@ package body Keccak.Generic_MonkeyWrap is
                    Key   : in     Keccak.Types.Byte_Array;
                    Nonce : in     Keccak.Types.Byte_Array) is
 
-      Block : Keccak.Types.Byte_Array (1 .. 1 + Key'Length + 2 + Nonce'Length);
+      Block : Keccak.Types.Byte_Array (0 .. 1 + Key'Length + Nonce'Length);
       --  Combines the packed Key & Nonce.
 
       Rate : MonkeyDuplex.Rate_Bits_Number;
 
    begin
       --  keypack(Key, |Key| + 16)
-      Block (1)                                := Key'Length + 2;
-      Block (2 .. Key'Length + 1)              := Key;
-      Block (Key'Length + 2 .. Key'Length + 3) := (16#01#, 16#00#);
+      Block (0)               := Key'Length + 2;
+      Block (1 .. Key'Length) := Key;
+      Block (Key'Length + 1)  := 16#01#;
 
-      Block (Key'Length + 4 .. Block'Last)     := Nonce;
+      Block (Key'Length + 2 .. Block'Last) := Nonce;
 
       Rate := (Block_Size_Bytes * 8) + MonkeyDuplex.Min_Padding_Bits + 2;
 
@@ -91,8 +97,8 @@ package body Keccak.Generic_MonkeyWrap is
             Ctx.In_Data (Ctx.In_Data_Length .. Ctx.In_Data_Length + (Remaining_In_Chunk - 1)) :=
               Data (Data'First .. Data'First + (Remaining_In_Chunk - 1));
 
-            Offset           := Offset           + Remaining_In_Chunk;
-            Remaining        := Remaining        - Remaining_In_Chunk;
+            Offset             := Offset           + Remaining_In_Chunk;
+            Remaining          := Remaining        - Remaining_In_Chunk;
             Ctx.In_Data_Length := Ctx.In_Data_Length + Remaining_In_Chunk;
 
             pragma Assert (Ctx.In_Data_Length = Block_Size_Bytes);
@@ -101,7 +107,7 @@ package body Keccak.Generic_MonkeyWrap is
                MonkeyDuplex.Step_Mute (Ctx                 => Ctx.Inner_Ctx,
                                        In_Data             => Ctx.In_Data,
                                        In_Data_Bit_Length  => Block_Size_Bytes * 8,
-                                       Suffix              => 2#00#,
+                                       Suffix              => Frame_Bits_00,
                                        Suffix_Bit_Length   => 2);
 
                Ctx.In_Data_Length := 0;
@@ -131,7 +137,7 @@ package body Keccak.Generic_MonkeyWrap is
            (Ctx                => Ctx.Inner_Ctx,
             In_Data            => Data (Pos .. Pos + Block_Size_Bytes - 1),
             In_Data_Bit_Length => Block_Size_Bytes * 8,
-            Suffix             => 2#00#,
+            Suffix             => Frame_Bits_00,
             Suffix_Bit_Length  => 2);
 
          Offset    := Offset    + Block_Size_Bytes;
@@ -177,7 +183,7 @@ package body Keccak.Generic_MonkeyWrap is
          MonkeyDuplex.Step (Ctx                 => Ctx.Inner_Ctx,
                             In_Data             => Ctx.In_Data,
                             In_Data_Bit_Length  => Ctx.In_Data_Length * 8,
-                            Suffix              => 2#01#,
+                            Suffix              => Frame_Bits_01,
                             Suffix_Bit_Length   => 2,
                             Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                             Out_Data_Bit_Length => Block_Size_Bytes * 8);
@@ -198,7 +204,7 @@ package body Keccak.Generic_MonkeyWrap is
             for I in 0 .. Remaining_Keystream - 1 loop
                Ciphertext (Ciphertext'First + I) :=
                  Plaintext (Plaintext'First + I)
-                 xor Ctx.Keystream (I);
+                 xor Ctx.Keystream (Ctx.In_Data_Length + I);
             end loop;
 
             --  Concatenate the plaintext with the previous leftover plaintext
@@ -217,7 +223,7 @@ package body Keccak.Generic_MonkeyWrap is
             for I in 0 .. Remaining - 1 loop
                Ciphertext (Ciphertext'First + I) :=
                  Plaintext (Plaintext'First + I)
-                 xor Ctx.Keystream (I);
+                 xor Ctx.Keystream (Ctx.In_Data_Length + I);
             end loop;
 
             PT_Pos := Plaintext'First + Offset;
@@ -240,7 +246,7 @@ package body Keccak.Generic_MonkeyWrap is
               (Ctx                 => Ctx.Inner_Ctx,
                In_Data             => Ctx.In_Data (0 .. Block_Size_Bytes - 1),
                In_Data_Bit_Length  => Block_Size_Bytes * 8,
-               Suffix              => 2#11#,
+               Suffix              => Frame_Bits_11,
                Suffix_Bit_Length   => 2,
                Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                Out_Data_Bit_Length => Block_Size_Bytes * 8);
@@ -264,9 +270,9 @@ package body Keccak.Generic_MonkeyWrap is
 
             MonkeyDuplex.Step
               (Ctx                 => Ctx.Inner_Ctx,
-               In_Data             => Plaintext (PT_Pos .. PT_Pos + Block_Size_Bytes),
+               In_Data             => Plaintext (PT_Pos .. PT_Pos + Block_Size_Bytes - 1),
                In_Data_Bit_Length  => Block_Size_Bytes * 8,
-               Suffix              => 2#11#,
+               Suffix              => Frame_Bits_11,
                Suffix_Bit_Length   => 2,
                Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                Out_Data_Bit_Length => Block_Size_Bytes * 8);
@@ -323,7 +329,7 @@ package body Keccak.Generic_MonkeyWrap is
          MonkeyDuplex.Step (Ctx                 => Ctx.Inner_Ctx,
                             In_Data             => Ctx.In_Data,
                             In_Data_Bit_Length  => Ctx.In_Data_Length * 8,
-                            Suffix              => 2#01#,
+                            Suffix              => Frame_Bits_01,
                             Suffix_Bit_Length   => 2,
                             Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                             Out_Data_Bit_Length => Block_Size_Bytes * 8);
@@ -344,7 +350,7 @@ package body Keccak.Generic_MonkeyWrap is
             for I in 0 .. Remaining_Keystream - 1 loop
                Plaintext (Plaintext'First + I) :=
                  Ciphertext (Ciphertext'First + I)
-                 xor Ctx.Keystream (I);
+                 xor Ctx.Keystream (Ctx.In_Data_Length + I);
             end loop;
 
             --  Concatenate the plaintext with the previous leftover plaintext
@@ -367,7 +373,7 @@ package body Keccak.Generic_MonkeyWrap is
             for I in 0 .. Remaining - 1 loop
                Plaintext (Plaintext'First + I) :=
                  Ciphertext (Ciphertext'First + I)
-                 xor Ctx.Keystream (I);
+                 xor Ctx.Keystream (Ctx.In_Data_Length + I);
             end loop;
 
             PT_Pos := Plaintext'First + Offset;
@@ -394,7 +400,7 @@ package body Keccak.Generic_MonkeyWrap is
               (Ctx                 => Ctx.Inner_Ctx,
                In_Data             => Ctx.In_Data (0 .. Block_Size_Bytes - 1),
                In_Data_Bit_Length  => Block_Size_Bytes * 8,
-               Suffix              => 2#11#,
+               Suffix              => Frame_Bits_11,
                Suffix_Bit_Length   => 2,
                Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                Out_Data_Bit_Length => Block_Size_Bytes * 8);
@@ -420,7 +426,7 @@ package body Keccak.Generic_MonkeyWrap is
               (Ctx                 => Ctx.Inner_Ctx,
                In_Data             => Plaintext (PT_Pos .. PT_Pos + Block_Size_Bytes),
                In_Data_Bit_Length  => Block_Size_Bytes * 8,
-               Suffix              => 2#11#,
+               Suffix              => Frame_Bits_11,
                Suffix_Bit_Length   => 2,
                Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                Out_Data_Bit_Length => Block_Size_Bytes * 8);
@@ -484,17 +490,17 @@ package body Keccak.Generic_MonkeyWrap is
               (Ctx                 => Ctx.Inner_Ctx,
                In_Data             => Ctx.In_Data,
                In_Data_Bit_Length  => Ctx.In_Data_Length * 8,
-               Suffix              => 2#01#,
+               Suffix              => Frame_Bits_01,
                Suffix_Bit_Length   => 2);
 
             Ctx.In_Data_Length := 0;
          end if;
 
-         --  Finish encryption stage.
+         --  Finish encryption/decryption stage.
          MonkeyDuplex.Stride (Ctx                 => Ctx.Inner_Ctx,
                               In_Data             => Ctx.In_Data,
                               In_Data_Bit_Length  => Ctx.In_Data_Length * 8,
-                              Suffix              => 2#10#,
+                              Suffix              => Frame_Bits_10,
                               Suffix_Bit_Length   => 2,
                               Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                               Out_Data_Bit_Length => Block_Size_Bytes * 8);
@@ -530,12 +536,12 @@ package body Keccak.Generic_MonkeyWrap is
             MonkeyDuplex.Step (Ctx                 => Ctx.Inner_Ctx,
                                In_Data             => Ctx.In_Data,
                                In_Data_Bit_Length  => 0,
-                               Suffix              => 2#0#,
+                               Suffix              => Frame_Bits_0,
                                Suffix_Bit_Length   => 1,
                                Out_Data            => Tag (Pos .. Pos + Block_Size_Bytes - 1),
                                Out_Data_Bit_Length => Block_Size_Bytes * 8);
 
-            Offset    := Offset + Block_Size_Bytes;
+            Offset    := Offset    + Block_Size_Bytes;
             Remaining := Remaining - Block_Size_Bytes;
          end loop;
 
@@ -544,7 +550,7 @@ package body Keccak.Generic_MonkeyWrap is
             MonkeyDuplex.Step (Ctx                 => Ctx.Inner_Ctx,
                                In_Data             => Ctx.In_Data,
                                In_Data_Bit_Length  => 0,
-                               Suffix              => 2#0#,
+                               Suffix              => Frame_Bits_0,
                                Suffix_Bit_Length   => 1,
                                Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
                                Out_Data_Bit_Length => Block_Size_Bytes * 8);
