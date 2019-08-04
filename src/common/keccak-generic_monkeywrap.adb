@@ -556,4 +556,14 @@ package body Keccak.Generic_MonkeyWrap is
       end if;
    end Extract_Tag;
 
+   -------------------
+   --  New_Session  --
+   -------------------
+
+   procedure New_Session (Ctx : in out Context) is
+   begin
+      Ctx.Current_State  := Auth_Data;
+      Ctx.In_Data_Length := 0;
+   end New_Session;
+
 end Keccak.Generic_MonkeyWrap;

@@ -131,6 +131,16 @@ package Keccak.Generic_MonkeyWrap is
    --  This procedure can be called multiple times to produce a tag of
    --  arbitrary length (streaming output).
 
+   procedure New_Session (Ctx : in out Context)
+     with Global => null,
+     Depends => (Ctx =>+ null),
+     Post => State_Of (Ctx) = Auth_Data;
+   --  Begin a new session.
+   --
+   --  This can be called at any time to start a new session. The ciphertext
+   --  and tag generated in the next session depends on all previous sessions
+   --  before it.
+
    function State_Of (Ctx : in Context) return State
      with Global => null;
 
