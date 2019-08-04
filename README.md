@@ -10,13 +10,15 @@ libkeccak implements the following generic constructions:
 * The Keccak-p permutation for state sizes of 25, 50, 100, 200, 400, 800, and 1600 bits (see [1] and [2]).
 * The Sponge construction
 * The Duplex construction
+* The MonkeyDuplex construction
+* The MonkeyWrap construction
 * Hash functions based on the Sponge construction
 * eXtendable Output Functions (XOF) based on the Sponge construction
 * cSHAKE, KMAC, TupleHash, and ParallelHash as specified in NIST SP 800-185 [4]
 * KangarooTwelve as specified by the Keccak team [5]
 
 libkeccak also provides concrete implementations of the above constructions,
-as specified in [1,4,5]:
+as specified in [1,4,5,6]:
 
 * Hash functions:
   * SHA-3 (224, 256, 384, and 512 bits)
@@ -34,6 +36,8 @@ as specified in [1,4,5]:
   * KangarooTwelve
   * MarsupilamiFourteen (256-bit security variant of KangarooTwelve)
   * ParallelHash128 and ParallelHash256
+* Authenticated encryption:
+  * Ketje (Jr, Sr, Minor, and Major variants)
 
 Note that the difference between a hash function an a XOF function is that a
 hash function has a fixed output length (for example, 256 bits), whereas the
@@ -201,3 +205,5 @@ http://sponge.noekeon.org/CSF-0.1.pdf
 http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf
 * [5] KangarooTwelve: fast hashing based on Keccak-p
 http://keccak.noekeon.org/kangarootwelve.html
+* [6] CAESAR submission: Ketje v2
+https://keccak.team/files/Ketjev2-doc2.0.pdf
