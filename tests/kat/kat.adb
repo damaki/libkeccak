@@ -218,6 +218,18 @@ begin
             KetjeJr_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
                                       Num_Passed => Num_Passed,
                                       Num_Failed => Num_Failed);
+         elsif Algo = "KetjeSr" then
+            KetjeSr_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                      Num_Passed => Num_Passed,
+                                      Num_Failed => Num_Failed);
+         elsif Algo = "KetjeMinor" then
+            KetjeMinor_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                         Num_Passed => Num_Passed,
+                                         Num_Failed => Num_Failed);
+         elsif Algo = "KetjeMajor" then
+            KetjeMajor_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                         Num_Passed => Num_Passed,
+                                         Num_Failed => Num_Failed);
          else
             Ada.Text_IO.Put_Line ("Unknown algorithm: " & Algo);
             Ada.Command_Line.Set_Exit_Status (-1);
