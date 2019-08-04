@@ -41,7 +41,7 @@ is
 
    package Sponge is new Keccak.Generic_Sponge
      (State_Size_Bits     => KeccakF_50.State_Size_Bits,
-      State_Type          => KeccakF_50.Lane_Complemented_State,
+      State_Type          => State,
       Init_State          => KeccakF_50.Init,
       Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_50_Lanes.XOR_Bits_Into_State,
@@ -50,7 +50,7 @@ is
 
    package Duplex is new Keccak.Generic_Duplex
      (State_Size_Bits     => KeccakF_50.State_Size_Bits,
-      State_Type          => KeccakF_50.Lane_Complemented_State,
+      State_Type          => State,
       Init_State          => KeccakF_50.Init,
       Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_50_Lanes.XOR_Bits_Into_State,

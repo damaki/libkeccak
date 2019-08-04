@@ -31,7 +31,10 @@ is
 
    procedure Permute (S : in out Lane_Complemented_State)
    is
-      First_Round : constant Round_Index := 23 - Round_Index (Num_Rounds - 1);
+      Max_Rounds : constant Positive := 12 + (Lane_Size_Log * 2);
+
+      First_Round : constant Round_Index := Round_Index (Max_Rounds - 1)
+                                          - Round_Index (Num_Rounds - 1);
 
       type Round_Constants is array (Round_Index) of Interfaces.Unsigned_64;
 
