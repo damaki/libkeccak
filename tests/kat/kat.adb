@@ -31,12 +31,14 @@ with Ada.Text_IO;
 with CSHAKE_Runner;
 with Duplex_Runner;
 with Hash_Runner;
+with MonkeyWrap_Runner;
 with KMAC_Runner;
 with ParallelHash_Runner;
 with TupleHash_Runner;
 
 with CSHAKE;
 with Keccak.Keccak_1600.Rounds_24;
+with Ketje;
 with KMAC;
 with Parallel_Hash;
 with SHA3;
@@ -69,6 +71,11 @@ is
 
    package TupleHash128_Runner is new TupleHash_Runner (Tuple_Hash.Tuple_Hash_128);
    package TupleHash256_Runner is new TupleHash_Runner (Tuple_Hash.Tuple_Hash_256);
+
+   package KetjeJr_Runner is new MonkeyWrap_Runner (Ketje.Jr);
+   package KetjeSr_Runner is new MonkeyWrap_Runner (Ketje.Sr);
+   package KetjeMinor_Runner is new MonkeyWrap_Runner (Ketje.Minor);
+   package KetjeMajor_Runner is new MonkeyWrap_Runner (Ketje.Major);
 
    package Integer_IO is new Ada.Text_IO.Integer_IO (Integer);
 
@@ -207,6 +214,10 @@ begin
                                            XOF        => True,
                                            Num_Passed => Num_Passed,
                                            Num_Failed => Num_Failed);
+         elsif Algo = "KetjeJr" then
+            KetjeJr_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                      Num_Passed => Num_Passed,
+                                      Num_Failed => Num_Failed);
          else
             Ada.Text_IO.Put_Line ("Unknown algorithm: " & Algo);
             Ada.Command_Line.Set_Exit_Status (-1);

@@ -14,9 +14,10 @@ DUMMY := $(shell mkdir -p $(OUTPUT_DIR)) \
 
 all: kat benchmark unit_test
 
-.PHONY: $(KAT_EXECUTABLES)
+.PHONY: $(OUTPUT_DIR)/kat/kat
 .PHONY: kat
 kat: $(OUTPUT_DIR)/kat/kat
+	$(OUTPUT_DIR)/kat/kat KetjeJr kat/testvectors/Ketje_Jr.txt
 	$(OUTPUT_DIR)/kat/kat ParallelHash128 kat/testvectors/ParallelHash128_samples.txt
 	$(OUTPUT_DIR)/kat/kat ParallelHash256 kat/testvectors/ParallelHash256_samples.txt
 	$(OUTPUT_DIR)/kat/kat ParallelHashXOF128 kat/testvectors/ParallelHashXOF128_samples.txt

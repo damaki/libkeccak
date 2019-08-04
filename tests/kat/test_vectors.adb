@@ -93,7 +93,7 @@ package body Test_Vectors is
       Byte_Array : Byte_Array_Access;
       I          : Natural := 0;
    begin
-      if (Str'Length mod 2 /= 0) or (Str'Length = 0) then
+      if (Str'Length mod 2 /= 0) then
          raise Constraint_Error;
       end if;
 
