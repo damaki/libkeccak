@@ -131,4 +131,16 @@ is
    --  different to the definition in NIST SP 800-185, and they produce different
    --  outputs.
 
+   procedure Compare (A1          : in     Keccak.Types.Byte_Array;
+                      A2          : in     Keccak.Types.Byte_Array;
+                      Accumulator : in out Keccak.Types.Byte)
+     with Global => null,
+     Depends => (Accumulator =>+ (A1, A2)),
+     Pre => A1'Length = A2'Length;
+   --  Compare two arrays in constant time.
+   --
+   --  If the two arrays are equal, then the Accumulator will retain its
+   --  initial value (e.g. zero). Otherwise, the Accumulator will be set
+   --  to a non-zero value.
+
 end Keccak.Util;

@@ -26,6 +26,7 @@
 -------------------------------------------------------------------------------
 
 with AUnit.Assertions; use AUnit.Assertions;
+with Interfaces;       use Interfaces;
 
 package body Ketje_Tests
 is
@@ -344,5 +345,117 @@ is
          Assert (Tag1 = Tag2, "Wrong tag for chunk size =" & Integer'Image (Chunk_Size));
       end loop;
    end Test_Streaming_Tag;
+
+   --  Test that Verify_Tag produces the correct results for valid and
+   --  invalid tags.
+   procedure Test_Verify_Tag (T : in out Test) is
+      Ctx : MonkeyWrap.Context;
+
+      Key   : constant Byte_Array (1 .. 8) := (others => 16#AA#);
+      Nonce : constant Byte_Array (1 .. 8) := (others => 16#55#);
+
+      Tag : Byte_Array (1 .. 256);
+
+      Valid : Boolean;
+
+   begin
+      --  Generate reference tag
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Extract_Tag (Ctx, Tag);
+
+      --  Check that the valid tag is detected as valid
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Verify_Tag (Ctx, Tag, Valid);
+      Assert (Valid, "Verify_Tag false positive");
+
+      --  Check that the tag is invalid for a completely wrong tag
+      for B of Tag loop
+         B := B xor 16#FF#;
+      end loop;
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Verify_Tag (Ctx, Tag, Valid);
+      Assert (not Valid, "Verify_Tag false negative");
+
+      --  Put the tag back to normal
+      for B of Tag loop
+         B := B xor 16#FF#;
+      end loop;
+
+      --  Test that a corrupted bit in the middle of a streamed tag
+      --  is detected, and that the Valid flag sticks to "invalid".
+      Tag (180) := Tag (180) xor 16#08#;
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Verify_Tag (Ctx, Tag (1 .. 63), Valid);
+      Assert (Valid, "Verify_Tag false positive in chunk 1");
+      MonkeyWrap.Verify_Tag (Ctx, Tag (64 .. 127), Valid);
+      Assert (Valid, "Verify_Tag false positive in chunk 2");
+      MonkeyWrap.Verify_Tag (Ctx, Tag (128 .. 191), Valid); --  byte 180 is invalid
+      Assert (not Valid, "Verify_Tag false negative in chunk 3");
+
+      --  Valid should stick to false, even though the last chunk
+      --  of data is still valid.
+      MonkeyWrap.Verify_Tag (Ctx, Tag (192 .. 256), Valid);
+      Assert (not Valid, "Verify_Tag false negative in chunk 4");
+
+   end Test_Verify_Tag;
+
+   --  Test that verifying the same tag with varying calls to
+   --  Verify_Tag produces the same result.
+   --
+   --  This ensures that data can be streamed in any way and still
+   --  produce the same result.
+   procedure Test_Streaming_Verify_Tag (T : in out Test) is
+      Ctx : MonkeyWrap.Context;
+
+      Key   : constant Byte_Array (1 .. 8) := (others => 16#AA#);
+      Nonce : constant Byte_Array (1 .. 8) := (others => 16#55#);
+
+      Tag : Byte_Array (1 .. 256);
+
+      Valid : Boolean;
+
+      Offset    : Natural;
+      Remaining : Natural;
+
+   begin
+      --  Generate reference tag
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Extract_Tag (Ctx, Tag);
+
+      for Chunk_Size in 1 .. Tag'Length loop
+
+         MonkeyWrap.Init (Ctx   => Ctx,
+                          Key   => Key,
+                          Nonce => Nonce);
+
+         Offset    := 0;
+         Remaining := Tag'Length;
+
+         --  Process tag in chunks
+         while Remaining > 0 loop
+            pragma Loop_Invariant (Offset + Remaining = Tag'Length);
+
+            if Remaining >= Chunk_Size then
+               MonkeyWrap.Verify_Tag
+                  (Ctx   => Ctx,
+                   Tag   => Tag (Tag'First + Offset .. Tag'First + Offset + Chunk_Size - 1),
+                   Valid => Valid);
+
+               Offset    := Offset    + Chunk_Size;
+               Remaining := Remaining - Chunk_Size;
+            else
+               MonkeyWrap.Verify_Tag
+                  (Ctx   => Ctx,
+                   Tag   => Tag (Tag'First + Offset .. Tag'Last),
+                   Valid => Valid);
+
+               Offset    := Offset + Remaining;
+               Remaining := 0;
+            end if;
+
+            Assert (Valid, "Invalid tag at offset =" & Integer'Image (Offset) & ", chunk size =" & Integer'Image (Chunk_Size));
+         end loop;
+      end loop;
+   end Test_Streaming_Verify_Tag;
 
 end Ketje_Tests;

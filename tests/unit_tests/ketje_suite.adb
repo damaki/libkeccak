@@ -68,6 +68,14 @@ is
          (Caller_Jr.Create
             ("KetjeJr: Test streaming tag",
              Ketje_Jr_Tests.Test_Streaming_Tag'Access));
+      Ret.Add_Test
+         (Caller_Jr.Create
+            ("KetjeJr: Test Verify_Tag",
+             Ketje_Jr_Tests.Test_Verify_Tag'Access));
+      Ret.Add_Test
+         (Caller_Jr.Create
+            ("KetjeJr: Test streaming Verify_Tag",
+             Ketje_Jr_Tests.Test_Streaming_Verify_Tag'Access));
 
       --  KetjeSr
       Ret.Add_Test
@@ -90,6 +98,14 @@ is
          (Caller_Sr.Create
             ("KetjeSr: Test streaming tag",
              Ketje_Sr_Tests.Test_Streaming_Tag'Access));
+      Ret.Add_Test
+         (Caller_Sr.Create
+            ("KetjeSr: Test Verify_Tag",
+             Ketje_Sr_Tests.Test_Verify_Tag'Access));
+      Ret.Add_Test
+         (Caller_Sr.Create
+            ("KetjeSr: Test streaming Verify_Tag",
+             Ketje_Sr_Tests.Test_Streaming_Verify_Tag'Access));
 
       --  KetjeMinor
       Ret.Add_Test
@@ -112,6 +128,14 @@ is
          (Caller_Minor.Create
             ("KetjeMinor: Test streaming tag",
              Ketje_Minor_Tests.Test_Streaming_Tag'Access));
+      Ret.Add_Test
+         (Caller_Minor.Create
+            ("KetjeMinor: Test Verify_Tag",
+             Ketje_Minor_Tests.Test_Verify_Tag'Access));
+      Ret.Add_Test
+         (Caller_Minor.Create
+            ("KetjeMinor: Test streaming Verify_Tag",
+             Ketje_Minor_Tests.Test_Streaming_Verify_Tag'Access));
 
       --  KetjeMajor
       Ret.Add_Test
@@ -134,6 +158,14 @@ is
          (Caller_Major.Create
             ("KetjeMajor: Test streaming tag",
              Ketje_Major_Tests.Test_Streaming_Tag'Access));
+      Ret.Add_Test
+         (Caller_Major.Create
+            ("KetjeMajor: Test Verify_Tag",
+             Ketje_Major_Tests.Test_Verify_Tag'Access));
+      Ret.Add_Test
+         (Caller_Major.Create
+            ("KetjeMajor: Test streaming Verify_Tag",
+             Ketje_Major_Tests.Test_Streaming_Verify_Tag'Access));
 
       return Ret;
    end Suite;

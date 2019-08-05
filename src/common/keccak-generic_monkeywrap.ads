@@ -131,6 +131,19 @@ package Keccak.Generic_MonkeyWrap is
    --  This procedure can be called multiple times to produce a tag of
    --  arbitrary length (streaming output).
 
+   procedure Verify_Tag (Ctx   : in out Context;
+                         Tag   : in     Keccak.Types.Byte_Array;
+                         Valid :    out Boolean)
+     with Global => null,
+     Depends => (Ctx   =>+ Tag,
+                 Valid => (Ctx, Tag)),
+     Pre => (State_Of (Ctx) in Auth_Data | Encrypting | Decrypting | Verifying_Tag),
+     Post => State_Of (Ctx) = Verifying_Tag;
+   --  Verify whether a tag is valid.
+   --
+   --  This procedure can be called multiple times to verify artbirarily long tags.
+   --  At each call, Valid will be set to the result of the encryption so far.
+
    procedure New_Session (Ctx : in out Context)
      with Global => null,
      Depends => (Ctx =>+ null),

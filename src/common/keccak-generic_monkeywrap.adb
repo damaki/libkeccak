@@ -25,7 +25,8 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Interfaces; use Interfaces;
+with Interfaces;  use Interfaces;
+with Keccak.Util; use Keccak.Util;
 
 package body Keccak.Generic_MonkeyWrap is
 
@@ -569,14 +570,134 @@ package body Keccak.Generic_MonkeyWrap is
       end if;
    end Extract_Tag;
 
+   ------------------
+   --  Verify_Tag  --
+   ------------------
+
+   procedure Verify_Tag (Ctx   : in out Context;
+                         Tag   : in     Keccak.Types.Byte_Array;
+                         Valid :    out Boolean) is
+
+      Offset    : Natural := 0;
+      Remaining : Natural := Tag'Length;
+
+      Tag_Pos : Keccak.Types.Index_Number;
+      KS_Pos  : Keccak.Types.Index_Number;
+
+      Remaining_Output : Natural;
+   begin
+      if Ctx.Current_State in Auth_Data | Encrypting | Decrypting then
+
+         if Ctx.Current_State = Auth_Data then
+            --  Finish auth data stage
+            MonkeyDuplex.Step_Mute
+              (Ctx                 => Ctx.Inner_Ctx,
+               In_Data             => Ctx.In_Data,
+               In_Data_Bit_Length  => Ctx.In_Data_Length * 8,
+               Suffix              => Frame_Bits_01,
+               Suffix_Bit_Length   => 2);
+
+            Ctx.In_Data_Length := 0;
+         end if;
+
+         --  Finish encryption/decryption stage.
+         MonkeyDuplex.Stride (Ctx                 => Ctx.Inner_Ctx,
+                              In_Data             => Ctx.In_Data,
+                              In_Data_Bit_Length  => Ctx.In_Data_Length * 8,
+                              Suffix              => Frame_Bits_10,
+                              Suffix_Bit_Length   => 2,
+                              Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
+                              Out_Data_Bit_Length => Block_Size_Bytes * 8);
+
+         Ctx.In_Data_Length  := 0;
+         Ctx.Current_State   := Verifying_Tag;
+         Ctx.Tag_Accumulator := 0;
+      end if;
+
+      Remaining_Output := Block_Size_Bytes - Ctx.In_Data_Length;
+
+      if Remaining > 0 then
+         --  First, take from the previous leftovers.
+
+         Tag_Pos := Tag'First + Offset;
+         KS_Pos  := Ctx.In_Data_Length;
+
+         if Remaining < Remaining_Output then
+            Compare (A1          => Tag           (Tag_Pos .. Tag_Pos + Remaining - 1),
+                     A2          => Ctx.Keystream (KS_Pos  .. KS_Pos  + Remaining - 1),
+                     Accumulator => Ctx.Tag_Accumulator);
+
+            Ctx.In_Data_Length := Ctx.In_Data_Length + Remaining;
+
+            Offset    := Remaining;
+            Remaining := 0;
+         else
+            Compare (A1          => Tag           (Tag_Pos .. Tag_Pos + Remaining_Output - 1),
+                     A2          => Ctx.Keystream (KS_Pos  .. KS_Pos  + Remaining_Output - 1),
+                     Accumulator => Ctx.Tag_Accumulator);
+
+            Ctx.In_Data_Length := Block_Size_Bytes;
+
+            Offset    := Offset    + Remaining_Output;
+            Remaining := Remaining - Remaining_Output;
+         end if;
+
+         --  Process full blocks
+         while Remaining >= Block_Size_Bytes loop
+            pragma Loop_Variant (Increases => Offset,
+                                 Decreases => Remaining);
+            pragma Loop_Invariant (Offset + Remaining = Tag'Length);
+
+            MonkeyDuplex.Step (Ctx                 => Ctx.Inner_Ctx,
+                               In_Data             => Ctx.In_Data,
+                               In_Data_Bit_Length  => 0,
+                               Suffix              => Frame_Bits_0,
+                               Suffix_Bit_Length   => 1,
+                               Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
+                               Out_Data_Bit_Length => Block_Size_Bytes * 8);
+
+            Tag_Pos := Tag'First + Offset;
+
+            Compare (A1          => Tag (Tag_Pos .. Tag_Pos + Block_Size_Bytes - 1),
+                     A2          => Ctx.Keystream (0  .. Block_Size_Bytes - 1),
+                     Accumulator => Ctx.Tag_Accumulator);
+
+            Offset    := Offset    + Block_Size_Bytes;
+            Remaining := Remaining - Block_Size_Bytes;
+         end loop;
+
+         --  Generate last partial block
+         if Remaining > 0 then
+            MonkeyDuplex.Step (Ctx                 => Ctx.Inner_Ctx,
+                               In_Data             => Ctx.In_Data,
+                               In_Data_Bit_Length  => 0,
+                               Suffix              => Frame_Bits_0,
+                               Suffix_Bit_Length   => 1,
+                               Out_Data            => Ctx.Keystream (0 .. Block_Size_Bytes - 1),
+                               Out_Data_Bit_Length => Block_Size_Bytes * 8);
+
+            Tag_Pos := Tag'First + Offset;
+
+            Compare (A1          => Tag (Tag_Pos .. Tag_Pos + Remaining - 1),
+                     A2          => Ctx.Keystream (0  .. Remaining - 1),
+                     Accumulator => Ctx.Tag_Accumulator);
+
+            Ctx.In_Data_Length := Remaining;
+         end if;
+      end if;
+
+      Valid := Ctx.Tag_Accumulator = 0;
+   end Verify_Tag;
+
    -------------------
    --  New_Session  --
    -------------------
 
    procedure New_Session (Ctx : in out Context) is
    begin
-      Ctx.Current_State  := Auth_Data;
-      Ctx.In_Data_Length := 0;
+      Ctx.Current_State   := Auth_Data;
+      Ctx.In_Data_Length  := 0;
+      Ctx.Tag_Accumulator := 0;
    end New_Session;
 
 end Keccak.Generic_MonkeyWrap;

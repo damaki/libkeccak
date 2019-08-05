@@ -41,6 +41,9 @@ is
    procedure Test_Streaming_Encryption (T : in out Test);
    procedure Test_Streaming_Decryption (T : in out Test);
    procedure Test_Streaming_Tag (T : in out Test);
+   procedure Test_Verify_Tag (T : in out Test);
+   procedure Test_Streaming_Verify_Tag (T : in out Test);
+
 
 end Ketje_Tests;
 
