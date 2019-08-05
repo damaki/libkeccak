@@ -30,6 +30,32 @@ with Keccak.Types;
 
 --  @summary
 --  Generic implementation of the MonkeyWrap construction.
+--
+--  @description
+--  MonkeyWrap is an authenticated encryption scheme built on MonkeyDuplex.
+--  Ketje variants are instantiations of this package.
+--
+--  This API is used as follows:
+--
+--  1 Call Init, providing a secret encryption key and a unique
+--    "number used once" (nonce).
+--
+--  2 Optionally call Update_Auth_Data zero or more times to provide
+--    arbitrary-length additional data that is authenticated, but
+--    is not encrypted.
+--
+--  3 Optionally call Update_Encrypt or Update_Decrypt (but not both)
+--    zero or more times to encrypt/decrypt arbitrary-length data.
+--
+--  4 Optionally call Extract_Tag or Verify_Tag (but not both)
+--    zero or more times to get or check an arbitrary-length
+--    authentication tag respectively.
+--
+--  Ketje supports the concept of sessions, where sequences of messages
+--  can be authenticated rather than a single message. The first session is
+--  initialised by loading the key and nonce. At the end of each message,
+--  the New_Session procedure can be called to begin a new session, which
+--  puts the Context back to step 2 above.
 generic
    Block_Size_Bytes : Positive;
 
@@ -157,6 +183,11 @@ package Keccak.Generic_MonkeyWrap is
 
    function State_Of (Ctx : in Context) return State
      with Global => null;
+   --  Get the current context state.
+   --
+   --  The state determines which API functions can be used at a point in time.
+   --  For example, when the Context is encrypting or decrypting data it is not
+   --  possible to provide further additional authenticated data.
 
 private
 
@@ -174,7 +205,7 @@ private
       In_Data         : Keccak.Types.Byte_Array (Block_Byte_Count);
       --  During AAD, this stores the last partial/full block of AAD.
       --
-      --  During encryption, this stores the last plaintext block.
+      --  During encryption/decryption, this stores the previous plaintext block.
 
       In_Data_Length  : Block_Byte_Count;
       --  During AAD, this is the size of the pending data in 'In_Data'.
@@ -182,13 +213,27 @@ private
       --  During Encryption/Decryption, this is the number of pending plaintext
       --  bytes that are pending to be processed into MonkeyDuplex.
       --  The number of remaining Keystream bytes is Block_Size - In_Data_Length.
+      --
+      --  During tag phases, this is the number of tag bytes that have been
+      --  consumed in the Keystream buffer.
 
       Keystream : Keccak.Types.Byte_Array (Block_Byte_Count);
       --  A block of keystream bits.
       --
-      --  This is only valid during the encryption/decryption phases.
+      --  During encryption/decryption phases this stores the keystream data.
+      --
+      --  During the tag extraction/verification phases this stores remainder
+      --  tag bytes.
 
       Tag_Accumulator : Keccak.Types.Byte;
+      --  An accumulator used during constant-time tag verification.
+      --
+      --  This starts of as zero, and during comparison the XOR of each
+      --  byte is ORed into this value, thereby accumulating differences.
+      --  If, at the end of verification this value is zero then the
+      --  expected tag and actual tag are identical. Otherwise, non-zero
+      --  values indicate at least 1 bit is different between the two
+      --  tags.
 
    end record
      with Predicate =>
