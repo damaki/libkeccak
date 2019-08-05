@@ -238,4 +238,17 @@ is
       return Encoded (Encoded'Last - N .. Encoded'Last);
    end Right_Encode_K12;
 
+   ---------------
+   --  Compare  --
+   ---------------
+
+   procedure Compare (A1          : in     Keccak.Types.Byte_Array;
+                      A2          : in     Keccak.Types.Byte_Array;
+                      Accumulator : in out Keccak.Types.Byte) is
+   begin
+      for I in 0 .. A1'Length - 1 loop
+         Accumulator := Accumulator or (A1 (A1'First + I) xor A2 (A2'First + I));
+      end loop;
+   end Compare;
+
 end Keccak.Util;

@@ -268,6 +268,11 @@ is
 
    procedure Permute (A : in out State)
    is
+      Max_Rounds : constant Positive := 12 + (Lane_Size_Log * 2);
+
+      First_Round : constant Round_Index := Round_Index (Max_Rounds - 1)
+                                          - Round_Index (Num_Rounds - 1);
+
       Temp : State;
 
    begin

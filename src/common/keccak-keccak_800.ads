@@ -47,8 +47,15 @@ is
       Shift_Right   => Interfaces.Shift_Right,
       Rotate_Left   => Interfaces.Rotate_Left);
 
+   subtype State is KeccakF_800.Lane_Complemented_State;
+
    package KeccakF_800_Permutation is new KeccakF_800.Lane_Complementing_Permutation;
 
    package KeccakF_800_Lanes is new KeccakF_800.Byte_Lanes;
+
+   procedure XOR_Pad101_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
+     (State_Size_Bits     => 800,
+      State_Type          => State,
+      XOR_Byte_Into_State => KeccakF_800_Lanes.XOR_Byte_Into_State);
 
 end Keccak.Keccak_800;

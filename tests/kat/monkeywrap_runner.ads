@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -24,28 +24,14 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Generic_MonkeyWrap;
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with Ketje_Suite;
-with AUnit.Test_Caller;
+generic
+   with package MonkeyWrap is new Keccak.Generic_MonkeyWrap(<>);
+package MonkeyWrap_Runner is
 
-package body Keccak_Suites
-is
-   function Suite return Access_Test_Suite
-   is
+   procedure Run_Tests (File_Name  : in     String;
+                        Num_Passed :    out Natural;
+                        Num_Failed :    out Natural);
 
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
-      Ret.Add_Test(Ketje_Suite.Suite);
-
-      return Ret;
-   end Suite;
-
-end Keccak_Suites;
+end MonkeyWrap_Runner;

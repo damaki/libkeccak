@@ -38,6 +38,7 @@ with Keccak.Parallel_Keccak_1600.Rounds_24;
 with Keccak.Parallel_Keccak_1600.Rounds_12;
 with Keccak.Generic_KangarooTwelve;
 with Keccak.Generic_KeccakF;
+with Keccak.Generic_MonkeyWrap;
 with Keccak.Generic_Parallel_Hash;
 with Keccak.Keccak_25;
 with Keccak.Keccak_25.Rounds_12;
@@ -63,6 +64,7 @@ with Parallel_Hash;
 with SHA3;
 with SHAKE;
 with RawSHAKE;
+with Ketje;
 
 procedure Benchmark
 is
@@ -432,6 +434,108 @@ is
    end ParallelHash_Benchmark;
 
    ----------------------------------------------------------------------------
+   -- Ketje_Benchmark
+   --
+   -- Generic procedure to run a benchmark for Ketje (instances of MonkeyWrap)
+   ----------------------------------------------------------------------------
+   generic
+      Name : String;
+      with package MonkeyWrap is new Keccak.Generic_MonkeyWrap(<>);
+   procedure Ketje_Benchmark;
+
+   procedure Ketje_Benchmark
+   is
+      Ctx    : MonkeyWrap.Context;
+
+      Start_Time : Timing.Time;
+      Cycles     : Cycles_Count;
+      Min_Cycles : Cycles_Count := Cycles_Count'Last;
+
+      Empty : Keccak.Types.Byte_Array (1 .. 0) := (others => 0);
+
+   begin
+      Ada.Text_IO.Put(Name & " (AAD): ");
+
+      Timing.Calibrate;
+
+      -- Benchmark AAD
+      for I in Positive range 1 .. Repeat loop
+         MonkeyWrap.Init (Ctx, Empty, Empty);
+
+         Start_Measurement (Start_Time);
+
+         MonkeyWrap.Update_Auth_Data (Ctx, Data_Chunk.all);
+
+         Cycles := End_Measurement (Start_Time);
+
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
+      end loop;
+
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+
+      Min_Cycles := Cycles_Count'Last;
+      Ada.Text_IO.Put(Name & " (Encrypt): ");
+
+      Timing.Calibrate;
+
+      -- Benchmark Encrypt
+      for I in Positive range 1 .. Repeat loop
+         MonkeyWrap.Init (Ctx, Empty, Empty);
+
+         Start_Measurement (Start_Time);
+
+         MonkeyWrap.Update_Encrypt (Ctx, Data_Chunk.all, Data_Chunk.all);
+
+         Cycles := End_Measurement (Start_Time);
+
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
+      end loop;
+
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Ada.Text_IO.Put(Name & " (Decrypt): ");
+
+      -- Benchmark Decrypt
+      for I in Positive range 1 .. Repeat loop
+         MonkeyWrap.Init (Ctx, Empty, Empty);
+
+         Start_Measurement (Start_Time);
+
+         MonkeyWrap.Update_Decrypt (Ctx, Data_Chunk.all, Data_Chunk.all);
+
+         Cycles := End_Measurement (Start_Time);
+
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
+      end loop;
+
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Ada.Text_IO.Put(Name & " (Tag): ");
+
+      -- Benchmark Tag
+      for I in Positive range 1 .. Repeat loop
+         MonkeyWrap.Init (Ctx, Empty, Empty);
+
+         Start_Measurement (Start_Time);
+
+         MonkeyWrap.Extract_Tag (Ctx, Data_Chunk.all);
+
+         Cycles := End_Measurement (Start_Time);
+
+         if Cycles < Min_Cycles then
+            Min_Cycles := Cycles;
+         end if;
+      end loop;
+
+      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+
+   end Ketje_Benchmark;
+
+   ----------------------------------------------------------------------------
    -- Benchmark procedure instantiations.
    ----------------------------------------------------------------------------
 
@@ -474,37 +578,37 @@ is
 
    procedure Benchmark_KeccakF_25 is new KeccakF_Benchmark
      ("Keccak-p[25,12]",
-      Keccak.Keccak_25.KeccakF_25.Lane_Complemented_State,
+      Keccak.Keccak_25.State,
       Keccak.Keccak_25.KeccakF_25.Init,
       Keccak.Keccak_25.Rounds_12.Permute);
    procedure Benchmark_KeccakF_50 is new KeccakF_Benchmark
      ("Keccak-p[50,14]",
-      Keccak.Keccak_50.KeccakF_50.Lane_Complemented_State,
+      Keccak.Keccak_50.State,
       Keccak.Keccak_50.KeccakF_50.Init,
       Keccak.Keccak_50.Rounds_14.Permute);
    procedure Benchmark_KeccakF_100 is new KeccakF_Benchmark
      ("Keccak-p[100,16]",
-      Keccak.Keccak_100.KeccakF_100.Lane_Complemented_State,
+      Keccak.Keccak_100.State,
       Keccak.Keccak_100.KeccakF_100.Init,
       Keccak.Keccak_100.Rounds_16.Permute);
    procedure Benchmark_KeccakF_200 is new KeccakF_Benchmark
      ("Keccak-p[200,18]",
-      Keccak.Keccak_200.KeccakF_200.Lane_Complemented_State,
+      Keccak.Keccak_200.State,
       Keccak.Keccak_200.KeccakF_200.Init,
       Keccak.Keccak_200.Rounds_18.Permute);
    procedure Benchmark_KeccakF_400 is new KeccakF_Benchmark
      ("Keccak-p[400,20]",
-      Keccak.Keccak_400.KeccakF_400.Lane_Complemented_State,
+      Keccak.Keccak_400.State,
       Keccak.Keccak_400.KeccakF_400.Init,
       Keccak.Keccak_400.Rounds_20.Permute);
    procedure Benchmark_KeccakF_800 is new KeccakF_Benchmark
      ("Keccak-p[800,22]",
-      Keccak.Keccak_800.KeccakF_800.Lane_Complemented_State,
+      Keccak.Keccak_800.State,
       Keccak.Keccak_800.KeccakF_800.Init,
       Keccak.Keccak_800.Rounds_22.Permute);
    procedure Benchmark_KeccakF_1600_R24 is new KeccakF_Benchmark
      ("Keccak-p[1600,24]",
-      Keccak.Keccak_1600.KeccakF_1600.Lane_Complemented_State,
+      Keccak.Keccak_1600.State,
       Keccak.Keccak_1600.KeccakF_1600.Init,
       Keccak.Keccak_1600.Rounds_24.Permute);
    procedure Benchmark_KeccakF_1600_P2_R24 is new KeccakF_Benchmark
@@ -524,7 +628,7 @@ is
       Keccak.Parallel_Keccak_1600.Rounds_24.Permute_All_P8);
    procedure Benchmark_KeccakF_1600_R12 is new KeccakF_Benchmark
      ("Keccak-p[1600,12]",
-      Keccak.Keccak_1600.KeccakF_1600.Lane_Complemented_State,
+      Keccak.Keccak_1600.State,
       Keccak.Keccak_1600.KeccakF_1600.Init,
       Keccak.Keccak_1600.Rounds_12.Permute);
    procedure Benchmark_KeccakF_1600_P2_R12 is new KeccakF_Benchmark
@@ -557,6 +661,15 @@ is
    procedure Benchmark_ParallelHash256 is new ParallelHash_Benchmark
      ("ParallelHash256",
       Parallel_Hash.ParallelHash256);
+
+   procedure Benchmark_Ketje_Jr is new Ketje_Benchmark
+     ("Ketje Jr", Ketje.Jr);
+   procedure Benchmark_Ketje_Sr is new Ketje_Benchmark
+     ("Ketje Sr", Ketje.Sr);
+   procedure Benchmark_Ketje_Minor is new Ketje_Benchmark
+     ("Ketje Minor", Ketje.Minor);
+   procedure Benchmark_Ketje_Major is new Ketje_Benchmark
+     ("Ketje Major", Ketje.Major);
 
 begin
    Data_Chunk.all := (others => 16#A7#);
@@ -605,5 +718,9 @@ begin
    Benchmark_KeccakF_100;
    Benchmark_KeccakF_50;
    Benchmark_KeccakF_25;
+   Benchmark_Ketje_Jr;
+   Benchmark_Ketje_Sr;
+   Benchmark_Ketje_Minor;
+   Benchmark_Ketje_Major;
 
 end Benchmark;

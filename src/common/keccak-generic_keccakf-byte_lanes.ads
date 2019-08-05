@@ -43,9 +43,8 @@ is
                                   Bit_Len : in     Natural)
      with Global => null,
      Depends => (A =>+ (Data, Bit_Len)),
-     Pre => (Data'Length <= Natural'Last / 8
-             and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= State_Size_Bits);
+     Pre => (Bit_Len <= State_Size_Bits
+             and then (Bit_Len + 7) / 8 <= Data'Length);
    --  XOR bits into the Keccak-f state.
    --
    --  The data is XOR'ed into the first Bit_Len bits of the state.
@@ -74,9 +73,8 @@ is
      with Inline,
      Global => null,
      Depends => (A =>+ (Data, Bit_Len)),
-     Pre => (Data'Length <= Natural'Last / 8
-             and then Bit_Len <= Data'Length * 8
-             and then Bit_Len <= State_Size_Bits);
+     Pre => (Bit_Len <= State_Size_Bits
+             and then (Bit_Len + 7) / 8 <= Data'Length);
    --  XOR bits into the lane complemented version of the Keccak-f state.
    --
    --  The data is XOR'ed into the first Bit_Len bits of the state.
@@ -98,6 +96,20 @@ is
    --  @param Bit_Len The number of bits to XOR into the Keccak-f state. This
    --     value cannot be larger than the bit-length of the 'Data' array, and
    --     cannot be larger than the Keccak-f state size.
+
+   procedure XOR_Byte_Into_State (A       : in out State;
+                                  Offset  : in     Natural;
+                                  Value   : in     Keccak.Types.Byte)
+     with Global => null,
+     Depends => (A =>+ (Offset, Value)),
+     Pre => Offset < (State_Size_Bits + 7) / 8;
+
+   procedure XOR_Byte_Into_State (A       : in out Lane_Complemented_State;
+                                  Offset  : in     Natural;
+                                  Value   : in     Keccak.Types.Byte)
+     with Global => null,
+     Depends => (A =>+ (Offset, Value)),
+     Pre => Offset < (State_Size_Bits + 7) / 8;
 
    procedure Extract_Bytes (A    : in     State;
                             Data :    out Keccak.Types.Byte_Array)

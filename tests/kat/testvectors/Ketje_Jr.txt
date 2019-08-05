@@ -1,0 +1,3447 @@
+# Ketje_Jr.txt
+# Algorithm name: Ketje Jr
+# Test vectors obtained from https://www.github.com/XKCP/XKCP
+# The test vector file format has been adapted to fit the format supported
+# by libkeccak's test vector parser.
+
+# initialize with key of176 bits, nonce of 0 bits:
+Key = fe9730c962fb942dc65ff8912ac35cf58e27c059f28b
+Nonce =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 1a9a90e0393719f729b046a4989aa511
+
+AAD =
+Plaintext = 4b6cec0d8dae2e4fcff070
+Ciphertext = f737df7b9e0f80b479ceb7
+Tag = f5f5914f1e10685e6bc584dd2814f721
+
+AAD =
+Plaintext = 6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898
+Ciphertext = cc7d264420d9c9f1edcf54f8939b04342fd17b54a0e944b6eb37cf
+Tag = dc52c899b1750075f9f78b29af5ca9b0
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = e4854090edf62a849a6ee24b85961b4d
+
+AAD = 51e273049526b748d96afb
+Plaintext = ee0f8fb03051d1f272931334b4d55576f61797b83859d9
+Ciphertext = 3f7885b4383fa3ef6e8db5b82a72dfe7206806801279ae
+Tag = 41e3da562c819eecdd3f84d0b5dbe1fb
+
+AAD = 16a738c95aeb7c0d9e2fc051e27304958516a738c95aeb7c0d
+Plaintext =
+Ciphertext =
+Tag = 46e036efa0ddf870b6a466eaa0100ede
+
+AAD = 3bcc5dee7f10a132c354e576079829baaa3bcc5dee7f10a132
+Plaintext = d8f9799a1a3bbbdc5c7dfd1e9ebf3f60e00181a22243c3e464850526a6c74768e80989aa2a
+Ciphertext = 422c52f890f3d32583a366d9327db5270ec9bad67483d435092bd81407963a94a2788fe78e
+Tag = fca1e4548e78dc896f70bea21c3c91bf
+
+AAD = 1cad3ecf60f18213a435c657e8790a9b8b1cad3ecf60f18213a435c657e8790afa8b1cad3ecf60f18213a435
+Plaintext =
+Ciphertext =
+Tag = 068ed730d990617ceb43e5e5667e4e50
+
+# initialize with key of160 bits, nonce of16 bits:
+Key = bc55ee8720b952eb841db64fe8811ab34ce57e17
+Nonce = 7bdc
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = a2fafd7cd87de304cdc2c176466c43f4
+
+AAD =
+Plaintext = 0728a8c9496aea0b8b
+Ciphertext = 4ebf5c655a7fc91755
+Tag = 8957c91f1b3d5b8bc6e0f1ad30dde7d7
+
+AAD =
+Plaintext = 4162e20383a42445c5e666870728a8c9496aea0b8bac
+Ciphertext = 53161634129280adea71bee6f7b705c71b40de67f524
+Tag = a48d763e0e3996b22731fa32cfb732fe
+
+AAD =
+Plaintext = e90a8aab2b4ccced6d8e0e2fafd05071f11292b33354d4f575961637b7d85879f91a9abb3b5cdcfd7d9e
+Ciphertext = fdd2c037900959f4ac9329ec281c462f122373b5f6aafef8972829b9bf69e73bbc8f07d90c899cf6ff41
+Tag = 35d25d140ba849fc90ff70dc72ab133b
+
+AAD = f68718a93acb5ced7e
+Plaintext =
+Ciphertext =
+Tag = 06ed01f767c4ebf63bc9e84b0e66290b
+
+AAD = 0a9b2cbd4edf700192
+Plaintext = 0627a7c84869e90a8aab2b4ccced6d8e0e2fafd0
+Ciphertext = ba837712c2d768358dfeb613dcec1790a27166d9
+Tag = ac856683ef057efa787097ee98843430
+
+AAD = 28b94adb6cfd8e1fb0
+Plaintext = 0223a3c44465e50686a72748c8e9698a0a2babcc4c6ded0e8eaf2f50d0f171921233b3d45475f51696b73758d8f9799a1a3b
+Ciphertext = bbe8c633b2dcfd6197493b6d79e37625da6fa0ce3de667ad800d90fc6505383dd21bafc0c7de05e9020988a0c0c0639baff9
+Tag = a24594995fa5050f87a9fe7cbb334a9c
+
+AAD = 8e1fb041d263f48516a738c95aeb7c0dfd8e1fb041
+Plaintext =
+Ciphertext =
+Tag = 71acc8f5dec60397fe0169e330c2d9a0
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061
+Plaintext = aacb4b6cec0d8dae2e4fcff070911132b2d35374f41595b63657d7f87899193a
+Ciphertext = 1672da5dc6753f421a32642800b33fc807edbfc7ef1f07524ccc13e7a746f1bd
+Tag = 04fd281ff399140a72f648c49d4e8c59
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd0
+Plaintext =
+Ciphertext =
+Tag = 158185a2f4696c401dc8a77930c76964
+
+AAD = de6f009122b344d566f78819aa3bcc5d4dde6f009122b344d566f78819aa3bccbc4dde6f00
+Plaintext = dafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4dcdee6e8f0f30b0d15172
+Ciphertext = e7591f2aaeccd34ed0111e72f75eec8db283ba8d79322e0f037fb5ad3c7712114ff5ca0efbc3fff2f4249b84cf374dc3
+Tag = 65ff8033409c714d9e7c0a1ae846bd9b
+
+# initialize with key of144 bits, nonce of32 bits:
+Key = 7a13ac45de7710a942db740da63fd8710aa3
+Nonce = bd1e7fe0
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 2e65540e4307cc869ae2d0c1af0d1a86
+
+AAD =
+Plaintext = c3e464850526a6
+Ciphertext = a719a0523b1b71
+Tag = 5b43b401557aeda5931f24da1d3ca3bf
+
+AAD =
+Plaintext = 1738b8d9597afa1b9bbc3c5dddfe7e9f1f
+Ciphertext = 83c13be9fe5cb54eb010da6d1540aff75d
+Tag = 447082c71a9484487357faa47376edba
+
+AAD =
+Plaintext = 95b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425
+Ciphertext = d1aa8ff58a984724205d74c190c01f08dfdd15737f159220a631993e1b4beddb
+Tag = 8cca32ae2327ac4f293895224849bc7d
+
+AAD = b243d465f68718
+Plaintext =
+Ciphertext =
+Tag = 61ecb34f417860aa82f8f8e224267aa8
+
+AAD = c354e576079829
+Plaintext = 1e3fbfe060810122a2c34364e40585a626
+Ciphertext = d3cafb86ff6621c1e9942f0d6c9891ed94
+Tag = 809d4b64028b0f279f98aee7e75103ff
+
+AAD = dc6dfe8f20b142
+Plaintext = f01191b23253d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c24263e30484a5
+Ciphertext = 64063def01d64eb6343af88dcdb7eb4ca98be74b3aa7305b78d171526c4db165250b5f70ad0f67551313
+Tag = 54f05fd18b4ec8c6e79be74cc031f572
+
+AAD = 64f58617a839ca5bec7d0e9f30c152e3
+Plaintext =
+Ciphertext =
+Tag = 54af3fd18ef61e30321bfda667e7210e
+
+AAD = 7e0fa031c253e475069728b94adb6cfd
+Plaintext = d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e56586
+Ciphertext = 7771970e781224945b904f6380d53451ad927861ba2f8c665432
+Tag = 0147f092203ab785bd4d9a7702a99e73
+
+AAD = fc8d1eaf40d162f38415a637c859ea7b6bfc8d1eaf40d162f38415a6
+Plaintext =
+Ciphertext =
+Tag = 8b7438d35960017828edb31777fa3ccd
+
+AAD = 22b344d566f78819aa3bcc5dee7f10a19122b344d566f78819aa3bcc
+Plaintext = 7d9e1e3fbfe060810122a2c34364e40585a62647c7e86889092aaacb4b6cec0d8dae2e4fcff0
+Ciphertext = 1370bc2d0ca973fc9e8fbc5124c5fd21b1b9e929e4360ec282ae16bccb65e8b3adc703d8b997
+Tag = 92b353efc38b174465902303fd9189f7
+
+AAD = 1cad3ecf60f18213a435c657e8790a9b8b1cad3ecf60f18213a435c657e8790afa8b1cad3ecf60f18213a435
+Plaintext =
+Ciphertext =
+Tag = 26b17b87bd31182956a2b9c6d9de4306
+
+# initialize with key of128 bits, nonce of 0 bits:
+Key = 32cb64fd962fc861fa932cc55ef79029
+Nonce =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 46929f142bb74a95
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = c6c6ae6f64b777dc791119f40e1cf74e
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 6988e5d798802e40cd3edb14b574d4a842e31208df1d128b
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 356a7c7ce57fc097aa4d63c4f1832f20d74bc79dcea45fcad8b0db50b6fe7ef7
+
+AAD =
+Plaintext = 6f901031b1
+Ciphertext = f6ef31db6d
+Tag =
+
+AAD =
+Plaintext = 77981839b9
+Ciphertext = 25792d753c
+Tag = c33fc9bcc354170e
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = 94dca70658
+Tag = 4d6d363526463bc547991f3ce0c95742
+
+AAD =
+Plaintext = 87a82849c9
+Ciphertext = a2a54de4fa
+Tag = d02daa219f1406e7c85628bd4f6a03072f848480980a2ae8
+
+AAD =
+Plaintext = 8fb03051d1
+Ciphertext = 04aaf72a42
+Tag = 28733820e770c769fbfcb40912d631838dc70cbddf94b9e0ffa792fff2d6fcc5
+
+AAD =
+Plaintext = ddfe7e9f1f40c0e161820223
+Ciphertext = 185a5831e1118a041e336489
+Tag =
+
+AAD =
+Plaintext = e50686a72748c8e9698a0a2b
+Ciphertext = 81c2106b272dd7c299462cba
+Tag = a9084576a4918820
+
+AAD =
+Plaintext = ed0e8eaf2f50d0f171921233
+Ciphertext = b22cc11a9d1c1b39db2aaaf4
+Tag = 4cf56cff05e6f17dcde40f30981b505e
+
+AAD =
+Plaintext = f51696b73758d8f9799a1a3b
+Ciphertext = 543c981317a10716b9c97dfb
+Tag = e42668451f63989ed3dad1e80a48e1447763c988039dd63d
+
+AAD =
+Plaintext = fd1e9ebf3f60e00181a22243
+Ciphertext = d4687df4747a9fa0c66db6fa
+Tag = c02ea99d61c7d5997af264f761789964f0ccdca2e8e2999d58772a9f93fd73cb
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebe
+Ciphertext = b9d63f93e0ff3a9d075c2a9cfb069cda50bbca95747696
+Tag =
+
+AAD =
+Plaintext = dbfc7c9d1d3ebedf5f800021a1c24263e30484a52546c6
+Ciphertext = bdc11a7ac8fb6afba6ab27749eeebcc0c95be4cf455664
+Tag = 0682262bf4432ee4
+
+AAD =
+Plaintext = e30484a52546c6e767880829a9ca4a6beb0c8cad2d4ece
+Ciphertext = df40ad600b9a592071c0aa54e833bcb4ddf96fe24e10ce
+Tag = 6dca925458bf4755bae8d0e0e9672597
+
+AAD =
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6
+Ciphertext = 17bf432bad4af768d8fe939f58e1c02b0ef011f6e8275a
+Tag = 2ec0f9c74a4e050b1927af2383395a099196ba9929726be0
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = 9f456643ecc0a44bcf947922b605e4c9a1a85fefe8bc52
+Tag = c40fbafde48876d10d0ce05bb940d1d65a9707b837454e2e9eb50cdaf91f3ac6
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e6
+Ciphertext = 0814b303a277333adf0ef1a81ced752b917b1bc6fb9193fc8e9bc87df7dd7015fad97ed04fe39f
+Tag =
+
+AAD =
+Plaintext = fb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee
+Ciphertext = 2408a5a794aa69a48caa7f0b431cfa020583dd90ad914fbeb0654fc904fa0e7adb69ad5516d619
+Tag = 334fc58fabbf0dd8
+
+AAD =
+Plaintext = 0324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f6
+Ciphertext = 9f5da96b517f41728b99d05b7427205cc35d5601a683762c26b26db26323231c7a92e4ed36f6b4
+Tag = 67439fc7cca8ded6f12059edf225fd50
+
+AAD =
+Plaintext = 0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe
+Ciphertext = 73db924ee877035d9fb808724e3935ecdd97dfd029c4190036d5ee791505d0d6c4af013a4ced9a
+Tag = e0e6db60a664a7e0f2e872b469730b47ed60b7e6134519ac
+
+AAD =
+Plaintext = 1334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e5658606
+Ciphertext = 2e78ecdc812ec6c4ec6d02b2afbc68dcc92f80d84cc9552e089a4a34c3e73ed4eb98c7728c7ebf
+Tag = 51f88bb0e257845a5683e30aa72e5a919f747f167e920a3519e416d566a7d126
+
+AAD = 5eef8011a2
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 66f78819aa
+Plaintext =
+Ciphertext =
+Tag = b894765fa7d1fad8
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = 49629fdaf18ce14388dc69ed34a12a2f
+
+AAD = 76079829ba
+Plaintext =
+Ciphertext =
+Tag = 7059d1fc3cc356775e8d221a6cf841151416d1abd9ac98f1
+
+AAD = 7e0fa031c2
+Plaintext =
+Ciphertext =
+Tag = ddeed83735329d2e74b85735009b8d8e50592cae31b96804a9499d5f1f105a1d
+
+AAD = 6cfd8e1fb0
+Plaintext = 2647c7e86889092aaacb4b6cec0d
+Ciphertext = 39063cb2f296865930e45ac9d4cc
+Tag =
+
+AAD = 74059627b8
+Plaintext = 2e4fcff070911132b2d35374f415
+Ciphertext = ead6b274a31051ddb96e659e1199
+Tag = 0720d5e49e717f66
+
+AAD = 7c0d9e2fc0
+Plaintext = 3657d7f87899193abadb5b7cfc1d
+Ciphertext = 02c3ee85630f6a5575eff790d528
+Tag = 55f69ac91e57ba241ec26774bc64eb38
+
+AAD = 8415a637c8
+Plaintext = 3e5fdf0080a12142c2e363840425
+Ciphertext = c640cafa526a4500db494da51ea3
+Tag = 432417873521a5722c59624c7bd1b6ff2ee80177a8d9c42f
+
+AAD = 8c1dae3fd0
+Plaintext = 4667e70888a9294acaeb6b8c0c2d
+Ciphertext = 49a31cea552f91f23821adc8f703
+Tag = 89a064e8803759bff28d7d77ab681a3349eac486bfea9745205c4f3ab3b359db
+
+AAD = 8112a334c5
+Plaintext = 70911132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a121
+Ciphertext = ea3f35f659018a9d784e95bbc5296652fa54c4a5c1dd169a6b3fdee767926c68e5dc35
+Tag =
+
+AAD = 891aab3ccd
+Plaintext = 7899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a929
+Ciphertext = 6ac36dd072104cdbff514f70294e333c7873d627ef10fd7bdb556c2c9f3eefa759765b
+Tag = 9160b3107e7959e9
+
+AAD = 9122b344d5
+Plaintext = 80a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b131
+Ciphertext = aeda8f2c57da2dc85e1ed50dd327b7f25ee6ce772e4e71c881def11a5b80ff42b4ce76
+Tag = 6bb6ea806e0a1bd697140f1d2be0862c
+
+AAD = 992abb4cdd
+Plaintext = 88a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b939
+Ciphertext = eab51c49c9c8f4d1a5f0fc7c7134d01fd1da1afef6f6cb22f1f684acf31986e1fbdab4
+Tag = 7c2361df1c201668f55273635dd2eab64e2053279fa93d5a
+
+AAD = a132c354e5
+Plaintext = 90b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = 36d63c17a45497ad8751ecb1dbfc3a3edf165054bae3915b2f5691d95da9cccd819aa1
+Tag = efd96c14fa43d2c5cfd9b37bd791f23b899d13857acd6cec1a0ca8517bd29f07
+
+AAD = 2abb4cdd6eff9021b243d4
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 32c354e576079829ba4bdc
+Plaintext =
+Ciphertext =
+Tag = be55e705d98b7430
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = 33520126c23d9ce606f4e1889303575c
+
+AAD = 42d364f58617a839ca5bec
+Plaintext =
+Ciphertext =
+Tag = 4aabe53d682ea474e936a8a107ee668f8b873e5110f13dd0
+
+AAD = 4adb6cfd8e1fb041d263f4
+Plaintext =
+Ciphertext =
+Tag = e81913eb45e012d0e6e84a38e4f4078d4998396ae2555f1e52bc35bce9377ada
+
+AAD = 3ecf60f18213a435c657e8
+Plaintext = f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c2
+Ciphertext = 7ba364682256f8c4b46e3704fb3c5e06b75f73b8
+Tag =
+
+AAD = 46d768f98a1bac3dce5ff0
+Plaintext = 0021a1c24263e30484a52546c6e767880829a9ca
+Ciphertext = 3ba7dce55bc1457c8bc79aef0fd0059eed550f61
+Tag = d00ca1f64539b03a
+
+AAD = 4edf70019223b445d667f8
+Plaintext = 0829a9ca4a6beb0c8cad2d4eceef6f901031b1d2
+Ciphertext = 8df43fb8febe2c3a8617c2a6bbaf86e3ab0286ea
+Tag = eba4e18279704ef71fe5763535055bb0
+
+AAD = 56e778099a2bbc4dde6f00
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da
+Ciphertext = 5325ce5bb96140ec86cb2ddd16267e5a06f8bd27
+Tag = 58b683027c85fcaaf34c11e81620412cdb99b315560583cd
+
+AAD = 5eef8011a233c455e67708
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e2
+Ciphertext = 4782944a246dedb2ed7f1d51d2a47e698a194f47
+Tag = 3132d793111504a582f72d9e381a843eb64b0b7fdc0e0f32b09fedcceac526f6
+
+AAD = 5ced7e0fa031c253e47506
+Plaintext = f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2d
+Ciphertext = 8d1577489cc004554062881678c252b8a7140c61347b96a8c6bb8e210c3d6b2ad0bda16d85fdf07f74d92691d5d521e77933
+Tag =
+
+AAD = 64f58617a839ca5bec7d0e
+Plaintext = fc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435
+Ciphertext = b5c4b783974adc6d38d48fe0f276d932fd04875a5c15b4b67a99d47839c668ec00dc5e3842ca75b7f225bc3bcbf55f0030f4
+Tag = 37bf357e62bb6500
+
+AAD = 6cfd8e1fb041d263f48516
+Plaintext = 0425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3d
+Ciphertext = 75680e0ae66482b4a316d35d44f28489456f7a5d9cd3d606dfcb9396917136dc69a73044f094febef7cd5c0245301a379aed
+Tag = 24b17016710c049fbd4b4e66cc6cde77
+
+AAD = 74059627b849da6bfc8d1e
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = 46cd7d66babe09694ff9c483bd6e6d1c8c3034383ee6e02c470e3c05efc5025c570c4a205e9967b5194356397d555dc25936
+Tag = ddd93b4e5a637c83e89403a4d688675f380593ffbd13555d
+
+AAD = 7c0d9e2fc051e273049526
+Plaintext = 1435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4d
+Ciphertext = e8e9ed4cfb3fe339027ff9092a119b6ae2076d8c19cee4c431708486751bbd64dad7e41b64d15aaf5672d2692e359444efb8
+Tag = 4a8ba5962aca5493bb57ac75c2d09c8c02bb4cef11eac4a1fe8a3b05974ac3fb
+
+AAD = 3acb5ced7e0fa031c253e475069728b9a93acb
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 42d364f58617a839ca5bec7d0e9f30c1b142d3
+Plaintext =
+Ciphertext =
+Tag = 5d5f53f644bdecdb
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = b7d7b7cb8ecc64d8495cc7aa1797f994
+
+AAD = 52e374059627b849da6bfc8d1eaf40d1c152e3
+Plaintext =
+Ciphertext =
+Tag = ee97329b93e9f3120718fadd5ca68361a58dc9af5d2462a7
+
+AAD = 5aeb7c0d9e2fc051e273049526b748d9c95aeb
+Plaintext =
+Ciphertext =
+Tag = d5e874224783c1c0302500d9b49b9a2fe9a30c671e813786b4b849a6d76a8f09
+
+AAD = 56e778099a2bbc4dde6f009122b344d5c556e7
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5e
+Ciphertext = cb9dffad38f02824d809e6b4fb5b9526c65d86ad4e4932ca111256ea
+Tag =
+
+AAD = 5eef8011a233c455e67708992abb4cddcd5eef
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566
+Ciphertext = b5fc83729d6c1dd604d0f94f8d241c3d2c8a04128f57471d6b06d173
+Tag = 40d39fd7900cecc0
+
+AAD = 66f78819aa3bcc5dee7f10a132c354e5d566f7
+Plaintext = 2041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6e
+Ciphertext = e56aa2c12507937a9c12f1686ecdeaf641e0b51c609ecce0e58f825b
+Tag = ff2539dd44ea62fb3a277684979ce1d5
+
+AAD = 6eff9021b243d465f68718a93acb5ceddd6eff
+Plaintext = 2849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = c485aef5894cbd007307cdda6cc59e859a8ad5d1d1ac489872163ffe
+Tag = a3b2c49011936268a8ea8a701bab32e67afee8e578ed7e54
+
+AAD = 76079829ba4bdc6dfe8f20b142d364f5e57607
+Plaintext = 3051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7e
+Ciphertext = 1360b002bb27fd2e35fb1aba761a5a448c4b60ff6b242bcb08cd4090
+Tag = 8353840cc2b7b6a85079e16fc17d64d85ac24cc4ff738cfb99f7b87a24e9e36c
+
+AAD = 30c152e374059627b849da6bfc8d1eaf9f30c152e374059627b849da6bfc
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 38c95aeb7c0d9e2fc051e273049526b7a738c95aeb7c0d9e2fc051e27304
+Plaintext =
+Ciphertext =
+Tag = 4cfe4af16559f8f0
+
+AAD = 40d162f38415a637c859ea7b0c9d2ebfaf40d162f38415a637c859ea7b0c
+Plaintext =
+Ciphertext =
+Tag = 4b8588dfb218a9dd2ef9a333580e2207
+
+AAD = 48d96afb8c1dae3fd061f28314a536c7b748d96afb8c1dae3fd061f28314
+Plaintext =
+Ciphertext =
+Tag = f892d25c1232a753ddac06b0c2030479656de2370ffdba98
+
+AAD = 50e172039425b647d869fa8b1cad3ecfbf50e172039425b647d869fa8b1c
+Plaintext =
+Ciphertext =
+Tag = 9c238eebc2fc7b196dda8a0eb25aa7fbf742b3cbc9a78dce125ee596d06b83be
+
+AAD = 57e8790a9b2cbd4edf70019223b445d6c657e8790a9b2cbd4edf70019223
+Plaintext = 1132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e3638404
+Ciphertext = 85ae7173d8a5efd87b8aad8205d28f2d2293f00158fef1cad2a1ef1de2ec5f5530053d87a7c77f
+Tag =
+
+AAD = 5ff08112a334c556e778099a2bbc4ddece5ff08112a334c556e778099a2b
+Plaintext = 193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c
+Ciphertext = 4d390e29cf92411e8c631acc4aa5ecbfdb2fd5403ff9ffde36cd3141cac2a1c9940bf4ef977261
+Tag = 9674df62f1b7f5c6
+
+AAD = 67f8891aab3ccd5eef8011a233c455e6d667f8891aab3ccd5eef8011a233
+Plaintext = 2142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f3739414
+Ciphertext = 3b731ca0fea2105cba6a4fc732e72ad08e4db2986be0ae6ee1f33325b25d417be4dfa6b2cf15bb
+Tag = c8c089e24cef3b04c6ff65aa0cf64179
+
+AAD = 6f009122b344d566f78819aa3bcc5deede6f009122b344d566f78819aa3b
+Plaintext = 294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c
+Ciphertext = 6e813e8a73170b2d6ccb9017d852422b6823997a5790d0b9bc661d2eb5b00ff990bdf991e33b82
+Tag = 397eef508930383f050b374521ce047109675cfdf78af532
+
+AAD = 7708992abb4cdd6eff9021b243d465f6e67708992abb4cdd6eff9021b243
+Plaintext = 3152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a424
+Ciphertext = 987b6172ab3ea22934e97c9807c679bc6a6a6aded5ebea4668dfbaa0b897b950fd12f3f07b5a53
+Tag = d952218bcd9a0fc65c95f11a6914fd3d3f6d0f56bf0bf9ba1e4aec9ebbdd54c6
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd061f28314a536c758
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = b647d869fa8b1cad3ecf60f18213a43525b647d869fa8b1cad3ecf60f18213a49425b647d869fa8b1cad3ecf60
+Plaintext =
+Ciphertext =
+Tag = a3ad32db34ff0a88
+
+AAD = be4fe071029324b546d768f98a1bac3d2dbe4fe071029324b546d768f98a1bac9c2dbe4fe071029324b546d768
+Plaintext =
+Ciphertext =
+Tag = 273298b5ca76d09d926a605f8b6f02fe
+
+AAD = c657e8790a9b2cbd4edf70019223b44535c657e8790a9b2cbd4edf70019223b4a435c657e8790a9b2cbd4edf70
+Plaintext =
+Ciphertext =
+Tag = 73903f28b8672a4a4ece03916efd11da8cd61e19359ea919
+
+AAD = ce5ff08112a334c556e778099a2bbc4d3dce5ff08112a334c556e778099a2bbcac3dce5ff08112a334c556e778
+Plaintext =
+Ciphertext =
+Tag = 5a5033422a43400d32639737ae54e67b86b2fce6f4f3f226617d9129c347dc3c
+
+# initialize with key of128 bits, nonce of 8 bits:
+Key = 33cc65fe9730c962fb942dc65ff8912a
+Nonce = d5
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 6c80ef140e84fd54
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = e3e43280095f887c8743e09033148207
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 33d200003ef07e1d63cbb4b33b75f7bb67bb26986c0a4931
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 99e77177befdeb4c6b1e5d1735c213393c248b93a85106ae311bf038e887aaf5
+
+AAD =
+Plaintext = 6f901031b1
+Ciphertext = 0179c2e267
+Tag =
+
+AAD =
+Plaintext = 77981839b9
+Ciphertext = f43350fd88
+Tag = 63c8ecbdc38d2f14
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = 9d1b0f41c1
+Tag = 5fabda6b71659e6c4a72e7133dd851a9
+
+AAD =
+Plaintext = 87a82849c9
+Ciphertext = 7ce3748c70
+Tag = 32d748cf0b8df0d9f1e8d4b2379780d137cf744f8ef169af
+
+AAD =
+Plaintext = 8fb03051d1
+Ciphertext = 0e2d567985
+Tag = 6139fe55c5b5c36886b3cec4ef599125ebc7fb3f02bcd8fee78df440949ceb09
+
+AAD =
+Plaintext = ddfe7e9f1f40c0e161820223
+Ciphertext = 54925a1fa9b56e1e29bd24cb
+Tag =
+
+AAD =
+Plaintext = e50686a72748c8e9698a0a2b
+Ciphertext = 80481461221a3b092e4217df
+Tag = 9d4ef9319c6b5cca
+
+AAD =
+Plaintext = ed0e8eaf2f50d0f171921233
+Ciphertext = 124635a1372bc91d7252d919
+Tag = 33194d69aa8e0b6b7973bc9ec925ef92
+
+AAD =
+Plaintext = f51696b73758d8f9799a1a3b
+Ciphertext = a8e01b5a24807a171ab0885e
+Tag = f3786cad5080ff6d865cbdb3deb494f9e9f59cf4b6963684
+
+AAD =
+Plaintext = fd1e9ebf3f60e00181a22243
+Ciphertext = a3f5843abc15ac941e94d1ce
+Tag = 6bce5083991f7d5cbc9589cb3281b611fb2472ed82f19f372f50b2cc20747017
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebe
+Ciphertext = 5b953de1cb49f67c49858bb7bb502479fcfc00b1b0ba29
+Tag =
+
+AAD =
+Plaintext = dbfc7c9d1d3ebedf5f800021a1c24263e30484a52546c6
+Ciphertext = 8709a669d944e2915fef0e807c661d46f3334ba38e84dd
+Tag = 1097b6eb976d67ab
+
+AAD =
+Plaintext = e30484a52546c6e767880829a9ca4a6beb0c8cad2d4ece
+Ciphertext = 09499fe2000f501a108e867b281f8e241263da3a8460f3
+Tag = e4067716f7b42d0231049cde450f2f57
+
+AAD =
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6
+Ciphertext = 3076aa4ad9b08c7ec89fd6901d8200e7f73faa8f936538
+Tag = cbf2e19dfa7c2eac3dea62b1b18d87e06ffab30d9b72939a
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = 1176a6b5d9216f8d75e361404e72bd14a2563c31cd6fe6
+Tag = 21179a4e0d0e6e6704d0eb21683acb197913c896fffee6eb608729f08745c383
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e6
+Ciphertext = 172011e5cf855aedeec1f5d3f00591ab15b4037eb494a0d4d898a2929f1ada750e35ac05d1162a
+Tag =
+
+AAD =
+Plaintext = fb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee
+Ciphertext = 31d43af911e67aad102db81259ef7a8e0af3d3de19cd1aeb25391921a5d9087bc4313e0df45fec
+Tag = 7a3f21943a9b50e3
+
+AAD =
+Plaintext = 0324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f6
+Ciphertext = 133a3084dea9554fb0e5145a9479129291902d995148a6782d681690bb67b717199d43c3adb3e7
+Tag = 4a40460d4f981bfcebc14cb22a0a2d17
+
+AAD =
+Plaintext = 0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe
+Ciphertext = 81e31818562bcb593c779d50fd2a19d3c0644894e04c5e1a40c7dd8071fd313e86feb6022371e9
+Tag = 28c8d47f64ed7a4e96fdc3b4b68f1881262d6ddaf441e631
+
+AAD =
+Plaintext = 1334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e5658606
+Ciphertext = db13a96403b65dba2c789c8c06f049edb78d5e39ccfba8ce09517fdb96ac565db1fa011113ba06
+Tag = 0845e9a0c5369e9decb7813dd034b4028c0d71411124ad7d038dc3c911a2ede9
+
+AAD = 5eef8011a2
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 66f78819aa
+Plaintext =
+Ciphertext =
+Tag = c701761705a57d06
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = ecf731da745d907355a9ce01f086f5b8
+
+AAD = 76079829ba
+Plaintext =
+Ciphertext =
+Tag = 92d72eb01de450650b9a0dfa7c94ed5c785fe151080f225c
+
+AAD = 7e0fa031c2
+Plaintext =
+Ciphertext =
+Tag = 07fb7c29e055691aab03b0cda1669fd432be9416c7a7a37a934cc4ef6f31ccbb
+
+AAD = 6cfd8e1fb0
+Plaintext = 2647c7e86889092aaacb4b6cec0d
+Ciphertext = 1934413973df28400441685e085c
+Tag =
+
+AAD = 74059627b8
+Plaintext = 2e4fcff070911132b2d35374f415
+Ciphertext = e2ae971515f56cdb5b5eba2267e4
+Tag = 39812db4a3356b54
+
+AAD = 7c0d9e2fc0
+Plaintext = 3657d7f87899193abadb5b7cfc1d
+Ciphertext = 098a45d4011d1c1a842d8775dbe0
+Tag = 406c914b1753c974c65d36abcb1cc6d8
+
+AAD = 8415a637c8
+Plaintext = 3e5fdf0080a12142c2e363840425
+Ciphertext = 2a12eb97a4714b40750a82ef8fdf
+Tag = 4dee1b2398a28a68c96b00a2e68b7927109c8bce4b781b20
+
+AAD = 8c1dae3fd0
+Plaintext = 4667e70888a9294acaeb6b8c0c2d
+Ciphertext = cc96dd02d39d9228342b0ddba359
+Tag = b9fb32e9826e2b8dc3d3c50d18b1fbba067a1dec85c5505bc034951bf51b0689
+
+AAD = 8112a334c5
+Plaintext = 70911132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a121
+Ciphertext = 7d313a927d7ae75f2acf0c47a44c899cc5ea77e56cc4a94551afc3147c151577410e83
+Tag =
+
+AAD = 891aab3ccd
+Plaintext = 7899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a929
+Ciphertext = 5385c6a12c4bca79eabb86b94bdc9e03a3e091a0ff00f67c107c0169492956f79d1ba4
+Tag = a2066e95998e2a4a
+
+AAD = 9122b344d5
+Plaintext = 80a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b131
+Ciphertext = 3d787d03495c19d865f855cc30631d8a782a3882473c664514de6f526c64132d96a376
+Tag = 4e824a2901415b13ed4270c7857f979b
+
+AAD = 992abb4cdd
+Plaintext = 88a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b939
+Ciphertext = be7dc4e1dfd47ffcd7a8f87ec973f9e11da6f349b4dc415d1972abf645dd44543dd76f
+Tag = 9b53247927e97967904f1953b4d5198b9dd53fdef8048d68
+
+AAD = a132c354e5
+Plaintext = 90b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = 821f9d0d5c0ebfe5246db65bd26538600d47488b6cc3151f9728eb5eb371f05e0e5cb8
+Tag = f219be019f76e4f941a7b904bb9237e5b3f342e29a7d10ebcc15c999b892dadc
+
+AAD = 2abb4cdd6eff9021b243d4
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 32c354e576079829ba4bdc
+Plaintext =
+Ciphertext =
+Tag = 0862c8f955261ce0
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = 8248a4c23f59e8896baba54ac734b49b
+
+AAD = 42d364f58617a839ca5bec
+Plaintext =
+Ciphertext =
+Tag = def4feb8da258850d05504ad8d14fe8482ca394b28fc29d0
+
+AAD = 4adb6cfd8e1fb041d263f4
+Plaintext =
+Ciphertext =
+Tag = 8a7466c0c3ae470ace85ca1a037c31475ee8d7afb712e80f768464ac730a551f
+
+AAD = 3ecf60f18213a435c657e8
+Plaintext = f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c2
+Ciphertext = 292026b7d6e17e3450a94f7b468269e84627e433
+Tag =
+
+AAD = 46d768f98a1bac3dce5ff0
+Plaintext = 0021a1c24263e30484a52546c6e767880829a9ca
+Ciphertext = 28f9b76a23885263cdc465a8d1148ecb5b93c93d
+Tag = cc39ec767bade8cc
+
+AAD = 4edf70019223b445d667f8
+Plaintext = 0829a9ca4a6beb0c8cad2d4eceef6f901031b1d2
+Ciphertext = 71612797f109749fde0e61fffb810468d3508636
+Tag = 9ee014ad86c46cd214cd3574bab7cb82
+
+AAD = 56e778099a2bbc4dde6f00
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da
+Ciphertext = 27a9472fb2e4598e64e10de3bce7a57ebe4fbb30
+Tag = 2b3ba67d4db64a622eb1e30fc1ea9fd4d078d30404fb7dce
+
+AAD = 5eef8011a233c455e67708
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e2
+Ciphertext = f97c8db4bbe8107a1e7cc07380b736a03c8ffd7e
+Tag = 86c53dcce0dadae8a8c2c9be23420c8c331f008788bcd807926da3b6fee130b4
+
+AAD = 5ced7e0fa031c253e47506
+Plaintext = f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2d
+Ciphertext = 05541abe071989515b2fce7af49031669db7553e7425c4edf83210a6808945bf3e6e87ce8df36fb7d94ee7e6d2387f1f97c0
+Tag =
+
+AAD = 64f58617a839ca5bec7d0e
+Plaintext = fc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435
+Ciphertext = a6f17e62f9625bdf2cca8e85135827e4a84fe874155b78ececbfc4e32e45389fcea1cf3f62a296a85634b39b57cd54527923
+Tag = 1ba320731da8ea95
+
+AAD = 6cfd8e1fb041d263f48516
+Plaintext = 0425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3d
+Ciphertext = 3e8783a1e633ecb5f883b775b4b167ee905dfd0d2690eb62c1aeda0cd9921fdd15416a8ee4820b5705804c3bd3ae24888cb6
+Tag = d7017ac5041531519476b7f5248bd4a7
+
+AAD = 74059627b849da6bfc8d1e
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = c59794dc5e459cd1b89017d3613e7c792724fa9d73b5c4889d3ed9cfb15304f6c3bc75f5e636cf79c764565911e70a76f256
+Tag = 2c783a5d8804774488f9b67ad0fc2624590bbb82705608e9
+
+AAD = 7c0d9e2fc051e273049526
+Plaintext = 1435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4d
+Ciphertext = d7ab644dd03048d88a9ed6774c08235b283f1c15253075e5e1c0f76997d1c3897ff860f1a483eaa31a48c1b76c9f1f916ce9
+Tag = bbb66e95030f167036eecf4f1d3e472a9e1dacc95c6e09129c69c1e492dc5c02
+
+AAD = 3acb5ced7e0fa031c253e475069728b9a93acb
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 42d364f58617a839ca5bec7d0e9f30c1b142d3
+Plaintext =
+Ciphertext =
+Tag = d937dd8bf9c40a48
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = 76b2d214c5dbe065efefed7e0172698a
+
+AAD = 52e374059627b849da6bfc8d1eaf40d1c152e3
+Plaintext =
+Ciphertext =
+Tag = 613cfad75c10f321d6f324cb4e7f52803dfc81142ed35d31
+
+AAD = 5aeb7c0d9e2fc051e273049526b748d9c95aeb
+Plaintext =
+Ciphertext =
+Tag = 7d2e5b778ea380a4361481e996d560502c886bfb78c5d0abd52a0e7bf88ea874
+
+AAD = 56e778099a2bbc4dde6f009122b344d5c556e7
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5e
+Ciphertext = d7ee0674b3163a49ea3afdd17ee273a2f31f4d90d25ee31ed28d746b
+Tag =
+
+AAD = 5eef8011a233c455e67708992abb4cddcd5eef
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566
+Ciphertext = de10e53c071c3b5c1977ac8e4fb4c4556389dbaa822d67f598ce8d97
+Tag = 96889988987fea0d
+
+AAD = 66f78819aa3bcc5dee7f10a132c354e5d566f7
+Plaintext = 2041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6e
+Ciphertext = 16e8ee959c1c676c98b3281bf06bae44cb37e6767db25bacf765cfb3
+Tag = 6335940f4188b54368ca3cf3324d5c28
+
+AAD = 6eff9021b243d465f68718a93acb5ceddd6eff
+Plaintext = 2849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = c72a50bf2a210e4290b07a51bbbb7137bb62cb2fb73318dd6bb0e1c6
+Tag = 2ba9ec2b2b4cb60b2bf61e2ccacbe9c0d7d8de08d21e6db3
+
+AAD = 76079829ba4bdc6dfe8f20b142d364f5e57607
+Plaintext = 3051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7e
+Ciphertext = 8b919cf65c3d33982658bd19d525681f0c2425bde86b353b8332aced
+Tag = 94a428aed4a805753cafccf7d45cccb9308674d34031cc7c7c4d4873820eff2c
+
+AAD = 30c152e374059627b849da6bfc8d1eaf9f30c152e374059627b849da6bfc
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 38c95aeb7c0d9e2fc051e273049526b7a738c95aeb7c0d9e2fc051e27304
+Plaintext =
+Ciphertext =
+Tag = c349e86ce7dab5ce
+
+AAD = 40d162f38415a637c859ea7b0c9d2ebfaf40d162f38415a637c859ea7b0c
+Plaintext =
+Ciphertext =
+Tag = 6e3a5f920a6be6cf8804d9b4bcda1e83
+
+AAD = 48d96afb8c1dae3fd061f28314a536c7b748d96afb8c1dae3fd061f28314
+Plaintext =
+Ciphertext =
+Tag = bc116dbd580423fcc202aedacaf36d0814bdda7fbd3e9f5f
+
+AAD = 50e172039425b647d869fa8b1cad3ecfbf50e172039425b647d869fa8b1c
+Plaintext =
+Ciphertext =
+Tag = b19873895ec50c76497fd795539a8ed3cde9198569763836b4bed057901a76d6
+
+AAD = 57e8790a9b2cbd4edf70019223b445d6c657e8790a9b2cbd4edf70019223
+Plaintext = 1132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e3638404
+Ciphertext = d3a75dc6036fceecd30048b378f3bd178f118520ebceb3099612a26382379970419e28176ea55d
+Tag =
+
+AAD = 5ff08112a334c556e778099a2bbc4ddece5ff08112a334c556e778099a2b
+Plaintext = 193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c
+Ciphertext = a71ff694e719c25418645b43b94edef566beb0e6fd9dee355f6f3ee172fcde7157aff7f4bac579
+Tag = 241c664d3fec7a22
+
+AAD = 67f8891aab3ccd5eef8011a233c455e6d667f8891aab3ccd5eef8011a233
+Plaintext = 2142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f3739414
+Ciphertext = 0480e211b77ca42c3d1cbe2c5eb4a38edb6e11e77a52eb7af51771579181dc280d2a28ebbce896
+Tag = eea5f65a7b30e58c7d558b6b78433ea2
+
+AAD = 6f009122b344d566f78819aa3bcc5deede6f009122b344d566f78819aa3b
+Plaintext = 294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c
+Ciphertext = ef0345a61e87d8c1a2d1502fb50683b83a987b39f3ea4efb9d82ebf75ff8103af6b3c57d4b0018
+Tag = c2aabba29e1cccf8235443d68e0bc20eacd3055cae478f50
+
+AAD = 7708992abb4cdd6eff9021b243d465f6e67708992abb4cdd6eff9021b243
+Plaintext = 3152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a424
+Ciphertext = 7a28141b25b541e2415b733d6453e297523fb457a7fb775246eb6526f89d5876c17b0a863ae547
+Tag = 13cdeb8bee78446d1c21d2814d93f9558cc324d401d4503b2af2d103bb536e4e
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd061f28314a536c758
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = b647d869fa8b1cad3ecf60f18213a43525b647d869fa8b1cad3ecf60f18213a49425b647d869fa8b1cad3ecf60
+Plaintext =
+Ciphertext =
+Tag = 409fce6e3a1cc6bd
+
+AAD = be4fe071029324b546d768f98a1bac3d2dbe4fe071029324b546d768f98a1bac9c2dbe4fe071029324b546d768
+Plaintext =
+Ciphertext =
+Tag = c0f2ae9b7fe46f1ff61e9f8fc36f6735
+
+AAD = c657e8790a9b2cbd4edf70019223b44535c657e8790a9b2cbd4edf70019223b4a435c657e8790a9b2cbd4edf70
+Plaintext =
+Ciphertext =
+Tag = f0cd642b7bcafaba7be77145af9f210de88c5eae1984d205
+
+AAD = ce5ff08112a334c556e778099a2bbc4d3dce5ff08112a334c556e778099a2bbcac3dce5ff08112a334c556e778
+Plaintext =
+Ciphertext =
+Tag = d5ff813f0bf1eae07e9f41c86a10a5ef253db37a370a118366eb2bf8fc40a734
+
+# initialize with key of128 bits, nonce of16 bits:
+Key = 34cd66ff9831ca63fc952ec760f9922b
+Nonce = 77d8
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = c650db1b0e5c34f8
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = ef3a613745821501a33599ce1b5c4d50
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = bc969ae19e5c5a75ba090c60c6b6d3afdce44ac365088784
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = f1cf4aa8a3cf7e339f9d147b47fafb347f90468e09eab15d6375aab1deed1d0a
+
+AAD =
+Plaintext = 6f901031b1
+Ciphertext = a8161cc587
+Tag =
+
+AAD =
+Plaintext = 77981839b9
+Ciphertext = ec9bfdb83a
+Tag = 4554f9ce89b2471e
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = 4d406852cb
+Tag = 305d5435aa0c62d7bfba9d86b0637993
+
+AAD =
+Plaintext = 87a82849c9
+Ciphertext = 7e88ae94ad
+Tag = 4c5e78b52c64bfe7ddf88f6ea65ef0868809bfc2d2986396
+
+AAD =
+Plaintext = 8fb03051d1
+Ciphertext = 8276f66647
+Tag = 7b687f54e2a654bd762105bb937b876dbaf01c485ee29672f5c22b180b134a77
+
+AAD =
+Plaintext = ddfe7e9f1f40c0e161820223
+Ciphertext = ff15fdcf4b25403ee2d84ad6
+Tag =
+
+AAD =
+Plaintext = e50686a72748c8e9698a0a2b
+Ciphertext = 88b5a0077387af44ce41e7da
+Tag = 504628424d62cc12
+
+AAD =
+Plaintext = ed0e8eaf2f50d0f171921233
+Ciphertext = e84d5647c1055b8ace22f521
+Tag = ed931bbecd5a0d8398b6bbe1a47c705f
+
+AAD =
+Plaintext = f51696b73758d8f9799a1a3b
+Ciphertext = 6899b262e26d17d4a9c72458
+Tag = c9840c315682bad87a6717e7ec410a227509e7f1face1591
+
+AAD =
+Plaintext = fd1e9ebf3f60e00181a22243
+Ciphertext = 16ba21b17772df925c0d443d
+Tag = 37adb5cba671d7437a91c8a65453601cd261499ab85d0152f6b9f9010f8ba1e9
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebe
+Ciphertext = fdb34c586caeb62276b514fdb20ba598e20afba741603c
+Tag =
+
+AAD =
+Plaintext = dbfc7c9d1d3ebedf5f800021a1c24263e30484a52546c6
+Ciphertext = 8c6ac53a040efc9a2761c8f472cdfc046eb6b22746de11
+Tag = ccbf3f8fdfffb23f
+
+AAD =
+Plaintext = e30484a52546c6e767880829a9ca4a6beb0c8cad2d4ece
+Ciphertext = c782fe4d39b6ea141cb59339a5b8765d4beca6bbed7494
+Tag = 1b1743cb4fb4972592bc96fec1612132
+
+AAD =
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6
+Ciphertext = 25cd7654726be14c08dd1eccb82dd343a9d72a751db06b
+Tag = d45c7404422e234146f2b499824b1e3a47febcd51421ecbd
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = 6da045e1a73e351332b4d1a9733530f4193db5fc386b81
+Tag = 04262238a488cfe112a4f3f1678a0f3114fad99120572e32ddb62a34cf5d063d
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e6
+Ciphertext = 8ade97c8e7cadddf8a6b8c6a6a3103706f2f45ec167b65e67734ee26a9cca03ecde0f637bb121d
+Tag =
+
+AAD =
+Plaintext = fb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee
+Ciphertext = 01fd0fe35d4cf4f9e73667c409a5678f66b08929013642c25e574de16518e691685b341a5b7b76
+Tag = e023ca14ec3de2b2
+
+AAD =
+Plaintext = 0324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f6
+Ciphertext = f6b459f5fb354e77b52fe0be0cc827a8d0149b59bed951b36349f385be197c7806548bad653f54
+Tag = d8021ab0f6c605d1aabc07d7bf5eb0e7
+
+AAD =
+Plaintext = 0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe
+Ciphertext = 5d13ee679060e87d14944a6fc9df962d7ef48de887e862b0f7762cf522cf2c6de9cc43d3c62789
+Tag = ee3f8e9f5c65cffb7570065e5b16850f2d58ece0861ebf83
+
+AAD =
+Plaintext = 1334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e5658606
+Ciphertext = f647b1cce5f39adeb9fab4c09a3be7f4ea6ea89a86e00cc402a1653036816bc406712880d02a01
+Tag = c836251a88e830a1fe59231b7fb3eb6878cf40fde911aa7602c3fdb145a49dc4
+
+AAD = 5eef8011a2
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 66f78819aa
+Plaintext =
+Ciphertext =
+Tag = c7a9559f9531be8d
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = 33d589c2bfacd6e2bc4e09a615fb7215
+
+AAD = 76079829ba
+Plaintext =
+Ciphertext =
+Tag = 43877bd6c1830f030b59fb9881b3299c8dad0b8a81366eeb
+
+AAD = 7e0fa031c2
+Plaintext =
+Ciphertext =
+Tag = 26467358857234656823f77ea62abf955da4231bac98f351afde4f321183bacf
+
+AAD = 6cfd8e1fb0
+Plaintext = 2647c7e86889092aaacb4b6cec0d
+Ciphertext = ae554d2436c34842914ca1219580
+Tag =
+
+AAD = 74059627b8
+Plaintext = 2e4fcff070911132b2d35374f415
+Ciphertext = 21641f3b8ba04db46e73c617609c
+Tag = ff3ca8e0d5bd7bd5
+
+AAD = 7c0d9e2fc0
+Plaintext = 3657d7f87899193abadb5b7cfc1d
+Ciphertext = f9999e7528af1f715fd99b9c6862
+Tag = 570fe1f5b630f90043c1eb2ed95ea60f
+
+AAD = 8415a637c8
+Plaintext = 3e5fdf0080a12142c2e363840425
+Ciphertext = 5185544e5cfd3de6be2dec2b4b9c
+Tag = 93298dd7088690ee8eed9f4346d62cacf88681015d5ef815
+
+AAD = 8c1dae3fd0
+Plaintext = 4667e70888a9294acaeb6b8c0c2d
+Ciphertext = 244e216d9756ab9c850e2dcb7ce1
+Tag = 8bfff5b409eacb2626a9c224dbf83b2ba00e4e126efc8699dcbc8362a0d26874
+
+AAD = 8112a334c5
+Plaintext = 70911132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a121
+Ciphertext = e1f0cb7e8cea95f23cc7f92fbc505a2b90be295aaff03db2447e2d55d6a5eb9b3909d6
+Tag =
+
+AAD = 891aab3ccd
+Plaintext = 7899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a929
+Ciphertext = d85e5bc65506bc2a20396db922bc09df2c7b7b2d42a0caa5893ed84f350fa5af5bda23
+Tag = 5293af25dcc3aa21
+
+AAD = 9122b344d5
+Plaintext = 80a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b131
+Ciphertext = 27f73114fa0ab5f1ee735db8ea5e001e84e11c94f152b5bbc2526f48aa25a310302508
+Tag = f80db2f07fa743a6a165be3b4274c204
+
+AAD = 992abb4cdd
+Plaintext = 88a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b939
+Ciphertext = 62013a6acb1ac3233d727b9bcb6da75a4519d122b3378462a5821f3f290eb3a81eaf96
+Tag = 2cb00868c9e32b10d4b18da8d43266c27861e667a17f4ef1
+
+AAD = a132c354e5
+Plaintext = 90b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = 4d5e4d632d5f5c980978a5eb96cd59ad0e68e0e519fa083a8a2acd11a591cd3a0bd6e2
+Tag = 47bc61a7e4122fb9026a1562e2027d905c003c68dd49b005c4964df15615ac7c
+
+AAD = 2abb4cdd6eff9021b243d4
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 32c354e576079829ba4bdc
+Plaintext =
+Ciphertext =
+Tag = 73abeeab0201b7b1
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = a08fb39fa3668d9500add4836adb3d7b
+
+AAD = 42d364f58617a839ca5bec
+Plaintext =
+Ciphertext =
+Tag = a7ca144832e0283ddfcaaf01630492b8ac73ed7fc33eea4c
+
+AAD = 4adb6cfd8e1fb041d263f4
+Plaintext =
+Ciphertext =
+Tag = 1018ee56a1b7379a751f317f1b40bbcc62f34794c1da54d2df13cb77509cf0d9
+
+AAD = 3ecf60f18213a435c657e8
+Plaintext = f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c2
+Ciphertext = a669b97f79da47026abcd3bdc9adbadcfeb1fb3f
+Tag =
+
+AAD = 46d768f98a1bac3dce5ff0
+Plaintext = 0021a1c24263e30484a52546c6e767880829a9ca
+Ciphertext = a8f7ec551a6ae1d7e0238beadcf3d9c86ab2db7b
+Tag = e7f5d262a087fd1b
+
+AAD = 4edf70019223b445d667f8
+Plaintext = 0829a9ca4a6beb0c8cad2d4eceef6f901031b1d2
+Ciphertext = 4828391cd1996adcea7df6d950d596bc47c5496c
+Tag = 234d938e517f03764f997046e68d1f98
+
+AAD = 56e778099a2bbc4dde6f00
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da
+Ciphertext = d209d3c1308dd518a965961b8d7b417cf9b83b75
+Tag = 1911b3a0739a88c076d44179944a6f3474e174c68fac8ab8
+
+AAD = 5eef8011a233c455e67708
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e2
+Ciphertext = 414cffb416a1a23c074464716ca799f64c24110b
+Tag = 147099b41f6bd8927189f64e1b35ad2221b375afb6bb08e308d84f93b069767b
+
+AAD = 5ced7e0fa031c253e47506
+Plaintext = f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2d
+Ciphertext = d0264d5afc084fed5319655e99f979c7e4a84b096aa2e1d1f7c76408685f77db76c5afd15aa633e8c877d494dd17eb654bff
+Tag =
+
+AAD = 64f58617a839ca5bec7d0e
+Plaintext = fc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435
+Ciphertext = e0fc6ccd831739a29f684bcd34ea1d8ff7c5249f6533b8928b10123c53d8a129f70b19f99ff9e7c8c7c02b587577629e7aa8
+Tag = 43fa96732499de23
+
+AAD = 6cfd8e1fb041d263f48516
+Plaintext = 0425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3d
+Ciphertext = d479aacb708b35549b7dea48281c30dd850b1dad66356d62e2f979173b9b3c62706e4ca4fd9b970011007597398c4e9de2f3
+Tag = 5ef18fdf46acb79b9dd7322416a924a4
+
+AAD = 74059627b849da6bfc8d1e
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = fb35c7973d7f88151bc47950ab7f419b104e2fcb3c6088ba1dd4bf35537a525052d1e1124d6b5466a24ab33b45e79942bd6f
+Tag = b5df3ec0aa0e5074e7b88dcfe5c42cfeaffcbf5fb126d2aa
+
+AAD = 7c0d9e2fc051e273049526
+Plaintext = 1435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4d
+Ciphertext = 8db31e999c04e056d2cc2c693679f7fae454aa61348bb2d52fe11e00736530a02db85dbad93927212f44eb20af663021e03d
+Tag = 4787d2fed992115a3fb86fba05437870e978c2dd2ed98e5565f6465f815ced5d
+
+AAD = 3acb5ced7e0fa031c253e475069728b9a93acb
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 42d364f58617a839ca5bec7d0e9f30c1b142d3
+Plaintext =
+Ciphertext =
+Tag = a866a4869ce034e7
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = c0f76c76466c006093a452fcd30fdcd2
+
+AAD = 52e374059627b849da6bfc8d1eaf40d1c152e3
+Plaintext =
+Ciphertext =
+Tag = f65568e71cff2513e7bf901d4d7acc9dd08d81f98050f55d
+
+AAD = 5aeb7c0d9e2fc051e273049526b748d9c95aeb
+Plaintext =
+Ciphertext =
+Tag = d17e2fe49533aaf6413f27b605dc812b0277ef8183bae188669374251362f4b7
+
+AAD = 56e778099a2bbc4dde6f009122b344d5c556e7
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5e
+Ciphertext = f104cbe49a3384cfe578247c12e2dba954088b67187e43bf63a0b6dc
+Tag =
+
+AAD = 5eef8011a233c455e67708992abb4cddcd5eef
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566
+Ciphertext = 6de25a48e2abae2fb77cbb9b025833193293af90f81e613d6774a27f
+Tag = bad3eef6187139aa
+
+AAD = 66f78819aa3bcc5dee7f10a132c354e5d566f7
+Plaintext = 2041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6e
+Ciphertext = f8d137a1e01b925e3dac55a2633fcb860db6e54cd31be4a4a2ab2b09
+Tag = b8b8f08711a9f71a71f1c72e51faf227
+
+AAD = 6eff9021b243d465f68718a93acb5ceddd6eff
+Plaintext = 2849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = d4afd34f16a98dbdabe93db5279e4f05909ea62e16717e538f10be8e
+Tag = 181bdbe2e5275fdc3127d0d4ba06518ec48b355755745c1f
+
+AAD = 76079829ba4bdc6dfe8f20b142d364f5e57607
+Plaintext = 3051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7e
+Ciphertext = 29d25a0a6fc4cbcb4c22956716654ce3b21d54b10641c016ddc96863
+Tag = 38daad932ce3ba79734c2e05532c180c3e1831f450bee00b6ce98d83a684cedc
+
+AAD = 30c152e374059627b849da6bfc8d1eaf9f30c152e374059627b849da6bfc
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 38c95aeb7c0d9e2fc051e273049526b7a738c95aeb7c0d9e2fc051e27304
+Plaintext =
+Ciphertext =
+Tag = e75e19b6fe2ebe44
+
+AAD = 40d162f38415a637c859ea7b0c9d2ebfaf40d162f38415a637c859ea7b0c
+Plaintext =
+Ciphertext =
+Tag = ababd75427a5886cc841bf926b128614
+
+AAD = 48d96afb8c1dae3fd061f28314a536c7b748d96afb8c1dae3fd061f28314
+Plaintext =
+Ciphertext =
+Tag = d861ffc546191c7d3d86271233dc16d2315b9f8a67094f2d
+
+AAD = 50e172039425b647d869fa8b1cad3ecfbf50e172039425b647d869fa8b1c
+Plaintext =
+Ciphertext =
+Tag = dfe6d710a5ef4c5f1b93259186b75dcff9cd9f5beee28e8c35508346a00c009a
+
+AAD = 57e8790a9b2cbd4edf70019223b445d6c657e8790a9b2cbd4edf70019223
+Plaintext = 1132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e3638404
+Ciphertext = 5d661dc9e6944052a243e2058f5c8655e0f686bc23d0ff14fc44589f472c042174c1f9f7609d32
+Tag =
+
+AAD = 5ff08112a334c556e778099a2bbc4ddece5ff08112a334c556e778099a2b
+Plaintext = 193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c
+Ciphertext = 0f9c4ecd98f65ebb085156732f47628362733b92bc600a195b4f4f46e7c8a344b92db3101900cd
+Tag = 67fd8d1c5116c7a9
+
+AAD = 67f8891aab3ccd5eef8011a233c455e6d667f8891aab3ccd5eef8011a233
+Plaintext = 2142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f3739414
+Ciphertext = 048ef772458b09ee2673d1d95d1c5372d38653f1253234a1dde0b3c0e5adfcc0ed471d9bd87359
+Tag = 05d134507aee433a42a3fbde79911483
+
+AAD = 6f009122b344d566f78819aa3bcc5deede6f009122b344d566f78819aa3b
+Plaintext = 294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c
+Ciphertext = e67a0c2d5495e6cf08f4b98608948ac2a83d504273fed7b1ed4616b90b6d9c2fa4b95460619149
+Tag = 49f93c6ea5672cc77cd137fd681b80fb50f89f33892d5e7f
+
+AAD = 7708992abb4cdd6eff9021b243d465f6e67708992abb4cdd6eff9021b243
+Plaintext = 3152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a424
+Ciphertext = 3291cb6ef21e9f696d012055abffbf866d15c50035703f2de831efb00d949390de08f44276ee9f
+Tag = 5cc443a0480499fd18131f66db389869f3d97087a6eeb637f9bfeda8dde7a1f2
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd061f28314a536c758
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = b647d869fa8b1cad3ecf60f18213a43525b647d869fa8b1cad3ecf60f18213a49425b647d869fa8b1cad3ecf60
+Plaintext =
+Ciphertext =
+Tag = ed99060b1ef07a37
+
+AAD = be4fe071029324b546d768f98a1bac3d2dbe4fe071029324b546d768f98a1bac9c2dbe4fe071029324b546d768
+Plaintext =
+Ciphertext =
+Tag = c09998e48d64f43d4b3d2578c425d1e9
+
+AAD = c657e8790a9b2cbd4edf70019223b44535c657e8790a9b2cbd4edf70019223b4a435c657e8790a9b2cbd4edf70
+Plaintext =
+Ciphertext =
+Tag = 9d5bce15431a7c0a4589e161e6165f05a0e6080aca6282b9
+
+AAD = ce5ff08112a334c556e778099a2bbc4d3dce5ff08112a334c556e778099a2bbcac3dce5ff08112a334c556e778
+Plaintext =
+Ciphertext =
+Tag = 6a8929217f48ba1f0c1c367736086415ad10bbb203657f5b3343fa83c118aa57
+
+# initialize with key of128 bits, nonce of24 bits:
+Key = 35ce67009932cb64fd962fc861fa932c
+Nonce = 197adb
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = a06e5596962d29f3
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 91119f7ddf3861bc06827e57ca59a948
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 889a0c51f2f15009ef285313e5d013e6a90a636e64a19551
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 3fc01b5bc20d76944bd4ba289bd7e7c047d42712ce6ab9750e2a7e63232277bb
+
+AAD =
+Plaintext = 6f901031b1
+Ciphertext = c40c409928
+Tag =
+
+AAD =
+Plaintext = 77981839b9
+Ciphertext = cdd127d9bb
+Tag = 65883efc4d868b25
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = aeac86a30b
+Tag = 16a1165a66471ae8de01c9dee7e8566a
+
+AAD =
+Plaintext = 87a82849c9
+Ciphertext = 4d6b09f38b
+Tag = c53eeeff402d797dcf253941c945c5c2f1497c547d442fdf
+
+AAD =
+Plaintext = 8fb03051d1
+Ciphertext = 6530f5c7d3
+Tag = 553b8c91128cf28baafb42ec4fc12852fc852a4a4e1542adc8662fc37d3d44d5
+
+AAD =
+Plaintext = ddfe7e9f1f40c0e161820223
+Ciphertext = 259d6fbc8332bd23114ae5d4
+Tag =
+
+AAD =
+Plaintext = e50686a72748c8e9698a0a2b
+Ciphertext = e7cc40ef48329c93b48d1dce
+Tag = 5e7c81664d5efaf3
+
+AAD =
+Plaintext = ed0e8eaf2f50d0f171921233
+Ciphertext = 80fd0b3d05610264d6cf213e
+Tag = 74bafbb6a0795dc4939396a346f96171
+
+AAD =
+Plaintext = f51696b73758d8f9799a1a3b
+Ciphertext = fefd0067b9778bcdd5c49265
+Tag = d7b22a174cb6d8aaa10fa51a311c45355fb5778051f924db
+
+AAD =
+Plaintext = fd1e9ebf3f60e00181a22243
+Ciphertext = c265518a4bcaaa9ab5064934
+Tag = e494eaaf3b6a11dda5dde4ede1a6aaa7f92248fcf3d02b156c4bd6e20b9ccf04
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebe
+Ciphertext = 0147090ac1c29eaf50860724ae269200a457372dbc4e6a
+Tag =
+
+AAD =
+Plaintext = dbfc7c9d1d3ebedf5f800021a1c24263e30484a52546c6
+Ciphertext = d0f75c8a7a6841b82ed9cd2746787414dad6890861dac4
+Tag = 346b7e2e97889d43
+
+AAD =
+Plaintext = e30484a52546c6e767880829a9ca4a6beb0c8cad2d4ece
+Ciphertext = 58c1d19f1c4686f502d2db933e09af5e5cc54181243055
+Tag = d38b6f00cb512ddfe514cbee77fcfc1d
+
+AAD =
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6
+Ciphertext = 9962445a2a1cec3a88c3574561f900358a25189a6a0b76
+Tag = a8272e315625fc3f8bcaec6ac9a14bd33840ece77d889ad5
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = 4e80acc7d129dd72ee502eac84a4e078943157da51adf7
+Tag = 4c9effb71b6a9fa22945765561435d3f1ea14cca38bf3d34d4e2f475e17c2a46
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e6
+Ciphertext = 6991317cd0ca81a7872acdf5944824995beb8ef845a81e45e2d0c45bcf15db68290e5bb40d1d5e
+Tag =
+
+AAD =
+Plaintext = fb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee
+Ciphertext = 81c09a567ad754864e52585d1d87b212563c66f43e619c92f7ac4c7ae5c3751cd0929aca36207a
+Tag = f962232f473099e5
+
+AAD =
+Plaintext = 0324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f6
+Ciphertext = 08ddec0b765fd5b1c7163106c79a71db362347ba86a5def3fdb8900102fc056892858a67fa0ad8
+Tag = b43c38a94718f24a426e0dc0bc8e57ce
+
+AAD =
+Plaintext = 0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe
+Ciphertext = 86446fe75c383ca6f47db3936faadc134d336e6b5fa8dee8b759554ea78b910faff9d8f450d1f4
+Tag = 252ca1d3efd811a26bc6dfeb9056ad7439b3af73a5001b38
+
+AAD =
+Plaintext = 1334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e5658606
+Ciphertext = e9f1ccdfb8d05aa03196b436310f45d8b8bbc11f9e2e775771f8a370acbbc44f3af445e2d4c1fc
+Tag = 70ecce1fc66661cb20bcea9548caced84612becda9f23762eddbf822c7c33dc1
+
+AAD = 5eef8011a2
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 66f78819aa
+Plaintext =
+Ciphertext =
+Tag = 2090d6fcc57d85ee
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = 5f3ebddb0b628579636774fca2880c38
+
+AAD = 76079829ba
+Plaintext =
+Ciphertext =
+Tag = 5a3e49b2933cb40ecc8cdee91e1d228a764b48e66c4d6e83
+
+AAD = 7e0fa031c2
+Plaintext =
+Ciphertext =
+Tag = 2269db56d876f21d4f4600bd1ed4520818b2cce45c99f74ae09059673d8a7cc2
+
+AAD = 6cfd8e1fb0
+Plaintext = 2647c7e86889092aaacb4b6cec0d
+Ciphertext = 8e9d5991e004a7439204fee8791b
+Tag =
+
+AAD = 74059627b8
+Plaintext = 2e4fcff070911132b2d35374f415
+Ciphertext = 1898acf2840015bf04c1bbb9ab92
+Tag = e108f6f71849df65
+
+AAD = 7c0d9e2fc0
+Plaintext = 3657d7f87899193abadb5b7cfc1d
+Ciphertext = 49fe8e2b3c9bc05d06f4aed07d36
+Tag = 3f615a6f0995218790e41978d887da03
+
+AAD = 8415a637c8
+Plaintext = 3e5fdf0080a12142c2e363840425
+Ciphertext = 592bb5e7b218f5b16a2ae19fe890
+Tag = 4310612785ebe0887125d1c1d9d997f01b34ae1eb916d4c7
+
+AAD = 8c1dae3fd0
+Plaintext = 4667e70888a9294acaeb6b8c0c2d
+Ciphertext = 3bf87560d162f44b42699187c692
+Tag = 2018c3cd2762489c44c6b2b006a6562c78c4cfcd54ef8510d859577c18264d68
+
+AAD = 8112a334c5
+Plaintext = 70911132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a121
+Ciphertext = 5baeb07c36123241f12b60b8dafde1d7223ff881cdd4890ba9ba7cc90c4ad205ba94bd
+Tag =
+
+AAD = 891aab3ccd
+Plaintext = 7899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a929
+Ciphertext = 1241ae6f3de85691291fcb1081b45ace327e1c60fe7a4d618ff1ee1fbb13844f307086
+Tag = 808583d5aad67550
+
+AAD = 9122b344d5
+Plaintext = 80a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b131
+Ciphertext = 3f5154ba1858480fe282f50e72119271585aed2cf15c5468488bea903d99734467d882
+Tag = 336e56ff26d266645b5a453748605b7b
+
+AAD = 992abb4cdd
+Plaintext = 88a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b939
+Ciphertext = fe37a767d6f5c35da880098678e1025bfdac26c53a501e1191a39f8b59bd2e7b04c2f6
+Tag = 78e9f41d80d8993f81df71d2559b9af4c31a3def6599a3ff
+
+AAD = a132c354e5
+Plaintext = 90b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = a5f4851f98c25e4318ddf65862d1d93feac0b3af2db68e7e2e7edc315023ae5d4210f6
+Tag = fde9ce3ac8d19cc10f85c86022ffbecb97a2540d317ad6bd191272585e9da5a7
+
+AAD = 2abb4cdd6eff9021b243d4
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 32c354e576079829ba4bdc
+Plaintext =
+Ciphertext =
+Tag = cd425f68808f6976
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = 3c942747f5e3ecb7db94c9e9dce131f3
+
+AAD = 42d364f58617a839ca5bec
+Plaintext =
+Ciphertext =
+Tag = 79e6b3c5a6a81016e17d2d46b53d826d0a8cf461cb5b0394
+
+AAD = 4adb6cfd8e1fb041d263f4
+Plaintext =
+Ciphertext =
+Tag = 19950cebbdb28fe7444073a7bdd51e996fd6c1b8b8d2fab29f979538d3d1e9f1
+
+AAD = 3ecf60f18213a435c657e8
+Plaintext = f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c2
+Ciphertext = 92cd84d76b95feb0ffc0a6179bd1e2ce1fe2b278
+Tag =
+
+AAD = 46d768f98a1bac3dce5ff0
+Plaintext = 0021a1c24263e30484a52546c6e767880829a9ca
+Ciphertext = 8d0bc83d83292f892bb2948c92bee0d4d14b3a10
+Tag = a48aba1fd91f1062
+
+AAD = 4edf70019223b445d667f8
+Plaintext = 0829a9ca4a6beb0c8cad2d4eceef6f901031b1d2
+Ciphertext = bbac0b9d651030526a1b1fc1ee928003ebc8099c
+Tag = be5a1c8d7bba08aa245e1ec2eaf3060c
+
+AAD = 56e778099a2bbc4dde6f00
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da
+Ciphertext = 57d0227780646b8968ae3346c623d9ebb3cbe9c1
+Tag = 67fc0dbbb3e37a01b84dc92c96e70387589fda6093fddca9
+
+AAD = 5eef8011a233c455e67708
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e2
+Ciphertext = 206531bf74fbde375a2656fa5c9ca4a008577bc0
+Tag = 560c4bdb1a90e706e2cac5c946448c99be699f4c4eaf2ede6c4891fe98e52f48
+
+AAD = 5ced7e0fa031c253e47506
+Plaintext = f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2d
+Ciphertext = 44891b20ee7c1cce82edf3d572f8603ae8a8ec3e3a59e5603cff5394d21beb229c6d7d62a1592abffdd62dec0da1453ce0d4
+Tag =
+
+AAD = 64f58617a839ca5bec7d0e
+Plaintext = fc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435
+Ciphertext = 4114e935ac7f13cca5cade6ab8be93794faa5b5076fb085693c8a35033f5f6fd92065cc8911716b172de7696b4cec7809827
+Tag = 1e01c1d2fb332b80
+
+AAD = 6cfd8e1fb041d263f48516
+Plaintext = 0425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3d
+Ciphertext = 58819b6553cea0fbab2d450cf0cdb91972ead4b638a85a966f234917c9d35df922f58cf32c4a46dc204a8aa09ec0e32e0d07
+Tag = 04ff618824e9b26c4b4eca0fe646bece
+
+AAD = 74059627b849da6bfc8d1e
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = 54cd55301bd661720ae5a3db1db11481abb2cf4c161747cc554359b72bea5298886817a3f6bd612da0d5139eedb8060aff38
+Tag = 750dae0311583af8286a914a6086e228c614ed224aee2465
+
+AAD = 7c0d9e2fc051e273049526
+Plaintext = 1435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4d
+Ciphertext = a7b6d9cb949f086a756a46565724a2a8c12592229ac5da2a9b5ca1ec3127a8bdd33a8fa9d038bfd5bf32aba0261e5b655108
+Tag = 5ffd69e3878d6b80af365d670598fdb4ed0df5287f50f40e59128cc2ce8158c1
+
+AAD = 3acb5ced7e0fa031c253e475069728b9a93acb
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 42d364f58617a839ca5bec7d0e9f30c1b142d3
+Plaintext =
+Ciphertext =
+Tag = 7e3d260a5c4f1e62
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = 34efb56e65973d13d7682efb815c0766
+
+AAD = 52e374059627b849da6bfc8d1eaf40d1c152e3
+Plaintext =
+Ciphertext =
+Tag = 06876af4767f3b7c30050138ce411ce00f4a1cc71afbc4a3
+
+AAD = 5aeb7c0d9e2fc051e273049526b748d9c95aeb
+Plaintext =
+Ciphertext =
+Tag = e67333e5ced4d55393c8c0b60fc3be652e4958592f478f9cf83f9a80f140ea26
+
+AAD = 56e778099a2bbc4dde6f009122b344d5c556e7
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5e
+Ciphertext = e8debab27cd94235ff5f5eeffa67bb5d27a7ff083c68d5acd4e8060d
+Tag =
+
+AAD = 5eef8011a233c455e67708992abb4cddcd5eef
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566
+Ciphertext = 59fee2a3d765da3300e31cc86f6b326646ab54b26b849988f72c8c2f
+Tag = 43ae4619677ff6b8
+
+AAD = 66f78819aa3bcc5dee7f10a132c354e5d566f7
+Plaintext = 2041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6e
+Ciphertext = 3e7b34f9a8a37047e05b1d90e6cc4f4a7b0d45c7a54123469f4c95ba
+Tag = e59fccca27f3468ea2fd99f2692afdf3
+
+AAD = 6eff9021b243d465f68718a93acb5ceddd6eff
+Plaintext = 2849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = b33eecccee70f6197a8258c1e0c35a45f3fa38bce39a6718f99198ea
+Tag = 939523226265a00305144882fc3a13026431a485ad336582
+
+AAD = 76079829ba4bdc6dfe8f20b142d364f5e57607
+Plaintext = 3051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7e
+Ciphertext = a555a075d678757ef943cbbcb397928a7e864623825aeb6809ccad4f
+Tag = c3e09ded9e601790dc7d22de8e1fa2c902254bfe6f2fa0458b09b591523beb74
+
+AAD = 30c152e374059627b849da6bfc8d1eaf9f30c152e374059627b849da6bfc
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 38c95aeb7c0d9e2fc051e273049526b7a738c95aeb7c0d9e2fc051e27304
+Plaintext =
+Ciphertext =
+Tag = 7e71886f47f38a97
+
+AAD = 40d162f38415a637c859ea7b0c9d2ebfaf40d162f38415a637c859ea7b0c
+Plaintext =
+Ciphertext =
+Tag = e5e6bcb33b4d2a2751acfa9342fd46aa
+
+AAD = 48d96afb8c1dae3fd061f28314a536c7b748d96afb8c1dae3fd061f28314
+Plaintext =
+Ciphertext =
+Tag = a583403087d612c96d5be72e295ade45cb3b91099abc5608
+
+AAD = 50e172039425b647d869fa8b1cad3ecfbf50e172039425b647d869fa8b1c
+Plaintext =
+Ciphertext =
+Tag = 6698f1f8a79d5d8c5750484bbd2e12cef12e4d0e49277f96cd06df0e9f2b46f1
+
+AAD = 57e8790a9b2cbd4edf70019223b445d6c657e8790a9b2cbd4edf70019223
+Plaintext = 1132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e3638404
+Ciphertext = 1c4c96ac96ea5b1c024955eac284b8f6756d3b5b14ecfdf300f0717264672fba49f3a5700eb075
+Tag =
+
+AAD = 5ff08112a334c556e778099a2bbc4ddece5ff08112a334c556e778099a2b
+Plaintext = 193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c
+Ciphertext = 4bf57d91fcc38bc3010ddb11553eb72967f8550f3b13a7890ddf8685b1313f7f26d5398bb56529
+Tag = 0337e8fb0a14d6b6
+
+AAD = 67f8891aab3ccd5eef8011a233c455e6d667f8891aab3ccd5eef8011a233
+Plaintext = 2142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f3739414
+Ciphertext = a18c2f707a57303536395dc2c4e7ae9c3d6e916b7c6687b65b88824991a241ba52a7c5e73a3b55
+Tag = af1cfe69996404e49b431f088cd2ce08
+
+AAD = 6f009122b344d566f78819aa3bcc5deede6f009122b344d566f78819aa3b
+Plaintext = 294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c
+Ciphertext = 590a5a8c690d00daa5766ab9efcba0726435a222870cae72ba0610f68e550b12539581fde6e7c1
+Tag = 3b2b4d6ef2cfe90e128d8eeff7b53c2b6bbee384b1bcc964
+
+AAD = 7708992abb4cdd6eff9021b243d465f6e67708992abb4cdd6eff9021b243
+Plaintext = 3152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a424
+Ciphertext = d0d43fd9c2b6787ebaf034a399ac535b3b6b03c28a60ee4dca0f966e6e0df7b509f6e0b6df102e
+Tag = f2b0ef2adca0961c31c7dbb0a300e42492d7b7c8f9b919a385e6abb387736c5b
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd061f28314a536c758
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = b647d869fa8b1cad3ecf60f18213a43525b647d869fa8b1cad3ecf60f18213a49425b647d869fa8b1cad3ecf60
+Plaintext =
+Ciphertext =
+Tag = 441600596c9c95eb
+
+AAD = be4fe071029324b546d768f98a1bac3d2dbe4fe071029324b546d768f98a1bac9c2dbe4fe071029324b546d768
+Plaintext =
+Ciphertext =
+Tag = 09113e81e1b724e502f35856ca2a0749
+
+AAD = c657e8790a9b2cbd4edf70019223b44535c657e8790a9b2cbd4edf70019223b4a435c657e8790a9b2cbd4edf70
+Plaintext =
+Ciphertext =
+Tag = d14cabe1e72b55511d2540fe9a24ad063ae46b9d8bb2a889
+
+AAD = ce5ff08112a334c556e778099a2bbc4d3dce5ff08112a334c556e778099a2bbcac3dce5ff08112a334c556e778
+Plaintext =
+Ciphertext =
+Tag = d60941a4721770f9aa081d65d87b9dfe3b6948098e28e03e4b13a1e57b33e630
+
+# initialize with key of128 bits, nonce of32 bits:
+Key = 36cf68019a33cc65fe9730c962fb942d
+Nonce = bb1c7dde
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = cdc2d3ba9b0eae01
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = cf6d072bac6b81b661260e16d734abf6
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = befabaa110f188ab21553d4cdf04418ccffd93d8737369b2
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = f24dc6a8abf7c04e58192e45f42beda1a8d5f61ef325a8ae0a3a04f9d3ca2bc8
+
+AAD =
+Plaintext = 6f901031b1
+Ciphertext = ed300305f0
+Tag =
+
+AAD =
+Plaintext = 77981839b9
+Ciphertext = cf839fcbe1
+Tag = fc30c23a6918fe96
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = 2742350a9a
+Tag = c07fa0d01b7dfe41574bfaeb112e4015
+
+AAD =
+Plaintext = 87a82849c9
+Ciphertext = 480908c8a7
+Tag = 9dc6f35fbde43a2579e435a7cef5ef46a0a26aa9ce0a9f58
+
+AAD =
+Plaintext = 8fb03051d1
+Ciphertext = 1049b67334
+Tag = 0042e477d10af02c0e018d5a9ea97cf9da7c9e548ec7d1604033d63f6c98c431
+
+AAD =
+Plaintext = ddfe7e9f1f40c0e161820223
+Ciphertext = 188ccd5c2ace388966e7a0eb
+Tag =
+
+AAD =
+Plaintext = e50686a72748c8e9698a0a2b
+Ciphertext = 2bb1d5ce6d4b9223d9911470
+Tag = 7f2a23379281477f
+
+AAD =
+Plaintext = ed0e8eaf2f50d0f171921233
+Ciphertext = 626268b7c87e005b68fbfaf3
+Tag = 6fcc202743ce7cee10a9b8cd6ed60424
+
+AAD =
+Plaintext = f51696b73758d8f9799a1a3b
+Ciphertext = 3b4fbb41658447b4cd1d574b
+Tag = 3d92eadee7dd40a82acd1c8007b08610d4b2e16a97a48140
+
+AAD =
+Plaintext = fd1e9ebf3f60e00181a22243
+Ciphertext = 471fdbf10c01ba5411ba850c
+Tag = 9402dcab6219b6d9ecdec4d5667946343bd4710b99feb01100370510b57fa258
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebe
+Ciphertext = 81d9be9582d0db1a9e14de62b42666955148fc2f208ffc
+Tag =
+
+AAD =
+Plaintext = dbfc7c9d1d3ebedf5f800021a1c24263e30484a52546c6
+Ciphertext = d51ea0dacbaa5e0be2e9423fb191facd2c5b5871f63e1d
+Tag = 0994bc5f48e8b351
+
+AAD =
+Plaintext = e30484a52546c6e767880829a9ca4a6beb0c8cad2d4ece
+Ciphertext = b7a10e72d1a6a2ba96f348bfe82b04a0005bf3a0bd0613
+Tag = 5661eb0540ce2c5c109cf987b4fbda02
+
+AAD =
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6
+Ciphertext = 73448a4ba3bf5c927982fd0defeef78dc6effe84a3cfc5
+Tag = b849d05c301ba30acebf086546671cde5fb181eeae8b0c81
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = 0a429ce7c7f7de66538807baebc8b07c36b2b607ad9a6b
+Tag = dad5144c5846bbe29cc9852c664b53d20100d7d5280fa7230c0ed4275fb41cbe
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e6
+Ciphertext = 4cfbde9af38183406384320a0a921b94b03a9033e9dfd4e06acac0c16e72772b785336ecf6658f
+Tag =
+
+AAD =
+Plaintext = fb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee
+Ciphertext = 803ae0cb4396afbb84215cbbd8bbbb08706989017fd0a583a4cb153f6c9c71d5fb29a0553ec7d9
+Tag = 5b6f7fa548ccb67f
+
+AAD =
+Plaintext = 0324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f6
+Ciphertext = e148c5ef3bd43ec76102c2276b5f1c69ceaa9d2e68599600b700734b0f876ffa3fa2ef89e8d404
+Tag = 918b7c4150dbddbb15dac53386f61609
+
+AAD =
+Plaintext = 0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe
+Ciphertext = 067724fa4f417704c33abf73ea845626c83e3b1afda372d28ba01d0d8b6e20857a37849285d34b
+Tag = 48e7579382bf4ec34b5657d2c18173b8440b4fd537a5392b
+
+AAD =
+Plaintext = 1334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e5658606
+Ciphertext = 12b8bdc361d8d6487f8194f086e55a1de3ea4f99110fda902ec9ec717c45438efcc2d1e3cc5513
+Tag = 9835085d867fd41bbc357002aa72a6ceb9aeba3ffd7f3623fce41536a22d548d
+
+AAD = 5eef8011a2
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 66f78819aa
+Plaintext =
+Ciphertext =
+Tag = 7142c5c1c0125b55
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = fa4c7657123391ae19031907eef6012c
+
+AAD = 76079829ba
+Plaintext =
+Ciphertext =
+Tag = b0dbd3da6133cea96e68725fe014265f7fe65b0574e050ac
+
+AAD = 7e0fa031c2
+Plaintext =
+Ciphertext =
+Tag = ef53607ca879ea652c553a9030a9f7dbdf95fedce85c48db3008a4af735f52d9
+
+AAD = 6cfd8e1fb0
+Plaintext = 2647c7e86889092aaacb4b6cec0d
+Ciphertext = dea3b663ecea5656a7a4237626db
+Tag =
+
+AAD = 74059627b8
+Plaintext = 2e4fcff070911132b2d35374f415
+Ciphertext = cda8d7416393443bf2da7f49eddd
+Tag = 9824d7824cd4e457
+
+AAD = 7c0d9e2fc0
+Plaintext = 3657d7f87899193abadb5b7cfc1d
+Ciphertext = 2abbdc096b778e1dfe7be31492d1
+Tag = 746f3807e92fc18a18624c2b34c436a3
+
+AAD = 8415a637c8
+Plaintext = 3e5fdf0080a12142c2e363840425
+Ciphertext = 69516a5ef2e1791a375d6b59a659
+Tag = 46c4614ecaf9a0cb75c044e529780bb64097787a6053156f
+
+AAD = 8c1dae3fd0
+Plaintext = 4667e70888a9294acaeb6b8c0c2d
+Ciphertext = 4886c87d92b29f347ff4a1f0dd0a
+Tag = bef5d7c1e1730fa5aa3539770977ccf1229205529e014f56dd77efd0c6fd67cb
+
+AAD = 8112a334c5
+Plaintext = 70911132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a121
+Ciphertext = 09c6e930b6ca0596a1b67ae24232d3b8a557a213d3de20ed59532b0cbd4696b7422ad5
+Tag =
+
+AAD = 891aab3ccd
+Plaintext = 7899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a929
+Ciphertext = 403d162f5bd08f296cf017e53cac48669c93b299db4577128714f07bfb5ba4afcab2aa
+Tag = 56cc8ebf38a8d8d7
+
+AAD = 9122b344d5
+Plaintext = 80a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b131
+Ciphertext = b75b1a24c7e3bf9390e8060608a50e990a0169a94db4d02aaff0d799f9f6f4e56fa986
+Tag = c43b4745ccf44071277dcf6552ac9916
+
+AAD = 992abb4cdd
+Plaintext = 88a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b939
+Ciphertext = 83702b3965edd17334aff104b76e0743591a5cd0f6bfe362cf0bf9caf14dbc9bd5745b
+Tag = faf61a70197fa850ac997214719a30d84da13cc6a41b74b6
+
+AAD = a132c354e5
+Plaintext = 90b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = 14ce43770da46bcc9ec34c35efce070160e05a729f36a19c5382f3cd15b13968497a3f
+Tag = 4a4d7a23e04e4821fe3d6bf7b7f7302fe82b8298b2367063e7c2ff7826334738
+
+AAD = 2abb4cdd6eff9021b243d4
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 32c354e576079829ba4bdc
+Plaintext =
+Ciphertext =
+Tag = 26d46b11e7f9135a
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = 883d32439112b62bf1c6e2cb07e7ad42
+
+AAD = 42d364f58617a839ca5bec
+Plaintext =
+Ciphertext =
+Tag = c775180b15683c4542a5a45d509f545cd03487cd9dea41df
+
+AAD = 4adb6cfd8e1fb041d263f4
+Plaintext =
+Ciphertext =
+Tag = 5b4c45b2b2de6c533d25677a6dd97dfc86d5e6a47b22d889d3bd9ac901c80e02
+
+AAD = 3ecf60f18213a435c657e8
+Plaintext = f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c2
+Ciphertext = d450804bccdad043f813801121e67e53b6fa6c9a
+Tag =
+
+AAD = 46d768f98a1bac3dce5ff0
+Plaintext = 0021a1c24263e30484a52546c6e767880829a9ca
+Ciphertext = 513eafbdfe81647c4cd965f531c2110cb26f7d29
+Tag = 71a94de20b1237f0
+
+AAD = 4edf70019223b445d667f8
+Plaintext = 0829a9ca4a6beb0c8cad2d4eceef6f901031b1d2
+Ciphertext = 2d9871c36300491ebe323a3d74f5cd5fece1d240
+Tag = faa0c16829d382b30b1f08a4806da3fe
+
+AAD = 56e778099a2bbc4dde6f00
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da
+Ciphertext = a211e996b61fe26a0aa7206bd67f0a952749b8f2
+Tag = 48c363ed66e4a316ab4073901070b29b0ef2e918619a3761
+
+AAD = 5eef8011a233c455e67708
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e2
+Ciphertext = 2fb2fca54c002376c486ba8f00ffcdf05bfc95bf
+Tag = 0c071d86b7336f96821e01bbbb55fce894d579a85065ad32f3f0dbef9de7f54d
+
+AAD = 5ced7e0fa031c253e47506
+Plaintext = f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2d
+Ciphertext = 39588242e682aa1cd357837ba66ad151d53cdbd995d1d44734172085702e99b001b8e7994de9720a839809f98e3986069622
+Tag =
+
+AAD = 64f58617a839ca5bec7d0e
+Plaintext = fc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435
+Ciphertext = 6fe7650c925d2c763e653513539004b16c7a5fcd136206de6a52152b49fd7a3e11a89c1675724f7d81822036a774bb944d50
+Tag = a71b984d07b5e93e
+
+AAD = 6cfd8e1fb041d263f48516
+Plaintext = 0425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3d
+Ciphertext = 343ad6b2c3aa511be258669a521b970e84f0311a5729b4d7e88f02e22f9bb4ca1e5b4795b93f6fac8f2e49a0693faac21051
+Tag = 938a5f7012da0fd94e8f6ec1aa8a5866
+
+AAD = 74059627b849da6bfc8d1e
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = eaa38d05dd44d118d4a393f7d8497a91039629849af6d50b46fbdebbc3302fff15ce2d1f78241f25a8fa324624302bdcd40c
+Tag = 60446a7e6ee27d5e8e91454fdf394e50d66ad547a50af999
+
+AAD = 7c0d9e2fc051e273049526
+Plaintext = 1435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4d
+Ciphertext = ef0284ddbde5ec1f099c0582275f0545b6296efe53197baad5af222d95b009e93f4d97cace691f7506ae872c8eaaee77b31d
+Tag = 89946133b230d1e9edd7a7e7dee4f3298770405ab803d39dcdb35d5c2161fd2d
+
+AAD = 3acb5ced7e0fa031c253e475069728b9a93acb
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 42d364f58617a839ca5bec7d0e9f30c1b142d3
+Plaintext =
+Ciphertext =
+Tag = a86c502b02c9cd0f
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = 4d7cc92763149c37e9d116f4dadc025b
+
+AAD = 52e374059627b849da6bfc8d1eaf40d1c152e3
+Plaintext =
+Ciphertext =
+Tag = de3b473d8700feb87e70efcd3059d75bceffb5aeee1e91c0
+
+AAD = 5aeb7c0d9e2fc051e273049526b748d9c95aeb
+Plaintext =
+Ciphertext =
+Tag = 9c05826f8a7cd1f4e1fa6063adf4f055a25b666e81c74566cf756933702e9821
+
+AAD = 56e778099a2bbc4dde6f009122b344d5c556e7
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5e
+Ciphertext = 8b174a6adc37126cc7d4f67f7218289d7ad18dd3630146bd04345390
+Tag =
+
+AAD = 5eef8011a233c455e67708992abb4cddcd5eef
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566
+Ciphertext = b228565a2a53f0607163ec9ca41acb7a237a5e5990bc23fc48dfef47
+Tag = 932c4f7c64706119
+
+AAD = 66f78819aa3bcc5dee7f10a132c354e5d566f7
+Plaintext = 2041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6e
+Ciphertext = 169fa8f63845c51a9fd3075426e37f9bb62a6d9337f10c8d0532095c
+Tag = f59cc2b2a17bbfaef752c001d78388a9
+
+AAD = 6eff9021b243d465f68718a93acb5ceddd6eff
+Plaintext = 2849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = cf02ec1738afef6edc2487c8c813f446164bfdaa9a067d7a1cd223a5
+Tag = 53a8ddbdc2585b63fa3bb7ec8e9b017ab8b261defb0ffd05
+
+AAD = 76079829ba4bdc6dfe8f20b142d364f5e57607
+Plaintext = 3051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7e
+Ciphertext = 191668cdc6cfaf0cec27e81cfe80bc4ee2f52404e28e6b0055d60767
+Tag = 135605d08a0b43407e6533572cd0b1268e1e75103266de58ba259c1b7178f9d6
+
+AAD = 30c152e374059627b849da6bfc8d1eaf9f30c152e374059627b849da6bfc
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 38c95aeb7c0d9e2fc051e273049526b7a738c95aeb7c0d9e2fc051e27304
+Plaintext =
+Ciphertext =
+Tag = 57fff8b8c0d6c791
+
+AAD = 40d162f38415a637c859ea7b0c9d2ebfaf40d162f38415a637c859ea7b0c
+Plaintext =
+Ciphertext =
+Tag = ba4d392406911d8e6758555dc1850d43
+
+AAD = 48d96afb8c1dae3fd061f28314a536c7b748d96afb8c1dae3fd061f28314
+Plaintext =
+Ciphertext =
+Tag = fc3528db1b82898d5a1f5401e5c26e712cbf78804895c603
+
+AAD = 50e172039425b647d869fa8b1cad3ecfbf50e172039425b647d869fa8b1c
+Plaintext =
+Ciphertext =
+Tag = cf9c6ac0faf7af8e713a66b1f423a05b007dd6920e82800690f13363ad2d860b
+
+AAD = 57e8790a9b2cbd4edf70019223b445d6c657e8790a9b2cbd4edf70019223
+Plaintext = 1132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e3638404
+Ciphertext = 8f77a9cfefde522254077c7bb1964f11cbea6c3751dbfad50d6f1eff4ce6becaddc6453ea355eb
+Tag =
+
+AAD = 5ff08112a334c556e778099a2bbc4ddece5ff08112a334c556e778099a2b
+Plaintext = 193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c
+Ciphertext = 60734e5caa70ca331eabaea193247fef23950e3b1754f9c241757cf610d38d0128baf268a53396
+Tag = e898f37c48c61c92
+
+AAD = 67f8891aab3ccd5eef8011a233c455e6d667f8891aab3ccd5eef8011a233
+Plaintext = 2142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f3739414
+Ciphertext = ac9f14e363382339e58c84e2211c0bda4af13ebb90b3c064b492caefa97cd6aeb4e5bfde046274
+Tag = 3788179d0effaf5802b4aa0de3e93175
+
+AAD = 6f009122b344d566f78819aa3bcc5deede6f009122b344d566f78819aa3b
+Plaintext = 294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c
+Ciphertext = d40199196600e8071c48b30a5df2b539ccfdda18d4e1c32d761b8d77ec95a5bf1677af929b75d6
+Tag = 3606bff5444663aae8b39843d09f5df4d52a5d17679833a0
+
+AAD = 7708992abb4cdd6eff9021b243d465f6e67708992abb4cdd6eff9021b243
+Plaintext = 3152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a424
+Ciphertext = 93ed833632176214c1753ea2220d7b368c74dff0c8948917a2a9fcd3f9f98bc7d1a304b2080205
+Tag = 4efb1eca08f6a04c6ab36ae83583403a189c05f430530594054b6ec439d5f215
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd061f28314a536c758
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = b647d869fa8b1cad3ecf60f18213a43525b647d869fa8b1cad3ecf60f18213a49425b647d869fa8b1cad3ecf60
+Plaintext =
+Ciphertext =
+Tag = b328651fa39ee259
+
+AAD = be4fe071029324b546d768f98a1bac3d2dbe4fe071029324b546d768f98a1bac9c2dbe4fe071029324b546d768
+Plaintext =
+Ciphertext =
+Tag = bbf17dff39fa3e6efdf725168b45ee76
+
+AAD = c657e8790a9b2cbd4edf70019223b44535c657e8790a9b2cbd4edf70019223b4a435c657e8790a9b2cbd4edf70
+Plaintext =
+Ciphertext =
+Tag = b98928d713e58ac715ef237cf2fa57c0856fbe565d039e39
+
+AAD = ce5ff08112a334c556e778099a2bbc4d3dce5ff08112a334c556e778099a2bbcac3dce5ff08112a334c556e778
+Plaintext =
+Ciphertext =
+Tag = d1a936c46d8d2faedbf3096eebaa39ce480b1384a8714f94a3fc93bf7cae63d8
+
+# initialize with key of128 bits, nonce of40 bits:
+Key = 37d069029b34cd66ff9831ca63fc952e
+Nonce = 5dbe1f8040
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = a0bf344729866417
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 69174a512fc198b1181e7a4df67d319d
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = adeb5e18bf0f939d204a3d868f4cf0834456e5a381e3b97a
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 0144a84b45d5070f38466b7979ae6847c9f15b090f3673b404c78dce92ddb272
+
+AAD =
+Plaintext = 6f901031b1
+Ciphertext = 025d7ef732
+Tag =
+
+AAD =
+Plaintext = 77981839b9
+Ciphertext = 69c3f1256d
+Tag = d0c4026c185d9dc5
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = 972efd7662
+Tag = ce2d22f9244e3fd308550b8703a916c3
+
+AAD =
+Plaintext = 87a82849c9
+Ciphertext = 9ed800bf03
+Tag = 82e847c8e823daefa252563d66cbe7ab1373798fbd31cda2
+
+AAD =
+Plaintext = 8fb03051d1
+Ciphertext = df8f7e4d7b
+Tag = b0ffe5a7d337b6503a9493fa273a1e10d41822e78eea26841c6d6159647c1e51
+
+AAD =
+Plaintext = ddfe7e9f1f40c0e161820223
+Ciphertext = e7bdbb895d4ffe9df0fb25af
+Tag =
+
+AAD =
+Plaintext = e50686a72748c8e9698a0a2b
+Ciphertext = a555367909d501126fa25efe
+Tag = 8b2841a3c88781f5
+
+AAD =
+Plaintext = ed0e8eaf2f50d0f171921233
+Ciphertext = cd3d7d15e61d7122ebfd7a17
+Tag = 11bc1aa59d1b43ab67b172c32426fd72
+
+AAD =
+Plaintext = f51696b73758d8f9799a1a3b
+Ciphertext = 85aed39b90e8acb4a19d1ab8
+Tag = dc76f95a7ae30cd7a0205a1d88afffa22ecf29b65cae3de0
+
+AAD =
+Plaintext = fd1e9ebf3f60e00181a22243
+Ciphertext = 3dd25110d96f8723e504ee12
+Tag = 4d829b3993b7f7e1f02f8580a3027d2c833af27c20983342ecf5199b886fccf6
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebe
+Ciphertext = d94b4ea6d2643de3dca20fa356c425a11f701d34e58d1e
+Tag =
+
+AAD =
+Plaintext = dbfc7c9d1d3ebedf5f800021a1c24263e30484a52546c6
+Ciphertext = f82ad54ecb8e5b87725ace7052fbe341873cc2373eeece
+Tag = 4866b1028bbcda0f
+
+AAD =
+Plaintext = e30484a52546c6e767880829a9ca4a6beb0c8cad2d4ece
+Ciphertext = eaab6fec07dabd5695c707e9c1981025d4bdc7d95ba4e9
+Tag = b514a55147a9d2d1faf43e8dbcbb58f0
+
+AAD =
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6
+Ciphertext = 8286f493db4227e8200233b6244fc49178410fd5152dfc
+Tag = 02967b30dcb213fc81069b7d6a8bc0d94433a4ec452b578b
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = 2c477417f67ded6531b06657ef288df794fdb0a610aeb7
+Tag = 2f29ddc34585c8fc995cf620c68246de5095f8b5b9752837e06652293ab9761a
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e6
+Ciphertext = 0ea2df5c2a34cea7a6c5dc33fa4c71c8070d337e639ffb2c2db3cdb0b628d325a225409bbf565d
+Tag =
+
+AAD =
+Plaintext = fb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee
+Ciphertext = d5ce0a6106fe8f8b00e76c77082ccec1341fb7a33e6962a64bae63a245f6d748f2f01769a3659b
+Tag = a8393278b05a0f19
+
+AAD =
+Plaintext = 0324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f6
+Ciphertext = afd7e5adf765bfc839c9d49c180c91ff681a8022062cb34b45392c37f319ab10396183f4b64ab3
+Tag = 0260d63ad017d31279bcc1391e4903d2
+
+AAD =
+Plaintext = 0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe
+Ciphertext = 6e7d330db5e1251203e560d2e47abd7d5611a4a3b720469da86a76f936165a9889271268c6aff3
+Tag = f9c177c7bdf2036f8f228e6dcbf23c17c7e07833bfc2e422
+
+AAD =
+Plaintext = 1334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e5658606
+Ciphertext = 27cbf66e34e38f073f2b81b11d72c22cb332535b1e77a83d34ec7e2a5db4a474d6e457b1ae02cc
+Tag = 13fd78893554fcef432213c2e7d014a7308090b7700757f058621df78c10a072
+
+AAD = 5eef8011a2
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 66f78819aa
+Plaintext =
+Ciphertext =
+Tag = 12ccdc38e9d9bd8c
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = 0f5d19efdc163633aa386c4b8c5ce6f8
+
+AAD = 76079829ba
+Plaintext =
+Ciphertext =
+Tag = 4bfaae2d3fd7d71cba683fcf3683791461a12b9bce420b3c
+
+AAD = 7e0fa031c2
+Plaintext =
+Ciphertext =
+Tag = 62868296d683d43759c6fd6c04a640d5ea226838c376c21a1165f710c53d2730
+
+AAD = 6cfd8e1fb0
+Plaintext = 2647c7e86889092aaacb4b6cec0d
+Ciphertext = cf9e3622f2fc5ba360e9b78c8fd3
+Tag =
+
+AAD = 74059627b8
+Plaintext = 2e4fcff070911132b2d35374f415
+Ciphertext = bcda25d6c31f6015c6b6a54338e3
+Tag = f3d7ff167b3b89fc
+
+AAD = 7c0d9e2fc0
+Plaintext = 3657d7f87899193abadb5b7cfc1d
+Ciphertext = 53dff3ef8989e7dd63c8721f11a5
+Tag = 76b8d2708624c21df14f922e47164d9a
+
+AAD = 8415a637c8
+Plaintext = 3e5fdf0080a12142c2e363840425
+Ciphertext = c040fb7c2403b5ca1f73c65623f7
+Tag = a1ad9148eb12819175ba92c0e33e2595553e56b297ad358c
+
+AAD = 8c1dae3fd0
+Plaintext = 4667e70888a9294acaeb6b8c0c2d
+Ciphertext = c59ef45c6fb945f3fc33b4995f1f
+Tag = caf6a11e62d7719128c5527b05f2cca42beb697b001f90efc8d21694c7d36928
+
+AAD = 8112a334c5
+Plaintext = 70911132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a121
+Ciphertext = 85209c4dfd6cdd31f59af2ef4efa63ffde28ac17d95831cabdca71a4fe8d540bc58afe
+Tag =
+
+AAD = 891aab3ccd
+Plaintext = 7899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a929
+Ciphertext = c72b3215c2e62bb5833a3a0e09f0778143a8408aa2284d8c9b636bbc1e5301c966d0f1
+Tag = 95fd3bb9b6c0b0b8
+
+AAD = 9122b344d5
+Plaintext = 80a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b131
+Ciphertext = 1550de9d95781828128c37202447e3858ba33a9a99a7bed49b309f0b6fd72582ed5880
+Tag = f1ad422b42d577742ecd1edff9275eb1
+
+AAD = 992abb4cdd
+Plaintext = 88a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b939
+Ciphertext = 048cf3fe6aa873a8a065e87dd2951b39b7f8ed6203c672f4d933206b363065b2dcf811
+Tag = f7cc375bd478e69c1403dbd2f8fea478f3cf3e4f6aba4588
+
+AAD = a132c354e5
+Plaintext = 90b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = e3192664d1be3a56c178ced6a0ca81e073df82698eb8817e3e1a4ffa2477abae6006e2
+Tag = d07e0c4c54a8958c003781f2eb2bffe4a83fe1e95e4e994c734c7a0d1631145e
+
+AAD = 2abb4cdd6eff9021b243d4
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 32c354e576079829ba4bdc
+Plaintext =
+Ciphertext =
+Tag = d58b638256c19382
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = 6de8d2ee9e52c794dbe35af088baa1ae
+
+AAD = 42d364f58617a839ca5bec
+Plaintext =
+Ciphertext =
+Tag = 1d8f4742af14b736a1801b6b962f3135c5ecefbec1e846cd
+
+AAD = 4adb6cfd8e1fb041d263f4
+Plaintext =
+Ciphertext =
+Tag = 5fda57fa90eb612bf2649b10e138ebefb0b52c2ba7a958d19a5a8b8caefe54d6
+
+AAD = 3ecf60f18213a435c657e8
+Plaintext = f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c2
+Ciphertext = 211a73e28a611b45356a1c209df73a6ed78c1e88
+Tag =
+
+AAD = 46d768f98a1bac3dce5ff0
+Plaintext = 0021a1c24263e30484a52546c6e767880829a9ca
+Ciphertext = 7b245decfdb1a00d6b9f572562e62cd278798b5a
+Tag = 4f5de8fddf031b8a
+
+AAD = 4edf70019223b445d667f8
+Plaintext = 0829a9ca4a6beb0c8cad2d4eceef6f901031b1d2
+Ciphertext = f43322657312700c6ccb1d99ec0307a3edb3f891
+Tag = 4ccd504162a5b715b7c81fa7d0f5ffaf
+
+AAD = 56e778099a2bbc4dde6f00
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da
+Ciphertext = b70c0edc6bba0e8148fe91c76cf428939d699976
+Tag = f948f9e05b3f2ba4b405fe67ed5700a2d1a71e20c3267b46
+
+AAD = 5eef8011a233c455e67708
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e2
+Ciphertext = 3e09f2af80b8ed0eb64550bd852c3625572c433e
+Tag = 232f746a1dace545383820c0916f56a6427addec7fd60f5b92ff49cef15dbab4
+
+AAD = 5ced7e0fa031c253e47506
+Plaintext = f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2d
+Ciphertext = c681bbca693ba38acbd308281b681672033f7bd06ce89b3ae410b9d2048a4c820d640e77e9b4fda381f9ecd75a5f43450331
+Tag =
+
+AAD = 64f58617a839ca5bec7d0e
+Plaintext = fc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435
+Ciphertext = 8389664a845ed8343fa6ca0d17735c1bd067cb803b93a11afc2a8253974e8bffc105dda0dc1999087abebc225ff86daec9b5
+Tag = b395bc5a8a996091
+
+AAD = 6cfd8e1fb041d263f48516
+Plaintext = 0425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3d
+Ciphertext = 4a2840ca81c612baf3ba9349c5522a8fa68e94c95b8a52154991189b86d2d92a590498adf5aa4fde1a51181f3e2a8f0d7357
+Tag = fd4d3b35fad8a34434241c0a067e4101
+
+AAD = 74059627b849da6bfc8d1e
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = 421c9d01a92b7ffe7dca66a26a205e6c5cd06bac1979af45b15207cec3bb6ad6e6f7d3a90bbb35a1cba60aea89bac31b8d30
+Tag = c96da1dfc2c774cd024cdf3f41966a49c24cfbd2db83c16d
+
+AAD = 7c0d9e2fc051e273049526
+Plaintext = 1435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4d
+Ciphertext = e4f7c8708a89a4a958c9fe97d5aa0460d1b57ad48d7409c86d4206c124bd36cf3c0896be797f64c99031644bf28d89e9291b
+Tag = 548ae02947e11b16276986dea450f0ab82a1e2f418de58d8593b413d6d885ece
+
+AAD = 3acb5ced7e0fa031c253e475069728b9a93acb
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 42d364f58617a839ca5bec7d0e9f30c1b142d3
+Plaintext =
+Ciphertext =
+Tag = 315abe33e1fa3a1b
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = b799fe2daf6806e407471b79340129b2
+
+AAD = 52e374059627b849da6bfc8d1eaf40d1c152e3
+Plaintext =
+Ciphertext =
+Tag = a545ce7919908481e462d95aad65c6644a2e692c2dab201a
+
+AAD = 5aeb7c0d9e2fc051e273049526b748d9c95aeb
+Plaintext =
+Ciphertext =
+Tag = 8fc3dd98f5e52b7389659cca0789ef811af4093343d3515f6d58030e4fee3717
+
+AAD = 56e778099a2bbc4dde6f009122b344d5c556e7
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5e
+Ciphertext = 7d7a9d63ec3c8a4c7dcd737c83fd942c46da79c09952f6b1db79bd1a
+Tag =
+
+AAD = 5eef8011a233c455e67708992abb4cddcd5eef
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566
+Ciphertext = 227c36d848f5460582e0bb43f3a3a9eed31b0b79228797e04fa2c63b
+Tag = 838e5525972d59f4
+
+AAD = 66f78819aa3bcc5dee7f10a132c354e5d566f7
+Plaintext = 2041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6e
+Ciphertext = 6fdd3baad768bdf4317fbf7e80ca55972c7228eb44cb7a4c0acab219
+Tag = cc7fc1dfe883cda6ae0b2886b15218cc
+
+AAD = 6eff9021b243d465f68718a93acb5ceddd6eff
+Plaintext = 2849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = f6682839d5273a39b209d8c3613f0cad901c5813df0e53c1dac06ad5
+Tag = 330ef6eadbb0ed4730a6f45473b0d38ab788bff927dccd9f
+
+AAD = 76079829ba4bdc6dfe8f20b142d364f5e57607
+Plaintext = 3051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7e
+Ciphertext = a8c0e72f1ec9d9c1a3cae4a7ebf8e700fdfe6af96f4e4d803a7465f1
+Tag = 7088ee0942c3da8cf446639ae0f6884fc3ad917f450d7a7ad959becf1e9b169c
+
+AAD = 30c152e374059627b849da6bfc8d1eaf9f30c152e374059627b849da6bfc
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 38c95aeb7c0d9e2fc051e273049526b7a738c95aeb7c0d9e2fc051e27304
+Plaintext =
+Ciphertext =
+Tag = b7acb4e85e6adc07
+
+AAD = 40d162f38415a637c859ea7b0c9d2ebfaf40d162f38415a637c859ea7b0c
+Plaintext =
+Ciphertext =
+Tag = 59d6fe6d5b53e34fd40e8f1c7af4b6a8
+
+AAD = 48d96afb8c1dae3fd061f28314a536c7b748d96afb8c1dae3fd061f28314
+Plaintext =
+Ciphertext =
+Tag = b2e43d8ebd7abd0bcd0528b88e91ed18f883b29587d849e8
+
+AAD = 50e172039425b647d869fa8b1cad3ecfbf50e172039425b647d869fa8b1c
+Plaintext =
+Ciphertext =
+Tag = 510b18524d053cf696cba13e801dd03a2205a9c33d6d587739261d65b938ae5e
+
+AAD = 57e8790a9b2cbd4edf70019223b445d6c657e8790a9b2cbd4edf70019223
+Plaintext = 1132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e3638404
+Ciphertext = 9b4387c9102209078ac0508d2a2783e46115d8adb4feffc909e68b312595555ee34040fb5800af
+Tag =
+
+AAD = 5ff08112a334c556e778099a2bbc4ddece5ff08112a334c556e778099a2b
+Plaintext = 193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c
+Ciphertext = 6710bd78873ccea116fdd99f385d297df5353790fe28c61a82a093633c2ccaeb3b0bfb3301500a
+Tag = af3756fec89accd9
+
+AAD = 67f8891aab3ccd5eef8011a233c455e6d667f8891aab3ccd5eef8011a233
+Plaintext = 2142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f3739414
+Ciphertext = 893dced334c5d9a2f571743a8474d16689ebc7a547accbbce4902c246140c9e0a6899d3cc1a5aa
+Tag = 49f22e73a2a49cda6f7edfdf492bde49
+
+AAD = 6f009122b344d566f78819aa3bcc5deede6f009122b344d566f78819aa3b
+Plaintext = 294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c
+Ciphertext = 1fbf81fdf405cbfccf1531ff7777efe3891d5605e9b12fdb41c23df0b975072f56fa863296fb2c
+Tag = b06f612809a4a0c6e3fcfa6fe6ee21ac316914cebfef891c
+
+AAD = 7708992abb4cdd6eff9021b243d465f6e67708992abb4cdd6eff9021b243
+Plaintext = 3152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a424
+Ciphertext = 214146bd51cfce033e2f705b2364a4bbb0aef70acaad19d1253e282aec1247f0264f731e988608
+Tag = 3b86f2a10563571922c03f7fad4c508dbe76a157b584b92756fb3fe2f05d8757
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd061f28314a536c758
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = b647d869fa8b1cad3ecf60f18213a43525b647d869fa8b1cad3ecf60f18213a49425b647d869fa8b1cad3ecf60
+Plaintext =
+Ciphertext =
+Tag = ffc119f7f11d872e
+
+AAD = be4fe071029324b546d768f98a1bac3d2dbe4fe071029324b546d768f98a1bac9c2dbe4fe071029324b546d768
+Plaintext =
+Ciphertext =
+Tag = d349d363d10aac13b131517195c927af
+
+AAD = c657e8790a9b2cbd4edf70019223b44535c657e8790a9b2cbd4edf70019223b4a435c657e8790a9b2cbd4edf70
+Plaintext =
+Ciphertext =
+Tag = 2b8a49fbfe435a8d08257a98903f8930fcdccd0ff12a4e82
+
+AAD = ce5ff08112a334c556e778099a2bbc4d3dce5ff08112a334c556e778099a2bbcac3dce5ff08112a334c556e778
+Plaintext =
+Ciphertext =
+Tag = f6e24777a436f91215ccaf8d3f23952928db2caa4bfffc25ac6f38a02bb66987
+
+# initialize with key of128 bits, nonce of48 bits:
+Key = 38d16a039c35ce67009932cb64fd962f
+Nonce = ff60c122e243
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 74465aa2941cdee9
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = fb910cb1e42018d35d207b0b61680c22
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 8a04400a7ae4da21463ab9befd7759c367dda38d772d8ca6
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 6eb9dd8e5d6ad4156cac08ad3438ce476c6a22a83a5f365acf642bc9df53c76c
+
+AAD =
+Plaintext = 6f901031b1
+Ciphertext = 57c8416605
+Tag =
+
+AAD =
+Plaintext = 77981839b9
+Ciphertext = 665610c681
+Tag = 2f375019ae5f3509
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = 9b6a183272
+Tag = 7c98f4bdcea2bb31bca257c08ebcaa63
+
+AAD =
+Plaintext = 87a82849c9
+Ciphertext = 77bbc229c2
+Tag = 82862a74cbf651d5be057fa42200c41b6cb64ece2425cfc7
+
+AAD =
+Plaintext = 8fb03051d1
+Ciphertext = f931863a09
+Tag = 69748d202037dc3e767844e44c345b82ee21d9cd239b28289dc690367ff6ff21
+
+AAD =
+Plaintext = ddfe7e9f1f40c0e161820223
+Ciphertext = ffee65a9ba6d1b29effaee52
+Tag =
+
+AAD =
+Plaintext = e50686a72748c8e9698a0a2b
+Ciphertext = f8e510975d76ac44b4fe955d
+Tag = 55a6170d970d0d29
+
+AAD =
+Plaintext = ed0e8eaf2f50d0f171921233
+Ciphertext = 4fff4ebb0acc57679ea49c2f
+Tag = ffad6857f6d9633d51030cd51206b10e
+
+AAD =
+Plaintext = f51696b73758d8f9799a1a3b
+Ciphertext = 869d873d4ddc68093b0272c8
+Tag = 17147a21cfe855f8b110e8baa1155fb7a46dcb5c63e3819c
+
+AAD =
+Plaintext = fd1e9ebf3f60e00181a22243
+Ciphertext = 42cc90f57bb6ef5b0179a808
+Tag = efcca878777651449ff0ca51d0baa0303942c4d7955ddbc321ea8bbfdb53cc14
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3ebe
+Ciphertext = 789b9e08e00d9860d7bfdde8c5f7708cb979a001be6d4f
+Tag =
+
+AAD =
+Plaintext = dbfc7c9d1d3ebedf5f800021a1c24263e30484a52546c6
+Ciphertext = 2dadbcff21312696a15ea39bcc463e3b482e5cfdf77dd0
+Tag = e64e705556bf4424
+
+AAD =
+Plaintext = e30484a52546c6e767880829a9ca4a6beb0c8cad2d4ece
+Ciphertext = 67ea57e2b7104af240bd832169a8a713e2c7ae51f3473c
+Tag = 7fe5b6b84f71321dafae7de5ce5a2235
+
+AAD =
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6
+Ciphertext = f2a8836ae20df2942c6dd66533d5d642c04bc6c925dae3
+Tag = 88634a30ec96ad94e38395ef14d3ee7bb1e292c84946ef02
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = f9116a7519660f094d04240a0c9b9236c74aaaef2149ce
+Tag = 82899175311179ab630cb9300ea6f67bf87e41ac8035511342ba355c6dc9e05c
+
+AAD =
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e6
+Ciphertext = 20f442e7facf78952733cbc79316f65f9bb94d6a859dc2a15747ec713bad73092057dfec348f88
+Tag =
+
+AAD =
+Plaintext = fb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee
+Ciphertext = 111877b99213423273a9123525df0ad01ec013cffd8073b1ba08917e1b41ade727e21cffa0a122
+Tag = 368641139f731e36
+
+AAD =
+Plaintext = 0324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f6
+Ciphertext = afae1b62d437803ec753bb41bc75ea70df27896b4f4b9c5c222d4aa661e9234ab351ed6bbc3a94
+Tag = 2be30f47e7d095e804b3ee515e02c3a2
+
+AAD =
+Plaintext = 0b2caccd4d6eee0f8fb03051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe
+Ciphertext = 518e4138c16d575d31435e9485bfae56b9a3f71e4d20560370bcf759ef1025185da9d0481ded04
+Tag = 372a68ff4281ddc1494d2ccc270dc631e924bb6f6fa80c58
+
+AAD =
+Plaintext = 1334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7efe1f9fc04061e10282a32344c4e5658606
+Ciphertext = b30b77b3d82cd320d4c603c54c5693e88a20fb5091f7e89cc8de4d51def1d5c73d8b174d1ae99a
+Tag = da8ecbacd0a44c3605243c0b91db4bebda7871e56cbf50c330488d60994f02fe
+
+AAD = 5eef8011a2
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 66f78819aa
+Plaintext =
+Ciphertext =
+Tag = fc5ef1fb8447c830
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = fbcd832c2f9f9a59c9fe597818d91ebc
+
+AAD = 76079829ba
+Plaintext =
+Ciphertext =
+Tag = ee59bd76e1ed9032e02f31ed7cb7813d612f390432388f82
+
+AAD = 7e0fa031c2
+Plaintext =
+Ciphertext =
+Tag = eb94ed38f3d9f98b5251e44c8f0cebc56da24d4e1b4398d9ee321d9154b4a8e9
+
+AAD = 6cfd8e1fb0
+Plaintext = 2647c7e86889092aaacb4b6cec0d
+Ciphertext = cdc7498496de94d1e6a17b759129
+Tag =
+
+AAD = 74059627b8
+Plaintext = 2e4fcff070911132b2d35374f415
+Ciphertext = 179055f7dc6df8135a092e203d22
+Tag = a0c96f635353c4b7
+
+AAD = 7c0d9e2fc0
+Plaintext = 3657d7f87899193abadb5b7cfc1d
+Ciphertext = 02226d36859c65c897b90a849cf2
+Tag = 8149ada40bcf30f2b0f3a959aaf349aa
+
+AAD = 8415a637c8
+Plaintext = 3e5fdf0080a12142c2e363840425
+Ciphertext = cbb8fb9a6c20234224f956771e3c
+Tag = 0cdc1a6c463b5d2c10fd78584895ece597d21a1cc0db79ab
+
+AAD = 8c1dae3fd0
+Plaintext = 4667e70888a9294acaeb6b8c0c2d
+Ciphertext = 8bdbde0978b00ecbbbdb6399b9ed
+Tag = e3453ecf7d7aaa3834bb39b52ff8911846c99cddcc559d001dbde0d274cb7536
+
+AAD = 8112a334c5
+Plaintext = 70911132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a121
+Ciphertext = 7712981d8f40b8c97688fa7fc5da8eeac421d6b518abf290dde300a1cc3be07988991f
+Tag =
+
+AAD = 891aab3ccd
+Plaintext = 7899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a929
+Ciphertext = a0bb689a2cf59e4f942f9d451f62eb55b222ac9251fb106c4d4fecedffb465b8c2af60
+Tag = 384c326288bee801
+
+AAD = 9122b344d5
+Plaintext = 80a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b131
+Ciphertext = e0b926b2bd8cb417ee050c92ad2b15e84b7636a9e4284195fca19f934c0016dcef6f36
+Tag = ec044dfd6d64fabb1e4c95e3250ee10f
+
+AAD = 992abb4cdd
+Plaintext = 88a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b939
+Ciphertext = bba6cce2b0715a0695eca0312ecb6b0fd8ecfa3d9c7736f03076b0de0217d1ae2de6dd
+Tag = e288104e34335f6285517af7e53292dcc709feb20ca4ee50
+
+AAD = a132c354e5
+Plaintext = 90b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = b3f71e697ff1d560e2b0bf464f4a0ae6e715f615454af9afbe75fc6a63497ab7253dbc
+Tag = cba3752a024fd03e1ace835878350fab5d3b22230b22c39a33fb7ddaf409caaf
+
+AAD = 2abb4cdd6eff9021b243d4
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 32c354e576079829ba4bdc
+Plaintext =
+Ciphertext =
+Tag = 41a8fe80c0558ee7
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = a50ff6440c90594ceedf1213c6b9959f
+
+AAD = 42d364f58617a839ca5bec
+Plaintext =
+Ciphertext =
+Tag = 2fcfd1941b165ef1292e6fec645bbfa66411b5ba936ab665
+
+AAD = 4adb6cfd8e1fb041d263f4
+Plaintext =
+Ciphertext =
+Tag = f5d664a8821eec435ea39288bae1992a7a484f95f9207d915464e3ecd5814fdc
+
+AAD = 3ecf60f18213a435c657e8
+Plaintext = f81999ba3a5bdbfc7c9d1d3ebedf5f800021a1c2
+Ciphertext = 9dc9e5a85e07e4324185a5bece9d79c94334b4b7
+Tag =
+
+AAD = 46d768f98a1bac3dce5ff0
+Plaintext = 0021a1c24263e30484a52546c6e767880829a9ca
+Ciphertext = 846d5fbdb2c3f6006d7c2612c92379d20c2445bb
+Tag = 4ec4d78a4c2fdcb2
+
+AAD = 4edf70019223b445d667f8
+Plaintext = 0829a9ca4a6beb0c8cad2d4eceef6f901031b1d2
+Ciphertext = 7791c77fbe8530ab23b3a4dc35cab10171d4c2bb
+Tag = 07a8bc227db95a0b7c5fc11de1ae45e5
+
+AAD = 56e778099a2bbc4dde6f00
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da
+Ciphertext = a2e9739bcd39cf34f9bea9cf1289a2f449b9919b
+Tag = c7998602fc7ac48e189a950e7fec73ff124fad782833314a
+
+AAD = 5eef8011a233c455e67708
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e2
+Ciphertext = c8b0d2d43383f1714483aa9248e73e663f61c845
+Tag = bb6455957edb4d08885139e27ec0996a41a29767d6d8b3873bf0fc0239d34b2e
+
+AAD = 5ced7e0fa031c253e47506
+Plaintext = f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2d
+Ciphertext = b4f97e2b591400c20f0d22651390731fcee4cda2e0b4a26949b6d8fcb7b83aef3b0ad9454c6700723c4e6cb5eadac8a71fb4
+Tag =
+
+AAD = 64f58617a839ca5bec7d0e
+Plaintext = fc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435
+Ciphertext = 3a5df3531bebe00bcf73e499a44576891f724627b20c6ed83082e9205c36da0ee05ffb5bada580bd9e1cd92e975045ac8ddc
+Tag = 8609a1ed1af51830
+
+AAD = 6cfd8e1fb041d263f48516
+Plaintext = 0425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3d
+Ciphertext = 3a753cc236f632b0de309e750088a85f4e574fefea7e80fe761920c7368b14de957ed9da4a9da1e0d26725bc7af292d121db
+Tag = 59066b5796878dfc6de594a5c350e1a7
+
+AAD = 74059627b849da6bfc8d1e
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = fabb2da76c26a2f31bd8ffff9d705402010d778bf3a1d5097960a1073cc2083b37aa09761af36c12f99efb451c236b24303f
+Tag = 37b132eace996dab7c50b4f57bca5a219f204c2861e54f93
+
+AAD = 7c0d9e2fc051e273049526
+Plaintext = 1435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4d
+Ciphertext = 29263aa0b00a4dbca4b34780e5bbb9bd2ff88cc7a0e7d275a256bbc428109c7e6f9d68b56df583a86157c13465cb7c3da66a
+Tag = e17513425b6fb50e8d6b8eccc08f483548d2773e141591f72d1cc6c5c948d9f0
+
+AAD = 3acb5ced7e0fa031c253e475069728b9a93acb
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 42d364f58617a839ca5bec7d0e9f30c1b142d3
+Plaintext =
+Ciphertext =
+Tag = af8359ecc5781801
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = 9108d6f0a8dbb2175d3834326ea196f1
+
+AAD = 52e374059627b849da6bfc8d1eaf40d1c152e3
+Plaintext =
+Ciphertext =
+Tag = 9a67a05231138df24a06e1ae024d6b6a70750cd3f5cb36be
+
+AAD = 5aeb7c0d9e2fc051e273049526b748d9c95aeb
+Plaintext =
+Ciphertext =
+Tag = e8144ef9ebf38000dd263354da8f4fafedf59a542f07829d2a1a214eaaf4d484
+
+AAD = 56e778099a2bbc4dde6f009122b344d5c556e7
+Plaintext = 1031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5e
+Ciphertext = 4642b30ba3ed9f1a18ccc80026582bb07ec96fcd5a3c852fc7c89091
+Tag =
+
+AAD = 5eef8011a233c455e67708992abb4cddcd5eef
+Plaintext = 1839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566
+Ciphertext = 60fe9f4b2a84bda3717367fe7adf033a96521214a5bdb9b960246bb2
+Tag = 778ebf7c4281ba8d
+
+AAD = 66f78819aa3bcc5dee7f10a132c354e5d566f7
+Plaintext = 2041c1e262830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6e
+Ciphertext = e58851df73c4995bf9a9668b2b0749e3c7b347cbeae9b9eae184db5f
+Tag = c9330a1ffe006d538aaaebd9d78e215f
+
+AAD = 6eff9021b243d465f68718a93acb5ceddd6eff
+Plaintext = 2849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = ed80590c710b9917b97f89b330ce8a4f60a013148b2563a049b4185d
+Tag = 72d4160cf0f12e18c4648f36a769c9ff2438aff2ce171006
+
+AAD = 76079829ba4bdc6dfe8f20b142d364f5e57607
+Plaintext = 3051d1f272931334b4d55576f61797b83859d9fa7a9b1b3cbcdd5d7e
+Ciphertext = 25bcd4db2d9c2ae5ca695aaee98f52b932d7ee3b69e884aebc92f7df
+Tag = 8c6953b261801524d4fdaf6f2603a10e54ab58610efb6f1ba721bce84d40a4f8
+
+AAD = 30c152e374059627b849da6bfc8d1eaf9f30c152e374059627b849da6bfc
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = 38c95aeb7c0d9e2fc051e273049526b7a738c95aeb7c0d9e2fc051e27304
+Plaintext =
+Ciphertext =
+Tag = 7cdc3a4feda0a50e
+
+AAD = 40d162f38415a637c859ea7b0c9d2ebfaf40d162f38415a637c859ea7b0c
+Plaintext =
+Ciphertext =
+Tag = 1d15f37546668365f438a1dfa2a14b32
+
+AAD = 48d96afb8c1dae3fd061f28314a536c7b748d96afb8c1dae3fd061f28314
+Plaintext =
+Ciphertext =
+Tag = 8923ce03b3463df41ac7b2448545a49c788d37cdc99a5442
+
+AAD = 50e172039425b647d869fa8b1cad3ecfbf50e172039425b647d869fa8b1c
+Plaintext =
+Ciphertext =
+Tag = 0db3e7666116b67b0532293cd00327f85debc27b295be4b424641e0f95e03b93
+
+AAD = 57e8790a9b2cbd4edf70019223b445d6c657e8790a9b2cbd4edf70019223
+Plaintext = 1132b2d35374f41595b63657d7f87899193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e3638404
+Ciphertext = f40dbca4fa0cc685729d8acfea6faf40f5313b30fb336d495263db73b8c4cd90197c365ecace18
+Tag =
+
+AAD = 5ff08112a334c556e778099a2bbc4ddece5ff08112a334c556e778099a2b
+Plaintext = 193abadb5b7cfc1d9dbe3e5fdf0080a12142c2e363840425a5c64667e70888a9294acaeb6b8c0c
+Ciphertext = ab89e3828979c221f5aec60db0b6608fd1471a6e850ba9c86f9f0913e2c276e11772a55805564b
+Tag = 2abbe0e1d237c273
+
+AAD = 67f8891aab3ccd5eef8011a233c455e6d667f8891aab3ccd5eef8011a233
+Plaintext = 2142c2e363840425a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f3739414
+Ciphertext = cf135b726729e925af07fe32973a062a6c42633433176949bcb85e239135f9244d666b721724ba
+Tag = e7492d1e2bf6bf911ff223e296ec747d
+
+AAD = 6f009122b344d566f78819aa3bcc5deede6f009122b344d566f78819aa3b
+Plaintext = 294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c
+Ciphertext = bf11954e85898e4a633517dcb924d29815b1871eff36adbdcb6ef5a8549cb2fd308db8aea3850d
+Tag = 3b18380b2c58c79450e1628b74fae4a8844facdc54073b10
+
+AAD = 7708992abb4cdd6eff9021b243d465f6e67708992abb4cdd6eff9021b243
+Plaintext = 3152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a424
+Ciphertext = 4c018ac62af8edc80dfd810be0ac5281f9862799d1587708bab211c4d76b9738d5147af41342ba
+Tag = f283b21f2da33069ce42adfa42c7952a5d2320805902c31a870be2ba4809cf3f
+
+AAD = ae3fd061f28314a536c758e97a0b9c2d1dae3fd061f28314a536c758e97a0b9c8c1dae3fd061f28314a536c758
+Plaintext =
+Ciphertext =
+Tag =
+
+AAD = b647d869fa8b1cad3ecf60f18213a43525b647d869fa8b1cad3ecf60f18213a49425b647d869fa8b1cad3ecf60
+Plaintext =
+Ciphertext =
+Tag = 1825eda11cec0149
+
+AAD = be4fe071029324b546d768f98a1bac3d2dbe4fe071029324b546d768f98a1bac9c2dbe4fe071029324b546d768
+Plaintext =
+Ciphertext =
+Tag = 1f505d3c5463684f7b62b2b172047bdc
+
+AAD = c657e8790a9b2cbd4edf70019223b44535c657e8790a9b2cbd4edf70019223b4a435c657e8790a9b2cbd4edf70
+Plaintext =
+Ciphertext =
+Tag = 752a388842b9f995a6569b3eeca15261800d6b4324bf44f1
+
+AAD = ce5ff08112a334c556e778099a2bbc4d3dce5ff08112a334c556e778099a2bbcac3dce5ff08112a334c556e778
+Plaintext =
+Ciphertext =
+Tag = 67cb616ce2c5e01bb09aee89f0bebb23470137299aa02a1f27517dd264de1cf5
+
+# initialize with key of112 bits, nonce of64 bits:
+Key = f68f28c15af38c25be57f08922bb
+Nonce = 41a203642485e647
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = feec3361eb26476bfdb764b7080a5c89
+
+AAD =
+Plaintext = 3b5cdc
+Ciphertext = 0f4c11
+Tag = e28768020e1a68846865bddc68878275
+
+AAD =
+Plaintext = c3e464850526a6
+Ciphertext = d5259380cc43ab
+Tag = 84633603533fc7001b6605374fe503dc
+
+AAD =
+Plaintext = 8fb03051d1f272931334b4d555
+Ciphertext = afb90eefd643221a61da2aba78
+Tag = 1fc98fa7b96ea5b6ea60eb7e3e0b716f
+
+AAD =
+Plaintext = 4162e20383a42445c5e666870728a8c9496aea0b8bac
+Ciphertext = f5ca5d62d8a848949f7fe05ab741b72a71573f7d38d9
+Tag = 3e9fd80f6bab5efa1988aeef138fc4d9
+
+AAD =
+Plaintext = 1d3ebedf5f800021a1c24263e30484a52546c6e767880829a9ca4a6beb0c8cad2d4eceef
+Ciphertext = fac002871e861059a18163eec80f6679bb8986939230fbbf37dd00fcf1ae9f1e71503be1
+Tag = 272baaf61f68e94192e787dfc8f6928c
+
+AAD = 2abb4c
+Plaintext =
+Ciphertext =
+Tag = 74c4db001fd90a8d2e3f173badc92330
+
+AAD = 35c657
+Plaintext = 4e6fef1090b13152d2f373
+Ciphertext = 1445adc6a5c019ebb9c762
+Tag = 5830834785c584c7ddb2dc96c9bc8f74
+
+AAD = 45d667
+Plaintext = 6e8f0f30b0d15172f21393b43455d5f676971738b8d9597afa1b9b
+Ciphertext = 1e896279917f2aad1a039ab725d04e05c52816ecd3119d25a0e021
+Tag = e235217acd6efc377818e2b25a493374
+
+AAD = b243d465f68718
+Plaintext =
+Ciphertext =
+Tag = 616f42d34076dfde645b33f565adfea2
+
+AAD = c152e374059627
+Plaintext = dafb7b9c1c3dbdde5e7fff20a0c141
+Ciphertext = 684b8d2b49920a9dba8496acb22487
+Tag = 367a60f64ca783965241b04624ead157
+
+AAD = d768f98a1bac3d
+Plaintext = c6e767880829a9ca4a6beb0c8cad2d4eceef6f901031b1d25273f31494b53556d6f7779818
+Ciphertext = 0bbc2c946057fce1af2b6d837b298bbf1cceee309d78220b12d7e81fa1ea49875ff661f890
+Tag = 7374958744be3129d008a6b950dc3e46
+
+AAD = dc6dfe8f20b142d364f58617
+Plaintext =
+Ciphertext =
+Tag = b4704eaadf0b67f3e32d3d80a3c05d61
+
+AAD = f08112a334c556e778099a2b
+Plaintext = 092aaacb4b6cec0d8dae2e4fcff070911132b2d3
+Ciphertext = 29f85d1d755d60658c25191b1f4b77b6818b7067
+Tag = f6dc1187e701e3d5d24faeb10c379dd0
+
+AAD = 0e9f30c152e374059627b849
+Plaintext = 0526a6c74768e80989aa2a4bcbec6c8d0d2eaecf4f70f01191b23253d3f474951536b6d75778f81999ba3a5bdbfc7c9d1d3e
+Ciphertext = ec184614f1ae738e70afb3a02737ce027142b75e4e6c26cf7c8142dda6d64cbd0e1afbcebe1b8bbc40b6d5cb0635159eb517
+Tag = 18d7e357e3c8a0afacd341f1dd68529f
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = eeedfe4ab439f0cc9961a0be6924d63a
+
+AAD = 65f68718a93acb5ced7e0fa031c253e4d465f6
+Plaintext = 7e9f1f40c0e161820223a3c44465e50686a72748c8e9698a0a2bab
+Ciphertext = d65aa405dc097df7dcc2dc119dfe486ebdde1d945a92cff78ae4c0
+Tag = 30429a55818c7fe453990e45632184fe
+
+AAD = fc8d1eaf40d162f38415a637c859ea7b6bfc8d1eaf40d162f38415a6
+Plaintext =
+Ciphertext =
+Tag = 70902dac026cd021f71ec9e30e3c3eb7
+
+AAD = 20b142d364f58617a839ca5bec7d0e9f8f20b142d364f58617a839ca
+Plaintext = 395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b
+Ciphertext = 5718bee9b6d10dd0da942a1133661e51ebeb4c7ecd125ab1ad78af8f25ae2142383ced34
+Tag = 0a038c56221a3a1c435c967ae4930c12
+
+AAD = 9425b647d869fa8b1cad3ecf60f18213039425b647d869fa8b1cad3ecf60f18272039425b647d869
+Plaintext =
+Ciphertext =
+Tag = 3877f01eb5b6d64539ba496fb9691748
+
+AAD = c455e67708992abb4cdd6eff9021b24333c455e67708992abb4cdd6eff9021b2a233c455e6770899
+Plaintext = ddfe7e9f1f40c0e161820223a3c44465e50686a72748c8e9698a0a2babcc4c6ded0e8eaf2f50d0f171921233b3d45475
+Ciphertext = 1510ba40c235213d54b2c12fcafe25227a5831e673856e2ad91f50e739bb195e56ad00431b67217060ae0037b76b0401
+Tag = 03b7e385c571876b54c77273ded03d1f
+
+# initialize with key of104 bits, nonce of72 bits:
+Key = 55ee8720b952eb841db64fe881
+Nonce = e243a405c52687e8a8
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 8750c2d4d7351d28ff88f1bff4305888
+
+AAD =
+Plaintext = 99ba
+Ciphertext = ffc7
+Tag = a89e2efaf43b6ab885e04083d2bf3996
+
+AAD =
+Plaintext = 7fa02041c1
+Ciphertext = cc9eff4b77
+Tag = cf4c7d3f6c6e14bb7dd34d4f0cff33e0
+
+AAD =
+Plaintext = 0728a8c9496aea0b8b
+Ciphertext = 2e5efc6e10ea75b864
+Tag = 3d0130753beface87ddb647a01573a47
+
+AAD =
+Plaintext = d3f474951536b6d75778f81999ba3a
+Ciphertext = 8e5e1815b9b361ea2125cb475c75ac
+Tag = 51ed130779cbbfc1bf2f9037680278b5
+
+AAD =
+Plaintext = 85a62647c7e86889092aaacb4b6cec0d8dae2e4fcff07091
+Ciphertext = 981fe0590af5b2dca4c80906e4639005759822d8edb4d080
+Tag = 364a22729a51ee1593cb2058fbd22cb9
+
+AAD =
+Plaintext = 61820223a3c44465e50686a72748c8e9698a0a2babcc4c6ded0e8eaf2f50d0f171921233b3d4
+Ciphertext = f93f38b53ad30aebd02ed3ceea06e292e068281cb6bc5edaefc93d6279137c14d7013d6ae53c
+Tag = a4b59bce2cb127ecbe9d634c552ccefe
+
+AAD = 8819
+Plaintext =
+Ciphertext =
+Tag = 1eecacb20b0e7e7fec49d5084172283d
+
+AAD = 9122
+Plaintext = 092aaacb4b6cec0d8d
+Ciphertext = 83db3629fbc8733e47
+Tag = 89218bd6f160365f5486ee7f758ba9d7
+
+AAD = 9e2f
+Plaintext = 4364e40585a62647c7e86889092aaacb4b6cec0d8dae
+Ciphertext = 7a5e2f42226cc58fd3e61673c515228cfead641ab560
+Tag = 93859e558d9dc29f9d7b1c33c8ca872d
+
+AAD = b243
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa0
+Ciphertext = 4a64c06c869194d698bb851e947f29ca5dcce1ded3979bcc9a7b88b7de38cc1dd9b0a8ca1cc729a9400d
+Tag = 2392d646fad11d5909937822e1a685b0
+
+AAD = cc5dee7f
+Plaintext =
+Ciphertext =
+Tag = 1bc63333f526ab4c5f107d5d5c4f657e
+
+AAD = d768f98a
+Plaintext = 4f70f01191b23253d3f474
+Ciphertext = 09c179056683acb16f55ea
+Tag = c820b63049a906b34c7beaabbe2570ba
+
+AAD = e778099a
+Plaintext = 6f901031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9c
+Ciphertext = d35f866e0d088fd0a7b6b9f636134823d70c43ca35d4c26296db24
+Tag = 35e0f79f50250cb8003ced10ba6dc53f
+
+AAD = b243d465f68718
+Plaintext =
+Ciphertext =
+Tag = 6e7a1cd387f79d15ff3dc4d636a80d45
+
+AAD = c051e273049526
+Plaintext = 3859d9fa7a9b1b3cbcdd5d7efe1f
+Ciphertext = 7917d7ec8b0aac6fdc02b3213393
+Tag = 74a04595ab0589ef2d1a90edfacebe08
+
+AAD = d566f78819aa3b
+Plaintext = 82a32344c4e565860627a7c84869e90a8aab2b4ccced6d8e0e2fafd05071f11292b333
+Ciphertext = 0f2cac3258718cddaf515a17fe0570d717487c1c45c0d55059b4d08117ac1831766a3a
+Tag = 84e0a4f6b7c4f08d30b97f2068c9b5c6
+
+AAD = 3acb5ced7e0fa031c253e4
+Plaintext =
+Ciphertext =
+Tag = 73f5b538edc872bff4e1912bc75665c9
+
+AAD = 4cdd6eff9021b243d465f6
+Plaintext = c4e565860627a7c84869e90a8aab2b4ccced
+Ciphertext = 9236bb7a5e13216177be3dd603d0685173c5
+Tag = bf551d34bd5d362eec05f2c0aadb74df
+
+AAD = 67f8891aab3ccd5eef8011
+Plaintext = dafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445c5e666870728a8c9496aea0b8bac2c4dcdee6e8f0f30b0
+Ciphertext = 59a05ac9f2720e4193d7a96d5b869afb7f1651479c0d9283053ae47efaf0547ab00ec014d481a5364a2bb2a817
+Tag = 366b8d5b7bfcf4d597b5175cdbc2a7c3
+
+AAD = 64f58617a839ca5bec7d0e9f30c152e3
+Plaintext =
+Ciphertext =
+Tag = a29960a564c5aee4c0be50e28328d327
+
+AAD = 7b0c9d2ebf50e172039425b647d869fa
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5ede
+Ciphertext = 76bc3c6c69707d0a390ca89a532fcd547ae515046d0f7f
+Tag = e04cce6da522346ad481f81c201d552e
+
+AAD = d263f48516a738c95aeb7c0d9e2fc05141d263f48516a7
+Plaintext =
+Ciphertext =
+Tag = aed235e02e2d357a06725e36e95677a3
+
+AAD = f08112a334c556e778099a2bbc4dde6f5ff08112a334c5
+Plaintext = 6889092aaacb4b6cec0d8dae2e4fcff070911132b2d35374f41595b63657
+Ciphertext = 856bb203d6330e3ec20ccdef7881028da3ee533ef8b4658947ef045c6e9c
+Tag = e21af3025eca96af036e426774254bb1
+
+AAD = 8415a637c859ea7b0c9d2ebf50e17203f38415a637c859ea7b0c9d2ebf50e172
+Plaintext =
+Ciphertext =
+Tag = 2b945e06a282cd3f9cf7c12108d33474
+
+AAD = ab3ccd5eef8011a233c455e67708992a1aab3ccd5eef8011a233c455e6770899
+Plaintext = 2344c4e565860627a7c84869e90a8aab2b4ccced6d8e0e2fafd05071f11292b33354d4f5759616
+Ciphertext = d2c808f8a075f1a85df7261216a5745e48c43f9e9615d0ce8b5900830dd2aa6f14472ecbd85696
+Tag = f3dc00cd7e5532f3240b078c57f1e0d0
+
+AAD = 1cad3ecf60f18213a435c657e8790a9b8b1cad3ecf60f18213a435c657e8790afa8b1cad3ecf60f18213a435
+Plaintext =
+Ciphertext =
+Tag = 2c49e6ebc4abf2de91a3ea40336075e4
+
+# initialize with key of96 bits, nonce of80 bits:
+Key = b44de67f18b14ae37c15ae47
+Nonce = 83e445a666c7288949aa
+
+AAD =
+Plaintext =
+Ciphertext =
+Tag = 6a16bfa52adc435b4a0dab595c65a226
+
+AAD =
+Plaintext = f7
+Ciphertext = e0
+Tag = abde67188f4372e1fc835de25e9f82b3
+
+AAD =
+Plaintext = 99ba
+Ciphertext = 2cbf
+Tag = cf11b42e06630efcf5cd150f208bdbc1
+
+AAD =
+Plaintext = ddfe7e9f
+Ciphertext = 6236e654
+Tag = 52eb36dd4fa1cd8588bc1ea4826b4eba
+
+AAD =
+Plaintext = c3e464850526a6
+Ciphertext = 38a1662228035f
+Tag = 818e5d59344e813689b0b7b85a2ab72f
+
+AAD =
+Plaintext = 4b6cec0d8dae2e4fcff070
+Ciphertext = b40768aa30bcaacac8e5c0
+Tag = f8e6073c9a866169a762a73ac2bfc8ed
+
+AAD =
+Plaintext = 1738b8d9597afa1b9bbc3c5dddfe7e9f1f
+Ciphertext = d7434ddcc296fc0d88eff289f0f8cf2946
+Tag = 4b0066476ae08ea9a9f2a8af74d4b69b
+
+AAD =
+Plaintext = c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d55576
+Ciphertext = 89c40d15ab0f03f1122ee44f8becac7f35c2564452b9d5a2cdd7
+Tag = 868b52996b2d495a5979bf568755bad7
+
+AAD =
+Plaintext = a5c64667e70888a9294acaeb6b8c0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9
+Ciphertext = e0df42ac20a13984643a1339c71b6a9f9ea87a9759a5ff9cbb37377c5fcc50671864597117fdb370
+Tag = 7a699aee48e60b10a04146f6d1f1fc6f
+
+AAD = e6
+Plaintext =
+Ciphertext =
+Tag = c924da559fdf9ab7484d212c9127a5aa
+
+AAD = ee
+Plaintext = 66870728a8c9496a
+Ciphertext = 365fe5800209061c
+Tag = 8fdd7ff23bf3d5e60c8e61869b8e80ac
+
+AAD = fa
+Plaintext = fe1f9fc04061e10282a32344c4e565860627a7c8
+Ciphertext = e46517e0e4f49341b8c2e9aee7bf08360ab5da56
+Tag = 75e3ab8dbea2c5319e0a77f39ddaf0b8
+
+AAD = 0c
+Plaintext = 62830324a4c54566e60787a82849c9ea6a8b0b2caccd4d6eee0f8fb03051d1f272931334b4d5
+Ciphertext = 6aa4d989bde089ba1aa5e7eafb428c5d064fbda91986a9e56c4bc53fb08873ef84fe49d0ce72
+Tag = 62f7a88dcdbb74a3690faebff9cec331
+
+AAD = 8819
+Plaintext =
+Ciphertext =
+Tag = 5aeb913708b94d6065dbbe98c1204728
+
+AAD = 9122
+Plaintext = 092aaacb4b6cec0d8d
+Ciphertext = b54fbca17181c331df
+Tag = e6158af264bdf3671267a316e228753d
+
+AAD = 9e2f
+Plaintext = 4364e40585a62647c7e86889092aaacb4b6cec0d8dae
+Ciphertext = fdd7ccbed6adb362507f7c2dda08bca172717f04d325
+Tag = ddbc6a9926ef517e4fed3276b1fcdba6
+
+AAD = b243
+Plaintext = eb0c8cad2d4eceef6f901031b1d25273f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa0
+Ciphertext = 55bc98252ee60867b700dba2959e3fa947c771e0d31e463c56f353cb2f60207888b5cb7f7a4598ea7bb4
+Tag = ff1906f14f4a23cae63c549852ad60e8
+
+AAD = 2abb4c
+Plaintext =
+Ciphertext =
+Tag = a26757b5a5fbcb8d8ea2112ec37e6dc0
+
+AAD = 34c556
+Plaintext = accd4d6eee0f8fb03051
+Ciphertext = b22f6790cb30da19cdc3
+Tag = 97463b670f19a993bc090a6c7d06e085
+
+AAD = 43d465
+Plaintext = 2a4bcbec6c8d0d2eaecf4f70f01191b23253d3f474951536b6
+Ciphertext = b14ba449b2d30294ac94eb13a85c1aca735bd5bac94e37d947
+Tag = becdaf7ee80b544af7f587baf51d7591
+
+AAD = 59ea7b
+Plaintext = 1637b7d85879f91a9abb3b5cdcfd7d9e1e3fbfe060810122a2c34364e40585a62647c7e86889092aaacb4b6cec0d8d
+Ciphertext = f9adcd1ea805e046ab68fe9e1bb771f8b0741a07b0c0e6db745aed23a20091c1834598c54d5d94b78cca09110ca9b7
+Tag = 4a357836c677709f5523266a78f20c37
+
+AAD = 6eff9021b2
+Plaintext =
+Ciphertext =
+Tag = 7c2a4b076e23cdf57a0be0d70366ee86
+
+AAD = 7a0b9c2dbe
+Plaintext = f21393b43455d5f676971738
+Ciphertext = aa10960eccfbcdf86190e2ea
+Tag = add0319ed9717cf6c05c1ec7f4cfe810
+
+AAD = 8c1dae3fd0
+Plaintext = 5677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c14162e20383a42445
+Ciphertext = 347c099243c4fa97cd4b87edd87b1fc06f3577e4cd6c0aceb7d2bb8dd343
+Tag = 6729628493f34caa9f8b9593e9354fe6
+
+AAD = b243d465f68718
+Plaintext =
+Ciphertext =
+Tag = 8f29f5c05f9f42b918c2dda3904b7f65
+
+AAD = c051e273049526
+Plaintext = 3859d9fa7a9b1b3cbcdd5d7efe1f
+Ciphertext = 88e4d0a8770db4ada5665e0a91fa
+Tag = 0a941ca77090a270c70d0154f085fc42
+
+AAD = d566f78819aa3b
+Plaintext = 82a32344c4e565860627a7c84869e90a8aab2b4ccced6d8e0e2fafd05071f11292b333
+Ciphertext = bbd1bd63fca1cd51cd47af2e650dd25cc86b13801f8a405b5428e485e0006b63a03f07
+Tag = 7a685d3eb3fe6f56c181667c3c538785
+
+AAD = 9829ba4bdc6dfe8f20b1
+Plaintext =
+Ciphertext =
+Tag = 55b68eced66f6dea8cc00774a91e0d13
+
+AAD = a93acb5ced7e0fa031c2
+Plaintext = 2142c2e363840425a5c64667e70888a929
+Ciphertext = 54c6f1a434de16def67465570a7d947b1f
+Tag = 4c824ffb309fb769a66e604acbac4b4a
+
+AAD = c253e475069728b94adb
+Plaintext = f31494b53556d6f777981839b9da5a7bfb1c9cbd3d5edeff7fa02041c1e262830324a4c54566e60787a8
+Ciphertext = 030fbe3f54f896c5a674ae4218b84651b5989064fb6fffeff5bcbfeaff5d07a6bce065a6832a7ce9dfdd
+Tag = 87db84b2e5a3a737a60429a7d954ae62
+
+AAD = 20b142d364f58617a839ca5bec7d
+Plaintext =
+Ciphertext =
+Tag = 88c5c6319ef5509baf3a58da781c34df
+
+AAD = 35c657e8790a9b2cbd4edf700192
+Plaintext = adce4e6fef1090b13152d2f373941435b5d65677f7
+Ciphertext = 8e5309dc4bb9c2b506f2b0c96019ce41bc1396348c
+Tag = 9ae7662bff72d7aa0e140ad361b0bb38
+
+AAD = 4adb6cfd8e1fb041d263f48516a738c9b94adb
+Plaintext =
+Ciphertext =
+Tag = 2a57c7035138feaa25dd2e8d8c57f566
+
+AAD = 64f58617a839ca5bec7d0e9f30c152e3d364f5
+Plaintext = dcfd7d9e1e3fbfe060810122a2c34364e40585a62647c7e86889
+Ciphertext = ea022dad670140e23d03cb60d0c03265ed153a281b48a82d4a6a
+Tag = 1abb16de54b0a828867825be208f5537
+
+AAD = b849da6bfc8d1eaf40d162f38415a63727b849da6bfc8d1eaf40
+Plaintext =
+Ciphertext =
+Tag = b454178699071efb7b3b32f8db2bc208
+
+AAD = d96afb8c1dae3fd061f28314a536c75848d96afb8c1dae3fd061
+Plaintext = 5172f21393b43455d5f676971738b8d9597afa1b9bbc3c5dddfe7e9f1f40c0e161
+Ciphertext = 8c28093c776fdfe73fc6d8e3d9b4adccda518f50705b7e266acabaa49b097c5e4b
+Tag = 35bf9701bdbb6907fe0ed3b483e793a9
+
+AAD = 6afb8c1dae3fd061f28314a536c758e9d96afb8c1dae3fd061f28314a536c75848d96a
+Plaintext =
+Ciphertext =
+Tag = a98b374e565b5321c24000b692ae16a3
+
+AAD = 9425b647d869fa8b1cad3ecf60f18213039425b647d869fa8b1cad3ecf60f182720394
+Plaintext = 0c2dadce4e6fef1090b13152d2f373941435b5d65677f71898b9395adafb7b9c1c3dbdde5e7fff20a0c1
+Ciphertext = 86a7ad4783f3ac54d838fbbc1b5d23385f4967d233ac70288b0e8effbdcf4a72afc9ed904dbb29e5c099
+Tag = 2446a5bee0a1c8918164ca8a69c871bf
+
+AAD = 029324b546d768f98a1bac3dce5ff08171029324b546d768f98a1bac3dce5ff0e071029324b546d768f98a1bac3dce
+Plaintext =
+Ciphertext =
+Tag = a953bbf734348106dca406b86a811797

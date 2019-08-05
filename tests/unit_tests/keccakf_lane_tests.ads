@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,27 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with Ketje_Suite;
-with AUnit.Test_Caller;
+with AUnit.Test_Fixtures;
+with Keccak.Generic_KeccakF.Byte_Lanes;
+with Keccak.Types;
 
-package body Keccak_Suites
+generic
+   State_Size_Bits : Positive;
+   type State is private;
+
+   with procedure Init_State (A : out State);
+
+   with procedure XOR_Bits_Into_State(A       : in out State;
+                                      Data    : in     Keccak.Types.Byte_Array;
+                                      Bit_Len : in     Natural);
+   with procedure Extract_Bits(A       : in     State;
+                               Data    :    out Keccak.Types.Byte_Array;
+                               Bit_Len : in     Natural);
+package KeccakF_Lane_Tests
 is
-   function Suite return Access_Test_Suite
-   is
 
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
-      Ret.Add_Test(Ketje_Suite.Suite);
+   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
 
-      return Ret;
-   end Suite;
+   procedure Test_XOR_Extract(T : in out Test);
 
-end Keccak_Suites;
+end KeccakF_Lane_Tests;

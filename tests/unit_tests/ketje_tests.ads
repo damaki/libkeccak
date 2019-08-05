@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,25 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with Ketje_Suite;
-with AUnit.Test_Caller;
+with AUnit.Test_Fixtures;
+with Keccak.Generic_MonkeyWrap;
+with Keccak.Types;              use Keccak.Types;
 
-package body Keccak_Suites
+generic
+   with package MonkeyWrap is new Keccak.Generic_MonkeyWrap (<>);
+package Ketje_Tests
 is
-   function Suite return Access_Test_Suite
-   is
 
-      Ret : constant Access_Test_Suite := new Test_Suite;
-   begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
-      Ret.Add_Test(Ketje_Suite.Suite);
+   type Test is new AUnit.Test_Fixtures.Test_Fixture with null record;
 
-      return Ret;
-   end Suite;
+   procedure Test_Encrypt_Decrypt (T : in out Test);
+   procedure Test_Streaming_AAD (T : in out Test);
+   procedure Test_Streaming_Encryption (T : in out Test);
+   procedure Test_Streaming_Decryption (T : in out Test);
+   procedure Test_Streaming_Tag (T : in out Test);
+   procedure Test_Verify_Tag (T : in out Test);
+   procedure Test_Streaming_Verify_Tag (T : in out Test);
 
-end Keccak_Suites;
+
+end Ketje_Tests;
+

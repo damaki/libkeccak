@@ -52,6 +52,8 @@ is
       Shift_Right   => Keccak.Types.Shift_Right_1,
       Rotate_Left   => Keccak.Types.Rotate_Left_1);
 
+   subtype State is KeccakF_25.Lane_Complemented_State;
+
    package KeccakF_25_Permutation is new KeccakF_25.Lane_Complementing_Permutation;
 
    package KeccakF_25_Lanes is new KeccakF_25.Bit_Lanes;

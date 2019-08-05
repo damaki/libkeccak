@@ -35,6 +35,11 @@ is
    is
       type Round_Constants is array (Round_Index) of Interfaces.Unsigned_64;
 
+      Max_Rounds : constant Positive := 12 + (Lane_Size_Log * 2);
+
+      First_Round : constant Round_Index := Round_Index (Max_Rounds - 1)
+                                          - Round_Index (Num_Rounds - 1);
+
       RC : constant Round_Constants :=
         (
          16#0000_0000_0000_0001#,

@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
+-- Copyright (c) 2019, Daniel King
 -- All rights reserved.
 --
 -- Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,47 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with KeccakF_Suite;
-with Sponge_Suite;
-with Parallel_Sponge_Suite;
-with Util_Suite;
-with Ketje_Suite;
-with AUnit.Test_Caller;
+with AUnit.Assertions; use AUnit.Assertions;
+with Keccak.Types;     use Keccak.Types;
 
-package body Keccak_Suites
-is
-   function Suite return Access_Test_Suite
-   is
+package body KeccakF_Lane_Tests is
 
-      Ret : constant Access_Test_Suite := new Test_Suite;
+   --  Test that XORing bytes into a (zeroed) state, then extracting them
+   --  yields the original data.
+   --
+   --  This ensures that XOR_Bits_Into_State and Extract_Bits both use the
+   --  same mapping to the internal state.
+   procedure Test_XOR_Extract(T : in out Test) is
+      State_Size_Bytes : constant Positive := State_Size_Bits / 8;
+
+      S : State;
+
+      Data_In  : Byte_Array (1 .. State_Size_Bytes);
+      Data_Out : Byte_Array (1 .. State_Size_Bytes);
+
    begin
-      Ret.Add_Test(KeccakF_Suite.Suite);
-      Ret.Add_Test(Sponge_Suite.Suite);
-      Ret.Add_Test(Parallel_Sponge_Suite.Suite);
-      Ret.Add_Test(Util_Suite.Suite);
-      Ret.Add_Test(Ketje_Suite.Suite);
+      for I in Data_In'Range loop
+         Data_In (I) := Keccak.Types.Byte (I mod 256);
+      end loop;
 
-      return Ret;
-   end Suite;
+      for N in 1 .. State_Size_Bytes loop
 
-end Keccak_Suites;
+         Init_State (S);
+
+         XOR_Bits_Into_State (A       => S,
+                              Data    => Data_In,
+                              Bit_Len => N * 8);
+
+         Data_Out := (others => 16#AA#);
+
+         Extract_Bits (A       => S,
+                       Data    => Data_Out (1 .. N),
+                       Bit_Len => N * 8);
+
+         Assert (Data_In (1 .. N) = Data_Out (1 .. N),
+                 "Failed for N = " & Integer'Image (N));
+
+      end loop;
+   end Test_XOR_Extract;
+
+end KeccakF_Lane_Tests;

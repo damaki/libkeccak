@@ -135,4 +135,21 @@ is
 
    end Pad101_Multi_Blocks;
 
+   -----------------------------
+   --  XOR_Pad101_Into_State  --
+   -----------------------------
+
+   procedure XOR_Pad101_Into_State (State     : in out State_Type;
+                                    First_Bit : in     Natural;
+                                    Last_Bit  : in     Natural) is
+   begin
+      XOR_Byte_Into_State (State  => State,
+                           Offset => First_Bit / 8,
+                           Value  => Shift_Left (1, First_Bit mod 8));
+
+      XOR_Byte_Into_State (State  => State,
+                           Offset => Last_Bit / 8,
+                           Value  => Shift_Left (1, Last_Bit mod 8));
+   end XOR_Pad101_Into_State;
+
 end Keccak.Padding;

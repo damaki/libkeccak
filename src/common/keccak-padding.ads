@@ -109,4 +109,20 @@ is
    --  @param Max_Bit_Length The maximum bit-size of the block. Padding bits
    --  are applied up to the end of this length.
 
+   generic
+      State_Size_Bits : Positive;
+
+      type State_Type is private;
+
+      with procedure XOR_Byte_Into_State (State  : in out State_Type;
+                                          Offset : in     Natural;
+                                          Value  : in     Keccak.Types.Byte);
+
+   procedure XOR_Pad101_Into_State (State     : in out State_Type;
+                                    First_Bit : in     Natural;
+                                    Last_Bit  : in     Natural)
+     with Global => null,
+     Depends => (State =>+ (First_Bit, Last_Bit)),
+     Pre => (Last_Bit < State_Size_Bits and First_Bit < Last_Bit);
+
 end Keccak.Padding;

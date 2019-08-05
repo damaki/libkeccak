@@ -37,12 +37,11 @@ with SPARK_Mode => On
 is
 
    procedure Permute is new KeccakF_200_Permutation.Permute
-     (First_Round => 6,
-      Num_Rounds  => 18);
+     (Num_Rounds  => 18);
 
    package Sponge is new Keccak.Generic_Sponge
      (State_Size_Bits     => KeccakF_200.State_Size_Bits,
-      State_Type          => KeccakF_200.Lane_Complemented_State,
+      State_Type          => State,
       Init_State          => KeccakF_200.Init,
       Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_200_Lanes.XOR_Bits_Into_State,
@@ -51,7 +50,7 @@ is
 
    package Duplex is new Keccak.Generic_Duplex
      (State_Size_Bits     => KeccakF_200.State_Size_Bits,
-      State_Type          => KeccakF_200.Lane_Complemented_State,
+      State_Type          => State,
       Init_State          => KeccakF_200.Init,
       Permute             => Permute,
       XOR_Bits_Into_State => KeccakF_200_Lanes.XOR_Bits_Into_State,
