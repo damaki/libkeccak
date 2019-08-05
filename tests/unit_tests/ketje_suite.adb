@@ -58,8 +58,12 @@ is
              Ketje_Jr_Tests.Test_Streaming_AAD'Access));
       Ret.Add_Test
          (Caller_Jr.Create
-            ("KetjeJr: Test streaming ciphertext",
-             Ketje_Jr_Tests.Test_Streaming_Ciphertext'Access));
+            ("KetjeJr: Test streaming encryption",
+             Ketje_Jr_Tests.Test_Streaming_Encryption'Access));
+      Ret.Add_Test
+         (Caller_Jr.Create
+            ("KetjeJr: Test streaming decryption",
+             Ketje_Jr_Tests.Test_Streaming_Decryption'Access));
       Ret.Add_Test
          (Caller_Jr.Create
             ("KetjeJr: Test streaming tag",
@@ -76,8 +80,12 @@ is
              Ketje_Sr_Tests.Test_Streaming_AAD'Access));
       Ret.Add_Test
          (Caller_Sr.Create
-            ("KetjeSr: Test streaming ciphertext",
-             Ketje_Sr_Tests.Test_Streaming_Ciphertext'Access));
+            ("KetjeSr: Test streaming encryption",
+             Ketje_Sr_Tests.Test_Streaming_Encryption'Access));
+      Ret.Add_Test
+         (Caller_Sr.Create
+            ("KetjeSr: Test streaming decryption",
+             Ketje_Sr_Tests.Test_Streaming_Decryption'Access));
       Ret.Add_Test
          (Caller_Sr.Create
             ("KetjeSr: Test streaming tag",
@@ -94,8 +102,12 @@ is
              Ketje_Minor_Tests.Test_Streaming_AAD'Access));
       Ret.Add_Test
          (Caller_Minor.Create
-            ("KetjeMinor: Test streaming ciphertext",
-             Ketje_Minor_Tests.Test_Streaming_Ciphertext'Access));
+            ("KetjeMinor: Test streaming encryption",
+             Ketje_Minor_Tests.Test_Streaming_Encryption'Access));
+      Ret.Add_Test
+         (Caller_Minor.Create
+            ("KetjeMinor: Test streaming decryption",
+             Ketje_Minor_Tests.Test_Streaming_Decryption'Access));
       Ret.Add_Test
          (Caller_Minor.Create
             ("KetjeMinor: Test streaming tag",
@@ -112,8 +124,12 @@ is
              Ketje_Major_Tests.Test_Streaming_AAD'Access));
       Ret.Add_Test
          (Caller_Major.Create
-            ("KetjeMajor: Test streaming ciphertext",
-             Ketje_Major_Tests.Test_Streaming_Ciphertext'Access));
+            ("KetjeMajor: Test streaming encryption",
+             Ketje_Major_Tests.Test_Streaming_Encryption'Access));
+      Ret.Add_Test
+         (Caller_Major.Create
+            ("KetjeMajor: Test streaming decryption",
+             Ketje_Major_Tests.Test_Streaming_Decryption'Access));
       Ret.Add_Test
          (Caller_Major.Create
             ("KetjeMajor: Test streaming tag",

@@ -38,7 +38,8 @@ is
 
    procedure Test_Encrypt_Decrypt (T : in out Test);
    procedure Test_Streaming_AAD (T : in out Test);
-   procedure Test_Streaming_Ciphertext (T : in out Test);
+   procedure Test_Streaming_Encryption (T : in out Test);
+   procedure Test_Streaming_Decryption (T : in out Test);
    procedure Test_Streaming_Tag (T : in out Test);
 
 end Ketje_Tests;

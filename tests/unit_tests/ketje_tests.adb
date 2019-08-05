@@ -148,7 +148,7 @@ is
    --
    --  This ensures that data can be streamed in any way and still
    --  produce the same result.
-   procedure Test_Streaming_Ciphertext (T : in out Test) is
+   procedure Test_Streaming_Encryption (T : in out Test) is
       Ctx : MonkeyWrap.Context;
 
       Key   : constant Byte_Array (1 .. 8) := (others => 16#AA#);
@@ -213,7 +213,79 @@ is
          Assert (CT1  = CT2,  "Wrong ciphertext for chunk size =" & Integer'Image (Chunk_Size));
          Assert (Tag1 = Tag2, "Wrong tag for chunk size =" & Integer'Image (Chunk_Size));
       end loop;
-   end Test_Streaming_Ciphertext;
+   end Test_Streaming_Encryption;
+
+   --  Test that processing the same ciphertext with varying calls to
+   --  Update_Decrypt produces the same ciphertext.
+   --
+   --  This ensures that data can be streamed in any way and still
+   --  produce the same result.
+   procedure Test_Streaming_Decryption (T : in out Test) is
+      Ctx : MonkeyWrap.Context;
+
+      Key   : constant Byte_Array (1 .. 8) := (others => 16#AA#);
+      Nonce : constant Byte_Array (1 .. 8) := (others => 16#55#);
+
+      CT : Byte_Array (1 .. 256);
+
+      PT1 : Byte_Array (1 .. 256);
+      PT2 : Byte_Array (1 .. 256);
+
+      Tag1 : Byte_Array (1 .. 256);
+      Tag2 : Byte_Array (1 .. 256);
+
+      Offset    : Natural;
+      Remaining : Natural;
+
+   begin
+      for I in 0 .. CT'Length - 1 loop
+         CT (CT'First + I) := Byte (I mod 256);
+      end loop;
+
+      --  Generate reference plaintext & tag
+      MonkeyWrap.Init (Ctx, Key, Nonce);
+      MonkeyWrap.Update_Decrypt (Ctx, CT, PT1);
+      MonkeyWrap.Extract_Tag (Ctx, Tag1);
+
+      for Chunk_Size in 1 .. CT'Length loop
+
+         MonkeyWrap.Init (Ctx, Key, Nonce);
+
+         Offset    := 0;
+         Remaining := CT'Length;
+
+         PT2 := (others => 0);
+
+         --  Process plaintext in chunks
+         while Remaining > 0 loop
+            pragma Loop_Invariant (Offset + Remaining = CT'Length);
+
+            if Remaining >= Chunk_Size then
+               MonkeyWrap.Update_Decrypt
+                  (Ctx        => Ctx,
+                   Ciphertext => CT  (CT'First  + Offset .. CT'First  + Offset + Chunk_Size - 1),
+                   Plaintext  => PT2 (PT2'First + Offset .. PT2'First + Offset + Chunk_Size - 1));
+
+               Offset    := Offset    + Chunk_Size;
+               Remaining := Remaining - Chunk_Size;
+            else
+               MonkeyWrap.Update_Decrypt
+                  (Ctx        => Ctx,
+                   Ciphertext => CT  (CT'First  + Offset .. CT'Last),
+                   Plaintext  => PT2 (PT2'First + Offset .. PT2'Last));
+
+               Offset    := Offset + Remaining;
+               Remaining := 0;
+            end if;
+         end loop;
+
+         --  Generate tag
+         MonkeyWrap.Extract_Tag (Ctx, Tag2);
+
+         Assert (PT1  = PT2,  "Wrong plaintext for chunk size =" & Integer'Image (Chunk_Size));
+         Assert (Tag1 = Tag2, "Wrong tag for chunk size =" & Integer'Image (Chunk_Size));
+      end loop;
+   end Test_Streaming_Decryption;
 
    --  Test that extracting the same tag with varying calls to
    --  Extract_Tag produces the same ciphertext.
