@@ -81,4 +81,16 @@ private
    type State is array (Column_Number, Row_Number) of Unsigned_32
      with Size => 384;
 
+   procedure SP_Box (S : in out State)
+     with Inline,
+     Global => null,
+     Depends => (S =>+ null);
+
+   procedure Swap (A, B : in out Unsigned_32)
+     with Inline,
+     Global => null,
+     Depends => (A => B,
+                 B => A),
+     Post => (A = B'Old and B = A'Old);
+
 end Gimli;

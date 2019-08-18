@@ -31,6 +31,41 @@ is
    Round_Constant : constant Unsigned_32 := 16#9e37_7900#;
 
    ------------
+   --  Swap  --
+   ------------
+
+   procedure Swap (A, B : in out Unsigned_32)
+   is
+      Temp : Unsigned_32;
+   begin
+      Temp := A;
+      A := B;
+      B := Temp;
+   end Swap;
+
+   --------------
+   --  SP_Box  --
+   --------------
+
+   procedure SP_Box (S : in out State)
+   is
+      X : Unsigned_32;
+      Y : Unsigned_32;
+      Z : Unsigned_32;
+
+   begin
+      for Column in Column_Number loop
+         X := Rotate_Left (S (Column, 0), 24);
+         Y := Rotate_Left (S (Column, 1),  9);
+         Z := S (Column, 2);
+
+         S (Column, 2) := X xor Shift_Left (Z, 1) xor Shift_Left (Y and Z, 2);
+         S (Column, 1) := Y xor X                 xor Shift_Left (X  or Z, 1);
+         S (Column, 0) := Z xor Y                 xor Shift_Left (X and Y, 3);
+      end loop;
+   end SP_Box;
+
+   ------------
    --  Init  --
    ------------
 
@@ -46,42 +81,20 @@ is
 
    procedure Permute (S : in out State)
    is
-      X : Unsigned_32;
-      Y : Unsigned_32;
-      Z : Unsigned_32;
-
    begin
       for Round in reverse Round_Number loop
-         for Column in Column_Number loop
-            X := Rotate_Left (S (Column, 0), 24);
-            Y := Rotate_Left (S (Column, 1),  9);
-            Z := S (Column, 2);
-
-            S (Column, 2) := X xor Shift_Left (Z, 1) xor Shift_Left (Y and Z, 2);
-            S (Column, 1) := Y xor X                 xor Shift_Left (X  or Z, 1);
-            S (Column, 0) := Z xor Y                 xor Shift_Left (X and Y, 3);
-         end loop;
+         SP_Box (S);
 
          --  Small swap: pattern s...s...s... etc.
          if Round mod 4 = 0 then
-            X := S (0, 0);
-            S (0, 0) := S (1, 0);
-            S (1, 0) := X;
-
-            X := S (2, 0);
-            S (2, 0) := S (3, 0);
-            S (3, 0) := X;
+            Swap (S (0, 0), S (1, 0));
+            Swap (S (2, 0), S (3, 0));
          end if;
 
          --  Big swap: pattern ..S...S...S etc.
          if Round mod 4 = 2 then
-            X := S (0, 0);
-            S (0, 0) := S (2, 0);
-            S (2, 0) := X;
-
-            X := S (1, 0);
-            S (1, 0) := S (3, 0);
-            S (3, 0) := X;
+            Swap (S (0, 0), S (2, 0));
+            Swap (S (1, 0), S (3, 0));
          end if;
 
          if Round mod 4 = 0 then
