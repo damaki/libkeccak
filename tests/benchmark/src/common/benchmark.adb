@@ -65,6 +65,8 @@ with SHA3;
 with SHAKE;
 with RawSHAKE;
 with Ketje;
+with Gimli;
+with Gimli.Hash;
 
 procedure Benchmark
 is
@@ -671,6 +673,16 @@ is
    procedure Benchmark_Ketje_Major is new Ketje_Benchmark
      ("Ketje Major", Ketje.Major);
 
+   procedure Benchmark_Gimli is new KeccakF_Benchmark
+     ("Gimli",
+      Gimli.State,
+      Gimli.Init,
+      Gimli.Permute);
+
+   procedure Benchmark_Gimli_Hash is new Hash_Benchmark
+     ("Gimli Hash",
+      Gimli.Hash);
+
 begin
    Data_Chunk.all := (others => 16#A7#);
 
@@ -683,6 +695,9 @@ begin
    Put (" measurements for each test");
    New_Line;
    New_Line;
+
+   Benchmark_Gimli;
+   Benchmark_Gimli_Hash;
 
    Benchmark_K12;
    Benchmark_M14;
