@@ -123,9 +123,7 @@ is
                   Msg.all(Msg.all'Last) := Shift_Right(Msg.all(Msg.all'Last), 8 - (Len mod 8));
                end if;
 
-               Hash.Update(Ctx,
-                           Msg.all,
-                           C.Element (Len_Key).First_Element.Int);
+               Hash.Update(Ctx, Msg.all, Len);
 
                Free (Msg);
             end if;
