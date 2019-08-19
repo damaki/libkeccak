@@ -17,6 +17,7 @@ all: kat benchmark unit_test
 .PHONY: $(OUTPUT_DIR)/kat/kat
 .PHONY: kat
 kat: $(OUTPUT_DIR)/kat/kat
+	$(OUTPUT_DIR)/kat/kat GimliHash kat/testvectors/gimli_hash.txt
 	$(OUTPUT_DIR)/kat/kat KetjeMajor kat/testvectors/Ketje_Major.txt
 	$(OUTPUT_DIR)/kat/kat KetjeMinor kat/testvectors/Ketje_Minor.txt
 	$(OUTPUT_DIR)/kat/kat KetjeSr kat/testvectors/Ketje_Sr.txt

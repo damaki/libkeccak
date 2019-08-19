@@ -43,6 +43,7 @@ with KMAC;
 with Parallel_Hash;
 with SHA3;
 with Tuple_Hash;
+with Gimli.Hash;
 
 procedure KAT
 is
@@ -76,6 +77,8 @@ is
    package KetjeSr_Runner is new MonkeyWrap_Runner (Ketje.Sr);
    package KetjeMinor_Runner is new MonkeyWrap_Runner (Ketje.Minor);
    package KetjeMajor_Runner is new MonkeyWrap_Runner (Ketje.Major);
+
+   package GimliHash_Runner is new Hash_Runner(Gimli.Hash);
 
    package Integer_IO is new Ada.Text_IO.Integer_IO (Integer);
 
@@ -230,6 +233,11 @@ begin
             KetjeMajor_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
                                          Num_Passed => Num_Passed,
                                          Num_Failed => Num_Failed);
+         elsif Algo = "GimliHash" then
+            GimliHash_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                        Align_Bits => False,
+                                        Num_Passed => Num_Passed,
+                                        Num_Failed => Num_Failed);
          else
             Ada.Text_IO.Put_Line ("Unknown algorithm: " & Algo);
             Ada.Command_Line.Set_Exit_Status (-1);

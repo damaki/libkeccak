@@ -5,9 +5,10 @@
 This project implements the Keccak family of sponge functions and related
 constructions using the SPARK 2014 programming language.
 
-libkeccak implements the following generic constructions:
+libkeccak implements the following constructions:
 
 * The Keccak-p permutation for state sizes of 25, 50, 100, 200, 400, 800, and 1600 bits (see [1] and [2]).
+* The Gimli permutation [7]
 * The Sponge construction
 * The Duplex construction
 * The MonkeyDuplex construction
@@ -18,11 +19,12 @@ libkeccak implements the following generic constructions:
 * KangarooTwelve as specified by the Keccak team [5]
 
 libkeccak also provides concrete implementations of the above constructions,
-as specified in [1,4,5,6]:
+as specified in [1,4,5,6,7]:
 
 * Hash functions:
   * SHA-3 (224, 256, 384, and 512 bits)
   * Keccak (224, 256, 384, and 512 bits)
+  * Gimli-Hash
 * XOFs:
   * SHAKE128 and SHAKE256
   * RawSHAKE128 and RawSHAKE256
@@ -207,3 +209,5 @@ http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-185.pdf
 http://keccak.noekeon.org/kangarootwelve.html
 * [6] CAESAR submission: Ketje v2
 https://keccak.team/files/Ketjev2-doc2.0.pdf
+* [7] Gimli: a cross-platform permutation
+https://gimli.cr.yp.to/index.html
