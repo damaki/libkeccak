@@ -57,7 +57,7 @@ is
       for Column in Column_Number loop
          X := Rotate_Left (S (Column, 0), 24);
          Y := Rotate_Left (S (Column, 1),  9);
-         Z := S (Column, 2);
+         Z :=              S (Column, 2);
 
          S (Column, 2) := X xor Shift_Left (Z, 1) xor Shift_Left (Y and Z, 2);
          S (Column, 1) := Y xor X                 xor Shift_Left (X  or Z, 1);
@@ -98,7 +98,7 @@ is
          end if;
 
          if Round mod 4 = 0 then
-            S (0, 0) := Round_Constant or Unsigned_32 (Round);
+            S (0, 0) := S (0, 0) xor (Round_Constant or Unsigned_32 (Round));
          end if;
       end loop;
    end Permute;
@@ -115,7 +115,7 @@ is
       Offset           : Natural := 0;
 
    begin
-      --  Process whole lanes (64 bits).
+      --  Process whole words (32 bits).
       Outer_Loop :
       for Row in Row_Number loop
          pragma Loop_Invariant ((Offset * 8) + Remaining_Bits = Bit_Len);
@@ -179,7 +179,7 @@ is
       Pos       : Keccak.Types.Index_Number;
 
    begin
-      --  Process whole lanes (64 bits).
+      --  Process whole words (32 bits).
       Outer_Loop :
       for Row in Row_Number loop
          pragma Loop_Invariant (Offset + Remaining = Data'Length);
@@ -216,7 +216,7 @@ is
       --  Process any remaining data
       if Remaining > 0 then
          declare
-            Column : constant Column_Number := Column_Number (Remaining);
+            Column : constant Column_Number := Column_Number ((Offset / 4) mod 4);
             Row    : constant Row_Number    := Row_Number    (Offset / 16);
 
             Word   : constant Unsigned_32 := S (Column, Row);
