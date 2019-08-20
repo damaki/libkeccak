@@ -90,14 +90,14 @@ is
          declare
             Word : Unsigned_64;
          begin
-            Word := Unsigned_64 (Data (Data'First + Offset));
-            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 1)), 8);
-            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 2)), 16);
-            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 3)), 24);
-            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 4)), 32);
-            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 5)), 40);
-            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 6)), 48);
-            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 7)), 56);
+            Word := Shift_Left (Unsigned_64 (Data (Data'First + Offset + 7)), 56);
+            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 1)), 48);
+            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 2)), 40);
+            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 3)), 32);
+            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 4)), 24);
+            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 5)), 16);
+            Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 6)), 8);
+            Word := Word or Unsigned_64 (Data (Data'First + Offset));
 
             S (X) := S (X) xor Word;
          end;
@@ -116,7 +116,8 @@ is
 
          begin
             for I in Natural range 0 .. Remaining_Bytes - 1 loop
-               Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + I)), I * 8);
+               Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + I)),
+                                           56 - (I * 8));
             end loop;
 
             S (X) := S (X) xor (Word and (2**Remaining_Bits) - 1);
@@ -150,14 +151,14 @@ is
          begin
             Pos := Data'First + Offset;
 
-            Data (Pos)     := Unsigned_8 (Word and 16#FF#);
-            Data (Pos + 1) := Unsigned_8 (Shift_Right (Word, 8) and 16#FF#);
-            Data (Pos + 2) := Unsigned_8 (Shift_Right (Word, 16) and 16#FF#);
-            Data (Pos + 3) := Unsigned_8 (Shift_Right (Word, 24) and 16#FF#);
-            Data (Pos + 4) := Unsigned_8 (Shift_Right (Word, 32) and 16#FF#);
-            Data (Pos + 5) := Unsigned_8 (Shift_Right (Word, 40) and 16#FF#);
-            Data (Pos + 6) := Unsigned_8 (Shift_Right (Word, 48) and 16#FF#);
-            Data (Pos + 7) := Unsigned_8 (Shift_Right (Word, 56) and 16#FF#);
+            Data (Pos)     := Unsigned_8 (Shift_Right (Word, 56) and 16#FF#);
+            Data (Pos + 1) := Unsigned_8 (Shift_Right (Word, 48) and 16#FF#);
+            Data (Pos + 2) := Unsigned_8 (Shift_Right (Word, 40) and 16#FF#);
+            Data (Pos + 3) := Unsigned_8 (Shift_Right (Word, 32) and 16#FF#);
+            Data (Pos + 4) := Unsigned_8 (Shift_Right (Word, 24) and 16#FF#);
+            Data (Pos + 5) := Unsigned_8 (Shift_Right (Word, 16) and 16#FF#);
+            Data (Pos + 6) := Unsigned_8 (Shift_Right (Word,  8) and 16#FF#);
+            Data (Pos + 7) := Unsigned_8 (Word and 16#FF#);
          end;
 
          Offset    := Offset    + 8;
@@ -176,7 +177,8 @@ is
             for I in Natural range 0 .. Remaining - 1 loop
                pragma Loop_Invariant (Offset + (Remaining - I) = Data'Length);
 
-               Data (Data'First + Offset) := Unsigned_8 (Shift_Right (Word, I * 8) and 16#FF#);
+               Data (Data'First + Offset) := Unsigned_8 (Shift_Right (Word, 56 - (I * 8))
+                                                         and 16#FF#);
 
                Offset := Offset + 1;
             end loop;

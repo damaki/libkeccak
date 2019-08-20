@@ -91,9 +91,9 @@ is
 
 private
 
-   type X_Coord is range 0 .. 4;
-
    type Round_Number is range 0 .. 11;
+
+   type X_Coord is range 0 .. 4;
 
    type State is array (X_Coord) of Unsigned_64
      with Size => 320;
