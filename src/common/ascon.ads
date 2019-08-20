@@ -27,6 +27,8 @@
 with Interfaces;   use Interfaces;
 with Keccak.Types;
 
+--  @summary
+--  Implementation of the Ascon permutation.
 package Ascon
 with SPARK_Mode => On
 is
