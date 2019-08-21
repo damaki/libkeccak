@@ -107,7 +107,7 @@ is
      with Global => null,
      Pre => (((State_Size_Bits - Capacity) mod 8 = 0)
              and (Capacity < State_Size_Bits)
-             and Initial_Data'Length <= (State_Size_Bits + 7) / 8),
+             and Initial_Data'Length <= State_Size_Bits / 8),
      Post => ((State_Of (Ctx) = Absorbing)
               and (Rate_Of (Ctx) = State_Size_Bits - Capacity)
               and In_Queue_Bit_Length (Ctx) = 0);
