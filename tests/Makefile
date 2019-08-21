@@ -18,6 +18,7 @@ all: kat benchmark unit_test
 .PHONY: kat
 kat: $(OUTPUT_DIR)/kat/kat
 	$(OUTPUT_DIR)/kat/kat AsconHash kat/testvectors/Ascon_HASH_KAT_256.txt
+	$(OUTPUT_DIR)/kat/kat AsconXOF kat/testvectors/Ascon_XOF_KAT_256.txt
 	$(OUTPUT_DIR)/kat/kat GimliHash kat/testvectors/gimli_hash.txt
 	$(OUTPUT_DIR)/kat/kat KetjeMajor kat/testvectors/Ketje_Major.txt
 	$(OUTPUT_DIR)/kat/kat KetjeMinor kat/testvectors/Ketje_Minor.txt

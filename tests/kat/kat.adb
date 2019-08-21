@@ -35,6 +35,7 @@ with MonkeyWrap_Runner;
 with KMAC_Runner;
 with ParallelHash_Runner;
 with TupleHash_Runner;
+with XOF_Runner;
 
 with CSHAKE;
 with Keccak.Keccak_1600.Rounds_24;
@@ -45,6 +46,7 @@ with SHA3;
 with Tuple_Hash;
 with Gimli.Hash;
 with Ascon.Hash;
+with Ascon.XOF;
 
 procedure KAT
 is
@@ -82,6 +84,7 @@ is
    package GimliHash_Runner is new Hash_Runner (Gimli.Hash);
 
    package AsconHash_Runner is new Hash_Runner (Ascon.Hash);
+   package AsconXOF_Runner is new XOF_Runner (Ascon.XOF);
 
    package Integer_IO is new Ada.Text_IO.Integer_IO (Integer);
 
@@ -246,6 +249,10 @@ begin
                                         Align_Bits => False,
                                         Num_Passed => Num_Passed,
                                         Num_Failed => Num_Failed);
+         elsif Algo = "AsconXOF" then
+            AsconXOF_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                       Num_Passed => Num_Passed,
+                                       Num_Failed => Num_Failed);
          else
             Ada.Text_IO.Put_Line ("Unknown algorithm: " & Algo);
             Ada.Command_Line.Set_Exit_Status (-1);
