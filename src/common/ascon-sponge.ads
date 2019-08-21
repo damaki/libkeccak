@@ -37,4 +37,4 @@ package Ascon.Sponge is new Keccak.Generic_Sponge
    Permute             => Ascon.Permutations.Permute_12,
    XOR_Bits_Into_State => Ascon.XOR_Bits_Into_State,
    Extract_Data        => Ascon.Extract_Bytes,
-   Pad                 => Keccak.Padding.Pad01_Multi_Blocks);
+   Pad                 => Keccak.Padding.Pad10_Multi_Blocks_Big_Endian);
