@@ -105,7 +105,6 @@ is
                    Capacity     : in     Positive;
                    Initial_Data : in     Keccak.Types.Byte_Array := Keccak.Types.Null_Byte_Array)
      with Global => null,
-     Depends => (Ctx => (Capacity, Initial_Data)),
      Pre => (((State_Size_Bits - Capacity) mod 8 = 0)
              and (Capacity < State_Size_Bits)
              and Initial_Data'Length <= (State_Size_Bits + 7) / 8),
