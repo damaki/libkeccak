@@ -152,4 +152,26 @@ is
                            Value  => Shift_Left (1, Last_Bit mod 8));
    end XOR_Pad101_Into_State;
 
+   --------------------------
+   --  Pad01_Multi_Blocks  --
+   --------------------------
+
+   procedure Pad01_Multi_Blocks (First_Block    : in out Keccak.Types.Byte_Array;
+                                 Num_Used_Bits  : in     Natural;
+                                 Max_Bit_Length : in     Natural;
+                                 Next_Block     :    out Keccak.Types.Byte_Array;
+                                 Spilled        :    out Boolean)
+   is
+      pragma Unreferenced (Num_Used_Bits);
+
+      Mask : Unsigned_8;
+
+   begin
+      Spilled    := False;
+      Next_Block := (others => 0);
+
+      Mask := Shift_Left (Unsigned_8 (1), (Max_Bit_Length - 1) mod 8);
+      First_Block (First_Block'Last) := First_Block (First_Block'Last) xor Mask;
+   end Pad01_Multi_Blocks;
+
 end Keccak.Padding;
