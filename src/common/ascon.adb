@@ -90,14 +90,14 @@ is
          declare
             Word : Unsigned_64;
          begin
-            Word := Shift_Left (Unsigned_64 (Data (Data'First + Offset + 7)), 56);
+            Word := Shift_Left (Unsigned_64 (Data (Data'First + Offset)), 56);
             Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 1)), 48);
             Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 2)), 40);
             Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 3)), 32);
             Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 4)), 24);
             Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 5)), 16);
             Word := Word or Shift_Left (Unsigned_64 (Data (Data'First + Offset + 6)), 8);
-            Word := Word or Unsigned_64 (Data (Data'First + Offset));
+            Word := Word or Unsigned_64 (Data (Data'First + Offset + 7));
 
             S (X) := S (X) xor Word;
          end;
