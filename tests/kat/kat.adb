@@ -35,7 +35,6 @@ with MonkeyWrap_Runner;
 with KMAC_Runner;
 with ParallelHash_Runner;
 with TupleHash_Runner;
-with AsconHash_Runner;
 
 with CSHAKE;
 with Keccak.Keccak_1600.Rounds_24;
@@ -45,6 +44,7 @@ with Parallel_Hash;
 with SHA3;
 with Tuple_Hash;
 with Gimli.Hash;
+with Ascon.Hash;
 
 procedure KAT
 is
@@ -80,6 +80,8 @@ is
    package KetjeMajor_Runner is new MonkeyWrap_Runner (Ketje.Major);
 
    package GimliHash_Runner is new Hash_Runner (Gimli.Hash);
+
+   package AsconHash_Runner is new Hash_Runner (Ascon.Hash);
 
    package Integer_IO is new Ada.Text_IO.Integer_IO (Integer);
 
@@ -241,6 +243,7 @@ begin
                                         Num_Failed => Num_Failed);
          elsif Algo = "AsconHash" then
             AsconHash_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                        Align_Bits => False,
                                         Num_Passed => Num_Passed,
                                         Num_Failed => Num_Failed);
          else
