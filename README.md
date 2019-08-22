@@ -5,10 +5,13 @@
 This project implements the Keccak family of sponge functions and related
 constructions using the SPARK 2014 programming language.
 
-libkeccak implements the following constructions:
-
+libkeccak supports the following cryptographic permutations:
 * The Keccak-p permutation for state sizes of 25, 50, 100, 200, 400, 800, and 1600 bits (see [1] and [2]).
 * The Gimli permutation [7]
+* The Ascon permutation [8]
+
+libkeccak implements the following generic constructions which can
+be instantiated using the above permutations and with various parameters:
 * The Sponge construction
 * The Duplex construction
 * The MonkeyDuplex construction
@@ -25,11 +28,13 @@ as specified in [1,4,5,6,7]:
   * SHA-3 (224, 256, 384, and 512 bits)
   * Keccak (224, 256, 384, and 512 bits)
   * Gimli-Hash
+  * Ascon-Hash
 * XOFs:
   * SHAKE128 and SHAKE256
   * RawSHAKE128 and RawSHAKE256
+  * Ascon-XOF
 * cSHAKE:
-  * CSHAKE128 and CSHAKE256
+  * cSHAKE128 and cSHAKE256
 * KMAC:
   * KMAC128 and KMAC256
 * TupleHash:
@@ -211,3 +216,5 @@ http://keccak.noekeon.org/kangarootwelve.html
 https://keccak.team/files/Ketjev2-doc2.0.pdf
 * [7] Gimli: a cross-platform permutation
 https://gimli.cr.yp.to/index.html
+* [8] Ascon
+https://ascon.iaik.tugraz.at/index.html
