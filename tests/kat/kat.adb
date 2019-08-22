@@ -43,6 +43,7 @@ with Ketje;
 with KMAC;
 with Parallel_Hash;
 with SHA3;
+with SHAKE;
 with Tuple_Hash;
 with Gimli.Hash;
 with Ascon.Hash;
@@ -56,6 +57,9 @@ is
    package SHA3_256_Runner is new Hash_Runner(SHA3.SHA3_256);
    package SHA3_384_Runner is new Hash_Runner(SHA3.SHA3_384);
    package SHA3_512_Runner is new Hash_Runner(SHA3.SHA3_512);
+
+   package SHAKE_128_Runner is new XOF_Runner(SHAKE.SHAKE128);
+   package SHAKE_256_Runner is new XOF_Runner(SHAKE.SHAKE256);
 
    package Keccak_224_Runner is new Hash_Runner(SHA3.Keccak_224);
    package Keccak_256_Runner is new Hash_Runner(SHA3.Keccak_256);
@@ -123,6 +127,14 @@ begin
          elsif Algo = "SHA3-512" then
             SHA3_512_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
                                        Align_Bits => False,
+                                       Num_Passed => Num_Passed,
+                                       Num_Failed => Num_Failed);
+         elsif Algo = "SHAKE128" then
+            SHAKE_128_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
+                                       Num_Passed => Num_Passed,
+                                       Num_Failed => Num_Failed);
+         elsif Algo = "SHAKE256" then
+            SHAKE_256_Runner.Run_Tests (File_Name  => Ada.Command_Line.Argument (2),
                                        Num_Passed => Num_Passed,
                                        Num_Failed => Num_Failed);
          elsif Algo = "Keccak-224" then

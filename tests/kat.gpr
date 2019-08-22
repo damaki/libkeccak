@@ -7,8 +7,22 @@ project KAT is
    for Main use ("kat.adb");
 
    package Compiler is
-      for Default_Switches ("Ada") use ("-O2", "-gnatN", "-gnata", "-gnatwe", "-g");
+      for Default_Switches ("ada") use ("-gnatN", "-gnata", "-g", "-gnat12", "-gnatn", "-ffunction-sections", "-fdata-sections", "-gnatwe");
    end Compiler;
+
+   package Binder is
+      for Switches ("ada") use ("-E");
+   end Binder;
+
+   package Builder is
+      for Switches ("ada") use ("-g");
+   end Builder;
+
+   package Linker is
+      for Switches ("ada") use ("-g", "-Wl,--gc-sections");
+   end Linker;
+
+   for Runtime ("ada") use "native";
 
 end KAT;
 
