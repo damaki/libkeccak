@@ -54,7 +54,7 @@ is
       Repeat_Key : constant Unbounded_String := To_Unbounded_String ("Repeat");
       Text_Key   : constant Unbounded_String := To_Unbounded_String ("Text");
 
-      MD_Key  : constant Unbounded_String := To_Unbounded_String ("MD");
+      Output_Key  : constant Unbounded_String := To_Unbounded_String ("Output");
 
       Schema : Test_Vectors.Schema_Maps.Map;
       Tests  : Test_Vectors.Lists.List;
@@ -71,8 +71,8 @@ is
       Num_Failed := 0;
 
       --  Setup schema to support two types of test vector files:
-      --  Long or ShortMsgKAT containing: "Len", "Msg", and "MD" fields; and
-      --  ExtremelyLongMsgKAT containing: "Repeat", "Text", and "MD" fields.
+      --  Long or ShortMsgKAT containing: "Len", "Msg", and "Output" fields; and
+      --  ExtremelyLongMsgKAT containing: "Repeat", "Text", and "Output" fields.
       Schema.Insert (Key      => Len_Key,
                      New_Item => Schema_Entry'(VType    => Integer_Type,
                                                Required => False,
@@ -89,7 +89,7 @@ is
                      New_Item => Schema_Entry'(VType    => String_Type,
                                                Required => False,
                                                Is_List  => False));
-      Schema.Insert (Key      => MD_Key,
+      Schema.Insert (Key      => Output_Key,
                      New_Item => Schema_Entry'(VType    => Hex_Array_Type,
                                                Required => True,
                                                Is_List  => False));
@@ -110,7 +110,7 @@ is
          XOF.Init(Ctx);
 
          if C.Contains (Len_Key) then
-            --  Test vector contains "Len", "Msg", and "MD" fields
+            --  Test vector contains "Len", "Msg", and "Output" fields
 
             Len := C.Element (Len_Key).First_Element.Int;
 
@@ -123,7 +123,7 @@ is
             end if;
 
          else
-            --  Assume test vector defines "Repeat", "Text", and "MD" fields
+            --  Assume test vector defines "Repeat", "Text", and "Output" fields
 
             Msg := String_To_Byte_Array (To_String (C.Element (Text_Key).First_Element.Str));
 
@@ -134,11 +134,11 @@ is
             Free (Msg);
          end if;
 
-         Digest := new Keccak.Types.Byte_Array (C.Element(MD_Key).First_Element.Hex.all'Range);
+         Digest := new Keccak.Types.Byte_Array (C.Element(Output_Key).First_Element.Hex.all'Range);
 
          XOF.Extract(Ctx, Digest.all);
 
-         if Digest.all = C.Element(MD_Key).First_Element.Hex.all then
+         if Digest.all = C.Element(Output_Key).First_Element.Hex.all then
             Num_Passed := Num_Passed + 1;
          else
             Num_Failed := Num_Failed + 1;
@@ -152,11 +152,11 @@ is
                Ada.Text_IO.Put_Line("FAILURE:");
             end if;
 
-            Ada.Text_IO.Put("   Expected MD: ");
-            Ada.Text_IO.Put(Byte_Array_To_String (C.Element (MD_Key).First_Element.Hex.all));
+            Ada.Text_IO.Put("   Expected Output: ");
+            Ada.Text_IO.Put(Byte_Array_To_String (C.Element (Output_Key).First_Element.Hex.all));
             Ada.Text_IO.New_Line;
 
-            Ada.Text_IO.Put("   Actual MD:   ");
+            Ada.Text_IO.Put("   Actual Output:   ");
             Ada.Text_IO.Put(Byte_Array_To_String(Digest.all));
             Ada.Text_IO.New_Line;
          end if;
