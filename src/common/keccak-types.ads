@@ -47,6 +47,8 @@ is
    subtype Index_Number is Natural range 0 .. Natural'Last - 1;
    type Byte_Array is array (Index_Number range <>) of Byte;
 
+   Null_Byte_Array : constant Byte_Array (1 .. 0) := (others => 0);
+
    ------------------
    --  Shift_Left  --
    ------------------

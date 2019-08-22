@@ -67,6 +67,15 @@ generic
    --  The number of bits in the Suffix to append. This must be a value
    --  in the range 0 .. 8.
 
+   Permutation_Initial_Value : Keccak.Types.Byte_Array := Keccak.Types.Null_Byte_Array;
+   --  An optional inital value for the permutation state.
+   --
+   --  If non-empty, this data block will be written to the permutation state
+   --  and then the permutation function will be applied. Otherwise, the
+   --  permutation state will be zero-initialised.
+   --
+   --  The length of this parameter cannot exceed the permutation state size.
+
 package Keccak.Generic_Hash
 is
    --  Import common types from Keccak.Types to avoid users of the

@@ -152,4 +152,82 @@ is
                            Value  => Shift_Left (1, Last_Bit mod 8));
    end XOR_Pad101_Into_State;
 
+   -------------------------------------
+   --  Pad10_Multi_Blocks_Big_Endian  --
+   -------------------------------------
+
+   procedure Pad10_Multi_Blocks_Big_Endian (First_Block    : in out Keccak.Types.Byte_Array;
+                                            Num_Used_Bits  : in     Natural;
+                                            Max_Bit_Length : in     Natural;
+                                            Next_Block     :    out Keccak.Types.Byte_Array;
+                                            Spilled        :    out Boolean)
+   is
+      Num_Free_Bits : constant Natural := Max_Bit_Length - Num_Used_Bits;
+
+      Pos : Keccak.Types.Index_Number;
+
+      First_Bit : Keccak.Types.Byte;
+
+   begin
+      Next_Block := (others => 0);
+
+      First_Bit := Shift_Right (16#80#, Num_Used_Bits mod 8);
+
+      if Num_Free_Bits >= 2 then
+         --  This is the case where there are at least 2 bits free in the first
+         --  block. In this case, there's enough space for all the padding bits.
+         --
+         --  +---------------------+---------------------+
+         --  |    first block      |      next block     |
+         --  +---------------------+---------------------+
+         --  |<-total len->|<-pad->|
+
+         Spilled := False;
+
+         --  Append first 1 bit
+         Pos := First_Block'First + (Num_Used_Bits / 8);
+
+         if Num_Used_Bits mod 8 = 0 then
+            First_Block (Pos) := First_Bit;
+         else
+            --  Align last bits to the MSB.
+            --  E.g. move 2#0000_0011# --> 2#1100_0000#
+            First_Block (Pos) := Shift_Left (First_Block (Pos), 8 - (Num_Used_Bits mod 8));
+            First_Block (Pos) := First_Block (Pos) or First_Bit;
+         end if;
+
+         --  Append zeroes
+         First_Block (First_Block'First + (Num_Used_Bits / 8) + 1 .. First_Block'Last)
+           := (others => 0);
+
+      else
+         --  This is the case where there is only 1 bit free in the first block.
+         --  In this case, the padding spills into another block.
+         --
+         --  +----------------+----------------+
+         --  |  first block   |   next block   |
+         --  +----------------+----------------+
+         --  |<--total len-->|<-------pad----->|
+
+         Spilled := True;
+
+         pragma Assert (Num_Free_Bits = 1);
+
+         --  First 1 bit
+         Pos := First_Block'First + (Num_Used_Bits / 8);
+
+         if Num_Used_Bits mod 8 = 0 then
+            First_Block (Pos) := First_Bit;
+         else
+            --  Align last bits to the MSB.
+            --  E.g. move 2#0000_0011# --> 2#1100_0000#
+            First_Block (Pos) := Shift_Left (First_Block (Pos), 8 - (Num_Used_Bits mod 8));
+            First_Block (Pos) := First_Block (Pos) or First_Bit;
+         end if;
+
+         --  Next_Block is already padded with zeroes (see above).
+
+      end if;
+   end Pad10_Multi_Blocks_Big_Endian;
+
 end Keccak.Padding;

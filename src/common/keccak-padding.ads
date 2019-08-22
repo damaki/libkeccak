@@ -37,6 +37,12 @@ package Keccak.Padding
 with SPARK_Mode => On
 is
 
+   ---------------
+   --  Pad1*01  --
+   ---------------
+   --  These padding rules append a 1 bit, followed by zero or more 0 bits,
+   --  and ending with a final 1 bit.
+
    Pad101_Min_Bits : constant := 2;
    --  The pad10*1 rule appends at least 2 bits
 
@@ -124,5 +130,62 @@ is
      with Global => null,
      Depends => (State =>+ (First_Bit, Last_Bit)),
      Pre => (Last_Bit < State_Size_Bits and First_Bit < Last_Bit);
+
+   --------------
+   --  Pad10  --*
+   --------------
+   --  The Pad10* rule only appends a 1 bit followed by at least one 0 bit.
+
+   Pad10_Min_Bits : constant := 2;
+   --  The pad10*1 rule appends at least 2 bits
+
+   procedure Pad10_Multi_Blocks_Big_Endian (First_Block    : in out Keccak.Types.Byte_Array;
+                                            Num_Used_Bits  : in     Natural;
+                                            Max_Bit_Length : in     Natural;
+                                            Next_Block     :    out Keccak.Types.Byte_Array;
+                                            Spilled        :    out Boolean)
+     with Global => null,
+     Pre => (Next_Block'Length = First_Block'Length
+             and then First_Block'Length <= Natural'Last / 8
+             and then Max_Bit_Length <= Natural'Last - 7
+             and then First_Block'Length = (Max_Bit_Length + 7) / 8
+             and then Num_Used_Bits < Max_Bit_Length),
+     Post => Spilled = ((Num_Used_Bits + Pad10_Min_Bits) > Max_Bit_Length);
+   --  pad10* padding rule
+   --
+   --  This procedure is used in cases where there might not be enough free space
+   --  in a block for all the padding bits, in which case the padding spills
+   --  over into a second block.
+   --
+   --  This is a big endian version intended for use in Ascon-Hash. This means
+   --  that the padding bit added starts from the MSB (16#80#) instead of the
+   --  LSB (16#01#). In the case where Num_Used_Bits is not a multiple of 8,
+   --  the partial byte of the block is shifted towards the MSB.
+   --
+   --  For example, if the last byte of the input data is 2#0000_0011# then
+   --  it is shifted to align to the MSB and becomes 2#1100_0000#. Next, the
+   --  padding bit is added: 2#1110_0000#.
+   --
+   --  @param First_Block The block which is to be padded. At least 1 padding bit
+   --    is applied to this block.
+   --
+   --  @param Num_Used_Bits The number of bits which are in-use in First_Block.
+   --    The padding bits will be applied immediately after this length.
+   --
+   --  @param Max_Bit_Length The maximum number of bits that can be stored in
+   --    First_Block and Next_Block. Padding will only be appended up to this
+   --    length.
+   --
+   --  @param Next_Block If there is less than 2 bits of unused bits in
+   --    First_Block then the padding continues into this block. If there
+   --    are at least 2 unused bits in First_Block then Next_Block is not used
+   --    and is filled with zeroes.
+   --
+   --  @param Spilled Set to True if there was not enough unused bits in
+   --    First_Block to store all of the padding bits. When Spilled is True then
+   --    both First_Block and Next_Block contain the padded data.
+   --    Otherwise, Spilled is set to False if there is enough free space in
+   --    First_Block for all of the padding bits. When Spilled is False then
+   --    Next_Block is not used.
 
 end Keccak.Padding;

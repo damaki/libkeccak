@@ -35,7 +35,7 @@ is
    procedure Init (Ctx : out Context)
    is
    begin
-      Hash_Sponge.Init (Ctx.Sponge_Ctx, Capacity);
+      Hash_Sponge.Init (Ctx.Sponge_Ctx, Capacity, Permutation_Initial_Value);
       Ctx.Update_Complete := False;
    end Init;
 

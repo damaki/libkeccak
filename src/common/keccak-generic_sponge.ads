@@ -101,11 +101,13 @@ is
    -- Sponge procedures  --
    ------------------------
 
-   procedure Init (Ctx             :    out Context;
-                   Capacity        : in     Positive)
+   procedure Init (Ctx          :    out Context;
+                   Capacity     : in     Positive;
+                   Initial_Data : in     Keccak.Types.Byte_Array := Keccak.Types.Null_Byte_Array)
      with Global => null,
-     Depends => (Ctx => Capacity),
-     Pre => (((State_Size_Bits - Capacity) mod 8 = 0) and (Capacity < State_Size_Bits)),
+     Pre => (((State_Size_Bits - Capacity) mod 8 = 0)
+             and (Capacity < State_Size_Bits)
+             and Initial_Data'Length <= State_Size_Bits / 8),
      Post => ((State_Of (Ctx) = Absorbing)
               and (Rate_Of (Ctx) = State_Size_Bits - Capacity)
               and In_Queue_Bit_Length (Ctx) = 0);

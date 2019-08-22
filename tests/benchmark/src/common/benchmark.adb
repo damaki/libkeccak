@@ -67,6 +67,10 @@ with RawSHAKE;
 with Ketje;
 with Gimli;
 with Gimli.Hash;
+with Ascon;
+with Ascon.Permutations;
+with Ascon.Hash;
+with Ascon.XOF;
 
 procedure Benchmark
 is
@@ -683,6 +687,28 @@ is
      ("Gimli Hash",
       Gimli.Hash);
 
+   procedure Benchmark_Ascon12 is new KeccakF_Benchmark
+     ("Ascon (12 rounds)",
+      Ascon.State,
+      Ascon.Init,
+      Ascon.Permutations.Permute_12);
+
+   procedure Benchmark_Ascon8 is new KeccakF_Benchmark
+     ("Ascon (8 rounds)",
+      Ascon.State,
+      Ascon.Init,
+      Ascon.Permutations.Permute_8);
+
+   procedure Benchmark_Ascon6 is new KeccakF_Benchmark
+     ("Ascon (6 rounds)",
+      Ascon.State,
+      Ascon.Init,
+      Ascon.Permutations.Permute_6);
+
+   procedure Benchmark_Ascon_Hash is new Hash_Benchmark
+     ("Ascon-Hash",
+      Ascon.Hash);
+
 begin
    Data_Chunk.all := (others => 16#A7#);
 
@@ -698,6 +724,11 @@ begin
 
    Benchmark_Gimli;
    Benchmark_Gimli_Hash;
+
+   Benchmark_Ascon12;
+   Benchmark_Ascon8;
+   Benchmark_Ascon6;
+   Benchmark_Ascon_Hash;
 
    Benchmark_K12;
    Benchmark_M14;

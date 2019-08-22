@@ -44,8 +44,9 @@ is
    --  Init  --
    ------------
 
-   procedure Init (Ctx      :    out Context;
-                   Capacity : in     Positive)
+   procedure Init (Ctx          :    out Context;
+                   Capacity     : in     Positive;
+                   Initial_Data : in     Keccak.Types.Byte_Array := Keccak.Types.Null_Byte_Array)
    is
    begin
       Init_State (Ctx.State);
@@ -56,6 +57,12 @@ is
       Ctx.Out_Bytes_Ready := False;
       Ctx.Rate            := (State_Size_Bits - Capacity) / 8;
       Ctx.Curr_State      := Absorbing;
+
+      if Initial_Data'Length > 0 then
+         XOR_Bits_Into_State (Ctx.State, Initial_Data, Initial_Data'Length * 8);
+
+         Permute (Ctx.State);
+      end if;
    end Init;
 
    --------------
