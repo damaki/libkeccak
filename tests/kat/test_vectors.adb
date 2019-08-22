@@ -24,6 +24,9 @@
 -- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
+with Ada.Strings.Maps;       use Ada.Strings.Maps;
+with Ada.Strings.Fixed;      use Ada.Strings.Fixed;
 with Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 with Interfaces; use Interfaces;
@@ -193,7 +196,10 @@ package body Test_Vectors is
 
       while not Ada.Text_IO.End_Of_File (File) loop
          declare
-            Line : constant String := Ada.Text_IO.Get_Line (File);
+            --  Read a line and trim whitespace.
+            Line : constant String := Trim (Source => Ada.Text_IO.Get_Line (File),
+                                            Left   => To_Set (" " & CR),
+                                            Right  => To_Set (" " & CR));
 
             Pair_Match       : GNAT.Regpat.Match_Array (0 .. 2) := (others => GNAT.Regpat.No_Match);
             Empty_Line_Match : GNAT.Regpat.Match_Array (0 .. 0) := (others => GNAT.Regpat.No_Match);
