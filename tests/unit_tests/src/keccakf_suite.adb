@@ -25,6 +25,7 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
+with Interfaces;
 with KeccakF_Tests;
 with KeccakF_Lane_Tests;
 with Keccak.Keccak_1600;
@@ -35,6 +36,7 @@ with Keccak.Keccak_100;
 with Keccak.Keccak_50;
 with Keccak.Keccak_25;
 with Keccak.Generic_KeccakF.Byte_Lanes.Twisted;
+with Keccak.Types;
 with AUnit.Test_Caller;
 
 package body KeccakF_Suite
@@ -43,43 +45,50 @@ is
       (Keccak.Keccak_1600.KeccakF_1600,
        Keccak.Keccak_1600.KeccakF_1600_Lanes.XOR_Bits_Into_State,
        Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bytes,
-       Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bits);
+       Keccak.Keccak_1600.KeccakF_1600_Lanes.Extract_Bits,
+       Interfaces.Rotate_Left);
 
    package KeccakF_800_Tests is new KeccakF_Tests
       (Keccak.Keccak_800.KeccakF_800,
        Keccak.Keccak_800.KeccakF_800_Lanes.XOR_Bits_Into_State,
        Keccak.Keccak_800.KeccakF_800_Lanes.Extract_Bytes,
-       Keccak.Keccak_800.KeccakF_800_Lanes.Extract_Bits);
+       Keccak.Keccak_800.KeccakF_800_Lanes.Extract_Bits,
+       Interfaces.Rotate_Left);
 
    package KeccakF_400_Tests is new KeccakF_Tests
       (Keccak.Keccak_400.KeccakF_400,
        Keccak.Keccak_400.KeccakF_400_Lanes.XOR_Bits_Into_State,
        Keccak.Keccak_400.KeccakF_400_Lanes.Extract_Bytes,
-       Keccak.Keccak_400.KeccakF_400_Lanes.Extract_Bits);
+       Keccak.Keccak_400.KeccakF_400_Lanes.Extract_Bits,
+       Interfaces.Rotate_Left);
 
    package KeccakF_200_Tests is new KeccakF_Tests
       (Keccak.Keccak_200.KeccakF_200,
        Keccak.Keccak_200.KeccakF_200_Lanes.XOR_Bits_Into_State,
        Keccak.Keccak_200.KeccakF_200_Lanes.Extract_Bytes,
-       Keccak.Keccak_200.KeccakF_200_Lanes.Extract_Bits);
+       Keccak.Keccak_200.KeccakF_200_Lanes.Extract_Bits,
+       Interfaces.Rotate_Left);
 
    package KeccakF_100_Tests is new KeccakF_Tests
       (Keccak.Keccak_100.KeccakF_100,
        Keccak.Keccak_100.KeccakF_100_Lanes.XOR_Bits_Into_State,
        Keccak.Keccak_100.KeccakF_100_Lanes.Extract_Bytes,
-       Keccak.Keccak_100.KeccakF_100_Lanes.Extract_Bits);
+       Keccak.Keccak_100.KeccakF_100_Lanes.Extract_Bits,
+       Keccak.Types.Rotate_Left_4);
 
    package KeccakF_50_Tests is new KeccakF_Tests
       (Keccak.Keccak_50.KeccakF_50,
        Keccak.Keccak_50.KeccakF_50_Lanes.XOR_Bits_Into_State,
        Keccak.Keccak_50.KeccakF_50_Lanes.Extract_Bytes,
-       Keccak.Keccak_50.KeccakF_50_Lanes.Extract_Bits);
+       Keccak.Keccak_50.KeccakF_50_Lanes.Extract_Bits,
+       Keccak.Types.Rotate_Left_2);
 
    package KeccakF_25_Tests is new KeccakF_Tests
       (Keccak.Keccak_25.KeccakF_25,
        Keccak.Keccak_25.KeccakF_25_Lanes.XOR_Bits_Into_State,
        Keccak.Keccak_25.KeccakF_25_Lanes.Extract_Bytes,
-       Keccak.Keccak_25.KeccakF_25_Lanes.Extract_Bits);
+       Keccak.Keccak_25.KeccakF_25_Lanes.Extract_Bits,
+       Keccak.Types.Rotate_Left_1);
 
    package Caller_1600 is new AUnit.Test_Caller (KeccakF_1600_Tests.Test);
    package Caller_800  is new AUnit.Test_Caller (KeccakF_800_Tests.Test);
@@ -122,7 +131,10 @@ is
    package Caller_400_Lanes is new AUnit.Test_Caller (KeccakF_400_Lane_Tests.Test);
    package Caller_200_Lanes is new AUnit.Test_Caller (KeccakF_200_Lane_Tests.Test);
 
-   package KeccakF_1600_Twisted_Lanes is new Keccak.Keccak_1600.KeccakF_1600_Lanes.Twisted;
+   package KeccakF_1600_Twisted_Lanes is new Keccak.Keccak_1600.KeccakF_1600_Lanes.Twisted
+     (Shift_Left  => Interfaces.Shift_Left,
+      Shift_Right => Interfaces.Shift_right);
+
    package KeccakF_1600_Twisted_Lane_Tests is new KeccakF_Lane_Tests
      (State_Size_Bits     => 1600,
       State               => Keccak.Keccak_1600.State,
@@ -130,7 +142,10 @@ is
       XOR_Bits_Into_State => KeccakF_1600_Twisted_Lanes.XOR_Bits_Into_State_Twisted,
       Extract_Bits        => KeccakF_1600_Twisted_Lanes.Extract_Bits_Twisted);
 
-   package KeccakF_800_Twisted_Lanes is new Keccak.Keccak_800.KeccakF_800_Lanes.Twisted;
+   package KeccakF_800_Twisted_Lanes is new Keccak.Keccak_800.KeccakF_800_Lanes.Twisted
+     (Shift_Left  => Interfaces.Shift_Left,
+      Shift_Right => Interfaces.Shift_right);
+
    package KeccakF_800_Twisted_Lane_Tests is new KeccakF_Lane_Tests
      (State_Size_Bits     => 800,
       State               => Keccak.Keccak_800.State,
@@ -138,7 +153,10 @@ is
       XOR_Bits_Into_State => KeccakF_800_Twisted_Lanes.XOR_Bits_Into_State_Twisted,
       Extract_Bits        => KeccakF_800_Twisted_Lanes.Extract_Bits_Twisted);
 
-   package KeccakF_400_Twisted_Lanes is new Keccak.Keccak_400.KeccakF_400_Lanes.Twisted;
+   package KeccakF_400_Twisted_Lanes is new Keccak.Keccak_400.KeccakF_400_Lanes.Twisted
+     (Shift_Left  => Interfaces.Shift_Left,
+      Shift_Right => Interfaces.Shift_right);
+
    package KeccakF_400_Twisted_Lane_Tests is new KeccakF_Lane_Tests
      (State_Size_Bits     => 400,
       State               => Keccak.Keccak_400.State,
@@ -146,7 +164,10 @@ is
       XOR_Bits_Into_State => KeccakF_400_Twisted_Lanes.XOR_Bits_Into_State_Twisted,
       Extract_Bits        => KeccakF_400_Twisted_Lanes.Extract_Bits_Twisted);
 
-   package KeccakF_200_Twisted_Lanes is new Keccak.Keccak_200.KeccakF_200_Lanes.Twisted;
+   package KeccakF_200_Twisted_Lanes is new Keccak.Keccak_200.KeccakF_200_Lanes.Twisted
+     (Shift_Left  => Interfaces.Shift_Left,
+      Shift_Right => Interfaces.Shift_right);
+
    package KeccakF_200_Twisted_Lane_Tests is new KeccakF_Lane_Tests
      (State_Size_Bits     => 200,
       State               => Keccak.Keccak_200.State,

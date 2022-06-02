@@ -253,8 +253,11 @@ is
    is
       use type KeccakF.State;
 
-      package R_Permutation is new KeccakF.Reference_Permutation;
-      package O_Permutation is new KeccakF.Optimized_Permutation;
+      package R_Permutation is new KeccakF.Reference_Permutation
+        (Rotate_Left => Rotate_Left);
+
+      package O_Permutation is new KeccakF.Optimized_Permutation
+        (Rotate_Left => Rotate_Left);
 
       procedure R_Permute is new R_Permutation.Permute;
       procedure O_Permute is new O_Permutation.Permute;

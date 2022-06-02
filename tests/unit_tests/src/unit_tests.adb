@@ -25,36 +25,16 @@
 -- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with AUnit.Test_Fixtures;
-with Keccak.Generic_KeccakF;
-with Keccak.Types;
+with AUnit.Reporter.Text;
+with AUnit.Run;
+with Keccak_Suites;
 
-generic
-   with package KeccakF is new Keccak.Generic_KeccakF(<>);
-   with procedure XOR_Bits_Into_State(A       : in out KeccakF.State;
-                                      Data    : in     Keccak.Types.Byte_Array;
-                                      Bit_Len : in     Natural);
-   with procedure Extract_Bytes(A    : in     KeccakF.State;
-                                Data :    out Keccak.Types.Byte_Array);
-   with procedure Extract_Bits(A       : in     KeccakF.State;
-                               Data    :    out Keccak.Types.Byte_Array;
-                               Bit_Len : in     Natural);
-package KeccakF_Tests
-is
+procedure Unit_Tests is
+   procedure Runner is new AUnit.Run.Test_Runner (Keccak_Suites.Suite);
 
-   type Test is new AUnit.Test_Fixtures.Test_Fixture with record
-      State : KeccakF.State;
-   end record;
-   
-   procedure Set_Up(T : in out Test);
+   Reporter : AUnit.Reporter.Text.Text_Reporter;
 
-   procedure Test_Initial_State(T : in out Test);
-   procedure Test_Extract_Bytes(T : in out Test);
-   procedure Test_XOR_No_Data(T : in out Test);
-   procedure Test_XOR_Entire_State(T : in out Test);
-   procedure Test_XOR_Bit_Length(T : in out Test);
-   procedure Test_Extract_Bits_Same_As_Extract_Bytes(T : in out Test);
-   procedure Test_Permute_Implementations (T : in out Test);
+begin
+   Runner(Reporter);
 
-end KeccakF_Tests;
-
+end Unit_Tests;
