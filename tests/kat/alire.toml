@@ -1,0 +1,15 @@
+name = "kat"
+description = "Known Answer Tests for libkeccak"
+version = "0.0.0"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+executables = ["kat"]
+
+[[depends-on]]
+libkeccak = "*"
+
+[[pins]]
+libkeccak = { path = "../.." }
