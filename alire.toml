@@ -1,9 +1,27 @@
 name = "libkeccak"
 description = "SHA-3 and related algorithms"
 version = "0.0.0"
+licenses = "BSD-3-Clause"
+tags = [
+    "spark", "cryptography", "security", "hash", "sha3", "keccak", "gimli",
+    "ascon", "shake", "cshake", "kmac", "tuplehash", "parallelhash",
+    "kangarootwelve"
+]
 
 authors = ["Daniel King"]
 maintainers = ["Daniel King <damaki.gh@gmail.com>"]
 maintainers-logins = ["damaki"]
-[[depends-on]]  # Added by alr
-gnatprove = "^11.2.3"  # Added by alr
+
+[[depends-on]]
+gnatprove = "^11.2.3"
+
+
+[gpr-externals]
+LIBKECCAK_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
+LIBKECCAK_COMPILE_CHECKS = ["enabled", "disabled"]
+LIBKECCAK_RUNTIME_CHECKS = ["enabled", "disabled"]
+LIBKECCAK_STYLE_CHECKS = ["enabled", "disabled"]
+LIBKECCAK_CONTRACTS = ["enabled", "disabled"]
+LIBKECCAK_BUILD_MODE = ["debug", "optimize"]
+LIBKECCAK_ARCH = ["generic", "x86_64"]
+LIBKECCAK_SIMD = ["none", "SSE2", "AVX2"]
