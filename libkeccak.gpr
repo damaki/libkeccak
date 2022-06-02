@@ -4,7 +4,6 @@ project Libkeccak is
    for Library_Name use "keccak";
    for Library_Version use Project'Library_Name & ".so." & Libkeccak_Config.Crate_Version;
    for Create_Missing_Dirs use "True";
-   for Library_Dir use "lib";
 
    type Library_Type_Type is ("relocatable", "static", "static-pic");
    Library_Type : Library_Type_Type :=
@@ -54,7 +53,8 @@ project Libkeccak is
    end case;
 
    for Source_Dirs use ("src/common") & Arch_Dirs;
-   for Object_Dir use "obj/" & Arch & "_" & SIMD;
+   for Object_Dir  use "obj/" & Arch & "_" & SIMD;
+   for Library_Dir use "lib/" & Arch & "_" & SIMD;
 
    Compile_Checks_Switches := ();
    case Compile_Checks is
