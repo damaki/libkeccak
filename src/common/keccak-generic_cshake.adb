@@ -29,6 +29,44 @@ with Keccak.Util;
 package body Keccak.Generic_CSHAKE
 is
 
+   procedure Update_String (XOF_Ctx : in out XOF.Context;
+                            Input   : in     String)
+     with Global => null,
+     Pre  => XOF.State_Of (XOF_Ctx) = XOF.Updating,
+     Post => XOF.State_Of (XOF_Ctx) = XOF.Updating;
+
+   procedure Update_String (XOF_Ctx : in out XOF.Context;
+                            Input   : in     String)
+   is
+      Buffer : Types.Byte_Array (1 .. 128) with Relaxed_Initialization;
+
+      Remaining : Natural := Input'Length;
+      Offset    : Natural := 0;
+
+   begin
+
+      while Remaining >= Buffer'Length loop
+         pragma Loop_Invariant (XOF.State_Of (XOF_Ctx) = XOF.Updating);
+         pragma Loop_Invariant (Offset + Remaining = Input'Length);
+
+         Util.To_Byte_Array (Buffer,
+                             Input (Input'First + Offset ..
+                                    Input'First + Offset + (Buffer'Length - 1)));
+
+         XOF.Update (XOF_Ctx, Buffer);
+
+         Offset    := Offset + Buffer'Length;
+         Remaining := Remaining - Buffer'Length;
+      end loop;
+
+      if Remaining > 0 then
+         Util.To_Byte_Array (Buffer (1 .. Remaining),
+                             Input (Input'First + Offset .. Input'Last));
+
+         XOF.Update (XOF_Ctx, Buffer (1 .. Remaining));
+      end if;
+   end Update_String;
+
    ------------
    --  Init  --
    ------------
@@ -61,13 +99,11 @@ is
 
       XOF.Update (Ctx     => Ctx.XOF_Ctx,
                   Message => Encoded_Function_Name_Length);
-      XOF.Update (Ctx     => Ctx.XOF_Ctx,
-                  Message => Util.To_Byte_Array (Function_Name));
+      Update_String (Ctx.XOF_Ctx, Function_Name);
 
       XOF.Update (Ctx     => Ctx.XOF_Ctx,
                   Message => Encoded_Customization_Length);
-      XOF.Update (Ctx     => Ctx.XOF_Ctx,
-                  Message => Util.To_Byte_Array (Customization));
+      Update_String (Ctx.XOF_Ctx, Customization);
 
       Padding_Length :=
         Encoded_Rate'Length mod Rate_Bytes +

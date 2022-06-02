@@ -116,12 +116,12 @@ is
 
       procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (RI : in Round_Index)
         with Inline,
-        Global => (In_Out => (Aba, Abe, Abi, Abo, Abu,
-                              Aga, Age, Agi, Ago, Agu,
-                              Aka, Ake, Aki, Ako, Aku,
-                              Ama, Ame, Ami, Amo, Amu,
-                              Asa, Ase, Asi, Aso, Asu,
-                              Ca, Ce, Ci, Co, Cu),
+        Global => (Input => (Aba, Abe, Abi, Abo, Abu,
+                             Aga, Age, Agi, Ago, Agu,
+                             Aka, Ake, Aki, Ako, Aku,
+                             Ama, Ame, Ami, Amo, Amu,
+                             Asa, Ase, Asi, Aso, Asu),
+                   In_Out => (Ca, Ce, Ci, Co, Cu),
                    Output => (Eba, Ebe, Ebi, Ebo, Ebu,
                               Ega, Ege, Egi, Ego, Egu,
                               Eka, Eke, Eki, Eko, Eku,
@@ -130,12 +130,12 @@ is
 
       procedure Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (RI : in Round_Index)
         with Inline,
-        Global => (In_Out => (Eba, Ebe, Ebi, Ebo, Ebu,
-                              Ega, Ege, Egi, Ego, Egu,
-                              Eka, Eke, Eki, Eko, Eku,
-                              Ema, Eme, Emi, Emo, Emu,
-                              Esa, Ese, Esi, Eso, Esu,
-                              Ca, Ce, Ci, Co, Cu),
+        Global => (Input => (Eba, Ebe, Ebi, Ebo, Ebu,
+                             Ega, Ege, Egi, Ego, Egu,
+                             Eka, Eke, Eki, Eko, Eku,
+                             Ema, Eme, Emi, Emo, Emu,
+                             Esa, Ese, Esi, Eso, Esu),
+                   In_Out => (Ca, Ce, Ci, Co, Cu),
                    Output => (Aba, Abe, Abi, Abo, Abu,
                               Aga, Age, Agi, Ago, Agu,
                               Aka, Ake, Aki, Ako, Aku,
@@ -261,16 +261,11 @@ is
          D0  := Ci xor Rotate_Left (Cu, 1);
          Du  := Co xor Rotate_Left (Ca, 1);
 
-         Aba := Aba xor Da;
-         Bba := Aba;
-         Age := Age xor De;
-         Bbe := Rotate_Left (Age, 300 mod Lane_Size_Bits);
-         Aki := Aki xor Di;
-         Bbi := Rotate_Left (Aki, 171 mod Lane_Size_Bits);
-         Amo := Amo xor D0;
-         Bbo := Rotate_Left (Amo, 21 mod Lane_Size_Bits);
-         Asu := Asu xor Du;
-         Bbu := Rotate_Left (Asu, 78 mod Lane_Size_Bits);
+         Bba := Aba xor Da;
+         Bbe := Rotate_Left (Age xor De, 300 mod Lane_Size_Bits);
+         Bbi := Rotate_Left (Aki xor Di, 171 mod Lane_Size_Bits);
+         Bbo := Rotate_Left (Amo xor D0, 21 mod Lane_Size_Bits);
+         Bbu := Rotate_Left (Asu xor Du, 78 mod Lane_Size_Bits);
          Eba := Bba xor (Bbe or Bbi);
          Eba := Eba xor Lane_Type (RC (RI) and (2**Lane_Size_Bits - 1));
          Ca  := Eba;
@@ -283,16 +278,11 @@ is
          Ebu := Bbu xor (Bba and Bbe);
          Cu  := Ebu;
 
-         Abo := Abo xor D0;
-         Bga := Rotate_Left (Abo, 28 mod Lane_Size_Bits);
-         Agu := Agu xor Du;
-         Bge := Rotate_Left (Agu, 276 mod Lane_Size_Bits);
-         Aka := Aka xor Da;
-         Bgi := Rotate_Left (Aka, 3 mod Lane_Size_Bits);
-         Ame := Ame xor De;
-         Bgo := Rotate_Left (Ame, 45 mod Lane_Size_Bits);
-         Asi := Asi xor Di;
-         Bgu := Rotate_Left (Asi, 253 mod Lane_Size_Bits);
+         Bga := Rotate_Left (Abo xor D0, 28 mod Lane_Size_Bits);
+         Bge := Rotate_Left (Agu xor Du, 276 mod Lane_Size_Bits);
+         Bgi := Rotate_Left (Aka xor Da, 3 mod Lane_Size_Bits);
+         Bgo := Rotate_Left (Ame xor De, 45 mod Lane_Size_Bits);
+         Bgu := Rotate_Left (Asi xor Di, 253 mod Lane_Size_Bits);
          Ega := Bga xor (Bge or Bgi);
          Ca  := Ca xor Ega;
          Ege := Bge xor (Bgi and Bgo);
@@ -304,16 +294,11 @@ is
          Egu := Bgu xor (Bga and Bge);
          Cu  := Cu xor Egu;
 
-         Abe := Abe xor De;
-         Bka := Rotate_Left (Abe, 1 mod Lane_Size_Bits);
-         Agi := Agi xor Di;
-         Bke := Rotate_Left (Agi, 6 mod Lane_Size_Bits);
-         Ako := Ako xor D0;
-         Bki := Rotate_Left (Ako, 153 mod Lane_Size_Bits);
-         Amu := Amu xor Du;
-         Bko := Rotate_Left (Amu, 136 mod Lane_Size_Bits);
-         Asa := Asa xor Da;
-         Bku := Rotate_Left (Asa, 210 mod Lane_Size_Bits);
+         Bka := Rotate_Left (Abe xor De, 1 mod Lane_Size_Bits);
+         Bke := Rotate_Left (Agi xor Di, 6 mod Lane_Size_Bits);
+         Bki := Rotate_Left (Ako xor D0, 153 mod Lane_Size_Bits);
+         Bko := Rotate_Left (Amu xor Du, 136 mod Lane_Size_Bits);
+         Bku := Rotate_Left (Asa xor Da, 210 mod Lane_Size_Bits);
          Eka := Bka xor (Bke or Bki);
          Ca  := Ca xor Eka;
          Eke := Bke xor (Bki and Bko);
@@ -325,16 +310,11 @@ is
          Eku := Bku xor (Bka and Bke);
          Cu  := Cu xor Eku;
 
-         Abu := Abu xor Du;
-         Bma := Rotate_Left (Abu, 91 mod Lane_Size_Bits);
-         Aga := Aga xor Da;
-         Bme := Rotate_Left (Aga, 36 mod Lane_Size_Bits);
-         Ake := Ake xor De;
-         Bmi := Rotate_Left (Ake, 10 mod Lane_Size_Bits);
-         Ami := Ami xor Di;
-         Bmo := Rotate_Left (Ami, 15 mod Lane_Size_Bits);
-         Aso := Aso xor D0;
-         Bmu := Rotate_Left (Aso, 120 mod Lane_Size_Bits);
+         Bma := Rotate_Left (Abu xor Du, 91 mod Lane_Size_Bits);
+         Bme := Rotate_Left (Aga xor Da, 36 mod Lane_Size_Bits);
+         Bmi := Rotate_Left (Ake xor De, 10 mod Lane_Size_Bits);
+         Bmo := Rotate_Left (Ami xor Di, 15 mod Lane_Size_Bits);
+         Bmu := Rotate_Left (Aso xor D0, 120 mod Lane_Size_Bits);
          Ema := Bma xor (Bme and Bmi);
          Ca  := Ca xor Ema;
          Eme := Bme xor (Bmi or Bmo);
@@ -346,16 +326,11 @@ is
          Emu := Bmu xor (Bma or Bme);
          Cu  := Cu xor Emu;
 
-         Abi := Abi xor Di;
-         Bsa := Rotate_Left (Abi, 190 mod Lane_Size_Bits);
-         Ago := Ago xor D0;
-         Bse := Rotate_Left (Ago, 55 mod Lane_Size_Bits);
-         Aku := Aku xor Du;
-         Bsi := Rotate_Left (Aku, 231 mod Lane_Size_Bits);
-         Ama := Ama xor Da;
-         Bso := Rotate_Left (Ama, 105 mod Lane_Size_Bits);
-         Ase := Ase xor De;
-         Bsu := Rotate_Left (Ase, 66 mod Lane_Size_Bits);
+         Bsa := Rotate_Left (Abi xor Di, 190 mod Lane_Size_Bits);
+         Bse := Rotate_Left (Ago xor D0, 55 mod Lane_Size_Bits);
+         Bsi := Rotate_Left (Aku xor Du, 231 mod Lane_Size_Bits);
+         Bso := Rotate_Left (Ama xor Da, 105 mod Lane_Size_Bits);
+         Bsu := Rotate_Left (Ase xor De, 66 mod Lane_Size_Bits);
          Esa := Bsa xor ((not Bse) and Bsi);
          Ca  := Ca xor Esa;
          Ese := (not Bse) xor (Bsi or Bso);
@@ -386,16 +361,11 @@ is
          D0  := Ci xor Rotate_Left (Cu, 1);
          Du  := Co xor Rotate_Left (Ca, 1);
 
-         Eba := Eba xor Da;
-         Bba := Eba;
-         Ege := Ege xor De;
-         Bbe := Rotate_Left (Ege, 300 mod Lane_Size_Bits);
-         Eki := Eki xor Di;
-         Bbi := Rotate_Left (Eki, 171 mod Lane_Size_Bits);
-         Emo := Emo xor D0;
-         Bbo := Rotate_Left (Emo, 21 mod Lane_Size_Bits);
-         Esu := Esu xor Du;
-         Bbu := Rotate_Left (Esu, 78 mod Lane_Size_Bits);
+         Bba := Eba xor Da;
+         Bbe := Rotate_Left (Ege xor De, 300 mod Lane_Size_Bits);
+         Bbi := Rotate_Left (Eki xor Di, 171 mod Lane_Size_Bits);
+         Bbo := Rotate_Left (Emo xor D0, 21 mod Lane_Size_Bits);
+         Bbu := Rotate_Left (Esu xor Du, 78 mod Lane_Size_Bits);
          Aba := Bba xor (Bbe or Bbi);
          Aba := Aba xor Lane_Type (RC (RI) and (2**Lane_Size_Bits - 1));
          Ca  := Aba;
@@ -408,16 +378,11 @@ is
          Abu := Bbu xor (Bba and Bbe);
          Cu  := Abu;
 
-         Ebo := Ebo xor D0;
-         Bga := Rotate_Left (Ebo, 28 mod Lane_Size_Bits);
-         Egu := Egu xor Du;
-         Bge := Rotate_Left (Egu, 276 mod Lane_Size_Bits);
-         Eka := Eka xor Da;
-         Bgi := Rotate_Left (Eka, 3 mod Lane_Size_Bits);
-         Eme := Eme xor De;
-         Bgo := Rotate_Left (Eme, 45 mod Lane_Size_Bits);
-         Esi := Esi xor Di;
-         Bgu := Rotate_Left (Esi, 253 mod Lane_Size_Bits);
+         Bga := Rotate_Left (Ebo xor D0, 28 mod Lane_Size_Bits);
+         Bge := Rotate_Left (Egu xor Du, 276 mod Lane_Size_Bits);
+         Bgi := Rotate_Left (Eka xor Da, 3 mod Lane_Size_Bits);
+         Bgo := Rotate_Left (Eme xor De, 45 mod Lane_Size_Bits);
+         Bgu := Rotate_Left (Esi xor Di, 253 mod Lane_Size_Bits);
          Aga := Bga xor (Bge or Bgi);
          Ca  := Ca xor Aga;
          Age := Bge xor (Bgi and Bgo);
@@ -429,16 +394,11 @@ is
          Agu := Bgu xor (Bga and Bge);
          Cu  := Cu xor Agu;
 
-         Ebe := Ebe xor De;
-         Bka := Rotate_Left (Ebe, 1 mod Lane_Size_Bits);
-         Egi := Egi xor Di;
-         Bke := Rotate_Left (Egi, 6 mod Lane_Size_Bits);
-         Eko := Eko xor D0;
-         Bki := Rotate_Left (Eko, 153 mod Lane_Size_Bits);
-         Emu := Emu xor Du;
-         Bko := Rotate_Left (Emu, 136 mod Lane_Size_Bits);
-         Esa := Esa xor Da;
-         Bku := Rotate_Left (Esa, 210 mod Lane_Size_Bits);
+         Bka := Rotate_Left (Ebe xor De, 1 mod Lane_Size_Bits);
+         Bke := Rotate_Left (Egi xor Di, 6 mod Lane_Size_Bits);
+         Bki := Rotate_Left (Eko xor D0, 153 mod Lane_Size_Bits);
+         Bko := Rotate_Left (Emu xor Du, 136 mod Lane_Size_Bits);
+         Bku := Rotate_Left (Esa xor Da, 210 mod Lane_Size_Bits);
          Aka := Bka xor (Bke or Bki);
          Ca  := Ca xor Aka;
          Ake := Bke xor (Bki and Bko);
@@ -450,16 +410,11 @@ is
          Aku := Bku xor (Bka and Bke);
          Cu  := Cu xor Aku;
 
-         Ebu := Ebu xor Du;
-         Bma := Rotate_Left (Ebu, 91 mod Lane_Size_Bits);
-         Ega := Ega xor Da;
-         Bme := Rotate_Left (Ega, 36 mod Lane_Size_Bits);
-         Eke := Eke xor De;
-         Bmi := Rotate_Left (Eke, 10 mod Lane_Size_Bits);
-         Emi := Emi xor Di;
-         Bmo := Rotate_Left (Emi, 15 mod Lane_Size_Bits);
-         Eso := Eso xor D0;
-         Bmu := Rotate_Left (Eso, 120 mod Lane_Size_Bits);
+         Bma := Rotate_Left (Ebu xor Du, 91 mod Lane_Size_Bits);
+         Bme := Rotate_Left (Ega xor Da, 36 mod Lane_Size_Bits);
+         Bmi := Rotate_Left (Eke xor De, 10 mod Lane_Size_Bits);
+         Bmo := Rotate_Left (Emi xor Di, 15 mod Lane_Size_Bits);
+         Bmu := Rotate_Left (Eso xor D0, 120 mod Lane_Size_Bits);
          Ama := Bma xor (Bme and Bmi);
          Ca  := Ca xor Ama;
          Ame := Bme xor (Bmi or Bmo);
@@ -471,16 +426,11 @@ is
          Amu := Bmu xor (Bma or Bme);
          Cu  := Cu xor Amu;
 
-         Ebi := Ebi xor Di;
-         Bsa := Rotate_Left (Ebi, 190 mod Lane_Size_Bits);
-         Ego := Ego xor D0;
-         Bse := Rotate_Left (Ego, 55 mod Lane_Size_Bits);
-         Eku := Eku xor Du;
-         Bsi := Rotate_Left (Eku, 231 mod Lane_Size_Bits);
-         Ema := Ema xor Da;
-         Bso := Rotate_Left (Ema, 105 mod Lane_Size_Bits);
-         Ese := Ese xor De;
-         Bsu := Rotate_Left (Ese, 66 mod Lane_Size_Bits);
+         Bsa := Rotate_Left (Ebi xor Di, 190 mod Lane_Size_Bits);
+         Bse := Rotate_Left (Ego xor D0, 55 mod Lane_Size_Bits);
+         Bsi := Rotate_Left (Eku xor Du, 231 mod Lane_Size_Bits);
+         Bso := Rotate_Left (Ema xor Da, 105 mod Lane_Size_Bits);
+         Bsu := Rotate_Left (Ese xor De, 66 mod Lane_Size_Bits);
          Asa := Bsa xor ((not Bse) and Bsi);
          Ca  := Ca xor Asa;
          Ase := (not Bse) xor (Bsi or Bso);
@@ -491,7 +441,6 @@ is
          Co  := Co xor Aso;
          Asu := Bsu xor (Bsa and Bse);
          Cu  := Cu xor Asu;
-
       end Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA;
 
    begin
@@ -509,11 +458,6 @@ is
 
          pragma Warnings
            (GNATprove, Off,
-            "unused assignment to",
-            Reason => "Axx and Exx variables are also re-used as temporaries");
-
-         pragma Warnings
-           (GNATprove, Off,
             "this statement is never reached",
             Reason => "This loop is not executed when instantiated with Num_Rounds => 1");
 
@@ -527,14 +471,9 @@ is
       if Num_Rounds mod 2 /= 0 then
          --  Number of rounds is an odd number, so we need to do the final step.
 
-         pragma Warnings
-           (GNATprove, Off,
-            "unused assignment to ""C",
-            Reason => "Cx variables are no longer needed");
-
          Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (First_Round + Round_Index (Num_Rounds - 1));
 
-         pragma Warnings (GNATprove, On);
+         pragma Unreferenced (Ca, Ce, Ci, Co, Cu);
 
          Copy_To_State_From_E;
 

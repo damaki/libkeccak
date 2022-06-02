@@ -1,0 +1,9 @@
+name = "libkeccak"
+description = "SHA-3 and related algorithms"
+version = "0.0.0"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+[[depends-on]]  # Added by alr
+gnatprove = "^11.2.3"  # Added by alr

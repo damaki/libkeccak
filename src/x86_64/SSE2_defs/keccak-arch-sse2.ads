@@ -46,12 +46,16 @@ is
       type V2DI_Index is range 0 .. 1;
 
       type V2DI is array (V2DI_Index) of Unsigned_64
-        with Alignment => 16;
+        with Alignment => 16,
+        Size => 128,
+        Object_Size => 128;
       pragma Machine_Attribute (V2DI, "vector_type");
       pragma Machine_Attribute (V2DI, "may_alias");
 
       type V2DI_View is array (V2DI_Index) of Unsigned_64
-        with Alignment => 16;
+        with Alignment => 16,
+        Size => 128,
+        Object_Size => 128;
 
       function Load is new Ada.Unchecked_Conversion
         (Source => V2DI_View,
@@ -102,12 +106,16 @@ is
       type V4SI_Index is range 0 .. 3;
 
       type V4SI is array (V4SI_Index) of Unsigned_32
-        with Alignment => 16;
+        with Alignment => 16,
+        Size => 128,
+        Object_Size => 128;
       pragma Machine_Attribute (V4SI, "vector_type");
       pragma Machine_Attribute (V4SI, "may_alias");
 
       type V4SI_View is array (V4SI_Index) of Unsigned_32
-        with Alignment => 16;
+        with Alignment => 16,
+        Size => 128,
+        Object_Size => 128;
 
       function Load is new Ada.Unchecked_Conversion
         (Source => V4SI_View,

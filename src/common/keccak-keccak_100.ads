@@ -24,11 +24,9 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Interfaces;
 with Keccak.Generic_KeccakF;
 with Keccak.Generic_KeccakF.Bit_Lanes;
 with Keccak.Generic_KeccakF.Lane_Complementing_Permutation;
-with Keccak.Padding;
 with Keccak.Types;
 
 pragma Elaborate_All (Keccak.Generic_KeccakF);
@@ -43,14 +41,12 @@ is
 
    package KeccakF_100 is new Keccak.Generic_KeccakF
      (Lane_Size_Log => 2,
-      Lane_Type     => Keccak.Types.Unsigned_4,
-      Shift_Left    => Keccak.Types.Shift_Left_4,
-      Shift_Right   => Keccak.Types.Shift_Right_4,
-      Rotate_Left   => Keccak.Types.Rotate_Left_4);
+      Lane_Type     => Keccak.Types.Unsigned_4);
 
    subtype State is KeccakF_100.Lane_Complemented_State;
 
-   package KeccakF_100_Permutation is new KeccakF_100.Lane_Complementing_Permutation;
+   package KeccakF_100_Permutation is new KeccakF_100.Lane_Complementing_Permutation
+     (Rotate_Left => Keccak.Types.Rotate_Left_4);
 
    package KeccakF_100_Lanes is new KeccakF_100.Bit_Lanes;
 

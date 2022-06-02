@@ -26,6 +26,7 @@
 -------------------------------------------------------------------------------
 with Keccak.Generic_Duplex;
 with Keccak.Generic_Sponge;
+with Keccak.Padding;
 
 pragma Elaborate_All (Keccak.Generic_Duplex);
 pragma Elaborate_All (Keccak.Generic_Sponge);

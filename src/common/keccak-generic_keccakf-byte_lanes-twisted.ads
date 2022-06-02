@@ -30,6 +30,13 @@
 --
 --  @group Keccak-f
 generic
+   --  Bit-wise left shift for Lane_Type.
+   with function Shift_Left (Value  : in Lane_Type;
+                             Amount : in Natural) return Lane_Type;
+
+   --  Bit-wise right shift for Lane_Type.
+   with function Shift_Right (Value  : in Lane_Type;
+                              Amount : in Natural) return Lane_Type;
 package Keccak.Generic_KeccakF.Byte_Lanes.Twisted is
 
    procedure XOR_Bits_Into_State_Twisted (A       : in out State;

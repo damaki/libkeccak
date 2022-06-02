@@ -24,6 +24,7 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Types;
 
 --  @summary
 --  Subprograms for operating on Keccak-f states with a line size less than 8 bits.

@@ -105,7 +105,7 @@ is
 
    procedure Extract_Bytes_P2
      (S           : in     Parallel_State_P2;
-      Data        : in out Types.Byte_Array;
+      Data        :    out Types.Byte_Array;
       Data_Offset : in     Natural;
       Byte_Len    : in     Natural)
       renames KeccakF_1600_P2.Extract_Bytes;
@@ -151,7 +151,7 @@ is
 
    procedure Extract_Bytes_P4
      (S           : in     Parallel_State_P4;
-      Data        : in out Types.Byte_Array;
+      Data        :    out Types.Byte_Array;
       Data_Offset : in     Natural;
       Byte_Len    : in     Natural)
       renames KeccakF_1600_P4.Extract_Bytes;
@@ -193,7 +193,7 @@ is
 
    procedure Extract_Bytes_P8
      (S           : in     Parallel_State_P8;
-      Data        : in out Types.Byte_Array;
+      Data        :    out Types.Byte_Array;
       Data_Offset : in     Natural;
       Byte_Len    : in     Natural)
       renames KeccakF_1600_P8.Extract_Bytes;

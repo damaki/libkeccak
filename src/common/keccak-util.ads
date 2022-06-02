@@ -32,10 +32,13 @@ with SPARK_Mode => On
 is
    use type Interfaces.Unsigned_8;
 
-   function To_Byte_Array (Str : in String) return Types.Byte_Array
+   procedure To_Byte_Array (Bytes :    out Types.Byte_Array;
+                            Str   : in     String)
      with Inline,
-     Post => (To_Byte_Array'Result'Length = Str'Length
-              and To_Byte_Array'Result'First = 0);
+     Relaxed_Initialization => Bytes,
+     Global => null,
+     Pre => Bytes'Length = Str'Length,
+     Post => Bytes'Initialized;
    --  Return the byte array representation of a string.
    --
    --  This function uses an Ada.Unchecked_Conversion internally to convert the

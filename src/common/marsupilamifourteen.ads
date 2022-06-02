@@ -27,12 +27,8 @@
 with Keccak.Keccak_1600.Rounds_14;
 with Keccak.Generic_KangarooTwelve;
 with Keccak.Parallel_Keccak_1600.Rounds_14;
-with Keccak.Generic_Parallel_Sponge;
 with Keccak.Generic_Parallel_XOF;
-with Keccak.Generic_Sponge;
 with Keccak.Generic_XOF;
-with Keccak.Padding;
-with Interfaces;
 
 --  @summary
 --  Defines the MarsupilamiFourteen instance.
@@ -68,19 +64,19 @@ is
          Suffix_Size => 0);
 
       package XOF_P2 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_14.Parallel_Sponge_P2,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_14.Parallel_Sponge_P2,
          Capacity    => M14_Capacity,
          Suffix      => 2#011#,
          Suffix_Size => 3);
 
       package XOF_P4 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_14.Parallel_Sponge_P4,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_14.Parallel_Sponge_P4,
          Capacity    => M14_Capacity,
          Suffix      => 2#011#,
          Suffix_Size => 3);
 
       package XOF_P8 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_14.Parallel_Sponge_P8,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_14.Parallel_Sponge_P8,
          Capacity    => M14_Capacity,
          Suffix      => 2#011#,
          Suffix_Size => 3);
