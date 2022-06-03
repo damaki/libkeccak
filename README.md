@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.com/damaki/libkeccak.svg?branch=master)](https://travis-ci.com/damaki/libkeccak)
-
 # Libkeccak
 
 This project implements the Keccak family of sponge functions and related
