@@ -86,7 +86,11 @@ Libkeccak is licensed under the 3-clause BSD license.
 
 # Building
 
-Assuming you've cloned this repository and have Alire installed:
+Libkeccak requires a GNAT compiler that supports the `Relaxed_Initialization`
+aspect, such as GNAT FSF 11 or newer.
+
+Assuming you've cloned this repository and have Alire installed, libkeccak
+can be built with the command:
 
 ```sh
 alr build
@@ -100,6 +104,8 @@ by setting the following GPR variables:
 | LIBKECCAK_ARCH | `generic`, `x86_64` | `generic` |
 | LIBKECCAK_SIMD | `none`, `SSE2`, `AVX2` |
 
+>:bulb: `AVX2` will use both `AVX2` and `SSE2` instructions.
+
 >:warning: `SSE2` and `AVX2` are only available on `x86_64` architectures.
 
 Enabling `SSE2` will use SSE2 instructions to speed up parallel algorithms
@@ -110,12 +116,18 @@ To disable SSE2 and AVX2 on x86_64, set `SIMD=none`.
 >:warning: `AVX2` is not guaranteed to work on Windows since GCC does not ensure 32-byte
 stack alignment. See [GCC Bug #54412](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412)
 
+For example:
+```sh
+alr build -XLIBKECCAK_ARCH=x86_64 -XLIBKECCAK_SIMD=SSE2
+```
+
 # Benchmarks
 
 The following performance measurements were taken on an AMD Ryzen 7 5800X on Windows 10.
 The code was compiled using gnat 11.2.0-4 with the following configuration:
 * `LIBKECCAK_ARCH=x86_64`
 * `LIBKECCAK_SIMD=AVX2`
+* All other settings at their default values.
 
 The measurements shown are the output of the benchmark program.
 
@@ -124,75 +136,75 @@ Message size: 524288 bytes
 Performing 200 measurements for each test
 
 Gimli: 379 cycles
-Gimli Hash: 23.9 cycles/byte
+Gimli Hash: 24.2 cycles/byte
 Ascon (12 rounds): 113 cycles
 Ascon (8 rounds): 75 cycles
 Ascon (6 rounds): 74 cycles
-Ascon-Hash: 17.4 cycles/byte
+Ascon-Hash: 17.3 cycles/byte
 KangarooTwelve (Absorbing): 1.7 cycles/byte
-KangarooTwelve (Squeezing): 3.0 cycles/byte
-MarsupilamiFourteen (Absorbing): 2.2 cycles/byte
-MarsupilamiFourteen (Squeezing): 4.0 cycles/byte
-ParallelHash128 (Absorbing): 2.5 cycles/byte
-ParallelHash128 (Squeezing): 5.0 cycles/byte
+KangarooTwelve (Squeezing): 2.9 cycles/byte
+MarsupilamiFourteen (Absorbing): 2.1 cycles/byte
+MarsupilamiFourteen (Squeezing): 3.8 cycles/byte
+ParallelHash128 (Absorbing): 2.4 cycles/byte
+ParallelHash128 (Squeezing): 4.9 cycles/byte
 ParallelHash256 (Absorbing): 2.9 cycles/byte
-ParallelHash256 (Squeezing): 6.2 cycles/byte
-SHA3-224: 6.1 cycles/byte
-SHA3-256: 6.4 cycles/byte
-SHA3-384: 8.3 cycles/byte
-SHA3-512: 11.8 cycles/byte
-Keccak-224: 6.1 cycles/byte
-Keccak-256: 6.4 cycles/byte
-Keccak-384: 8.3 cycles/byte
-Keccak-512: 11.8 cycles/byte
-SHAKE128 (Absorbing): 5.3 cycles/byte
-SHAKE128 (Squeezing): 5.0 cycles/byte
-SHAKE256 (Absorbing): 6.4 cycles/byte
-SHAKE256 (Squeezing): 6.1 cycles/byte
-RawSHAKE128 (Absorbing): 5.4 cycles/byte
-RawSHAKE128 (Squeezing): 5.0 cycles/byte
-RawSHAKE256 (Absorbing): 6.5 cycles/byte
-RawSHAKE256 (Squeezing): 6.2 cycles/byte
-Duplex r1152c448: 987 cycles
-Duplex r1088c512: 986 cycles
-Duplex r832c768: 949 cycles
+ParallelHash256 (Squeezing): 6.0 cycles/byte
+SHA3-224: 6.0 cycles/byte
+SHA3-256: 6.3 cycles/byte
+SHA3-384: 8.1 cycles/byte
+SHA3-512: 11.5 cycles/byte
+Keccak-224: 6.0 cycles/byte
+Keccak-256: 6.3 cycles/byte
+Keccak-384: 8.2 cycles/byte
+Keccak-512: 11.5 cycles/byte
+SHAKE128 (Absorbing): 5.2 cycles/byte
+SHAKE128 (Squeezing): 4.9 cycles/byte
+SHAKE256 (Absorbing): 6.3 cycles/byte
+SHAKE256 (Squeezing): 6.0 cycles/byte
+RawSHAKE128 (Absorbing): 5.2 cycles/byte
+RawSHAKE128 (Squeezing): 4.9 cycles/byte
+RawSHAKE256 (Absorbing): 6.3 cycles/byte
+RawSHAKE256 (Squeezing): 6.0 cycles/byte
+Duplex r1152c448: 949 cycles
+Duplex r1088c512: 949 cycles
+Duplex r832c768: 911 cycles
 Duplex r576c1024: 911 cycles
-Keccak-p[1600,24]: 796 cycles
-Keccak-p[1600,24]×2: 1100 cycles
-Keccak-p[1600,24]×4: 1100 cycles
-Keccak-p[1600,24]×8: 2203 cycles
-Keccak-p[1600,12]: 416 cycles
+Keccak-p[1600,24]: 759 cycles
+Keccak-p[1600,24]×2: 1063 cycles
+Keccak-p[1600,24]×4: 1063 cycles
+Keccak-p[1600,24]×8: 2165 cycles
+Keccak-p[1600,12]: 379 cycles
 Keccak-p[1600,12]×2: 531 cycles
-Keccak-p[1600,12]×4: 568 cycles
+Keccak-p[1600,12]×4: 531 cycles
 Keccak-p[1600,12]×8: 1139 cycles
-Keccak-p[800,22]: 720 cycles
+Keccak-p[800,22]: 683 cycles
 Keccak-p[400,20]: 683 cycles
-Keccak-p[200,18]: 682 cycles
-Keccak-p[100,16]: 873 cycles
+Keccak-p[200,18]: 644 cycles
+Keccak-p[100,16]: 799 cycles
 Keccak-p[50,14]: 759 cycles
 Keccak-p[25,12]: 416 cycles
-Ketje Jr (AAD): 38.5 cycles/byte
-Ketje Jr (Encrypt): 45.0 cycles/byte
-Ketje Jr (Decrypt): 45.0 cycles/byte
-Ketje Jr (Tag): 44.5 cycles/byte
+Ketje Jr (AAD): 38.3 cycles/byte
+Ketje Jr (Encrypt): 44.3 cycles/byte
+Ketje Jr (Decrypt): 44.3 cycles/byte
+Ketje Jr (Tag): 44.1 cycles/byte
 Ketje Sr (AAD): 21.7 cycles/byte
-Ketje Sr (Encrypt): 27.6 cycles/byte
-Ketje Sr (Decrypt): 27.5 cycles/byte
-Ketje Sr (Tag): 23.6 cycles/byte
-Ketje Minor (AAD): 5.1 cycles/byte
-Ketje Minor (Encrypt): 8.8 cycles/byte
-Ketje Minor (Decrypt): 8.8 cycles/byte
-Ketje Minor (Tag): 6.7 cycles/byte
+Ketje Sr (Encrypt): 26.9 cycles/byte
+Ketje Sr (Decrypt): 26.9 cycles/byte
+Ketje Sr (Tag): 23.2 cycles/byte
+Ketje Minor (AAD): 4.9 cycles/byte
+Ketje Minor (Encrypt): 8.3 cycles/byte
+Ketje Minor (Decrypt): 8.3 cycles/byte
+Ketje Minor (Tag): 6.5 cycles/byte
 Ketje Major (AAD): 2.7 cycles/byte
-Ketje Major (Encrypt): 4.4 cycles/byte
-Ketje Major (Decrypt): 4.4 cycles/byte
+Ketje Major (Encrypt): 4.0 cycles/byte
+Ketje Major (Decrypt): 4.0 cycles/byte
 Ketje Major (Tag): 3.2 cycles/byte
 ```
 
 # Proofs and Testing
 
-GNATprove is used to prove, via sound static analysis, that the implementation
-is free of various errors such as:
+The library has an auto-active proof of type safety i.e. that the code
+is free of various run-time errors such as:
  * use of uninitialised variables;
  * integer overflows;
  * division by zero;
@@ -206,7 +218,7 @@ described in [9].
 The proofs do not extend to functional correctness, i.e. the proofs do not
 show that the SHA-3 implementation produces the correct results.
 Conventional testing is used to provide assurance of the correctness of the
-algorithms. The tests consists of Known Answer Tests (KAT) and unit tests.
+algorithms. The tests consist of Known Answer Tests (KAT) and unit tests.
 
 The KATs comprise the bulk of the tests and they provide assurance that the
 algorithms are implemented correctly.
