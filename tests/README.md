@@ -1,3 +1,5 @@
+# Libkeccak tests
+
 The tests consists of three parts:
  * `benchmark` contains a program to measure the performance of libkeccak.
  * `kat` contains the Known Answer Tests (KAT) and test vectors to test that
@@ -15,7 +17,7 @@ alr run
 ```
 
 To measure the performance with different SIMD settings (e.g. AVX2 instructions),
-pass the build configurations to `alr build`:
+pass the build configurations to `alr build`, for example:
 ```sh
 alr build -XLIBKECCAK_ARCH=x86_64 -XLIBKECCAK_SIMD=AVX2
 alr run
@@ -76,5 +78,13 @@ The following algorithms are supported:
 To build and run the unit tests in the default configuration:
 ```sh
 cd tests/unit_tests
+alr run
+```
+
+>:bulb: It is recommended to run the unit tests with contracts and run-time
+checks enabled:
+```sh
+cd tests/unit_tests
+alr build -XLIBKECCAK_CONTRACTS=enabled -XLIBKECCAK_RUNTIME_CHECKS=enabled
 alr run
 ```
