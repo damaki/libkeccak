@@ -1,0 +1,65 @@
+#!/bin/bash
+
+set -e
+
+# Run tests.
+# NOTE: This assumes that the kat project has already been built.
+bin/kat AsconHash testvectors/Ascon/Ascon_HASH_KAT_256.txt
+bin/kat AsconXOF testvectors/Ascon/Ascon_XOF_KAT_256.txt
+bin/kat GimliHash testvectors/Gimli/gimli_hash.txt
+bin/kat KetjeMajor testvectors/Ketje/Ketje_Major.txt
+bin/kat KetjeMinor testvectors/Ketje/Ketje_Minor.txt
+bin/kat KetjeSr testvectors/Ketje/Ketje_Sr.txt
+bin/kat KetjeJr testvectors/Ketje/Ketje_Jr.txt
+bin/kat ParallelHash128 testvectors/ParallelHash/ParallelHash128_samples.txt
+bin/kat ParallelHash256 testvectors/ParallelHash/ParallelHash256_samples.txt
+bin/kat ParallelHashXOF128 testvectors/ParallelHash/ParallelHashXOF128_samples.txt
+bin/kat ParallelHashXOF256 testvectors/ParallelHash/ParallelHashXOF256_samples.txt
+bin/kat TupleHash128 testvectors/TupleHash/Tuple_Hash_128_samples.txt
+bin/kat TupleHash256 testvectors/TupleHash/Tuple_Hash_256_samples.txt
+bin/kat TupleHashXOF128 testvectors/TupleHash/Tuple_Hash_XOF_128_samples.txt
+bin/kat TupleHashXOF256 testvectors/TupleHash/Tuple_Hash_XOF_256_samples.txt
+bin/kat KMAC128 testvectors/KMAC/KMAC_128_samples.txt
+bin/kat KMAC256 testvectors/KMAC/KMAC_256_samples.txt
+bin/kat KMACXOF128 testvectors/KMAC/KMACXOF_128_samples.txt
+bin/kat KMACXOF256 testvectors/KMAC/KMACXOF_256_samples.txt
+bin/kat cSHAKE128 testvectors/cSHAKE/cSHAKE_128_samples.txt
+bin/kat cSHAKE256 testvectors/cSHAKE/cSHAKE_256_samples.txt
+bin/kat Duplexc574 testvectors/Duplex/DuplexKAT_r1026c574.txt
+bin/kat Duplexc573 testvectors/Duplex/DuplexKAT_r1027c573.txt
+bin/kat SHAKE128 testvectors/SHAKE/bytes/SHAKE128ShortMsg.rsp
+bin/kat SHAKE128 testvectors/SHAKE/bytes/SHAKE128LongMsg.rsp
+bin/kat SHAKE128 testvectors/SHAKE/bits/SHAKE128ShortMsg.rsp
+bin/kat SHAKE128 testvectors/SHAKE/bits/SHAKE128LongMsg.rsp
+bin/kat SHAKE256 testvectors/SHAKE/bytes/SHAKE256ShortMsg.rsp
+bin/kat SHAKE256 testvectors/SHAKE/bytes/SHAKE256LongMsg.rsp
+bin/kat SHAKE256 testvectors/SHAKE/bits/SHAKE256ShortMsg.rsp
+bin/kat SHAKE256 testvectors/SHAKE/bits/SHAKE256LongMsg.rsp
+bin/kat SHA3-224 testvectors/SHA3/bytes/SHA3_224ShortMsg.rsp
+bin/kat SHA3-224 testvectors/SHA3/bytes/SHA3_224LongMsg.rsp
+bin/kat SHA3-224 testvectors/SHA3/bits/SHA3_224ShortMsg.rsp
+bin/kat SHA3-224 testvectors/SHA3/bits/SHA3_224LongMsg.rsp
+bin/kat SHA3-256 testvectors/SHA3/bytes/SHA3_256ShortMsg.rsp
+bin/kat SHA3-256 testvectors/SHA3/bytes/SHA3_256LongMsg.rsp
+bin/kat SHA3-256 testvectors/SHA3/bits/SHA3_256ShortMsg.rsp
+bin/kat SHA3-256 testvectors/SHA3/bits/SHA3_256LongMsg.rsp
+bin/kat SHA3-384 testvectors/SHA3/bytes/SHA3_384ShortMsg.rsp
+bin/kat SHA3-384 testvectors/SHA3/bytes/SHA3_384LongMsg.rsp
+bin/kat SHA3-384 testvectors/SHA3/bits/SHA3_384ShortMsg.rsp
+bin/kat SHA3-384 testvectors/SHA3/bits/SHA3_384LongMsg.rsp
+bin/kat SHA3-512 testvectors/SHA3/bytes/SHA3_512ShortMsg.rsp
+bin/kat SHA3-512 testvectors/SHA3/bytes/SHA3_512LongMsg.rsp
+bin/kat SHA3-512 testvectors/SHA3/bits/SHA3_512ShortMsg.rsp
+bin/kat SHA3-512 testvectors/SHA3/bits/SHA3_512LongMsg.rsp
+bin/kat Keccak-224 testvectors/Keccak/ShortMsgKAT_224.txt
+bin/kat Keccak-224 testvectors/Keccak/LongMsgKAT_224.txt
+bin/kat Keccak-224 testvectors/Keccak/ExtremelyLongMsgKAT_224.txt
+bin/kat Keccak-256 testvectors/Keccak/ShortMsgKAT_256.txt
+bin/kat Keccak-256 testvectors/Keccak/LongMsgKAT_256.txt
+bin/kat Keccak-256 testvectors/Keccak/ExtremelyLongMsgKAT_256.txt
+bin/kat Keccak-384 testvectors/Keccak/ShortMsgKAT_384.txt
+bin/kat Keccak-384 testvectors/Keccak/LongMsgKAT_384.txt
+bin/kat Keccak-384 testvectors/Keccak/ExtremelyLongMsgKAT_384.txt
+bin/kat Keccak-512 testvectors/Keccak/ShortMsgKAT_512.txt
+bin/kat Keccak-512 testvectors/Keccak/LongMsgKAT_512.txt
+bin/kat Keccak-512 testvectors/Keccak/ExtremelyLongMsgKAT_512.txt
