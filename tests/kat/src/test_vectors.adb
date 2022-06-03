@@ -198,10 +198,10 @@ package body Test_Vectors is
    -- Load --
    ----------
 
-   Pair_Regex       : GNAT.Regpat.Pattern_Matcher :=
+   Pair_Regex       : constant GNAT.Regpat.Pattern_Matcher :=
      GNAT.Regpat.Compile ("^(\w+)\s*=\s*""?([^""]*)""?$");
 
-   Empty_Line_Regex : GNAT.Regpat.Pattern_Matcher :=
+   Empty_Line_Regex : constant GNAT.Regpat.Pattern_Matcher :=
      GNAT.Regpat.Compile ("^\s*$");
 
    procedure Load (File_Name    : in     String;

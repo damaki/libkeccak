@@ -53,13 +53,12 @@ with Keccak.Keccak_400.Rounds_20;
 with Keccak.Keccak_800;
 with Keccak.Keccak_800.Rounds_22;
 with Keccak.Keccak_1600;
+with Keccak.Keccak_1600.Rounds_24;
+with Keccak.Keccak_1600.Rounds_12;
 with Keccak.Types;
 with Keccak.Generic_XOF;
 with Keccak.Generic_Hash;
 with Keccak.Generic_Duplex;
-with Keccak.Keccak_1600;
-with Keccak.Keccak_1600.Rounds_24;
-with Keccak.Keccak_1600.Rounds_12;
 with Parallel_Hash;
 with SHA3;
 with SHAKE;
@@ -79,7 +78,8 @@ is
 
    --  A 1 MiB data chunk to use as an input to the algorithms.
    type Byte_Array_Access is access Keccak.Types.Byte_Array;
-   Data_Chunk : Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
+   Data_Chunk_1 : constant Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
+   Data_Chunk_2 : constant Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
 
    package Cycles_Count_IO is new Ada.Text_IO.Modular_IO (Cycles_Count);
 
@@ -148,7 +148,7 @@ is
 
          Hash_Package.Init (Ctx);
 
-         Hash_Package.Update (Ctx, Data_Chunk.all, Data_Chunk.all'Length * 8);
+         Hash_Package.Update (Ctx, Data_Chunk_1.all, Data_Chunk_1.all'Length * 8);
 
          Hash_Package.Final (Ctx, Digest);
 
@@ -159,7 +159,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
    end Hash_Benchmark;
 
    ----------------------------------------------------------------------------
@@ -192,7 +192,7 @@ is
 
          XOF_Package.Init (Ctx);
 
-         XOF_Package.Update (Ctx, Data_Chunk.all, Data_Chunk.all'Length * 8);
+         XOF_Package.Update (Ctx, Data_Chunk_1.all, Data_Chunk_1.all'Length * 8);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -201,7 +201,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
 
       Min_Cycles := Cycles_Count'Last;
 
@@ -213,7 +213,7 @@ is
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         XOF_Package.Extract (Ctx, Data_Chunk.all);
+         XOF_Package.Extract (Ctx, Data_Chunk_1.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -222,7 +222,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
    end XOF_Benchmark;
 
    ----------------------------------------------------------------------------
@@ -257,7 +257,7 @@ is
          Start_Measurement (Start_Time);
 
          Duplex.Duplex (Ctx,
-                        Data_Chunk.all (1 .. Duplex.Rate_Of (Ctx) / 8),
+                        Data_Chunk_1.all (1 .. Duplex.Rate_Of (Ctx) / 8),
                         Duplex.Rate_Of (Ctx) - Duplex.Min_Padding_Bits,
                         Out_Data (1 .. Duplex.Rate_Of (Ctx) / 8),
                         Duplex.Rate_Of (Ctx) - Duplex.Min_Padding_Bits);
@@ -296,7 +296,7 @@ is
       Cycles     : Cycles_Count;
       Min_Cycles : Cycles_Count := Cycles_Count'Last;
 
-      Num_Iterations : Natural := Repeat * 100;
+      Num_Iterations : constant Natural := Repeat * 100;
 
    begin
       Ada.Text_IO.Put (Name & ": ");
@@ -350,7 +350,7 @@ is
 
          K12.Init (Ctx);
 
-         K12.Update (Ctx, Data_Chunk.all);
+         K12.Update (Ctx, Data_Chunk_1.all);
 
          K12.Finish (Ctx, "");
 
@@ -361,7 +361,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
 
       Min_Cycles := Cycles_Count'Last;
       Ada.Text_IO.Put (Name & " (Squeezing): ");
@@ -372,7 +372,7 @@ is
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         K12.Extract (Ctx, Data_Chunk.all);
+         K12.Extract (Ctx, Data_Chunk_1.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -381,7 +381,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
    end K12_Benchmark;
 
    ----------------------------------------------------------------------------
@@ -413,7 +413,7 @@ is
 
          ParallelHash.Init (Ctx, 8192, "");
 
-         ParallelHash.Update (Ctx, Data_Chunk.all);
+         ParallelHash.Update (Ctx, Data_Chunk_1.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -422,7 +422,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
 
       Min_Cycles := Cycles_Count'Last;
       Ada.Text_IO.Put (Name & " (Squeezing): ");
@@ -433,7 +433,7 @@ is
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         ParallelHash.Extract (Ctx, Data_Chunk.all);
+         ParallelHash.Extract (Ctx, Data_Chunk_1.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -442,7 +442,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
    end ParallelHash_Benchmark;
 
    ----------------------------------------------------------------------------
@@ -463,7 +463,7 @@ is
       Cycles     : Cycles_Count;
       Min_Cycles : Cycles_Count := Cycles_Count'Last;
 
-      Empty : Keccak.Types.Byte_Array (1 .. 0) := (others => 0);
+      Empty : constant Keccak.Types.Byte_Array (1 .. 0) := (others => 0);
 
    begin
       Ada.Text_IO.Put (Name & " (AAD): ");
@@ -476,7 +476,7 @@ is
 
          Start_Measurement (Start_Time);
 
-         MonkeyWrap.Update_Auth_Data (Ctx, Data_Chunk.all);
+         MonkeyWrap.Update_Auth_Data (Ctx, Data_Chunk_1.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -485,7 +485,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
 
       Min_Cycles := Cycles_Count'Last;
       Ada.Text_IO.Put (Name & " (Encrypt): ");
@@ -498,7 +498,7 @@ is
 
          Start_Measurement (Start_Time);
 
-         MonkeyWrap.Update_Encrypt (Ctx, Data_Chunk.all, Data_Chunk.all);
+         MonkeyWrap.Update_Encrypt (Ctx, Data_Chunk_1.all, Data_Chunk_2.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -507,7 +507,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
       Ada.Text_IO.Put (Name & " (Decrypt): ");
 
       --  Benchmark Decrypt
@@ -516,7 +516,7 @@ is
 
          Start_Measurement (Start_Time);
 
-         MonkeyWrap.Update_Decrypt (Ctx, Data_Chunk.all, Data_Chunk.all);
+         MonkeyWrap.Update_Decrypt (Ctx, Data_Chunk_1.all, Data_Chunk_2.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -525,7 +525,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
       Ada.Text_IO.Put (Name & " (Tag): ");
 
       --  Benchmark Tag
@@ -534,7 +534,7 @@ is
 
          Start_Measurement (Start_Time);
 
-         MonkeyWrap.Extract_Tag (Ctx, Data_Chunk.all);
+         MonkeyWrap.Extract_Tag (Ctx, Data_Chunk_1.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -543,7 +543,7 @@ is
          end if;
       end loop;
 
-      Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
+      Print_Cycles_Per_Byte (Data_Chunk_1.all'Length, Min_Cycles);
 
    end Ketje_Benchmark;
 
@@ -716,10 +716,11 @@ is
       Ascon.Hash);
 
 begin
-   Data_Chunk.all := (others => 16#A7#);
+   Data_Chunk_1.all := (others => 16#A7#);
+   Data_Chunk_2.all := (others => 16#A7#);
 
    Put ("Message size: ");
-   Ada.Integer_Text_IO.Put (Data_Chunk.all'Length, Width => 0);
+   Ada.Integer_Text_IO.Put (Data_Chunk_1.all'Length, Width => 0);
    Put (" bytes");
    New_Line;
    Put ("Performing ");

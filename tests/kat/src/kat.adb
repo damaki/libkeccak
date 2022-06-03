@@ -105,7 +105,7 @@ begin
    else
 
       declare
-         Algo : String := Ada.Command_Line.Argument (1);
+         Algo : constant String := Ada.Command_Line.Argument (1);
 
       begin
 
