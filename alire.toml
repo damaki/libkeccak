@@ -13,8 +13,8 @@ maintainers = ["Daniel King <damaki.gh@gmail.com>"]
 maintainers-logins = ["damaki"]
 
 [[depends-on]]
+gnat = ">=11.0.0"
 gnatprove = "^11.2.3"
-
 
 [gpr-externals]
 LIBKECCAK_LIBRARY_TYPE = ["relocatable", "static", "static-pic"]
