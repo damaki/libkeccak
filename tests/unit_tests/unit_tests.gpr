@@ -39,10 +39,26 @@ project Unit_Tests is
    case Style_Checks is
       when "enabled" =>
          Style_Checks_Switches :=
-           ("-gnatyg",   -- GNAT Style checks
-            "-gnaty-d",  -- Disable no DOS line terminators
-            "-gnatyM80", -- Maximum line length
-            "-gnatyO");  -- Overriding subprograms explicitly marked as such
+           ("-gnaty3",    -- Maximum indentation level
+            "-gnatya",    -- Check attribute casing
+            "-gnatyA",    -- Use of array index numbers in array attributes
+            "-gnatyb",    -- Blanks not allowed at statement end
+            "-gnatyc",    -- Check comments, double space
+            "-gnatye",    -- Check end/exit labels
+            "-gnatyf",    -- No form feeds or vertical tabs
+            "-gnatyh",    -- No horizontal tabs
+            "-gnatyi",    -- Check if-then layout
+            "-gnatyk",    -- Check keyword casing
+            "-gnatyl",    -- Check layout
+            "-gnatyL6",   -- Set maximum nesting level
+            "-gnatyM100", -- Set maximum line length
+            "-gnatyn",    -- Check casing of entities in Standard
+            "-gnatyO",    -- Overriding subprogrms explicitly marked as such
+            "-gnatyr",    -- Check references
+            "-gnatyS",    -- Check no statements after then/else
+            "-gnatys",    -- Check separate specs
+            "-gnatyt",    -- Check token spacing
+            "-gnatyu");   -- Check unnecessary blank lines
       when others => null;
    end case;
 

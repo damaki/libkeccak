@@ -1,28 +1,28 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
--- All rights reserved.
+--  Copyright (c) 2016, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
 with Ada.Command_Line;
@@ -74,15 +74,18 @@ with Ascon.XOF;
 
 procedure Benchmark
 is
-   Benchmark_Data_Size : constant := 512 * 1024; -- size of the benchmark data in bytes
-   Repeat              : constant := 200;  -- number of benchmark iterations
+   Benchmark_Data_Size : constant := 512 * 1024; --  size of the benchmark data in bytes
+   Repeat              : constant := 200;  --  number of benchmark iterations
 
-   -- A 1 MiB data chunk to use as an input to the algorithms.
+   --  A 1 MiB data chunk to use as an input to the algorithms.
    type Byte_Array_Access is access Keccak.Types.Byte_Array;
    Data_Chunk : Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
 
    package Cycles_Count_IO is new Ada.Text_IO.Modular_IO (Cycles_Count);
 
+   ---------------------------
+   -- Print_Cycles_Per_Byte --
+   ---------------------------
 
    procedure Print_Cycles_Per_Byte (Data_Size : in Natural;
                                     Cycles    : in Cycles_Count)
@@ -102,6 +105,9 @@ is
       Ada.Text_IO.New_Line;
    end Print_Cycles_Per_Byte;
 
+   ------------------
+   -- Print_Cycles --
+   ------------------
 
    procedure Print_Cycles (Cycles : in Cycles_Count)
    is
@@ -112,14 +118,15 @@ is
    end Print_Cycles;
 
    ----------------------------------------------------------------------------
-   -- Hash_Benchmark
+   --  Hash_Benchmark
    --
-   -- Generic procedure to run a benchmark for any hash algorithm (e.g. SHA3-224,
-   -- Keccak-256, etc...).
+   --  Generic procedure to run a benchmark for any hash algorithm (e.g. SHA3-224,
+   --  Keccak-256, etc...).
    ----------------------------------------------------------------------------
+
    generic
        Name : String;
-       with package Hash_Package is new Keccak.Generic_Hash(<>);
+       with package Hash_Package is new Keccak.Generic_Hash (<>);
    procedure Hash_Benchmark;
 
    procedure Hash_Benchmark
@@ -139,11 +146,11 @@ is
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         Hash_Package.Init(Ctx);
+         Hash_Package.Init (Ctx);
 
-         Hash_Package.Update(Ctx, Data_Chunk.all, Data_Chunk.all'Length*8);
+         Hash_Package.Update (Ctx, Data_Chunk.all, Data_Chunk.all'Length * 8);
 
-         Hash_Package.Final(Ctx, Digest);
+         Hash_Package.Final (Ctx, Digest);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -155,16 +162,15 @@ is
       Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
    end Hash_Benchmark;
 
-
    ----------------------------------------------------------------------------
-   -- XOF_Benchmark
+   --  XOF_Benchmark
    --
-   -- Generic procedure to run a benchmark for any XOF algorithm (e.g. SHAKE128,
-   -- RawSHAKE256, etc...).
+   --  Generic procedure to run a benchmark for any XOF algorithm (e.g. SHAKE128,
+   --  RawSHAKE256, etc...).
    ----------------------------------------------------------------------------
    generic
        Name : String;
-       with package XOF_Package is new Keccak.Generic_XOF(<>);
+       with package XOF_Package is new Keccak.Generic_XOF (<>);
    procedure XOF_Benchmark;
 
    procedure XOF_Benchmark
@@ -176,17 +182,17 @@ is
       Min_Cycles : Cycles_Count := Cycles_Count'Last;
 
    begin
-      Ada.Text_IO.Put(Name & " (Absorbing): ");
+      Ada.Text_IO.Put (Name & " (Absorbing): ");
 
       Timing.Calibrate;
 
-      -- Benchmark Absorbing
+      --  Benchmark Absorbing
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         XOF_Package.Init(Ctx);
+         XOF_Package.Init (Ctx);
 
-         XOF_Package.Update(Ctx, Data_Chunk.all, Data_Chunk.all'Length*8);
+         XOF_Package.Update (Ctx, Data_Chunk.all, Data_Chunk.all'Length * 8);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -199,15 +205,15 @@ is
 
       Min_Cycles := Cycles_Count'Last;
 
-      Ada.Text_IO.Put(Name & " (Squeezing): ");
+      Ada.Text_IO.Put (Name & " (Squeezing): ");
 
       Timing.Calibrate;
 
-      -- Benchmark squeezing
+      --  Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         XOF_Package.Extract(Ctx, Data_Chunk.all);
+         XOF_Package.Extract (Ctx, Data_Chunk.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -220,41 +226,41 @@ is
    end XOF_Benchmark;
 
    ----------------------------------------------------------------------------
-   -- Duplex_Benchmark
+   --  Duplex_Benchmark
    --
-   -- Generic procedure to run a benchmark for any Duplex algorithm.
+   --  Generic procedure to run a benchmark for any Duplex algorithm.
    ----------------------------------------------------------------------------
    generic
       Name : String;
       Capacity : Positive;
-      with package Duplex is new Keccak.Generic_Duplex(<>);
+      with package Duplex is new Keccak.Generic_Duplex (<>);
    procedure Duplex_Benchmark;
 
    procedure Duplex_Benchmark
    is
       Ctx : Duplex.Context;
 
-      Out_Data : Keccak.Types.Byte_Array(1 .. 1600/8);
+      Out_Data : Keccak.Types.Byte_Array (1 .. 1600 / 8);
 
       Start_Time : Timing.Time;
       Cycles     : Cycles_Count;
       Min_Cycles : Cycles_Count := Cycles_Count'Last;
 
    begin
-      Ada.Text_IO.Put(Name & ": ");
+      Ada.Text_IO.Put (Name & ": ");
 
-      Duplex.Init(Ctx, Capacity);
+      Duplex.Init (Ctx, Capacity);
 
       Timing.Calibrate;
 
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         Duplex.Duplex(Ctx,
-                       Data_Chunk.all(1 .. Duplex.Rate_Of(Ctx)/8),
-                       Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits,
-                       Out_Data(1 .. Duplex.Rate_Of(Ctx)/8),
-                       Duplex.Rate_Of(Ctx) - Duplex.Min_Padding_Bits);
+         Duplex.Duplex (Ctx,
+                        Data_Chunk.all (1 .. Duplex.Rate_Of (Ctx) / 8),
+                        Duplex.Rate_Of (Ctx) - Duplex.Min_Padding_Bits,
+                        Out_Data (1 .. Duplex.Rate_Of (Ctx) / 8),
+                        Duplex.Rate_Of (Ctx) - Duplex.Min_Padding_Bits);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -268,21 +274,21 @@ is
    end Duplex_Benchmark;
 
    ----------------------------------------------------------------------------
-   -- KeccakF_Benchmark
+   --  KeccakF_Benchmark
    --
-   -- Generic procedure to run a benchmark for a KeccakF permutation.
+   --  Generic procedure to run a benchmark for a KeccakF permutation.
    ----------------------------------------------------------------------------
    generic
       Name : String;
       type State_Type is private;
       with procedure Init (A : out State_Type);
-      with procedure Permute(A : in out State_Type);
+      with procedure Permute (A : in out State_Type);
    procedure KeccakF_Benchmark;
 
    procedure KeccakF_Benchmark
    is
-      package Duration_IO is new Ada.Text_IO.Fixed_IO(Duration);
-      package Integer_IO is new Ada.Text_IO.Integer_IO(Integer);
+      package Duration_IO is new Ada.Text_IO.Fixed_IO (Duration);
+      package Integer_IO is new Ada.Text_IO.Integer_IO (Integer);
 
       State : State_Type;
 
@@ -293,16 +299,16 @@ is
       Num_Iterations : Natural := Repeat * 100;
 
    begin
-      Ada.Text_IO.Put(Name & ": ");
+      Ada.Text_IO.Put (Name & ": ");
 
-      Init(State);
+      Init (State);
 
       Timing.Calibrate;
 
       for I in Positive range 1 .. Num_Iterations loop
          Start_Measurement (Start_Time);
 
-         Permute(State);
+         Permute (State);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -316,13 +322,13 @@ is
    end KeccakF_Benchmark;
 
    ----------------------------------------------------------------------------
-   -- K12_Benchmark
+   --  K12_Benchmark
    --
-   -- Generic procedure to run a benchmark for a KangarooTwelve
+   --  Generic procedure to run a benchmark for a KangarooTwelve
    ----------------------------------------------------------------------------
    generic
       Name : String;
-      with package K12 is new Keccak.Generic_KangarooTwelve(<>);
+      with package K12 is new Keccak.Generic_KangarooTwelve (<>);
    procedure K12_Benchmark;
 
    procedure K12_Benchmark
@@ -334,17 +340,17 @@ is
       Min_Cycles : Cycles_Count := Cycles_Count'Last;
 
    begin
-      Ada.Text_IO.Put(Name & " (Absorbing): ");
+      Ada.Text_IO.Put (Name & " (Absorbing): ");
 
       Timing.Calibrate;
 
-      -- Benchmark Absorbing
+      --  Benchmark Absorbing
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         K12.Init(Ctx);
+         K12.Init (Ctx);
 
-         K12.Update(Ctx, Data_Chunk.all);
+         K12.Update (Ctx, Data_Chunk.all);
 
          K12.Finish (Ctx, "");
 
@@ -358,15 +364,15 @@ is
       Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
 
       Min_Cycles := Cycles_Count'Last;
-      Ada.Text_IO.Put(Name & " (Squeezing): ");
+      Ada.Text_IO.Put (Name & " (Squeezing): ");
 
       Timing.Calibrate;
 
-      -- Benchmark squeezing
+      --  Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         K12.Extract(Ctx, Data_Chunk.all);
+         K12.Extract (Ctx, Data_Chunk.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -379,13 +385,13 @@ is
    end K12_Benchmark;
 
    ----------------------------------------------------------------------------
-   -- ParallelHash_Benchmark
+   --  ParallelHash_Benchmark
    --
-   -- Generic procedure to run a benchmark for a ParallelHash
+   --  Generic procedure to run a benchmark for a ParallelHash
    ----------------------------------------------------------------------------
    generic
       Name : String;
-      with package ParallelHash is new Keccak.Generic_Parallel_Hash(<>);
+      with package ParallelHash is new Keccak.Generic_Parallel_Hash (<>);
    procedure ParallelHash_Benchmark;
 
    procedure ParallelHash_Benchmark
@@ -397,17 +403,17 @@ is
       Min_Cycles : Cycles_Count := Cycles_Count'Last;
 
    begin
-      Ada.Text_IO.Put(Name & " (Absorbing): ");
+      Ada.Text_IO.Put (Name & " (Absorbing): ");
 
       Timing.Calibrate;
 
-      -- Benchmark Absorbing
+      --  Benchmark Absorbing
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         ParallelHash.Init(Ctx, 8192, "");
+         ParallelHash.Init (Ctx, 8192, "");
 
-         ParallelHash.Update(Ctx, Data_Chunk.all);
+         ParallelHash.Update (Ctx, Data_Chunk.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -419,15 +425,15 @@ is
       Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
 
       Min_Cycles := Cycles_Count'Last;
-      Ada.Text_IO.Put(Name & " (Squeezing): ");
+      Ada.Text_IO.Put (Name & " (Squeezing): ");
 
       Timing.Calibrate;
 
-      -- Benchmark squeezing
+      --  Benchmark squeezing
       for I in Positive range 1 .. Repeat loop
          Start_Measurement (Start_Time);
 
-         ParallelHash.Extract(Ctx, Data_Chunk.all);
+         ParallelHash.Extract (Ctx, Data_Chunk.all);
 
          Cycles := End_Measurement (Start_Time);
 
@@ -440,13 +446,13 @@ is
    end ParallelHash_Benchmark;
 
    ----------------------------------------------------------------------------
-   -- Ketje_Benchmark
+   --  Ketje_Benchmark
    --
-   -- Generic procedure to run a benchmark for Ketje (instances of MonkeyWrap)
+   --  Generic procedure to run a benchmark for Ketje (instances of MonkeyWrap)
    ----------------------------------------------------------------------------
    generic
       Name : String;
-      with package MonkeyWrap is new Keccak.Generic_MonkeyWrap(<>);
+      with package MonkeyWrap is new Keccak.Generic_MonkeyWrap (<>);
    procedure Ketje_Benchmark;
 
    procedure Ketje_Benchmark
@@ -460,11 +466,11 @@ is
       Empty : Keccak.Types.Byte_Array (1 .. 0) := (others => 0);
 
    begin
-      Ada.Text_IO.Put(Name & " (AAD): ");
+      Ada.Text_IO.Put (Name & " (AAD): ");
 
       Timing.Calibrate;
 
-      -- Benchmark AAD
+      --  Benchmark AAD
       for I in Positive range 1 .. Repeat loop
          MonkeyWrap.Init (Ctx, Empty, Empty);
 
@@ -482,11 +488,11 @@ is
       Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
 
       Min_Cycles := Cycles_Count'Last;
-      Ada.Text_IO.Put(Name & " (Encrypt): ");
+      Ada.Text_IO.Put (Name & " (Encrypt): ");
 
       Timing.Calibrate;
 
-      -- Benchmark Encrypt
+      --  Benchmark Encrypt
       for I in Positive range 1 .. Repeat loop
          MonkeyWrap.Init (Ctx, Empty, Empty);
 
@@ -502,9 +508,9 @@ is
       end loop;
 
       Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
-      Ada.Text_IO.Put(Name & " (Decrypt): ");
+      Ada.Text_IO.Put (Name & " (Decrypt): ");
 
-      -- Benchmark Decrypt
+      --  Benchmark Decrypt
       for I in Positive range 1 .. Repeat loop
          MonkeyWrap.Init (Ctx, Empty, Empty);
 
@@ -520,9 +526,9 @@ is
       end loop;
 
       Print_Cycles_Per_Byte (Data_Chunk.all'Length, Min_Cycles);
-      Ada.Text_IO.Put(Name & " (Tag): ");
+      Ada.Text_IO.Put (Name & " (Tag): ");
 
-      -- Benchmark Tag
+      --  Benchmark Tag
       for I in Positive range 1 .. Repeat loop
          MonkeyWrap.Init (Ctx, Empty, Empty);
 
@@ -542,7 +548,7 @@ is
    end Ketje_Benchmark;
 
    ----------------------------------------------------------------------------
-   -- Benchmark procedure instantiations.
+   --  Benchmark procedure instantiations.
    ----------------------------------------------------------------------------
 
    procedure Benchmark_SHA_224 is new Hash_Benchmark

@@ -1,28 +1,28 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
--- All rights reserved.
+--  Copyright (c) 2016, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
 with Sponge_Tests;
@@ -38,8 +38,8 @@ with AUnit.Test_Caller;
 
 package body Sponge_Suite
 is
-   -- For these tests we need to choose values for the Capacity such that the
-   -- rate will be a multiple of 8 (required precondition for Sponge.Init).
+   --  For these tests we need to choose values for the Capacity such that the
+   --  rate will be a multiple of 8 (required precondition for Sponge.Init).
 
    package Sponge_1600_Tests is new Sponge_Tests
       (Keccak.Keccak_1600.Rounds_24.Sponge, 512);
@@ -89,11 +89,13 @@ is
              Sponge_1600_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_1600.Create
-            ("Sponge[Keccak-f[1600], pad10*1, 512]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Keccak-f[1600], pad10*1, 512]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_1600_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_1600.Create
-            ("Sponge[Keccak-f[1600], pad10*1, 512]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Keccak-f[1600], pad10*1, 512]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_1600_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_1600.Create
@@ -118,11 +120,13 @@ is
              Sponge_800_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_800.Create
-            ("Sponge[Keccak-f[800], pad10*1, 512]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Keccak-f[800], pad10*1, 512]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_800_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_800.Create
-            ("Sponge[Keccak-f[800], pad10*1, 512]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Keccak-f[800], pad10*1, 512]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_800_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_800.Create
@@ -147,11 +151,13 @@ is
              Sponge_400_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_400.Create
-            ("Sponge[Keccak-f[400], pad10*1, 256]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Keccak-f[400], pad10*1, 256]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_400_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_400.Create
-            ("Sponge[Keccak-f[400], pad10*1, 256]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Keccak-f[400], pad10*1, 256]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_400_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_400.Create
@@ -176,11 +182,13 @@ is
              Sponge_200_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_200.Create
-            ("Sponge[Keccak-f[200], pad10*1, 128]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Keccak-f[200], pad10*1, 128]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_200_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_200.Create
-            ("Sponge[Keccak-f[200], pad10*1, 128]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Keccak-f[200], pad10*1, 128]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_200_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_200.Create
@@ -205,11 +213,13 @@ is
              Sponge_100_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_100.Create
-            ("Sponge[Keccak-f[100], pad10*1, 60]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Keccak-f[100], pad10*1, 60]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_100_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_100.Create
-            ("Sponge[Keccak-f[100], pad10*1, 60]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Keccak-f[100], pad10*1, 60]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_100_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_100.Create
@@ -234,11 +244,13 @@ is
              Sponge_50_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_50.Create
-            ("Sponge[Keccak-f[50], pad10*1, 26]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Keccak-f[50], pad10*1, 26]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_50_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_50.Create
-            ("Sponge[Keccak-f[50], pad10*1, 26]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Keccak-f[50], pad10*1, 26]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_50_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_50.Create
@@ -263,11 +275,13 @@ is
              Sponge_25_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_25.Create
-            ("Sponge[Keccak-f[25], pad10*1, 9]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Keccak-f[25], pad10*1, 9]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_25_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_25.Create
-            ("Sponge[Keccak-f[25], pad10*1, 9]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Keccak-f[25], pad10*1, 9]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_25_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_25.Create
@@ -292,11 +306,13 @@ is
              Sponge_Gimli_Tests.Test_Squeeze_Streaming'Access));
       Ret.Add_Test
          (Caller_Gimli.Create
-            ("Sponge[Gimli, pad10*1, 256]: Absorb same as Absorb_With_Suffix with 0 suffix bits",
+            ("Sponge[Gimli, pad10*1, 256]: " &
+               "Absorb same as Absorb_With_Suffix with 0 suffix bits",
              Sponge_Gimli_Tests.Test_Absorb_No_Suffix'Access));
       Ret.Add_Test
          (Caller_Gimli.Create
-            ("Sponge[Gimli, pad10*1, 256]: Absorb_With_Suffix is same as Absorb with suffix bits in message",
+            ("Sponge[Gimli, pad10*1, 256]: " &
+               "Absorb_With_Suffix is same as Absorb with suffix bits in message",
              Sponge_Gimli_Tests.Test_Suffix_Bits'Access));
       Ret.Add_Test
          (Caller_Gimli.Create

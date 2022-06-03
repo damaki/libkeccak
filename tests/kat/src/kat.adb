@@ -1,28 +1,28 @@
 -------------------------------------------------------------------------------
--- Copyright (c) 2016, Daniel King
--- All rights reserved.
+--  Copyright (c) 2016, Daniel King
+--  All rights reserved.
 --
--- Redistribution and use in source and binary forms, with or without
--- modification, are permitted provided that the following conditions are met:
---     * Redistributions of source code must retain the above copyright
---       notice, this list of conditions and the following disclaimer.
---     * Redistributions in binary form must reproduce the above copyright
---       notice, this list of conditions and the following disclaimer in the
---       documentation and/or other materials provided with the distribution.
---     * The name of the copyright holder may not be used to endorse or promote
---       Products derived from this software without specific prior written
---       permission.
+--  Redistribution and use in source and binary forms, with or without
+--  modification, are permitted provided that the following conditions are met:
+--      * Redistributions of source code must retain the above copyright
+--        notice, this list of conditions and the following disclaimer.
+--      * Redistributions in binary form must reproduce the above copyright
+--        notice, this list of conditions and the following disclaimer in the
+--        documentation and/or other materials provided with the distribution.
+--      * The name of the copyright holder may not be used to endorse or promote
+--        Products derived from this software without specific prior written
+--        permission.
 --
--- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
--- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
--- DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
--- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
--- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
--- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
--- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
--- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+--  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+--  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+--  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+--  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+--  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+--  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+--  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+--  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+--  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
 with Ada.Command_Line;
@@ -53,18 +53,18 @@ procedure KAT
 is
    use type Ada.Command_Line.Exit_Status;
 
-   package SHA3_224_Runner is new Hash_Runner(SHA3.SHA3_224);
-   package SHA3_256_Runner is new Hash_Runner(SHA3.SHA3_256);
-   package SHA3_384_Runner is new Hash_Runner(SHA3.SHA3_384);
-   package SHA3_512_Runner is new Hash_Runner(SHA3.SHA3_512);
+   package SHA3_224_Runner is new Hash_Runner (SHA3.SHA3_224);
+   package SHA3_256_Runner is new Hash_Runner (SHA3.SHA3_256);
+   package SHA3_384_Runner is new Hash_Runner (SHA3.SHA3_384);
+   package SHA3_512_Runner is new Hash_Runner (SHA3.SHA3_512);
 
-   package SHAKE_128_Runner is new XOF_Runner(SHAKE.SHAKE128);
-   package SHAKE_256_Runner is new XOF_Runner(SHAKE.SHAKE256);
+   package SHAKE_128_Runner is new XOF_Runner (SHAKE.SHAKE128);
+   package SHAKE_256_Runner is new XOF_Runner (SHAKE.SHAKE256);
 
-   package Keccak_224_Runner is new Hash_Runner(SHA3.Keccak_224);
-   package Keccak_256_Runner is new Hash_Runner(SHA3.Keccak_256);
-   package Keccak_384_Runner is new Hash_Runner(SHA3.Keccak_384);
-   package Keccak_512_Runner is new Hash_Runner(SHA3.Keccak_512);
+   package Keccak_224_Runner is new Hash_Runner (SHA3.Keccak_224);
+   package Keccak_256_Runner is new Hash_Runner (SHA3.Keccak_256);
+   package Keccak_384_Runner is new Hash_Runner (SHA3.Keccak_384);
+   package Keccak_512_Runner is new Hash_Runner (SHA3.Keccak_512);
 
    package CSHAKE128_Runner is new CSHAKE_Runner (CSHAKE.CSHAKE128);
    package CSHAKE256_Runner is new CSHAKE_Runner (CSHAKE.CSHAKE256);
@@ -273,21 +273,21 @@ begin
 
          end if;
 
-         -- Print results
+         --  Print results
 
          if Success then
             Ada.Text_IO.New_Line;
 
-            Ada.Text_IO.Put("Passed: ");
-            Integer_IO.Put(Num_Passed, Width => 0);
+            Ada.Text_IO.Put ("Passed: ");
+            Integer_IO.Put (Num_Passed, Width => 0);
             Ada.Text_IO.New_Line;
 
-            Ada.Text_IO.Put("Failed: ");
-            Integer_IO.Put(Num_Failed, Width => 0);
+            Ada.Text_IO.Put ("Failed: ");
+            Integer_IO.Put (Num_Failed, Width => 0);
             Ada.Text_IO.New_Line;
 
             if Num_Failed > 0 then
-               Ada.Command_Line.Set_Exit_Status(1);
+               Ada.Command_Line.Set_Exit_Status (1);
             end if;
          end if;
       end;
@@ -295,4 +295,3 @@ begin
    end if;
 
 end KAT;
-
