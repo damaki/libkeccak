@@ -96,27 +96,25 @@ can be built with the command:
 alr build
 ```
 
-libkeccak can be built with SIMD optimisations, if your platform supports them,
+libkeccak can be built to use SIMD instructions, if your platform supports them,
 by setting the following GPR variables:
 
 | Variable | Values | Default |
 | -------- | ------ | ------- |
 | LIBKECCAK_ARCH | `generic`, `x86_64` | `generic` |
-| LIBKECCAK_SIMD | `none`, `SSE2`, `AVX2` |
-
->:bulb: `AVX2` will use both `AVX2` and `SSE2` instructions.
+| LIBKECCAK_SIMD | `none`, `SSE2`, `AVX2` | `none` |
 
 >:warning: `SSE2` and `AVX2` are only available on `x86_64` architectures.
 
 Enabling `SSE2` will use SSE2 instructions to speed up parallel algorithms
-such as KangarooTwelve and ParallelHash. Using `SIMD=AVX2` will also enable the
-AVX2 instruction set (in addition to SSE2).
-To disable SSE2 and AVX2 on x86_64, set `SIMD=none`.
+such as KangarooTwelve and ParallelHash. Using `LIBKECCAK_SIMD=AVX2` will enable the
+AVX2 instruction set in addition to SSE2.
+To disable SSE2 and AVX2 on x86_64, set `LIBKECCAK_SIMD=none`.
 
 >:warning: `AVX2` is not guaranteed to work on Windows since GCC does not ensure 32-byte
 stack alignment. See [GCC Bug #54412](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412)
 
-For example:
+Example:
 ```sh
 alr build -XLIBKECCAK_ARCH=x86_64 -XLIBKECCAK_SIMD=SSE2
 ```
