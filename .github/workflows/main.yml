@@ -31,13 +31,16 @@ jobs:
           version: 1.2.0
 
       # Build the project using the validation build profile to enforce static analysis and coding style.
-      - run: alr build --validation -- -XLIBKECCAK_ARCH=${{ matrix.arch }} -XLIBKECCAK_SIMD=${{ matrix.simd }}
+      - name: Build libkeccak
+        run: alr build --validation -- -XLIBKECCAK_ARCH=${{ matrix.arch }} -XLIBKECCAK_SIMD=${{ matrix.simd }}
 
       # Build the benchmark program
-      - run: cd tests/benchmark && alr build -- -XLIBKECCAK_ARCH=${{ matrix.arch }} -XLIBKECCAK_SIMD=${{ matrix.simd }}
+      - name: Build benchmark
+        run: cd tests/benchmark && alr build -- -XLIBKECCAK_ARCH=${{ matrix.arch }} -XLIBKECCAK_SIMD=${{ matrix.simd }}
 
       # Build and run the Known Answer Tests
-      - run: |
+      - name: Build and run Known Answer Tests
+        run: |
           cd tests/kat
           alr build --validation -- \
             -XLIBKECCAK_ARCH=${{ matrix.arch }} \
@@ -49,7 +52,8 @@ jobs:
           ./run-all-tests.sh
 
       # Build and run the unit tests
-      - run: |
+      - name: Build and run unit tests
+        run: |
           cd tests/unit_tests
           alr build --validation -- \
             -XLIBKECCAK_ARCH=${{ matrix.arch }} \
