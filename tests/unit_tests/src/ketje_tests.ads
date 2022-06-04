@@ -27,7 +27,6 @@
 
 with AUnit.Test_Fixtures;
 with Keccak.Generic_MonkeyWrap;
-with Keccak.Types;              use Keccak.Types;
 
 generic
    with package MonkeyWrap is new Keccak.Generic_MonkeyWrap (<>);

@@ -206,8 +206,11 @@ is
 
       Suffix                 : constant Keccak.Types.Byte := 16#FF#;
 
-      Message_Without_Suffix : Keccak.Types.Byte_Array (1 .. 1) := (1 => 16#00#);
-      Message_With_Suffix    : Keccak.Types.Byte_Array (1 .. 2) := (1 => 16#00#, 2 => Suffix);
+      Message_Without_Suffix : constant Keccak.Types.Byte_Array (1 .. 1) :=
+        (1 => 16#00#);
+
+      Message_With_Suffix    : constant Keccak.Types.Byte_Array (1 .. 2) :=
+        (1 => 16#00#, 2 => Suffix);
 
       Digest_1               : Keccak.Types.Byte_Array (1 .. 32);
       Digest_2               : Keccak.Types.Byte_Array (1 .. 32);
@@ -244,7 +247,7 @@ is
       Expected_Digest : Keccak.Types.Byte_Array (1 .. 32);
       Actual_Digest   : Keccak.Types.Byte_Array (1 .. 32);
 
-      Empty_Array : Keccak.Types.Byte_Array (1 .. 0) := (others => 0);
+      Empty_Array : constant Keccak.Types.Byte_Array (1 .. 0) := (others => 0);
 
    begin
       Sponge.Init (T.Ctx, Capacity);
@@ -309,22 +312,22 @@ is
    is
       use type Keccak.Types.Byte_Array;
 
-      Message_With_Suffix_1    : Keccak.Types.Byte_Array (1 .. 2) :=
+      Message_With_Suffix_1    : constant Keccak.Types.Byte_Array (1 .. 2) :=
                                    (1 => 2#0000_0000#,
                                     2 => 2#1111_0000#);
-      Message_Without_Suffix_1 : Keccak.Types.Byte_Array (1 .. 2) :=
+      Message_Without_Suffix_1 : constant Keccak.Types.Byte_Array (1 .. 2) :=
                                    (1 => 2#0000_0000#,
                                     2 => 2#0000#);
 
-      Message_With_Suffix_2    : Keccak.Types.Byte_Array (1 .. 3) :=
+      Message_With_Suffix_2    : constant Keccak.Types.Byte_Array (1 .. 3) :=
                                    (1 => 2#0000_0000#,
                                     2 => 2#1100_0000#,
                                     3 => 2#11#);
-      Message_Without_Suffix_2 : Keccak.Types.Byte_Array (1 .. 2) :=
+      Message_Without_Suffix_2 : constant Keccak.Types.Byte_Array (1 .. 2) :=
                                    (1 => 2#0000_0000#,
                                     2 => 2#0000_00#);
 
-      Suffix                   : Keccak.Types.Byte := 2#1111#;
+      Suffix                   : constant Keccak.Types.Byte := 2#1111#;
 
       Expected_Digest          : Keccak.Types.Byte_Array (1 .. 32);
       Actual_Digest            : Keccak.Types.Byte_Array (1 .. 32);

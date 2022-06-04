@@ -30,7 +30,6 @@ with Sponge_Suite;
 with Parallel_Sponge_Suite;
 with Util_Suite;
 with Ketje_Suite;
-with AUnit.Test_Caller;
 
 package body Keccak_Suites
 is

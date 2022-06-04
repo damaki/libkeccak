@@ -28,7 +28,6 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
-with Interfaces; use Interfaces;
 with Keccak.Types;
 
 with Test_Vectors; use Test_Vectors;

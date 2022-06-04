@@ -49,7 +49,8 @@ is
       State_Bytes    : Keccak.Types.Byte_Array (1 .. KeccakF.State_Size_Bits / 8);
 
       --  The initial state is expected to be all zeroes.
-      Expected_State : Keccak.Types.Byte_Array (1 .. KeccakF.State_Size_Bits / 8) := (others => 0);
+      Expected_State : constant Keccak.Types.Byte_Array (1 .. KeccakF.State_Size_Bits / 8) :=
+        (others => 0);
 
    begin
       Extract_Bytes (T.State, State_Bytes);
@@ -63,7 +64,7 @@ is
    --  state when Bit_Len = 0.
    procedure Test_XOR_No_Data (T : in out Test)
    is
-      Empty_Array : Keccak.Types.Byte_Array (0 .. -1) := (others => 0);
+      Empty_Array : constant Keccak.Types.Byte_Array (0 .. -1) := (others => 0);
 
       Pre_State  : Keccak.Types.Byte_Array (1 .. KeccakF.State_Size_Bits / 8);
       Post_State : Keccak.Types.Byte_Array (1 .. KeccakF.State_Size_Bits / 8);
@@ -120,8 +121,8 @@ is
    is
       use type Keccak.Types.Byte;
 
-      Data_To_XOR : Keccak.Types.Byte_Array (1 .. (KeccakF.State_Size_Bits + 7) / 8)
-         := (others => 2#1111_1111#);
+      Data_To_XOR : constant Keccak.Types.Byte_Array (1 .. (KeccakF.State_Size_Bits + 7) / 8) :=
+        (others => 2#1111_1111#);
       Result      : Keccak.Types.Byte_Array (1 .. (KeccakF.State_Size_Bits + 7) / 8);
 
       Expected_Last_Byte : Keccak.Types.Byte;
@@ -133,7 +134,6 @@ is
          KeccakF.Init (T.State);
          XOR_Bits_Into_State (T.State, Data_To_XOR, I);
 
-         Result := (others => 0);
          Extract_Bytes (T.State, Result);
 
          --  Whole bytes
@@ -212,8 +212,6 @@ is
    --  the bit length is a multiple of 8.
    procedure Test_Extract_Bits_Same_As_Extract_Bytes (T : in out Test)
    is
-      use type Keccak.Types.Byte;
-
       Data         : Keccak.Types.Byte_Array (1 .. (KeccakF.State_Size_Bits + 7) / 8);
       Bytes_Result : Keccak.Types.Byte_Array (1 .. (KeccakF.State_Size_Bits + 7) / 8);
       Bits_Result  : Keccak.Types.Byte_Array (1 .. (KeccakF.State_Size_Bits + 7) / 8);
@@ -247,6 +245,8 @@ is
    procedure Test_Permute_Implementations (T : in out Test)
    is
       use type KeccakF.State;
+
+      pragma Unreferenced (T);
 
       package R_Permutation is new KeccakF.Reference_Permutation
         (Rotate_Left => Rotate_Left);

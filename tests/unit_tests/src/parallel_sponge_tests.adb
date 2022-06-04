@@ -52,7 +52,6 @@ is
 
       Input_Len        : constant := 64 * 1024;
       Output_Len       : constant := 2  * 1024;
-      Rate_Bytes       : constant Positive := Parallel_Sponge.Rate_Of (T.Ctx) / 8;
 
       Input            : Byte_Array (0 .. (Input_Len * N) - 1);
 

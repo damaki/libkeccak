@@ -32,11 +32,22 @@ jobs:
 
       # Build the project using the validation build profile to enforce static analysis and coding style.
       - name: Build libkeccak
-        run: alr build --validation -- -XLIBKECCAK_ARCH=${{ matrix.arch }} -XLIBKECCAK_SIMD=${{ matrix.simd }}
+        run: |
+          alr build --validation -- \
+            -XLIBKECCAK_ARCH=${{ matrix.arch }} \
+            -XLIBKECCAK_SIMD=${{ matrix.simd }} \
+            -XLIBKECCAK_COMPILE_CHECKS=enabled \
+            -XLIBKECCAK_STYLE_CHECKS=enabled
 
       # Build the benchmark program
       - name: Build benchmark
-        run: cd tests/benchmark && alr build -- -XLIBKECCAK_ARCH=${{ matrix.arch }} -XLIBKECCAK_SIMD=${{ matrix.simd }}
+        run: |
+          cd tests/benchmark
+          alr build -- \
+            -XLIBKECCAK_ARCH=${{ matrix.arch }} \
+            -XLIBKECCAK_SIMD=${{ matrix.simd }} \
+            -XBENCHMARK_COMPILE_CHECKS=enabled \
+            -XBENCHMARK_STYLE_CHECKS=enabled
 
       # Build and run the Known Answer Tests
       - name: Build and run Known Answer Tests
@@ -48,7 +59,9 @@ jobs:
             -XLIBKECCAK_CONTRACTS=enabled \
             -XLIBKECCAK_RUNTIME_CHECKS=enabled \
             -XKAT_CONTRACTS=enabled \
-            -XKAT_RUNTIME_CHECKS=enabled
+            -XKAT_RUNTIME_CHECKS=enabled \
+            -XKAT_COMPILE_CHECKS=enabled \
+            -XKAT_STYLE_CHECKS=enabled
           ./run-all-tests.sh
 
       # Build and run the unit tests
@@ -61,5 +74,7 @@ jobs:
             -XLIBKECCAK_CONTRACTS=enabled \
             -XLIBKECCAK_RUNTIME_CHECKS=enabled \
             -XUNIT_TESTS_CONTRACTS=enabled \
-            -XUNIT_TESTS_RUNTIME_CHECKS=enabled
+            -XUNIT_TESTS_RUNTIME_CHECKS=enabled \
+            -XUNIT_TESTS_COMPILE_CHECKS=enabled \
+            -XUNIT_TESTS_STYLE_CHECKS=enabled
           alr run -s
