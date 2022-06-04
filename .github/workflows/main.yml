@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         # List of build configurations to test
-        config:
+        include:
           - arch: generic
             simd: none
           - arch: x86_64
