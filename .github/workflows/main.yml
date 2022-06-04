@@ -42,7 +42,9 @@ jobs:
             -XLIBKECCAK_ARCH=${{ matrix.arch }} \
             -XLIBKECCAK_SIMD=${{ matrix.simd }} \
             -XLIBKECCAK_CONTRACTS=enabled \
-            -XLIBKECCAK_RUNTIME_CHECKS=enabled
+            -XLIBKECCAK_RUNTIME_CHECKS=enabled \
+            -XKAT_CONTRACTS=enabled \
+            -XKAT_RUNTIME_CHECKS=enabled
           ./run-all-tests.sh
 
       # Build and run the unit tests
@@ -52,5 +54,7 @@ jobs:
             -XLIBKECCAK_ARCH=${{ matrix.arch }} \
             -XLIBKECCAK_SIMD=${{ matrix.simd }} \
             -XLIBKECCAK_CONTRACTS=enabled \
-            -XLIBKECCAK_RUNTIME_CHECKS=enabled
-          alr run
+            -XLIBKECCAK_RUNTIME_CHECKS=enabled \
+            -XUNIT_TESTS_CONTRACTS=enabled \
+            -XUNIT_TESTS_RUNTIME_CHECKS=enabled
+          alr run -s
