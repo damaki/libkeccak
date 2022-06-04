@@ -8,6 +8,7 @@ on:                    # Run the workflow for each of the following event:
 jobs:
   main:
     strategy:
+      fail-fast: false # Don't stop all the workflows when one of them fails.
       matrix:
         # List of build configurations to test
         include:
