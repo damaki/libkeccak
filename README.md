@@ -201,6 +201,8 @@ Ketje Major (Tag): 3.2 cycles/byte
 
 # Proofs and Testing
 
+Libkeccak takes a "hybrid verification" approach by combining proof and testing.
+
 The library has an auto-active proof of type safety i.e. that the code
 is free of various run-time errors such as:
  * use of uninitialised variables;
@@ -213,17 +215,66 @@ is free of various run-time errors such as:
 This achieves the silver level of assurance (absence of run-time errors)
 described in [9].
 
+All checks are fully proved, except for a few initialisation checks
+which GNATprove's flow analysis cannot automatically verify due to the use of
+loops to perform the initialisation.
+These checks are manually reviewed and suppressed using `pragma Annotate`.
+It is planned to replace these instances with `Relaxed_Initialization` in the
+future to achieve a fully automatic proof.
+
 The proofs do not extend to functional correctness, i.e. the proofs do not
 show that the SHA-3 implementation produces the correct results.
 Conventional testing is used to provide assurance of the correctness of the
 algorithms. The tests consist of Known Answer Tests (KAT) and unit tests.
 
-The KATs comprise the bulk of the tests and they provide assurance that the
+The KATs comprise the bulk of the tests and provide the assurance that the
 algorithms are implemented correctly.
 
 The unit tests aim to cover the cases that are not covered by the KATs, such
 as boundary conditions and testing multi-part hashing operations in various
-combinations.
+combinations of lengths.
+
+## Reproducing the results
+
+Assuming you have Alire >= 1.2.0 installed, then:
+
+### Proofs
+
+```sh
+alr gnatprove -Plibkeccak -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+```
+
+>:bulb: Change `-XLIBKECCAK_ARCH` and `-XLIBKECCAK_SIMD` to run the proofs using
+different SIMD instruction sets.
+
+A summary of the proof results is stored in `obj/generic_none/gnatprove.out`.
+
+The project file configures the prover limits so that they should give the same
+results on all machines.
+
+To see only failed proofs, pass `--report=fail` to gnatprove.
+
+### Tests
+
+To run the Known Answer Tests using test vectors:
+
+```sh
+cd tests/kat
+alr build -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+./run-all-tests.sh
+```
+
+The test vectors are located in the `tests/kat/testvectors/` directory.
+
+To run the unit tests:
+```sh
+cd tests/unit_tests
+alr build -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+alr run
+```
+
+>:bulb: Change `-XLIBKECCAK_ARCH` and `-XLIBKECCAK_SIMD` to run the tests using
+different SIMD instruction sets.
 
 # References
 

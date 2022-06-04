@@ -136,4 +136,17 @@ project Libkeccak is
       for Switches ("Ada") use ("-Es"); --  Symbolic traceback
    end Binder;
 
+   package Prove is
+      for Proof_Switches ("Ada") use ("--proof=per_path",
+                                      "-j0",
+                                      "--no-global-generation",
+                                      "--no-inlining",
+                                      "--no-loop-unrolling",
+                                      "--prover=cvc4,z3,altergo",
+                                      "--timeout=60",
+                                      "--memlimit=0",
+                                      "--steps=16000",
+                                      "--report=statistics");
+   end Prove;
+
 end Libkeccak;
