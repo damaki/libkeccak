@@ -24,8 +24,6 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Ada.Unchecked_Conversion;
-
 package body Keccak.Util
 with SPARK_Mode => On
 is

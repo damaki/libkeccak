@@ -24,15 +24,10 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Keccak.Generic_Parallel_Permutation_Parallel_Fallback;
 with Keccak.Generic_Parallel_Permutation_Serial_Fallback;
 with Keccak.Keccak_1600;
-with Keccak.Keccak_1600.Rounds_24;
-with Keccak.Keccak_1600.Rounds_12;
 with Keccak.Types;
-with Interfaces;
 
-pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Parallel_Fallback);
 pragma Elaborate_All (Keccak.Generic_Parallel_Permutation_Serial_Fallback);
 
 --  @summary
