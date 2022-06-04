@@ -61,51 +61,58 @@ is
 
       Serial_Ctx       : Serial_Sponge.Context;
 
+      --  Repeat the test with some different lengths.
+      Test_Lengths     : constant array (Natural range <>) of Natural :=
+                           (0, 1, 10, 1000, 1024, 2048, 4096, Input_Len / 2, Input_Len);
+
    begin
 
-      --  Set up each instance to receive different data.
-      --  Instance 0 has the repeating pattern 16#00#
-      --  Instance 1 has the repeating pattern 16#11#
-      --  Instance 2 has the repeating pattern 16#22#
-      --  and so on...
-      for I in 0 .. N - 1 loop
-         Input ((I * Input_Len) .. (I * Input_Len) + Input_Len - 1) :=
-           (others => Byte ((16#11# * I) mod 256));
-      end loop;
+      --  Repeat the test in increasing lengths of input data, from 0 .. Input_Len bytes.
+      for Test_Len of Test_Lengths loop
+         --  Set up each instance to receive different data.
+         --  Instance 0 has the repeating pattern 16#00#
+         --  Instance 1 has the repeating pattern 16#11#
+         --  Instance 2 has the repeating pattern 16#22#
+         --  and so on...
+         for I in 0 .. N - 1 loop
+            Input ((I * Test_Len) .. (I * Test_Len) + Test_Len - 1) :=
+              (others => Byte ((16#11# * I) mod 256));
+         end loop;
 
-      --  Use the serial algorithm to produce the reference output to compare
-      --  against.
-      for I in 0 .. N - 1 loop
-         Serial_Sponge.Init (Serial_Ctx, Capacity);
+         --  Use the serial algorithm to produce the reference output to compare
+         --  against.
+         for I in 0 .. N - 1 loop
+            Serial_Sponge.Init (Serial_Ctx, Capacity);
 
-         Serial_Sponge.Absorb_With_Suffix
-           (Ctx        => Serial_Ctx,
-            Message    => Input ((I * Input_Len) .. (I * Input_Len) + Input_Len - 1),
-            Bit_Length => Input_Len * 8,
+            Serial_Sponge.Absorb_With_Suffix
+            (Ctx        => Serial_Ctx,
+               Message    => Input ((I * Test_Len) .. (I * Test_Len) + Test_Len - 1),
+               Bit_Length => Test_Len * 8,
+               Suffix     => Suffix,
+               Suffix_Len => Suffix_Len);
+
+            Serial_Sponge.Squeeze
+              (Ctx    => Serial_Ctx,
+               Digest => Reference_Output ((I * Output_Len) .. (I * Output_Len) + Output_Len - 1));
+         end loop;
+
+         --  Run the parallel sponge
+         Parallel_Sponge.Init (T.Ctx);
+
+         Parallel_Sponge.Absorb_Bytes_Separate_With_Suffix
+           (Ctx        => T.Ctx,
+            Data       => Input (0 .. (Test_Len * N) - 1),
             Suffix     => Suffix,
             Suffix_Len => Suffix_Len);
 
-         Serial_Sponge.Squeeze
-           (Ctx    => Serial_Ctx,
-            Digest => Reference_Output ((I * Output_Len) .. (I * Output_Len) + Output_Len - 1));
+         Parallel_Sponge.Squeeze_Bytes_Separate
+           (Ctx  => T.Ctx,
+            Data => Actual_Output);
+
+         Assert (Actual_Output = Reference_Output,
+                "Output of parallel sponge does not match serial sponge for Test_Len =" &
+                  Integer'Image (Test_Len));
       end loop;
-
-      --  Run the parallel sponge
-      Parallel_Sponge.Init (T.Ctx);
-
-      Parallel_Sponge.Absorb_Bytes_Separate_With_Suffix
-        (Ctx        => T.Ctx,
-         Data       => Input,
-         Suffix     => Suffix,
-         Suffix_Len => Suffix_Len);
-
-      Parallel_Sponge.Squeeze_Bytes_Separate
-        (Ctx  => T.Ctx,
-         Data => Actual_Output);
-
-      Assert (Actual_Output = Reference_Output,
-              "Output of parallel sponge does not match serial sponge");
-
    end Test_Same_Output_As_Serial;
 
 end Parallel_Sponge_Tests;

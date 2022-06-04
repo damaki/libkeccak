@@ -80,7 +80,7 @@ is
       Load          => Arch.SSE2.V2DI_Vectors.Load,
       Store         => Arch.SSE2.V2DI_Vectors.Store,
       "xor"         => Arch.SSE2.V2DI_Vectors."xor",
-      Rotate_Left   => Arch.SSE2.V2DI_Vectors.Shift_Left,
+      Rotate_Left   => Arch.SSE2.V2DI_Vectors.Rotate_Left,
       And_Not       => Arch.SSE2.V2DI_Vectors.And_Not,
       Shift_Left    => Interfaces.Shift_Left,
       Shift_Right   => Interfaces.Shift_Right);
