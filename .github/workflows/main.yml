@@ -39,8 +39,8 @@ jobs:
             -XLIBKECCAK_COMPILE_CHECKS=enabled \
             -XLIBKECCAK_STYLE_CHECKS=enabled
 
-      # Build the benchmark program
-      - name: Build benchmark
+      # Build and run the benchmark program
+      - name: Build and run the benchmark
         run: |
           cd tests/benchmark
           alr build -- \
@@ -48,6 +48,7 @@ jobs:
             -XLIBKECCAK_SIMD=${{ matrix.simd }} \
             -XBENCHMARK_COMPILE_CHECKS=enabled \
             -XBENCHMARK_STYLE_CHECKS=enabled
+          alr run -s
 
       # Build and run the Known Answer Tests
       - name: Build and run Known Answer Tests
