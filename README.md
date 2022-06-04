@@ -116,7 +116,7 @@ stack alignment. See [GCC Bug #54412](https://gcc.gnu.org/bugzilla/show_bug.cgi?
 
 Example:
 ```sh
-alr build -XLIBKECCAK_ARCH=x86_64 -XLIBKECCAK_SIMD=SSE2
+alr build -- -XLIBKECCAK_ARCH=x86_64 -XLIBKECCAK_SIMD=SSE2
 ```
 
 # Benchmarks
@@ -260,7 +260,7 @@ To run the Known Answer Tests using test vectors:
 
 ```sh
 cd tests/kat
-alr build -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+alr build -- -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
 ./run-all-tests.sh
 ```
 
@@ -269,7 +269,7 @@ The test vectors are located in the `tests/kat/testvectors/` directory.
 To run the unit tests:
 ```sh
 cd tests/unit_tests
-alr build -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+alr build -- -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
 alr run
 ```
 
