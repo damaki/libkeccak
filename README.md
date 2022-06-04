@@ -1,9 +1,8 @@
-[![Build Status](https://travis-ci.com/damaki/libkeccak.svg?branch=master)](https://travis-ci.com/damaki/libkeccak)
-
 # Libkeccak
 
 This project implements the Keccak family of sponge functions and related
-constructions using the SPARK 2014 programming language.
+constructions using the SPARK 2014 programming language, with static proof
+of type safety and good performance.
 
 libkeccak supports the following cryptographic permutations:
 * The Keccak-p permutation for state sizes of 25, 50, 100, 200, 400, 800, and 1600 bits (see [1] and [2]).
@@ -87,118 +86,195 @@ Libkeccak is licensed under the 3-clause BSD license.
 
 # Building
 
-Building libkeccak requires an Ada 2012 compiler which understands SPARK 2014
-annotations, such as GCC or AdaCore's GNAT GPL toolset. To run the proofs,
-the SPARK (Community or Pro) 2019 toolset is required.
+Libkeccak requires a GNAT compiler that supports the `Relaxed_Initialization`
+aspect, such as GNAT FSF 11 or newer.
 
-To build libkeccak based on the autodetected CPU architecture, change to the
-repository directory and type:
-<pre><code>make build</code></pre>
+Assuming you've cloned this repository and have Alire installed, libkeccak
+can be built with the command:
 
-You can specify a specific architecture by setting the ARCH and SIMD arguments.
-For example:
-<pre><code>make build ARCH=x86_64 SIMD=SSE2</code></pre>
+```sh
+alr build
+```
 
-Currently, the following ARCH and SIMD values are supported:
+libkeccak can be built to use SIMD instructions, if your platform supports them,
+by setting the following GPR variables:
 
-| ARCH    | Valid SIMD values   |
-| ------- | ------------------- |
-| generic | none                |
-| x86_64  | none, SSE2, or AVX2 |
+| Variable | Values | Default |
+| -------- | ------ | ------- |
+| LIBKECCAK_ARCH | `generic`, `x86_64` | `generic` |
+| LIBKECCAK_SIMD | `none`, `SSE2`, `AVX2` | `none` |
 
-`ARCH=generic` should be used for any architecture which does not appear in the
-above table.
+>:warning: `SSE2` and `AVX2` are only available on `x86_64` architectures.
 
-Enabling `SIMD=SSE2` will use SSE2 instructions to speed up parallel algorithms
-such as KangarooTwelve and ParallelHash. Using `SIMD=AVX2` will also enable the
-AVX2 instruction set (in addition to SSE2).
-To disable SSE2 and AVX2 on x86_64, set `SIMD=none`.
+Enabling `SSE2` will use SSE2 instructions to speed up parallel algorithms
+such as KangarooTwelve and ParallelHash. Using `LIBKECCAK_SIMD=AVX2` will enable the
+AVX2 instruction set in addition to SSE2.
+To disable SSE2 and AVX2 on x86_64, set `LIBKECCAK_SIMD=none`.
 
-To install libkeccak to ``<destination>`` type:
-<pre><code>make install &lt;destination&gt;</code></pre>
+>:warning: `AVX2` is not guaranteed to work on Windows since GCC does not ensure 32-byte
+stack alignment. See [GCC Bug #54412](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412)
 
-To run GNATprove to generate the proofs type:
-<pre><code>make proof</code></pre>
-
-_Note: SPARK Discovery 2017 is not distributed with the CVC4 or Z3 provers,_
-_which are required to prove libkeccak. You can install them by following_
-_the instructions [here](http://docs.adacore.com/spark2014-docs/html/ug/en/appendix/alternative_provers.html#installed-with-spark-discovery)_
-
-To run the tests type:
-<pre><code>make test</code></pre>
-
-To run the benchmark type:
-<pre><code>make benchmark</code></pre>
+Example:
+```sh
+alr build -- -XLIBKECCAK_ARCH=x86_64 -XLIBKECCAK_SIMD=SSE2
+```
 
 # Benchmarks
 
-The following performance measurements were taken on an Intel Core i7-2630QM
-2.0 GHz (@2.6 GHz with turbo boost) "Sandy Bridge" on 64-bit Linux. The code
-was compiled using GNAT GPL 2017 (20170515) with `ARCH=x86_64 SIMD=SSE2`.
+The following performance measurements were taken on an AMD Ryzen 7 5800X on Windows 10.
+The code was compiled using gnat 11.2.0-4 with the following configuration:
+* `LIBKECCAK_ARCH=x86_64`
+* `LIBKECCAK_SIMD=AVX2`
+* All other settings at their default values.
+
 The measurements shown are the output of the benchmark program.
 
 ```
 Message size: 524288 bytes
 Performing 200 measurements for each test
 
-KangarooTwelve (Absorbing): 3.4 cycles/byte
-KangarooTwelve (Squeezing): 5.3 cycles/byte
-SHA3-224: 9.3 cycles/byte
-SHA3-256: 9.8 cycles/byte
-SHA3-384: 12.6 cycles/byte
-SHA3-512: 17.8 cycles/byte
-Keccak-224: 9.3 cycles/byte
-Keccak-256: 9.8 cycles/byte
-Keccak-384: 13.0 cycles/byte
-Keccak-512: 18.4 cycles/byte
-SHAKE128 (Absorbing): 8.3 cycles/byte
-SHAKE128 (Squeezing): 8.9 cycles/byte
-SHAKE256 (Absorbing): 10.1 cycles/byte
-SHAKE256 (Squeezing): 10.3 cycles/byte
-RawSHAKE128 (Absorbing): 8.0 cycles/byte
-RawSHAKE128 (Squeezing): 8.6 cycles/byte
-RawSHAKE256 (Absorbing): 9.8 cycles/byte
-RawSHAKE256 (Squeezing): 10.3 cycles/byte
-Duplex r1152c448: 1604 cycles
-Duplex r1088c512: 1588 cycles
-Duplex r832c768: 1522 cycles
-Duplex r576c1024: 1434 cycles
-Keccak-p\[1600,24\]: 1190 cycles
-Keccak-p\[1600,24\]×2: 1572 cycles
-Keccak-p\[1600,24\]×4: 3090 cycles
-Keccak-p\[1600,24\]×8: 6388 cycles
-Keccak-p\[1600,12\]: 620 cycles
-Keccak-p\[1600,12\]×2: 808 cycles
-Keccak-p\[1600,12\]×2: 1623 cycles
-Keccak-p\[1600,12\]×2: 3202 cycles
-Keccak-p\[800,22\]: 1098 cycles
-Keccak-p\[400,20\]: 1030 cycles
-Keccak-p\[200,18\]: 898 cycles
-Keccak-p\[100,16\]: 1096 cycles
-Keccak-p\[50,14\]: 976 cycles
-Keccak-p\[25,12\]: 464 cycles
+Gimli: 379 cycles
+Gimli Hash: 24.2 cycles/byte
+Ascon (12 rounds): 113 cycles
+Ascon (8 rounds): 75 cycles
+Ascon (6 rounds): 74 cycles
+Ascon-Hash: 17.3 cycles/byte
+KangarooTwelve (Absorbing): 1.7 cycles/byte
+KangarooTwelve (Squeezing): 2.9 cycles/byte
+MarsupilamiFourteen (Absorbing): 2.1 cycles/byte
+MarsupilamiFourteen (Squeezing): 3.8 cycles/byte
+ParallelHash128 (Absorbing): 2.4 cycles/byte
+ParallelHash128 (Squeezing): 4.9 cycles/byte
+ParallelHash256 (Absorbing): 2.9 cycles/byte
+ParallelHash256 (Squeezing): 6.0 cycles/byte
+SHA3-224: 6.0 cycles/byte
+SHA3-256: 6.3 cycles/byte
+SHA3-384: 8.1 cycles/byte
+SHA3-512: 11.5 cycles/byte
+Keccak-224: 6.0 cycles/byte
+Keccak-256: 6.3 cycles/byte
+Keccak-384: 8.2 cycles/byte
+Keccak-512: 11.5 cycles/byte
+SHAKE128 (Absorbing): 5.2 cycles/byte
+SHAKE128 (Squeezing): 4.9 cycles/byte
+SHAKE256 (Absorbing): 6.3 cycles/byte
+SHAKE256 (Squeezing): 6.0 cycles/byte
+RawSHAKE128 (Absorbing): 5.2 cycles/byte
+RawSHAKE128 (Squeezing): 4.9 cycles/byte
+RawSHAKE256 (Absorbing): 6.3 cycles/byte
+RawSHAKE256 (Squeezing): 6.0 cycles/byte
+Duplex r1152c448: 949 cycles
+Duplex r1088c512: 949 cycles
+Duplex r832c768: 911 cycles
+Duplex r576c1024: 911 cycles
+Keccak-p[1600,24]: 759 cycles
+Keccak-p[1600,24]×2: 1063 cycles
+Keccak-p[1600,24]×4: 1063 cycles
+Keccak-p[1600,24]×8: 2165 cycles
+Keccak-p[1600,12]: 379 cycles
+Keccak-p[1600,12]×2: 531 cycles
+Keccak-p[1600,12]×4: 531 cycles
+Keccak-p[1600,12]×8: 1139 cycles
+Keccak-p[800,22]: 683 cycles
+Keccak-p[400,20]: 683 cycles
+Keccak-p[200,18]: 644 cycles
+Keccak-p[100,16]: 799 cycles
+Keccak-p[50,14]: 759 cycles
+Keccak-p[25,12]: 416 cycles
+Ketje Jr (AAD): 38.3 cycles/byte
+Ketje Jr (Encrypt): 44.3 cycles/byte
+Ketje Jr (Decrypt): 44.3 cycles/byte
+Ketje Jr (Tag): 44.1 cycles/byte
+Ketje Sr (AAD): 21.7 cycles/byte
+Ketje Sr (Encrypt): 26.9 cycles/byte
+Ketje Sr (Decrypt): 26.9 cycles/byte
+Ketje Sr (Tag): 23.2 cycles/byte
+Ketje Minor (AAD): 4.9 cycles/byte
+Ketje Minor (Encrypt): 8.3 cycles/byte
+Ketje Minor (Decrypt): 8.3 cycles/byte
+Ketje Minor (Tag): 6.5 cycles/byte
+Ketje Major (AAD): 2.7 cycles/byte
+Ketje Major (Encrypt): 4.0 cycles/byte
+Ketje Major (Decrypt): 4.0 cycles/byte
+Ketje Major (Tag): 3.2 cycles/byte
 ```
 
-# Formal Verification
+# Proofs and Testing
 
-SPARK 2014 and GNATprove are used to provide proof that the implementation is
-free of errors such as: integer overflows, buffer overruns, use of
-uninitialized variables, and that all loops terminate. Nothing is provided
-currently to prove that the library correctly implements the algorithms
-according to the specifications. However, there are tests to provide assurances
-of the correctness of the algorithms with the Known Answer Tests. It is intended
-at some point to add proof that the algorithms correctly implement the specification.
+Libkeccak takes a "hybrid verification" approach by combining proof and testing.
 
-# Testing
+The library has an auto-active proof of type safety i.e. that the code
+is free of various run-time errors such as:
+ * use of uninitialised variables;
+ * integer overflows;
+ * division by zero;
+ * value out-of-range;
+ * out-of-bounds array accesses;
+ * non-terminating loops.
 
-Correctness of the algorithms is demonstrated using a combination of unit
-testing and Known Answer Tests (KAT). The Known Answer Tests comprise the bulk
-of the tests and they provide assurance that the algorithms are implemented
-correctly.
+This achieves the silver level of assurance (absence of run-time errors)
+described in [9].
 
-The unit tests aim to cover the cases that are not covered by the KAT, such
-as boundary conditions. As the project moves forwards I will experiment with
-replacing tests with proof.
+All checks are fully proved, except for a few initialisation checks
+which GNATprove's flow analysis cannot automatically verify due to the use of
+loops to perform the initialisation.
+These checks are manually reviewed and suppressed using `pragma Annotate`.
+It is planned to replace these instances with `Relaxed_Initialization` in the
+future to achieve a fully automatic proof.
+
+The proofs do not extend to functional correctness, i.e. the proofs do not
+show that the SHA-3 implementation produces the correct results.
+Conventional testing is used to provide assurance of the correctness of the
+algorithms. The tests consist of Known Answer Tests (KAT) and unit tests.
+
+The KATs comprise the bulk of the tests and provide the assurance that the
+algorithms are implemented correctly.
+
+The unit tests aim to cover the cases that are not covered by the KATs, such
+as boundary conditions and testing multi-part hashing operations in various
+combinations of lengths.
+
+## Reproducing the results
+
+Assuming you have Alire >= 1.2.0 installed, then:
+
+### Proofs
+
+```sh
+alr gnatprove -Plibkeccak -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+```
+
+>:bulb: Change `-XLIBKECCAK_ARCH` and `-XLIBKECCAK_SIMD` to run the proofs using
+different SIMD instruction sets.
+
+A summary of the proof results is stored in `obj/generic_none/gnatprove.out`.
+
+The project file configures the prover limits so that they should give the same
+results on all machines.
+
+To see only failed proofs, pass `--report=fail` to gnatprove.
+
+### Tests
+
+To run the Known Answer Tests using test vectors:
+
+```sh
+cd tests/kat
+alr build -- -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+./run-all-tests.sh
+```
+
+The test vectors are located in the `tests/kat/testvectors/` directory.
+
+To run the unit tests:
+```sh
+cd tests/unit_tests
+alr build -- -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+alr run
+```
+
+>:bulb: Change `-XLIBKECCAK_ARCH` and `-XLIBKECCAK_SIMD` to run the tests using
+different SIMD instruction sets.
 
 # References
 
@@ -218,3 +294,5 @@ https://keccak.team/files/Ketjev2-doc2.0.pdf
 https://gimli.cr.yp.to/index.html
 * [8] Ascon
 https://ascon.iaik.tugraz.at/index.html
+* [9] Implementation Guidance for the Adoption of SPARK
+https://www.adacore.com/books/implementation-guidance-spark

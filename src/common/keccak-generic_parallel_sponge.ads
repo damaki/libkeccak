@@ -65,7 +65,7 @@ generic
       Bit_Len     : in     Natural);
 
    with procedure Extract_Bytes (S           : in     State_Type;
-                                 Data        : in out Keccak.Types.Byte_Array;
+                                 Data        :    out Keccak.Types.Byte_Array;
                                  Data_Offset : in     Natural;
                                  Byte_Len    : in     Natural);
    --  Extracts a bytes of output from the state
@@ -223,12 +223,13 @@ is
    pragma Annotate
      (GNATprove, False_Positive,
       """Data"" might not be initialized",
-      "GNATprove issues a false positive due to the use of loops to initialize Data");
+      "Data is fully initialized via a loop");
 
    function State_Of (Ctx : in Context) return States;
    --  Get the current state of the context.
 
-   function Rate_Of (Ctx : in Context) return Rate_Bits_Number;
+   function Rate_Of (Ctx : in Context) return Rate_Bits_Number
+   is (Block_Size_Bits - Ctx.Capacity);
    --  Get the configured rate parameter (in bits).
 
 private
@@ -250,8 +251,5 @@ private
 
    function State_Of (Ctx : in Context) return States
    is (Ctx.State);
-
-   function Rate_Of (Ctx : in Context) return Rate_Bits_Number
-   is (Ctx.Rate * 8);
 
 end Keccak.Generic_Parallel_Sponge;

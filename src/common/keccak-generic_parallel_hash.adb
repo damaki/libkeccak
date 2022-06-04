@@ -72,14 +72,9 @@ is
       --  Process N blocks in parallel and produce N chaining values.
       SHAKE_Parallel_N.Init (Parallel_Ctx);
       SHAKE_Parallel_N.Update_Separate  (Parallel_Ctx, Data);
-
-      pragma Warnings (GNATprove, Off,
-                       "unused assignment to ""Parallel_Ctx""",
-                       Reason => "No further data needs to be extracted");
-
       SHAKE_Parallel_N.Extract_Separate (Parallel_Ctx, CV_N);
 
-      pragma Warnings (GNATprove, On);
+      pragma Unused (Parallel_Ctx);
 
       --  Process the chaining values with the outer CSHAKE.
       CSHAKE_Serial.Update
@@ -132,14 +127,9 @@ is
       --  Process N blocks in parallel and produce N changing values.
       SHAKE_Serial.Init   (Serial_Ctx);
       SHAKE_Serial.Update (Serial_Ctx, Data);
-
-      pragma Warnings (GNATprove, Off,
-                       "unused assignment to ""Serial_Ctx""",
-                       Reason => "No further data needs to be extracted");
-
       SHAKE_Serial.Extract (Serial_Ctx, CV);
 
-      pragma Warnings (GNATprove, On);
+      pragma Unreferenced (Serial_Ctx);
 
       --  Process the chaining values with the outer CSHAKE.
       CSHAKE_Serial.Update
@@ -200,7 +190,7 @@ is
 
             pragma Warnings
               (GNATprove, Off,
-               "unused assignment",
+               """Ctx.Partial_Block_CSHAKE"" is set by ""Extract"" but not used after the call",
                Reason => "No further data needs to be extracted before Init");
 
             SHAKE_Serial.Extract

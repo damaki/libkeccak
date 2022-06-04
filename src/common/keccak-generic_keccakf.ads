@@ -24,7 +24,6 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Keccak.Types;
 
 --  @summary
 --  Generic implementation of the Keccak-f permutations.
@@ -53,18 +52,6 @@ generic
    --  For example, when Lane_Size_Log=6 Lane_Type must be a 64-bit
    --  mod type (2**Lane_Size_Log = 64 when Lane_Size_Log = 6).
    type Lane_Type is mod <>;
-
-   --  Bit-wise left shift for Lane_Type.
-   with function Shift_Left (Value  : in Lane_Type;
-                             Amount : in Natural) return Lane_Type;
-
-   --  Bit-wise right shift for Lane_Type.
-   with function Shift_Right (Value  : in Lane_Type;
-                              Amount : in Natural) return Lane_Type;
-
-   --  Bit-wise left rotate for Lane_Type.
-   with function Rotate_Left (Value  : in Lane_Type;
-                              Amount : in Natural) return Lane_Type;
 
 package Keccak.Generic_KeccakF
 is

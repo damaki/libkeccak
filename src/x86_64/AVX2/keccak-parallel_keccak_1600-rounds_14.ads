@@ -24,7 +24,6 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Keccak.Keccak_1600.Rounds_14;
 with Keccak.Generic_Parallel_Sponge;
 with Keccak.Padding;
 

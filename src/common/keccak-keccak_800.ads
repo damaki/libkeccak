@@ -42,16 +42,16 @@ is
 
    package KeccakF_800 is new Keccak.Generic_KeccakF
      (Lane_Size_Log => 5,
-      Lane_Type     => Interfaces.Unsigned_32,
-      Shift_Left    => Interfaces.Shift_Left,
-      Shift_Right   => Interfaces.Shift_Right,
-      Rotate_Left   => Interfaces.Rotate_Left);
+      Lane_Type     => Interfaces.Unsigned_32);
 
    subtype State is KeccakF_800.Lane_Complemented_State;
 
-   package KeccakF_800_Permutation is new KeccakF_800.Lane_Complementing_Permutation;
+   package KeccakF_800_Permutation is new KeccakF_800.Lane_Complementing_Permutation
+     (Rotate_Left => Interfaces.Rotate_Left);
 
-   package KeccakF_800_Lanes is new KeccakF_800.Byte_Lanes;
+   package KeccakF_800_Lanes is new KeccakF_800.Byte_Lanes
+     (Shift_Left  => Interfaces.Shift_Left,
+      Shift_Right => Interfaces.Shift_Right);
 
    procedure XOR_Pad101_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
      (State_Size_Bits     => 800,

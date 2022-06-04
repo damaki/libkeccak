@@ -46,12 +46,16 @@ is
       type V4DI_Index is range 0 .. 3;
 
       type V4DI is array (V4DI_Index) of Unsigned_64
-        with Alignment => 32;
+        with Alignment => 32,
+        Size => 256,
+        Object_Size => 256;
       pragma Machine_Attribute (V4DI, "vector_type");
       pragma Machine_Attribute (V4DI, "may_alias");
 
       type V4DI_View is array (V4DI_Index) of Unsigned_64
-        with Alignment => 32;
+        with Alignment => 32,
+        Size => 256,
+        Object_Size => 256;
 
       function Load is new Ada.Unchecked_Conversion
         (Source => V4DI_View,

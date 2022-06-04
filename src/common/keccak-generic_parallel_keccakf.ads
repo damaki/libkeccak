@@ -217,7 +217,7 @@ is
    --  @param Bit_Len The length of the data, in bits.
 
    procedure Extract_Bytes (S           : in     Parallel_State;
-                            Data        : in out Types.Byte_Array;
+                            Data        :    out Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
      with Global => null,
@@ -256,6 +256,11 @@ is
    --     of the first byte in each chunk.
    --
    --  @param Byte_Len The number of bytes to read from each chunk.
+   pragma Annotate
+     (GNATprove, False_Positive,
+      """Data"" might not be initialized",
+      "Data is partially initialized in chunks of size 'Byte_Len'" &
+        " at offset 'Data_Offset' in each chunk");
 
 private
 

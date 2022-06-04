@@ -24,8 +24,6 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Ada.Unchecked_Conversion;
-
 package body Keccak.Util
 with SPARK_Mode => On
 is
@@ -34,18 +32,15 @@ is
    --  To_Byte_Array  --
    ---------------------
 
-   function To_Byte_Array (Str : in String) return Types.Byte_Array
+   procedure To_Byte_Array (Bytes :    out Types.Byte_Array;
+                            Str   : in     String)
    is
-
-      subtype Fixed_String is String (Str'Range);
-      subtype Fixed_Byte_Array is Types.Byte_Array (0 .. Str'Length - 1);
-
-      function String_To_Byte_Array_Conversion is new Ada.Unchecked_Conversion
-        (Source => Fixed_String,
-         Target => Fixed_Byte_Array);
-
    begin
-      return String_To_Byte_Array_Conversion (Str);
+      for I in 0 .. Bytes'Length - 1 loop
+         Bytes (Bytes'First + I) := Types.Byte (Character'Pos (Str (Str'First + I)));
+
+         pragma Loop_Invariant (Bytes (Bytes'First .. Bytes'First + I)'Initialized);
+      end loop;
    end To_Byte_Array;
 
    ------------------------

@@ -64,8 +64,6 @@ package body Keccak.Generic_KeccakF.Byte_Lanes.Twisted is
                                           Data    : in     Keccak.Types.Byte_Array;
                                           Bit_Len : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
@@ -185,8 +183,6 @@ package body Keccak.Generic_KeccakF.Byte_Lanes.Twisted is
    procedure Extract_Bytes_Twisted (A    : in     State;
                                     Data :    out Keccak.Types.Byte_Array)
    is
-      use type Keccak.Types.Byte;
-
       X               : X_Coord := 0;
       Y               : Y_Coord := 0;
 
@@ -277,8 +273,6 @@ package body Keccak.Generic_KeccakF.Byte_Lanes.Twisted is
    procedure Extract_Bytes_Twisted (A    : in     Lane_Complemented_State;
                                     Data :    out Keccak.Types.Byte_Array)
    is
-      use type Keccak.Types.Byte;
-
       Complement_Mask : constant Lane_Complemented_State :=
         (0 => (4         => Lane_Type'Last,
                others    => 0),

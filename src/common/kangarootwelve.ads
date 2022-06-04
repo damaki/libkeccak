@@ -27,12 +27,8 @@
 with Keccak.Keccak_1600.Rounds_12;
 with Keccak.Generic_KangarooTwelve;
 with Keccak.Parallel_Keccak_1600.Rounds_12;
-with Keccak.Generic_Parallel_Sponge;
 with Keccak.Generic_Parallel_XOF;
-with Keccak.Generic_Sponge;
 with Keccak.Generic_XOF;
-with Keccak.Padding;
-with Interfaces;
 
 --  @summary
 --  Defines the KangarooTwelve instance.
@@ -53,25 +49,25 @@ is
 
       --  Now we can build a XOF on each parallel sponge
       package XOF_S1 is new Keccak.Generic_XOF
-      (XOF_Sponge  => Keccak.Keccak_1600.Rounds_12.Sponge,
+        (XOF_Sponge  => Keccak.Keccak_1600.Rounds_12.Sponge,
          Capacity    => K12_Capacity,
          Suffix      => 0, --  Add no suffix here, since suffix is dynamic (01 or 11)
          Suffix_Size => 0);
 
       package XOF_P2 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P2,
+        (XOF_Sponge  => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P2,
          Capacity    => K12_Capacity,
          Suffix      => 2#011#,
          Suffix_Size => 3);
 
       package XOF_P4 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P4,
+        (XOF_Sponge  => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P4,
          Capacity    => K12_Capacity,
          Suffix      => 2#011#,
          Suffix_Size => 3);
 
       package XOF_P8 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P8,
+        (XOF_Sponge  => Keccak.Parallel_Keccak_1600.Rounds_12.Parallel_Sponge_P8,
          Capacity    => K12_Capacity,
          Suffix      => 2#011#,
          Suffix_Size => 3);

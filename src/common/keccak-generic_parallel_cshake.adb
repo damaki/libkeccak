@@ -46,6 +46,19 @@ is
      Post => (Block_Offset < Block'Length
               and State_Of (Ctx) = Updating);
 
+   procedure Process_Full_Blocks_String
+     (Ctx          : in out Context;
+      Block        : in out Types.Byte_Array;
+      Input        : in     String;
+      Block_Offset : in out Natural)
+     with Global => null,
+     Pre => (Block_Offset < Block'Length
+             and Block'First = 0
+             and Block'Length = Rate / 8
+             and State_Of (Ctx) = Updating),
+     Post => (Block_Offset < Block'Length
+              and State_Of (Ctx) = Updating);
+
    ---------------------------
    --  Process_Full_Blocks  --
    ---------------------------
@@ -139,6 +152,43 @@ is
 
    end Process_Full_Blocks;
 
+   ---------------------------------
+   -- Process_Full_Blocks_String  --
+   ---------------------------------
+
+   procedure Process_Full_Blocks_String
+     (Ctx          : in out Context;
+      Block        : in out Types.Byte_Array;
+      Input        : in     String;
+      Block_Offset : in out Natural)
+   is
+      Bytes : Types.Byte_Array (1 .. 128);
+
+      Remaining : Natural := Input'Length;
+      Offset    : Natural := 0;
+
+   begin
+
+      while Remaining >= Bytes'Length loop
+         pragma Loop_Invariant (Offset + Remaining = Input'Length);
+
+         To_Byte_Array (Bytes, Input (Input'First + Offset ..
+                                      Input'First + Offset + Bytes'Length - 1));
+
+         Process_Full_Blocks (Ctx, Block, Bytes, Block_Offset);
+
+         Offset    := Offset + Bytes'Length;
+         Remaining := Remaining - Bytes'Length;
+      end loop;
+
+      if Remaining > 0 then
+         To_Byte_Array (Bytes (1 .. Remaining), Input (Input'First + Offset .. Input'Last));
+
+         Process_Full_Blocks (Ctx, Block, Bytes (1 .. Remaining), Block_Offset);
+      end if;
+
+   end Process_Full_Blocks_String;
+
    ------------
    --  Init  --
    ------------
@@ -182,10 +232,10 @@ is
          Input        => Left_Encode_NIST_Bit_Length (Function_Name'Length),
          Block_Offset => Block_Offset);
 
-      Process_Full_Blocks
+      Process_Full_Blocks_String
         (Ctx          => Ctx,
          Block        => Block,
-         Input        => To_Byte_Array (Function_Name),
+         Input        => Function_Name,
          Block_Offset => Block_Offset);
 
       Process_Full_Blocks
@@ -194,10 +244,10 @@ is
          Input        => Left_Encode_NIST_Bit_Length (Customization'Length),
          Block_Offset => Block_Offset);
 
-      Process_Full_Blocks
+      Process_Full_Blocks_String
         (Ctx          => Ctx,
          Block        => Block,
-         Input        => To_Byte_Array (Customization),
+         Input        => Customization,
          Block_Offset => Block_Offset);
 
       if Block_Offset > 0 then

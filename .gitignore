@@ -1,6 +1,8 @@
-out
-obj
-lib
-bin
-doc
+out/
+obj/
+lib/
+alire/
+config/
+bin/
+doc/
 gnatinspect.db

@@ -35,8 +35,6 @@ is
                                   Data    : in     Keccak.Types.Byte_Array;
                                   Bit_Len : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
@@ -143,8 +141,6 @@ is
    procedure Extract_Bytes (A    : in     State;
                             Data :    out Keccak.Types.Byte_Array)
    is
-      use type Keccak.Types.Byte;
-
       X               : X_Coord := 0;
       Y               : Y_Coord := 0;
 
@@ -165,7 +161,7 @@ is
             pragma Loop_Variant (Increases => Offset,
                                  Decreases => Remaining_Bytes);
             pragma Loop_Invariant (Offset mod (Lane_Size_Bits / 8) = 0
-                                  and Offset + Remaining_Bytes = Data'Length);
+                                   and Offset + Remaining_Bytes = Data'Length);
 
             if Remaining_Bytes < Lane_Size_Bits / 8 then
                X := X2;
@@ -177,11 +173,7 @@ is
 
             for I in Natural range 0 .. (Lane_Size_Bits / 8) - 1 loop
                Data (Data'First + Offset + I)
-               := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
-
-               pragma Annotate (GNATprove, False_Positive,
-                              """Data"" might not be initialized",
-                              "Data is initialized at end of procedure");
+                 := Keccak.Types.Byte (Shift_Right (Lane, I * 8) and 16#FF#);
             end loop;
 
             Remaining_Bytes := Remaining_Bytes - Lane_Size_Bits / 8;
@@ -209,10 +201,6 @@ is
                Data (Data'First + Offset)
                  := Keccak.Types.Byte (Shift_Right (Lane, Shift) and 16#FF#);
 
-               pragma Annotate (GNATprove, False_Positive,
-                                """Data"" might not be initialized",
-                                "Data is initialized at end of procedure");
-
                Shift           := Shift + 8;
                Offset          := Offset + 1;
                Remaining_Bytes := Remaining_Bytes - 1;
@@ -229,8 +217,6 @@ is
    procedure Extract_Bytes (A    : in     Lane_Complemented_State;
                             Data :    out Keccak.Types.Byte_Array)
    is
-      use type Keccak.Types.Byte;
-
       Complement_Mask : constant Lane_Complemented_State :=
         (0 => (4         => Lane_Type'Last,
                others    => 0),

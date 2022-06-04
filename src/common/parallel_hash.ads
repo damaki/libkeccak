@@ -27,11 +27,8 @@
 with CSHAKE;
 with SHAKE;
 with Keccak.Parallel_Keccak_1600.Rounds_24;
-with Keccak.Generic_Parallel_CSHAKE;
 with Keccak.Generic_Parallel_Hash;
-with Keccak.Generic_Parallel_Sponge;
 with Keccak.Generic_Parallel_XOF;
-with Keccak.Padding;
 
 --  @summary
 --  Instantiates ParallelHash algorithms as defined in NIST SP 800-185.
@@ -55,19 +52,19 @@ is
       --  should be empty, in which case CSHAKE128 is equivalent to SHAKE128.
 
       package XOF128_P2 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P2,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P2,
          Capacity    => 256,
          Suffix      => 2#11_11#,
          Suffix_Size => 4);
 
       package XOF128_P4 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P4,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P4,
          Capacity    => 256,
          Suffix      => 2#11_11#,
          Suffix_Size => 4);
 
       package XOF128_P8 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P8,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P8,
          Capacity    => 256,
          Suffix      => 2#11_11#,
          Suffix_Size => 4);
@@ -80,19 +77,19 @@ is
       --  should be empty, in which case CSHAKE256 is equivalent to SHAKE256.
 
       package XOF256_P2 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P2,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P2,
          Capacity    => 512,
          Suffix      => 2#11_11#,
          Suffix_Size => 4);
 
       package XOF256_P4 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P4,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P4,
          Capacity    => 512,
          Suffix      => 2#11_11#,
          Suffix_Size => 4);
 
       package XOF256_P8 is new Keccak.Generic_Parallel_XOF
-      (Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P8,
+      (XOF_Sponge      => Keccak.Parallel_Keccak_1600.Rounds_24.Parallel_Sponge_P8,
          Capacity    => 512,
          Suffix      => 2#11_11#,
          Suffix_Size => 4);

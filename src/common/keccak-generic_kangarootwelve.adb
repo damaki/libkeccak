@@ -80,14 +80,9 @@ is
       --  Process N blocks in parallel and produce N chaining values.
       XOF_Parallel_N.Init    (Par_Ctx);
       XOF_Parallel_N.Update_Separate  (Par_Ctx, Data);
-
-      pragma Warnings (GNATprove, Off,
-                       "unused assignment to ""Par_Ctx""",
-                       Reason => "No further data needs to be extracted");
-
       XOF_Parallel_N.Extract_Separate (Par_Ctx, CV_N);
 
-      pragma Warnings (GNATprove, On);
+      pragma Unused (Par_Ctx);
 
       --  Process the chaining values with the outer XOF.
       XOF_Serial.Update
@@ -141,13 +136,9 @@ is
       XOF_Serial.Update (Serial_Ctx, Data);
       XOF_Serial.Update (Serial_Ctx, Suffix_110, 3);
 
-      pragma Warnings (GNATprove, Off,
-                       "unused assignment to ""Serial_Ctx""",
-                       Reason => "No further data needs to be extracted");
-
       XOF_Serial.Extract (Serial_Ctx, CV);
 
-      pragma Warnings (GNATprove, On);
+      pragma Unreferenced (Serial_Ctx);
 
       --  Process the chaining values with the outer XOF.
       XOF_Serial.Update
@@ -310,14 +301,14 @@ is
 
             pragma Warnings
               (GNATprove, Off,
-               "unused assignment",
+               """Ctx.Partial_Block_XOF"" is set by ""Extract"" but not used after the call",
                Reason => "No further data needs to be extracted before Init");
 
             XOF_Serial.Extract
               (Ctx    => Ctx.Partial_Block_XOF,
                Digest => CV);
 
-            pragma Warnings (GNATprove, On);
+            pragma Warnings (GNATprove, Off);
 
             XOF_Serial.Update
               (Ctx     => Ctx.Outer_XOF,
@@ -347,6 +338,56 @@ is
 
       end if;
    end Add_To_Partial_Block;
+
+   ---------------------
+   --  Update_String  --
+   ---------------------
+
+   procedure Update_String (Ctx : in out Context;
+                            Str : in     String)
+     with Global => null,
+     Pre => (State_Of (Ctx) = Updating
+             and Byte_Count (Str'Length) <= Max_Input_Length (Ctx)),
+     Post => (State_Of (Ctx) = Updating
+              and Max_Input_Length (Ctx) = Max_Input_Length (Ctx'Old) - Byte_Count (Str'Length));
+
+   ---------------------
+   --  Update_String  --
+   ---------------------
+
+   procedure Update_String (Ctx : in out Context;
+                            Str : in     String)
+   is
+      Buffer : Types.Byte_Array (1 .. 128) with Relaxed_Initialization;
+
+      Remaining : Natural := Str'Length;
+      Offset    : Natural := 0;
+
+      Max_Input_Length_Old : constant Byte_Count := Max_Input_Length (Ctx) with Ghost;
+
+   begin
+      while Remaining >= Buffer'Length loop
+         pragma Loop_Variant (Increases => Offset,
+                              Decreases => Remaining);
+         pragma Loop_Invariant (Offset + Remaining = Str'Length);
+         pragma Loop_Invariant (State_Of (Ctx) = Updating);
+         pragma Loop_Invariant (Max_Input_Length (Ctx) =
+                                  Max_Input_Length_Old - Byte_Count (Offset));
+
+         Util.To_Byte_Array (Buffer, Str (Str'First + Offset ..
+                                          Str'First + Offset + (Buffer'Length - 1)));
+         Update (Ctx, Buffer);
+
+         Offset    := Offset    + Buffer'Length;
+         Remaining := Remaining - Buffer'Length;
+      end loop;
+
+      if Remaining > 0 then
+         Util.To_Byte_Array (Buffer (1 .. Remaining), Str (Str'First + Offset .. Str'Last));
+
+         Update (Ctx, Buffer (1 .. Remaining));
+      end if;
+   end Update_String;
 
    ------------
    --  Init  --
@@ -490,10 +531,11 @@ is
    procedure Finish (Ctx           : in out Context;
                      Customization : in     String)
    is
+
       Nb_Blocks : Long_Long_Integer;
 
    begin
-      Update (Ctx, Util.To_Byte_Array (Customization));
+      Update_String (Ctx, Customization);
       Update (Ctx, Util.Right_Encode_K12 (Customization'Length));
 
       pragma Assert (Num_Bytes_Processed (Ctx) > 0);
@@ -524,8 +566,8 @@ is
 
                pragma Warnings
                  (GNATprove, Off,
-                  "unused assignment",
-                  Reason => "No further data needs to be extracted");
+                  """Ctx.Partial_Block_XOF"" is set by ""Extract"" but not used after call",
+                  Reason => "No further data needs to be extracted before Init");
 
                XOF_Serial.Extract
                  (Ctx    => Ctx.Partial_Block_XOF,

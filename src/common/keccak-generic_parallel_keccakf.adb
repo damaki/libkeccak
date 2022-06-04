@@ -544,7 +544,7 @@ is
       for RI in 0 .. (Num_Rounds / 2) - 1 loop
          pragma Warnings
            (GNATprove, Off,
-            "unused assignment to ""A",
+            """A",
             Reason => "Axx variables are also re-used as temporaries");
 
          Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (First_Round + Round_Index (RI * 2));
@@ -553,7 +553,7 @@ is
 
          pragma Warnings
            (GNATprove, Off,
-            "unused assignment to ""E",
+            """E",
             Reason => "Exx variables are also re-used as temporaries");
 
          Theta_Rho_Pi_Chi_Iota_Prepare_Theta_EtoA (First_Round + Round_Index (RI * 2) + 1);
@@ -566,7 +566,7 @@ is
 
          pragma Warnings
            (GNATprove, Off,
-            "unused assignment to ""C",
+            """C",
             Reason => "Cx variables are no longer needed");
 
          Theta_Rho_Pi_Chi_Iota_Prepare_Theta_AtoE (First_Round + Round_Index (Num_Rounds - 1));
@@ -592,8 +592,6 @@ is
       Data_Offset : in     Natural;
       Bit_Len     : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Stride           : constant Natural := Data'Length / Num_Parallel_Instances;
 
       Remaining_Bits   : Natural := Bit_Len;
@@ -671,8 +669,6 @@ is
                                       Data    : in     Keccak.Types.Byte_Array;
                                       Bit_Len : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Remaining_Bits   : Natural := Bit_Len;
       Offset           : Natural := 0;
 
@@ -739,12 +735,10 @@ is
    ---------------------
 
    procedure Extract_Bytes (S           : in     Parallel_State;
-                            Data        : in out Keccak.Types.Byte_Array;
+                            Data        :    out Keccak.Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Stride          : constant Natural := Data'Length / Num_Parallel_Instances;
 
       X               : X_Coord := 0;
@@ -779,10 +773,6 @@ is
 
                Data (Data'First + Data_Offset + Offset + J + (Stride * I))
                  := Keccak.Types.Byte (Shift_Right (Lane, J * 8) and 16#FF#);
-
-               pragma Annotate (GNATprove, False_Positive,
-                                """Data"" might not be initialized",
-                                "Data is initialized at end of procedure");
             end loop;
          end loop;
 

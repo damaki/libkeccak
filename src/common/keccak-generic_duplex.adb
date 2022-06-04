@@ -51,8 +51,6 @@ is
                      Out_Data            :    out Keccak.Types.Byte_Array;
                      Out_Data_Bit_Length : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Block     : Keccak.Types.Byte_Array (0 .. (State_Size_Bits + 7) / 8 - 1) := (others => 0);
 
       Num_Bytes : constant Natural := (In_Data_Bit_Length + 7) / 8;
@@ -84,8 +82,6 @@ is
                            Out_Data            :    out Keccak.Types.Byte_Array;
                            Out_Data_Bit_Length : in     Natural)
    is
-      use type Keccak.Types.Byte;
-
       Block   : Keccak.Types.Byte_Array (0 .. (State_Size_Bits + 7) / 8 - 1) := (others => 0);
 
    begin

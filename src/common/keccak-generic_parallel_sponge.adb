@@ -456,6 +456,8 @@ is
       Remaining  : Natural := Block_Size;
       Offset     : Natural := 0;
 
+      Capacity_Old : constant Positive := Ctx.Capacity with Ghost;
+
    begin
       --  If we're coming straight from the absorbing phase then we need to
       --  apply the padding rule before proceeding to the squeezing phase,
@@ -464,6 +466,8 @@ is
       end if;
 
       while Remaining >= Ctx.Rate loop
+         pragma Loop_Invariant (Ctx.Capacity = Capacity_Old);
+
          pragma Loop_Invariant (Offset + Remaining = Block_Size);
 
          pragma Loop_Invariant (Offset mod Ctx.Rate = 0);
@@ -478,8 +482,8 @@ is
 
          pragma Annotate
            (GNATprove, False_Positive,
-            """Data"" is not initialized",
-            "The array will be wholly initialized at the end of this procedure");
+            "initialization check might fail",
+            "'Data' is wholly initialized by the end of this procedure");
 
          Permute_All (Ctx.Permutation_State);
 
@@ -509,8 +513,8 @@ is
 
          pragma Annotate
            (GNATprove, False_Positive,
-            """Data"" might not be initialized",
-            "The array will be wholly initialized at the end of this procedure");
+            "initialization check might fail",
+            "'Data' is wholly initialized by the end of this procedure");
 
       end if;
    end Squeeze_Bytes_Separate;

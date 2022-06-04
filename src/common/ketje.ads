@@ -37,6 +37,7 @@ with Keccak.Keccak_800.Rounds_12;
 with Keccak.Keccak_1600;
 with Keccak.Keccak_1600.Rounds_12;
 with Keccak.Padding;
+with Interfaces;
 
 pragma Elaborate_All (Keccak.Generic_MonkeyDuplex);
 pragma Elaborate_All (Keccak.Generic_MonkeyWrap);
@@ -61,7 +62,9 @@ is
       procedure Permute_Jr_Stride is new Keccak_200.KeccakF_200_Permutation.Permute
         (Num_Rounds  => 6);
 
-      package Twisted_Lanes_200 is new Keccak_200.KeccakF_200_Lanes.Twisted;
+      package Twisted_Lanes_200 is new Keccak_200.KeccakF_200_Lanes.Twisted
+        (Shift_Left  => Interfaces.Shift_Left,
+         Shift_Right => Interfaces.Shift_Right);
 
       procedure XOR_Padding_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
         (State_Size_Bits     => 200,
@@ -91,7 +94,9 @@ is
       procedure Permute_Sr_Stride is new Keccak_400.KeccakF_400_Permutation.Permute
         (Num_Rounds  => 6);
 
-      package Twisted_Lanes_400 is new Keccak_400.KeccakF_400_Lanes.Twisted;
+      package Twisted_Lanes_400 is new Keccak_400.KeccakF_400_Lanes.Twisted
+        (Shift_Left  => Interfaces.Shift_Left,
+         Shift_Right => Interfaces.Shift_Right);
 
       procedure XOR_Padding_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
         (State_Size_Bits     => 400,
@@ -121,7 +126,9 @@ is
       procedure Permute_Minor_Stride is new Keccak_800.KeccakF_800_Permutation.Permute
         (Num_Rounds  => 6);
 
-      package Twisted_Lanes_800 is new Keccak_800.KeccakF_800_Lanes.Twisted;
+      package Twisted_Lanes_800 is new Keccak_800.KeccakF_800_Lanes.Twisted
+        (Shift_Left  => Interfaces.Shift_Left,
+         Shift_Right => Interfaces.Shift_Right);
 
       procedure XOR_Padding_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
         (State_Size_Bits     => 800,
@@ -151,7 +158,9 @@ is
       procedure Permute_Major_Stride is new Keccak_1600.KeccakF_1600_Permutation.Permute
         (Num_Rounds  => 6);
 
-      package Twisted_Lanes_1600 is new Keccak_1600.KeccakF_1600_Lanes.Twisted;
+      package Twisted_Lanes_1600 is new Keccak_1600.KeccakF_1600_Lanes.Twisted
+        (Shift_Left  => Interfaces.Shift_Left,
+         Shift_Right => Interfaces.Shift_Right);
 
       procedure XOR_Padding_Into_State is new Keccak.Padding.XOR_Pad101_Into_State
         (State_Size_Bits     => 1600,

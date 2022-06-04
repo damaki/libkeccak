@@ -79,7 +79,7 @@ generic
       Bit_Len     : in     Natural);
 
    with procedure Extract_Bytes (S           : in     Permutation_State;
-                                 Data        : in out Types.Byte_Array;
+                                 Data        :    out Types.Byte_Array;
                                  Data_Offset : in     Natural;
                                  Byte_Len    : in     Natural);
    --  Extract bytes from each parallel state.
@@ -137,7 +137,7 @@ is
              and then Bit_Len <= State_Size_Bits);
 
    procedure Extract_Bytes (S           : in     Parallel_State;
-                            Data        : in out Types.Byte_Array;
+                            Data        :    out Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
      with Global => null,
@@ -145,5 +145,29 @@ is
              and then Data_Offset <= Data'Length / Num_Parallel_Instances
              and then Byte_Len <= (Data'Length / Num_Parallel_Instances) - Data_Offset
              and then Byte_Len <= State_Size_Bits / 8);
+   --  Extract bytes from each parallel instance.
+   --
+   --  The @Data@ array is split into N equal sized chunks, where N is the
+   --  number of parallel instances. Byte_Len (BL) bytes are extracted from each
+   --  parallel instance and copied into each chunk, offset by @Data_Offset@ (DO)
+   --  relative to the start of each chunk.
+   --  Here's an illustration for 2x parallel instances:
+   --
+   --       DO    BL             DO    BL
+   --     |--->|<----->|       |--->|<----->|
+   --     +-----------------------------------------+
+   --     |                    |                    | Data
+   --     +-----------------------------------------+
+   --     .    |  ^    |            |  ^    |
+   --     .    | Write |            | Write |
+   --     .    |       |            |       |
+   --     .    +-----------+        +-----------+
+   --     .    |  state 0  |        |  state 1  |
+   --     .    +-----------+        +-----------+
+   pragma Annotate
+     (GNATprove, False_Positive,
+      """Data"" might not be initialized",
+      "Data is partially initialized in chunks of size 'Byte_Len'" &
+        " at offset 'Data_Offset' in each chunk");
 
 end Keccak.Generic_Parallel_Permutation_Parallel_Fallback;

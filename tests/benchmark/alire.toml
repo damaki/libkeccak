@@ -1,0 +1,15 @@
+name = "benchmark"
+description = "Benchmark program for Libkeccak"
+version = "0.0.0"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+executables = ["benchmark"]
+
+[[depends-on]]
+libkeccak = "*"
+
+[[pins]]
+libkeccak = { path = "../.." }

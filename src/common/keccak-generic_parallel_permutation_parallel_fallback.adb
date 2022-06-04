@@ -107,7 +107,7 @@ is
    ---------------------
 
    procedure Extract_Bytes (S           : in     Parallel_State;
-                            Data        : in out Types.Byte_Array;
+                            Data        :    out Types.Byte_Array;
                             Data_Offset : in     Natural;
                             Byte_Len    : in     Natural)
    is

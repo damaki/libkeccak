@@ -37,7 +37,7 @@ with Keccak.Types;
 --
 --  @group XOF
 generic
-   with package Sponge is new Keccak.Generic_Parallel_Sponge (<>);
+   with package XOF_Sponge is new Keccak.Generic_Parallel_Sponge (<>);
 
    --  Sponge capacity.
    --
@@ -51,13 +51,13 @@ generic
 package Keccak.Generic_Parallel_XOF
 is
 
-   Num_Parallel_Instances : constant Positive := Sponge.Num_Parallel_Instances;
+   Num_Parallel_Instances : constant Positive := XOF_Sponge.Num_Parallel_Instances;
 
    type Context is private;
 
    type States is (Updating, Extracting, Finished);
 
-   subtype Rate_Bits_Number is Sponge.Rate_Bits_Number;
+   subtype Rate_Bits_Number is XOF_Sponge.Rate_Bits_Number;
 
    procedure Init (Ctx : out Context)
      with Global => null,
@@ -103,20 +103,19 @@ is
      with Global => null;
 
 private
-   use type Sponge.States;
+   use type XOF_Sponge.States;
 
    type Context is record
-      Sponge_Ctx : Sponge.Context (Capacity);
-   end record
-     with Predicate => Sponge.Rate_Of (Context.Sponge_Ctx) = Rate;
+      Sponge_Ctx : XOF_Sponge.Context (Capacity);
+   end record;
 
    function State_Of (Ctx : in Context) return States
-   is (case Sponge.State_Of (Ctx.Sponge_Ctx) is
-          when Sponge.Absorbing => Updating,
-          when Sponge.Squeezing => Extracting,
-          when Sponge.Finished  => Finished);
+   is (case XOF_Sponge.State_Of (Ctx.Sponge_Ctx) is
+          when XOF_Sponge.Absorbing => Updating,
+          when XOF_Sponge.Squeezing => Extracting,
+          when XOF_Sponge.Finished  => Finished);
 
    function Rate return Rate_Bits_Number
-   is (Sponge.Block_Size_Bits - Capacity);
+   is (XOF_Sponge.Block_Size_Bits - Capacity);
 
 end Keccak.Generic_Parallel_XOF;

@@ -24,6 +24,7 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
+with Keccak.Types;
 
 --  @summary
 --  Subprograms for operating on Keccak-f states with a line size greater than
@@ -31,6 +32,13 @@
 --
 --  @group Keccak-f
 generic
+   --  Bit-wise left shift for Lane_Type.
+   with function Shift_Left (Value  : in Lane_Type;
+                             Amount : in Natural) return Lane_Type;
+
+   --  Bit-wise right shift for Lane_Type.
+   with function Shift_Right (Value  : in Lane_Type;
+                              Amount : in Natural) return Lane_Type;
 package Keccak.Generic_KeccakF.Byte_Lanes
 is
 
@@ -137,7 +145,7 @@ is
    pragma Annotate
      (GNATprove, False_Positive,
       """Data"" might not be initialized",
-      "GNATprove issues a false positive due to the use of loops to initialize Data");
+      "Data is fully initialized via a loop");
 
    procedure Extract_Bytes (A    : in     Lane_Complemented_State;
                             Data :    out Keccak.Types.Byte_Array)

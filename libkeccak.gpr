@@ -1,0 +1,152 @@
+with "config/libkeccak_config.gpr";
+project Libkeccak is
+
+   for Library_Name use "keccak";
+   for Library_Version use Project'Library_Name & ".so." & Libkeccak_Config.Crate_Version;
+   for Create_Missing_Dirs use "True";
+
+   type Library_Type_Type is ("relocatable", "static", "static-pic");
+   Library_Type : Library_Type_Type :=
+     external ("LIBKECCAK_LIBRARY_TYPE", external ("LIBRARY_TYPE", "static"));
+   for Library_Kind use Library_Type;
+
+   type Enabled_Kind is ("enabled", "disabled");
+   Compile_Checks : Enabled_Kind := External ("LIBKECCAK_COMPILE_CHECKS", "disabled");
+   Runtime_Checks : Enabled_Kind := External ("LIBKECCAK_RUNTIME_CHECKS", "disabled");
+   Style_Checks : Enabled_Kind := External ("LIBKECCAK_STYLE_CHECKS", "disabled");
+   Contracts_Checks : Enabled_Kind := External ("LIBKECCAK_CONTRACTS", "disabled");
+
+   type Build_Kind is ("debug", "optimize");
+   Build_Mode : Build_Kind := External ("LIBKECCAK_BUILD_MODE", "optimize");
+
+   type Arch_Kind is ("generic", "x86_64");
+   type SIMD_Kind is ("none", "SSE2", "AVX2");
+
+   Arch : Arch_Kind := external ("LIBKECCAK_ARCH", "generic");
+   SIMD : SIMD_Kind := external ("LIBKECCAK_SIMD", "none");
+
+   Arch_Dirs     := ();
+   Arch_Switches := ();
+
+   case Arch is
+      when "generic" =>
+         Arch_Dirs := Arch_Dirs & ("src/generic");
+
+      when "x86_64" =>
+         case SIMD is
+            when "none" =>
+               Arch_Dirs     := Arch_Dirs & ("src/generic");
+
+            when "SSE2" =>
+               Arch_Dirs     := Arch_Dirs & ("src/x86_64/SSE2_defs",
+                                             "src/x86_64/SSE2");
+               Arch_Switches := Arch_Switches & ("-msse", "-msse2");
+
+            when "AVX2" =>
+               Arch_Dirs     := Arch_Dirs & ("src/x86_64/SSE2_defs",
+                                             "src/x86_64/AVX2_defs",
+                                             "src/x86_64/AVX2");
+               Arch_Switches := Arch_Switches & ("-msse", "-msse2", "-mavx", "-mavx2");
+
+         end case;
+
+   end case;
+
+   for Source_Dirs use ("src/common") & Arch_Dirs;
+   for Object_Dir  use "obj/" & Arch & "_" & SIMD;
+   for Library_Dir use "lib/" & Arch & "_" & SIMD;
+
+   Compile_Checks_Switches := ();
+   case Compile_Checks is
+      when "enabled" =>
+         Compile_Checks_Switches :=
+           ("-gnatwa",  -- All warnings
+            "-gnatVa",  -- All validity checks
+            "-gnatwe"); -- Warnings as errors
+      when others => null;
+   end case;
+
+   Runtime_Checks_Switches := ();
+   case Runtime_Checks is
+      when "enabled" => null;
+      when others =>
+         Runtime_Checks_Switches :=
+           ("-gnatp"); -- Suppress checks
+   end case;
+
+   Style_Checks_Switches := ();
+   case Style_Checks is
+      when "enabled" =>
+         Style_Checks_Switches :=
+           ("-gnaty3",    -- Maximum indentation level
+            "-gnatya",    -- Check attribute casing
+            "-gnatyA",    -- Use of array index numbers in array attributes
+            "-gnatyb",    -- Blanks not allowed at statement end
+            "-gnatyc",    -- Check comments, double space
+            "-gnatye",    -- Check end/exit labels
+            "-gnatyf",    -- No form feeds or vertical tabs
+            "-gnatyh",    -- No horizontal tabs
+            "-gnatyi",    -- Check if-then layout
+            "-gnatyk",    -- Check keyword casing
+            "-gnatyl",    -- Check layout
+            "-gnatyL6",   -- Set maximum nesting level
+            "-gnatyM100", -- Set maximum line length
+            "-gnatyn",    -- Check casing of entities in Standard
+            "-gnatyO",    -- Overriding subprogrms explicitly marked as such
+            "-gnatyr",    -- Check references
+            "-gnatyS",    -- Check no statements after then/else
+            "-gnatys",    -- Check separate specs
+            "-gnatyt",    -- Check token spacing
+            "-gnatyu");   -- Check unnecessary blank lines
+      when others => null;
+   end case;
+
+   Contracts_Switches := ();
+   case Contracts_Checks is
+      when "enabled" =>
+         Contracts_Switches :=
+           ("-gnata"); --  Enable assertions and contracts
+      when others => null;
+   end case;
+
+   Build_Switches := ();
+   case Build_Mode is
+      when "optimize" =>
+         Build_Switches := Build_Switches & ("-O3",     -- Optimization
+                                             "-funroll-loops",
+                                             "-gnatn"); -- Enable inlining
+      when "debug" =>
+         Build_Switches := Build_Switches & ("-g",   -- Debug info
+                                             "-Og"); -- No optimization
+   end case;
+
+   package Compiler is
+      for Default_Switches ("Ada") use
+        Compile_Checks_Switches &
+        Build_Switches &
+        Arch_Switches &
+        Runtime_Checks_Switches &
+        Style_Checks_Switches &
+        Contracts_Switches &
+        ("-gnatw.X", -- Disable warnings for No_Exception_Propagation
+         "-gnatQ");  -- Don't quit. Generate ALI and tree files even if illegalities
+   end Compiler;
+
+   package Binder is
+      for Switches ("Ada") use ("-Es"); --  Symbolic traceback
+   end Binder;
+
+   package Prove is
+      for Proof_Switches ("Ada") use ("--proof=per_path",
+                                      "-j0",
+                                      "--no-global-generation",
+                                      "--no-inlining",
+                                      "--no-loop-unrolling",
+                                      "--prover=cvc4,z3,altergo",
+                                      "--timeout=60",
+                                      "--memlimit=0",
+                                      "--steps=16000",
+                                      "--report=statistics");
+   end Prove;
+
+end Libkeccak;

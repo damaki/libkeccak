@@ -42,6 +42,7 @@ is
    --  Init  --
    ------------
 
+   overriding
    procedure Init (A : out Lane_Complemented_State)
    is
    begin

@@ -1,0 +1,16 @@
+name = "unit_tests"
+description = "Unit Tests for libkeccak"
+version = "0.0.0"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+executables = ["unit_tests"]
+
+[[depends-on]]
+libkeccak = "*"
+aunit = "^22.0.0"  # Added by alr
+
+[[pins]]
+libkeccak = { path = "../.." }

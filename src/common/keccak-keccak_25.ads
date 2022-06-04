@@ -24,20 +24,14 @@
 --  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
-with Interfaces;
-with Keccak.Generic_Duplex;
 with Keccak.Generic_KeccakF;
 with Keccak.Generic_KeccakF.Bit_Lanes;
 with Keccak.Generic_KeccakF.Lane_Complementing_Permutation;
-with Keccak.Padding;
-with Keccak.Generic_Sponge;
 with Keccak.Types;
 
-pragma Elaborate_All (Keccak.Generic_Duplex);
 pragma Elaborate_All (Keccak.Generic_KeccakF);
 pragma Elaborate_All (Keccak.Generic_KeccakF.Bit_Lanes);
 pragma Elaborate_All (Keccak.Generic_KeccakF.Lane_Complementing_Permutation);
-pragma Elaborate_All (Keccak.Generic_Sponge);
 
 --  @summary
 --  Instantiation of Keccak with a state size of 25 bits (1-bit lanes).
@@ -47,14 +41,12 @@ is
 
    package KeccakF_25 is new Keccak.Generic_KeccakF
      (Lane_Size_Log => 0,
-      Lane_Type     => Keccak.Types.Unsigned_1,
-      Shift_Left    => Keccak.Types.Shift_Left_1,
-      Shift_Right   => Keccak.Types.Shift_Right_1,
-      Rotate_Left   => Keccak.Types.Rotate_Left_1);
+      Lane_Type     => Keccak.Types.Unsigned_1);
 
    subtype State is KeccakF_25.Lane_Complemented_State;
 
-   package KeccakF_25_Permutation is new KeccakF_25.Lane_Complementing_Permutation;
+   package KeccakF_25_Permutation is new KeccakF_25.Lane_Complementing_Permutation
+     (Rotate_Left => Keccak.Types.Rotate_Left_1);
 
    package KeccakF_25_Lanes is new KeccakF_25.Bit_Lanes;
 

@@ -34,7 +34,7 @@ is
    procedure Init (Ctx : out Context)
    is
    begin
-      Sponge.Init (Ctx.Sponge_Ctx);
+      XOF_Sponge.Init (Ctx.Sponge_Ctx);
    end Init;
 
    -----------------------
@@ -46,11 +46,13 @@ is
    is
       Block_Size : constant Natural := (Data'Length / Num_Parallel_Instances);
    begin
+      pragma Assume (Rate = XOF_Sponge.Rate_Of (Ctx.Sponge_Ctx));
+
       if Block_Size mod (Rate / 8) = 0 then
-         Sponge.Absorb_Bytes_Separate (Ctx.Sponge_Ctx, Data);
+         XOF_Sponge.Absorb_Bytes_Separate (Ctx.Sponge_Ctx, Data);
 
       else
-         Sponge.Absorb_Bytes_Separate_With_Suffix
+         XOF_Sponge.Absorb_Bytes_Separate_With_Suffix
            (Ctx        => Ctx.Sponge_Ctx,
             Data       => Data,
             Suffix     => Suffix,
@@ -66,11 +68,13 @@ is
                          Data       : in     Types.Byte_Array)
    is
    begin
+      pragma Assume (Rate = XOF_Sponge.Rate_Of (Ctx.Sponge_Ctx));
+
       if Data'Length mod (Rate / 8) = 0 then
-         Sponge.Absorb_Bytes_All (Ctx.Sponge_Ctx, Data);
+         XOF_Sponge.Absorb_Bytes_All (Ctx.Sponge_Ctx, Data);
 
       else
-         Sponge.Absorb_Bytes_All_With_Suffix
+         XOF_Sponge.Absorb_Bytes_All_With_Suffix
            (Ctx        => Ctx.Sponge_Ctx,
             Data       => Data,
             Suffix     => Suffix,
@@ -89,14 +93,14 @@ is
 
    begin
       if State_Of (Ctx) = Updating then
-         Sponge.Absorb_Bytes_Separate_With_Suffix
+         XOF_Sponge.Absorb_Bytes_Separate_With_Suffix
            (Ctx        => Ctx.Sponge_Ctx,
             Data       => Empty_Array,
             Suffix     => Suffix,
             Suffix_Len => Suffix_Size);
       end if;
 
-      Sponge.Squeeze_Bytes_Separate (Ctx.Sponge_Ctx, Data);
+      XOF_Sponge.Squeeze_Bytes_Separate (Ctx.Sponge_Ctx, Data);
    end Extract_Separate;
 
 end Keccak.Generic_Parallel_XOF;

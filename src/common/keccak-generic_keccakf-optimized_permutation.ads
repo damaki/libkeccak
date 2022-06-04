@@ -34,6 +34,9 @@
 --
 --  @group Keccak-f
 generic
+   --  Bit-wise left rotate for Lane_Type.
+   with function Rotate_Left (Value  : in Lane_Type;
+                              Amount : in Natural) return Lane_Type;
 package Keccak.Generic_KeccakF.Optimized_Permutation
 is
 

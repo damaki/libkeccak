@@ -42,10 +42,12 @@ is
    type Unsigned_2 is mod 2**2 with Size => 2;
    type Unsigned_4 is mod 2**4 with Size => 4;
 
-   subtype Byte is Interfaces.Unsigned_8;
+   subtype Byte is Interfaces.Unsigned_8
+     with Object_Size => 8;
 
    subtype Index_Number is Natural range 0 .. Natural'Last - 1;
-   type Byte_Array is array (Index_Number range <>) of Byte;
+   type Byte_Array is array (Index_Number range <>) of Byte
+     with Component_Size => 8;
 
    Null_Byte_Array : constant Byte_Array (1 .. 0) := (others => 0);
 
