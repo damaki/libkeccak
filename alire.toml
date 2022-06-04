@@ -1,6 +1,6 @@
 name = "libkeccak"
 description = "SHA-3 and related algorithms"
-version = "0.0.0"
+version = "3.0.0-dev"
 licenses = "BSD-3-Clause"
 tags = [
     "spark", "cryptography", "security", "hash", "sha3", "keccak", "gimli",
