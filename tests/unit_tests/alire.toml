@@ -1,5 +1,5 @@
 name = "unit_tests"
-description = "Shiny new project"
+description = "Unit Tests for libkeccak"
 version = "0.0.0"
 
 authors = ["Daniel King"]
