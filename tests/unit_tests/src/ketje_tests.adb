@@ -27,6 +27,7 @@
 
 with AUnit.Assertions; use AUnit.Assertions;
 with Interfaces;       use Interfaces;
+with Keccak.Types;     use Keccak.Types;
 
 package body Ketje_Tests
 is

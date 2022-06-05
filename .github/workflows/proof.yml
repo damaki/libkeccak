@@ -1,0 +1,34 @@
+on:                    # Run the workflow for each of the following event:
+  workflow_dispatch:   # - A manual run of the workflow is requested from the GitHub web interface.
+  release:
+    types: [created]   # - A release is created.
+
+jobs:
+  proof:
+    strategy:
+      fail-fast: false # Don't stop all the workflows when one of them fails.
+      matrix:
+        # List of build configurations to prove
+        include:
+          - arch: generic
+            simd: none
+          - arch: x86_64
+            simd: SSE2
+          - arch: x86_64
+            simd: AVX2
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v2
+
+      # Install and setup Alire package manager
+      - uses: alire-project/setup-alire@v1
+        with:
+          version: 1.2.0
+
+      # Generate the proofs
+      # Note that this is likely to take a fairly long time on a dual-core CI runner.
+      - name: Prove
+        run: alr gnatprove -Plibkeccak

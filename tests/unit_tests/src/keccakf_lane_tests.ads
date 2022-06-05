@@ -26,7 +26,6 @@
 -------------------------------------------------------------------------------
 
 with AUnit.Test_Fixtures;
-with Keccak.Generic_KeccakF.Byte_Lanes;
 with Keccak.Types;
 
 generic

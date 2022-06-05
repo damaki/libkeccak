@@ -25,10 +25,9 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Ada.Command_Line;
 with Timing;                        use Timing;
 with Ada.Text_IO;                   use Ada.Text_IO;
-with Ada.Integer_Text_IO;           use Ada.Integer_Text_IO;
+with Ada.Integer_Text_IO;
 with Ada.Long_Float_Text_IO;
 with Interfaces;                    use Interfaces;
 with KangarooTwelve;
@@ -37,7 +36,6 @@ with Keccak.Parallel_Keccak_1600;
 with Keccak.Parallel_Keccak_1600.Rounds_24;
 with Keccak.Parallel_Keccak_1600.Rounds_12;
 with Keccak.Generic_KangarooTwelve;
-with Keccak.Generic_KeccakF;
 with Keccak.Generic_MonkeyWrap;
 with Keccak.Generic_Parallel_Hash;
 with Keccak.Keccak_25;
@@ -69,17 +67,21 @@ with Gimli.Hash;
 with Ascon;
 with Ascon.Permutations;
 with Ascon.Hash;
-with Ascon.XOF;
 
 procedure Benchmark
 is
    Benchmark_Data_Size : constant := 512 * 1024; --  size of the benchmark data in bytes
    Repeat              : constant := 200;  --  number of benchmark iterations
 
-   --  A 1 MiB data chunk to use as an input to the algorithms.
+   --  Use a 1 MiB data chunk as an input to the algorithms.
+   --  A separate buffer is used as an output buffer for Ketje to avoid aliasing.
    type Byte_Array_Access is access Keccak.Types.Byte_Array;
-   Data_Chunk_1 : constant Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
-   Data_Chunk_2 : constant Byte_Array_Access := new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
+
+   Data_Chunk_1 : constant Byte_Array_Access :=
+     new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
+
+   Data_Chunk_2 : constant Byte_Array_Access :=
+     new Keccak.Types.Byte_Array (1 .. Benchmark_Data_Size);
 
    package Cycles_Count_IO is new Ada.Text_IO.Modular_IO (Cycles_Count);
 
@@ -287,9 +289,6 @@ is
 
    procedure KeccakF_Benchmark
    is
-      package Duration_IO is new Ada.Text_IO.Fixed_IO (Duration);
-      package Integer_IO is new Ada.Text_IO.Integer_IO (Integer);
-
       State : State_Type;
 
       Start_Time : Timing.Time;

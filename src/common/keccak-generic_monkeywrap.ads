@@ -76,6 +76,12 @@ package Keccak.Generic_MonkeyWrap is
    --
    --  E.g. for Keccak-p[1600] this is 1600 - 4 = 1596
 
+   Max_Key_Size_Bits : constant Positive := MonkeyDuplex.State_Size_Bits - 18;
+   --  The size of the key must fit in the underlying permutation's block size,
+   --  minus 18 bits.
+   --
+   --  See Section 5.1 of the Ketje v2 specification.
+
    pragma Assert (Block_Size_Bytes <= Max_Block_Size_Bits / 8);
 
    type State is (Auth_Data,
@@ -91,15 +97,14 @@ package Keccak.Generic_MonkeyWrap is
                    Nonce : in     Keccak.Types.Byte_Array)
      with Global => null,
      Depends => (Ctx => (Key, Nonce)),
-     Pre => (Key'Length <= (Max_Rate_Bits / 8) - 3
-             and then Nonce'Length <= Max_Rate_Bits / 8
-             and then Key'Length + 3 + Nonce'Length <= Max_Rate_Bits / 8),
+     Pre => (Key'Length <= Max_Key_Size_Bits / 8
+             and then Nonce'Length <= (Max_Key_Size_Bits - (Key'Length * 8)) / 8),
      Post => State_Of (Ctx) = Auth_Data;
    --  Initialise the MonkeyWrap context.
    --
-   --  The combined Key + Nonce length cannot exceed the maximum rate of the
-   --  underlying MonkeyDuplex instance. For example, for Keccak-p[1600] the
-   --  maximum Key + Nonce size is 1574 bits.
+   --  The combined Key + Nonce size, in bits, cannot exceed Max_Key_Size_Bits.
+   --  For example, for Keccak-p[1600] the maximum Key + Nonce size is 1574 bits
+   --  (196 bytes).
 
    procedure Update_Auth_Data (Ctx  : in out Context;
                                Data : in     Keccak.Types.Byte_Array)

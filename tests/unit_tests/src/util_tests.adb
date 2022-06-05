@@ -25,7 +25,6 @@
 --  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Ada.Characters.Latin_1; use Ada.Characters.Latin_1;
 with AUnit.Assertions; use AUnit.Assertions;
 with Keccak.Types;     use Keccak.Types;
 with Keccak.Util;      use Keccak.Util;

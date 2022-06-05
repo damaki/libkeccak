@@ -50,7 +50,6 @@ project Kat is
             "-gnatyi",    -- Check if-then layout
             "-gnatyk",    -- Check keyword casing
             "-gnatyl",    -- Check layout
-            "-gnatyL6",   -- Set maximum nesting level
             "-gnatyM100", -- Set maximum line length
             "-gnatyn",    -- Check casing of entities in Standard
             "-gnatyO",    -- Overriding subprogrms explicitly marked as such

@@ -35,8 +35,6 @@ with GNAT.Regpat;
 
 package body Test_Vectors is
 
-   use type Ada.Containers.Count_Type;
-   use type GNAT.Regpat.Match_Array;
    use type GNAT.Regpat.Match_Location;
 
    function Create_List (Value : in Value_Choice) return Value_Choice_Lists.List;

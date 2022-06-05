@@ -27,8 +27,6 @@
 
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO;
-with Ada.Unchecked_Deallocation;
-with Interfaces; use Interfaces;
 with Keccak.Types;
 
 with Test_Vectors; use Test_Vectors;
@@ -45,10 +43,6 @@ is
    Tag_Key        : constant Unbounded_String := To_Unbounded_String ("Tag");
 
    GlobalTag_Key  : constant Unbounded_String := To_Unbounded_String ("GlobalTag");
-
-   procedure Free is new Ada.Unchecked_Deallocation
-     (Object => Keccak.Types.Byte_Array,
-      Name   => Byte_Array_Access);
 
    procedure Do_Session (Ctx        : in out MonkeyWrap.Context;
                          Test_Data  : in     Test_Vectors.Test_Vector_Maps.Map;

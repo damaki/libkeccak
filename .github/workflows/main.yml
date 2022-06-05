@@ -1,0 +1,86 @@
+on:                    # Run the workflow for each of the following event:
+  push:                # - A branch is pushed or updated.
+    branches:
+      - master
+  pull_request:        # - A pull-request is openned or updated.
+  workflow_dispatch:   # - A manual run of the workflow is requested from the GitHub web interface.
+  release:
+    types: [created]   # - A release is created.
+
+jobs:
+  build-and-test:
+    strategy:
+      fail-fast: false # Don't stop all the workflows when one of them fails.
+      matrix:
+        # List of build configurations to test
+        include:
+          - arch: generic
+            simd: none
+          - arch: x86_64
+            simd: SSE2
+          - arch: x86_64
+            simd: AVX2
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v2
+
+      # Install and setup Alire package manager
+      - uses: alire-project/setup-alire@v1
+        with:
+          version: 1.2.0
+
+      # Build the project using the validation build profile to enforce static analysis and coding style.
+      - name: Build libkeccak
+        run: |
+          alr build --validation -- \
+            -XLIBKECCAK_ARCH=${{ matrix.arch }} \
+            -XLIBKECCAK_SIMD=${{ matrix.simd }} \
+            -XLIBKECCAK_COMPILE_CHECKS=enabled \
+            -XLIBKECCAK_STYLE_CHECKS=enabled
+
+      # Build and run the benchmark program
+      # Note that the benchmark measurements are unlikely to be fully representative
+      # due to interference from other processes on the CI runner, but the purpose
+      # of this check is to ensure that the benchmark builds and runs without errors.
+      - name: Build and run the benchmark
+        run: |
+          cd tests/benchmark
+          alr build -- \
+            -XLIBKECCAK_ARCH=${{ matrix.arch }} \
+            -XLIBKECCAK_SIMD=${{ matrix.simd }} \
+            -XBENCHMARK_COMPILE_CHECKS=enabled \
+            -XBENCHMARK_STYLE_CHECKS=enabled
+          alr run -s
+
+      # Build and run the Known Answer Tests
+      - name: Build and run Known Answer Tests
+        run: |
+          cd tests/kat
+          alr build --validation -- \
+            -XLIBKECCAK_ARCH=${{ matrix.arch }} \
+            -XLIBKECCAK_SIMD=${{ matrix.simd }} \
+            -XLIBKECCAK_CONTRACTS=enabled \
+            -XLIBKECCAK_RUNTIME_CHECKS=enabled \
+            -XKAT_CONTRACTS=enabled \
+            -XKAT_RUNTIME_CHECKS=enabled \
+            -XKAT_COMPILE_CHECKS=enabled \
+            -XKAT_STYLE_CHECKS=enabled
+          ./run-all-tests.sh
+
+      # Build and run the unit tests
+      - name: Build and run unit tests
+        run: |
+          cd tests/unit_tests
+          alr build --validation -- \
+            -XLIBKECCAK_ARCH=${{ matrix.arch }} \
+            -XLIBKECCAK_SIMD=${{ matrix.simd }} \
+            -XLIBKECCAK_CONTRACTS=enabled \
+            -XLIBKECCAK_RUNTIME_CHECKS=enabled \
+            -XUNIT_TESTS_CONTRACTS=enabled \
+            -XUNIT_TESTS_RUNTIME_CHECKS=enabled \
+            -XUNIT_TESTS_COMPILE_CHECKS=enabled \
+            -XUNIT_TESTS_STYLE_CHECKS=enabled
+          alr run -s
