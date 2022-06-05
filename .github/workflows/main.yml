@@ -40,6 +40,9 @@ jobs:
             -XLIBKECCAK_STYLE_CHECKS=enabled
 
       # Build and run the benchmark program
+      # Note that the benchmark measurements are unlikely to be fully representative
+      # due to interference from other processes on the CI runner, but the purpose
+      # of this check is to ensure that the benchmark builds and runs without errors.
       - name: Build and run the benchmark
         run: |
           cd tests/benchmark
