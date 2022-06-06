@@ -1,3 +1,5 @@
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/libkeccak.json)](https://alire.ada.dev/crates/libkeccak.html)
+
 # Libkeccak
 
 This project implements the Keccak family of sponge functions and related
