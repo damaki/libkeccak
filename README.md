@@ -241,13 +241,14 @@ Assuming you have Alire >= 1.2.0 installed, then:
 ### Proofs
 
 ```sh
-alr gnatprove -Plibkeccak -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
+cd prove
+alr exec -- gnatprove -P../libkeccak -XLIBKECCAK_ARCH=generic -XLIBKECCAK_SIMD=none
 ```
 
 >:bulb: Change `-XLIBKECCAK_ARCH` and `-XLIBKECCAK_SIMD` to run the proofs using
 different SIMD instruction sets.
 
-A summary of the proof results is stored in `obj/generic_none/gnatprove.out`.
+A summary of the proof results is stored in `obj/<arch>_<simd>/gnatprove.out`.
 
 The project file configures the prover limits so that they should give the same
 results on all machines.

@@ -1,0 +1,14 @@
+name = "prove"
+description = "Project to prove libkeccak"
+version = "0.1.0-dev"
+
+authors = ["Daniel King"]
+maintainers = ["Daniel King <damaki.gh@gmail.com>"]
+maintainers-logins = ["damaki"]
+
+[[depends-on]]
+libkeccak = "*"
+gnatprove = "^11.2.3"
+
+[[pins]]
+libkeccak = { path = ".." }
