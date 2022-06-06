@@ -31,4 +31,8 @@ jobs:
       # Generate the proofs
       # Note that this is likely to take a fairly long time on a dual-core CI runner.
       - name: Prove
-        run: alr gnatprove -Plibkeccak
+        run: |
+          cd prove
+          alr exec -- gnatprove -P../libkeccak \
+            -XLIBKECCAK_ARCH=${{ matrix.arch }} \
+            -XLIBKECCAK_SIMD=${{ matrix.simd }}
