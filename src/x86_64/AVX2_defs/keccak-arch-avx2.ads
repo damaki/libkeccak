@@ -45,7 +45,7 @@ is
 
       type V4DI_Index is range 0 .. 3;
 
-      type V4DI is array (V4DI_Index) of Unsigned_64
+      type V4DI is array (V4DI_Index) of Integer_64
         with Alignment => 32,
         Size => 256,
         Object_Size => 256;

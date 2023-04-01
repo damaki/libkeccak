@@ -45,7 +45,7 @@ is
 
       type V2DI_Index is range 0 .. 1;
 
-      type V2DI is array (V2DI_Index) of Unsigned_64
+      type V2DI is array (V2DI_Index) of Integer_64
         with Alignment => 16,
         Size => 128,
         Object_Size => 128;
@@ -105,7 +105,7 @@ is
 
       type V4SI_Index is range 0 .. 3;
 
-      type V4SI is array (V4SI_Index) of Unsigned_32
+      type V4SI is array (V4SI_Index) of Integer_32
         with Alignment => 16,
         Size => 128,
         Object_Size => 128;
