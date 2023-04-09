@@ -26,7 +26,6 @@
 -------------------------------------------------------------------------------
 pragma SPARK_Mode (On);
 
-with Gimli;
 with Keccak.Generic_Sponge;
 with Keccak.Padding;
 
