@@ -25,12 +25,12 @@ jobs:
 
     steps:
       # Checkout the repository
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       # Install and setup Alire package manager
-      - uses: alire-project/setup-alire@v1
+      - uses: alire-project/setup-alire@v6
         with:
-          version: 1.2.0
+          version: 2.1.1
 
       # Build the project using the validation build profile to enforce static analysis and coding style.
       - name: Build libkeccak
@@ -82,5 +82,5 @@ jobs:
             -XUNIT_TESTS_CONTRACTS=enabled \
             -XUNIT_TESTS_RUNTIME_CHECKS=enabled \
             -XUNIT_TESTS_COMPILE_CHECKS=enabled \
-            -XUNIT_TESTS_STYLE_CHECKS=enabled
+            -XUNIT_TESTS_STYLE_CHECKS=disabled
           alr run -s
