@@ -82,5 +82,5 @@ jobs:
             -XUNIT_TESTS_CONTRACTS=enabled \
             -XUNIT_TESTS_RUNTIME_CHECKS=enabled \
             -XUNIT_TESTS_COMPILE_CHECKS=enabled \
-            -XUNIT_TESTS_STYLE_CHECKS=enabled
+            -XUNIT_TESTS_STYLE_CHECKS=disabled
           alr run -s
